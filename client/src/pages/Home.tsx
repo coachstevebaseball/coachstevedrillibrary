@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Filter, ExternalLink, Clock, Activity, Dumbbell, Users, ChevronRight } from "lucide-react";
+import { Link } from "wouter";
 import drillsData from "@/data/drills.json";
 
 // Types
@@ -157,11 +158,9 @@ export default function Home() {
         {filteredDrills.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDrills.map((drill) => (
-              <a 
+              <Link 
                 key={drill.id} 
-                href={drill.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
+                href={`/drill/${drill.id}`}
                 className="group block h-full"
               >
                 <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-l-4 border-l-transparent hover:border-l-secondary overflow-hidden flex flex-col">
@@ -199,7 +198,7 @@ export default function Home() {
                     <ChevronRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-secondary" />
                   </CardFooter>
                 </Card>
-              </a>
+              </Link>
             ))}
           </div>
         ) : (
