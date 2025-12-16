@@ -1,9 +1,11 @@
-import { useRoute } from "wouter";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { Button } from "@/components/ui/button";;
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink } from "lucide-react";
-import { Link } from "wouter";
+import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink, Lock, LogIn } from "lucide-react";
+import { getLoginUrl } from "@/const";
+import { Link, useRoute } from "wouter";
 import drillsData from "@/data/drills.json";
 
 // Mock data for the 1-2-3 Drill (since we only extracted this one for now)
@@ -36,10 +38,22 @@ const drillDetails = {
 };
 
 export default function DrillDetail() {
+  const { user, loading } = useAuth();
   const [match, params] = useRoute("/drill/:id");
   const id = params?.id;
   const drill = drillsData.find(d => d.id.toString() === id);
   const details = id && drillDetails[id as keyof typeof drillDetails];
+
+  // Check if user has access
+  const hasAccess = user && (user.role === 'admin' || user.isActiveClient === 1);
+
+  if (loading) {
+    return (
+      <div className="container py-12 text-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   if (!drill) {
     return (
@@ -54,7 +68,45 @@ export default function DrillDetail() {
 
   return (
     <div className="min-h-screen bg-background pb-12">
+      {/* Access Control Check */}
+      {!hasAccess && (
+        <div className="container py-12">
+          <Card className="max-w-2xl mx-auto border-2">
+            <CardHeader className="text-center">
+              <div className="mx-auto bg-muted h-16 w-16 rounded-full flex items-center justify-center mb-4">
+                <Lock className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <CardTitle className="text-2xl">Client Access Required</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center space-y-4">
+              <p className="text-muted-foreground">
+                This drill content is only available to active clients. Please log in with an authorized account to view the full drill details.
+              </p>
+              {!user ? (
+                <a href={getLoginUrl()}>
+                  <Button size="lg" className="gap-2">
+                    <LogIn className="h-5 w-5" />
+                    Login to Access
+                  </Button>
+                </a>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    Your account does not have active client access. Please contact the administrator.
+                  </p>
+                  <Link href="/">
+                    <Button variant="outline">Return to Directory</Button>
+                  </Link>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {/* Header */}
+      {hasAccess && (
+      <>
       <header className="bg-primary text-primary-foreground py-8 mb-8">
         <div className="container">
           <Link href="/">
@@ -138,7 +190,7 @@ export default function DrillDetail() {
                   </h2>
                   <div className="bg-card rounded-xl border p-6 shadow-sm space-y-4">
                     <ul className="space-y-3">
-                      {details.description.map((step, i) => (
+                      {details.description.map((step: string, i: number) => (
                         <li key={i} className="flex gap-3">
                           <div className="h-2 w-2 bg-secondary rounded-full mt-2 shrink-0" />
                           <span className="leading-relaxed">{step}</span>
@@ -155,7 +207,7 @@ export default function DrillDetail() {
                   </h2>
                   <div className="bg-muted/30 rounded-xl border p-6 space-y-4">
                     <ul className="space-y-3">
-                      {details.addDifficulty.map((step, i) => (
+                      {details.addDifficulty.map((step: string, i: number) => (
                         <li key={i} className="flex gap-3">
                           <div className="h-2 w-2 bg-primary rounded-full mt-2 shrink-0" />
                           <span className="leading-relaxed text-muted-foreground">{step}</span>
@@ -181,6 +233,8 @@ export default function DrillDetail() {
           </div>
         )}
       </div>
+      </>
+      )}
     </div>
   );
 }

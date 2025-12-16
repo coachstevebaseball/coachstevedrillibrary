@@ -1,10 +1,12 @@
 import { useState, useMemo } from "react";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, ExternalLink, Clock, Activity, Dumbbell, Users, ChevronRight } from "lucide-react";
+import { Search, Filter, ExternalLink, Clock, Activity, Dumbbell, Users, ChevronRight, LogIn, LogOut, Shield } from "lucide-react";
+import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
 import drillsData from "@/data/drills.json";
 
@@ -20,6 +22,10 @@ interface Drill {
 }
 
 export default function Home() {
+  // The userAuth hooks provides authentication state
+  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
+  let { user, loading, error, isAuthenticated, logout } = useAuth();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState("All");
   const [categoryFilter, setCategoryFilter] = useState("All");
@@ -67,6 +73,33 @@ export default function Home() {
         </div>
         
         <div className="container relative z-10 py-16 md:py-24">
+          {/* Auth & Admin Controls */}
+          <div className="flex justify-end gap-3 mb-8">
+            {user ? (
+              <>
+                {user.role === 'admin' && (
+                  <Link href="/admin">
+                    <Button variant="secondary" size="sm" className="gap-2">
+                      <Shield className="h-4 w-4" />
+                      Admin Dashboard
+                    </Button>
+                  </Link>
+                )}
+                <Button variant="outline" size="sm" onClick={logout} className="gap-2 bg-background/20 hover:bg-background/30">
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <a href={getLoginUrl()}>
+                <Button variant="secondary" size="sm" className="gap-2">
+                  <LogIn className="h-4 w-4" />
+                  Login
+                </Button>
+              </a>
+            )}
+          </div>
+          
           <div className="max-w-3xl">
             <div className="flex items-center gap-3 mb-4">
               <div className="h-1 w-12 bg-secondary rounded-full" />

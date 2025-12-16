@@ -1,0 +1,17 @@
+# Project TODO
+
+## Completed Features
+- [x] Basic homepage layout
+- [x] Drills directory with search and filtering
+- [x] Individual drill detail page (1-2-3 Drill prototype)
+- [x] Video embedding for drills
+- [x] Streamlined drill detail layout
+
+## New Features - User Authentication & Access Control
+- [x] Resolve merge conflicts from template upgrade
+- [x] Update database schema for client access management
+- [x] Implement user authentication (Login/Signup)
+- [x] Create Admin Dashboard for managing client access
+- [x] Implement access control middleware for drills
+- [x] Add "Active Client" status toggle in admin panel
+- [x] Test access control workflows (active vs inactive clients)
