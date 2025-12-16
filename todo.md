@@ -32,3 +32,17 @@
 - [x] Update drills.json with correct URLs
 - [x] Add drill details to DrillDetail component
 - [x] Test new drill pages
+
+## Extract All Hitting Drills
+- [ ] Identify all hitting drills from drills.json
+- [ ] Scrape content and videos for all hitting drills
+- [ ] Update DrillDetail component with all hitting drill data
+- [ ] Update drills.json with correct URLs for all hitting drills
+- [ ] Test all hitting drill pages
+
+## Add User-Provided Drills
+- [x] Extract content from Double Tee drill
+- [x] Extract content from Front Hip Toss and Color Front Toss drills
+- [x] Update drills.json with correct URLs
+- [x] Add drill details to DrillDetail component
+- [x] Test new drill pages

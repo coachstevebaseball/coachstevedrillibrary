@@ -78,6 +78,68 @@ const drillDetails = {
       "To add a degree of difficulty, coaches can throw pitches inside and outside"
     ],
     videoUrl: "https://www.youtube.com/embed/SfP2RcIwaZQ"
+  },
+  "75": {
+    skillSet: "Hitting",
+    difficulty: "Hard",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
+    time: "10 minutes",
+    equipment: "Screen for coach to throw behind, home plate, bucket of baseballs, markers",
+    goal: "Focus on tracking the balls and colors, pitch recognition, and reacting quickly",
+    description: [
+      "Screen set up 30 feet from the plate, hitter sets up even with the plate",
+      "The balls in the bucket should each have a green, blue, or red circle on them",
+      "Coach overhand throws the ball down from behind the screen",
+      "Hitter hits the green and blue balls, calling out the color, and takes the red balls",
+      "If a player is struggling seeing the colors, slow down the speed of the pitches",
+      "Hitter should focus on tracking the balls and seeing their colors and then reacting quickly to hit or take the pitch",
+      "Partners switch after 10 swings"
+    ],
+    addDifficulty: [
+      "To add a degree of difficulty, coaches can throw pitches inside and outside"
+    ],
+    videoUrl: "https://www.youtube.com/embed/QUR1x6V73yQ"
+  },
+  "100": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
+    time: "5 minutes",
+    equipment: "Bat, two tees, baseballs, net or screen to hit into",
+    goal: "Keep the bat on the plane of the baseball, and drive the baseball up the middle",
+    description: [
+      "Tee set up in front of the middle of the plate, roughly 6 inches out front of the plate (shown below)",
+      "Another tee set up about 6 inches in front of the first tee",
+      "Hitter sets up even with the plate, while other partner puts balls on the tees",
+      "Hitter hits the ball, trying to hit a low line drive back up the middle, keeping the bat on the plane of the ball and the barrel behind the hands and extends their swing path to hit the second ball off the second tee with a smooth swing",
+      "Partners switch after 5 swings"
+    ],
+    addDifficulty: [
+      "To add a degree of difficulty, the hitter can move the tee to different contact points (inside, middle, outside) as shown for a right handed hitter below, but still make sure to place the tee roughly 6 inches in front of where the contact point would be for each location.",
+      "Outside pitches should be hit to the opposite field, or opposite side of the screen or cage",
+      "Inside pitches should be hit up the middle or slightly to the pull side of the middle"
+    ],
+    videoUrl: "https://www.youtube.com/embed/6NT-D_z3r94"
+  },
+  "129": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
+    time: "10 minutes",
+    equipment: "Bat, screen for coach to throw behind, home plate, and a bucket of baseballs",
+    goal: "Get the barrel to an extreme inside pitch while working through the ball",
+    description: [
+      "Screen set up 20 feet from the plate",
+      "Hitter sets up even with the plate",
+      "Coach sets up screen to the left side of the cage",
+      "Coach underhand tosses from the left side of the screen directly at the hitter's front hip",
+      "Hitter works on keeping their hands inside the baseball while rotating their hips through the swing, effectively pulling the ball",
+      "Objective is to be able to get the barrel to an extreme inside pitch while working through the ball",
+      "Ideal for hitters that do not use their lower half or they cast their hands when swinging",
+      "Partners switch after 10 swings"
+    ],
+    addDifficulty: [],
+    videoUrl: "https://www.youtube.com/embed/P0f_jlz6LKA"
   }
 };
 
