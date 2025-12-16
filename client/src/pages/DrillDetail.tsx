@@ -30,7 +30,8 @@ const drillDetails = {
     addDifficulty: [
       "To add a degree of difficulty, one of the partners can stand 30 feet away on the other side of the net the players are hitting into and go through a dry pitch like a pitcher (without a ball), this gives the hitter a real visual of a pitcher (1, 2, 3 should still be separated motions)",
       "The hitter can also move the tee to different contact points (inside, middle, outside)"
-    ]
+    ],
+    videoUrl: "https://www.youtube.com/embed/r4eylEht9Fk"
   }
 };
 
@@ -182,12 +183,24 @@ export default function DrillDetail() {
 
               {/* Sidebar / Media Placeholder */}
               <div className="space-y-6">
-                <div className="bg-muted rounded-xl aspect-video flex items-center justify-center border-2 border-dashed border-muted-foreground/20">
-                  <div className="text-center p-4">
-                    <p className="text-muted-foreground font-medium">Video / Diagram Placeholder</p>
-                    <p className="text-xs text-muted-foreground/60 mt-1">Media content would appear here</p>
+                {details.videoUrl ? (
+                  <div className="rounded-xl overflow-hidden shadow-lg aspect-video bg-black">
+                    <iframe 
+                      src={details.videoUrl} 
+                      title={`${drill.name} Video`}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowFullScreen
+                    />
                   </div>
-                </div>
+                ) : (
+                  <div className="bg-muted rounded-xl aspect-video flex items-center justify-center border-2 border-dashed border-muted-foreground/20">
+                    <div className="text-center p-4">
+                      <p className="text-muted-foreground font-medium">Video / Diagram Placeholder</p>
+                      <p className="text-xs text-muted-foreground/60 mt-1">Media content would appear here</p>
+                    </div>
+                  </div>
+                )}
                 
                 <Card>
                   <CardHeader>
