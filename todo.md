@@ -19,3 +19,9 @@
 ## Quick Fix - Preview Mode
 - [x] Add development bypass mode for drill content access
 - [x] Test preview mode functionality
+
+## Demo Accounts
+- [x] Create seed script for demo client accounts
+- [x] Add active client demo account
+- [x] Add inactive client demo account
+- [x] Verify demo accounts in admin dashboard
