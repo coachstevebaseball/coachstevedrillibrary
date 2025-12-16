@@ -93,6 +93,26 @@ export default function DrillDetail() {
       <div className="container max-w-4xl">
         {details ? (
           <div className="grid gap-8">
+            {/* Video Section - Moved to Top */}
+            {details.videoUrl ? (
+              <div className="rounded-xl overflow-hidden shadow-lg aspect-video bg-black w-full">
+                <iframe 
+                  src={details.videoUrl} 
+                  title={`${drill.name} Video`}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                />
+              </div>
+            ) : (
+              <div className="bg-muted rounded-xl aspect-video flex items-center justify-center border-2 border-dashed border-muted-foreground/20 w-full">
+                <div className="text-center p-4">
+                  <p className="text-muted-foreground font-medium">Video / Diagram Placeholder</p>
+                  <p className="text-xs text-muted-foreground/60 mt-1">Media content would appear here</p>
+                </div>
+              </div>
+            )}
+
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Card>
@@ -144,8 +164,8 @@ export default function DrillDetail() {
             </Card>
 
             {/* Instructions */}
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="md:col-span-2 space-y-8">
+            <div className="grid md:grid-cols-1 gap-8">
+              <div className="space-y-8">
                 <section>
                   <h2 className="text-2xl font-heading font-bold mb-4 flex items-center gap-2">
                     <span className="bg-primary text-primary-foreground h-8 w-8 rounded-full flex items-center justify-center text-sm">1</span>
@@ -179,44 +199,6 @@ export default function DrillDetail() {
                     </ul>
                   </div>
                 </section>
-              </div>
-
-              {/* Sidebar / Media Placeholder */}
-              <div className="space-y-6">
-                {details.videoUrl ? (
-                  <div className="rounded-xl overflow-hidden shadow-lg aspect-video bg-black">
-                    <iframe 
-                      src={details.videoUrl} 
-                      title={`${drill.name} Video`}
-                      className="w-full h-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowFullScreen
-                    />
-                  </div>
-                ) : (
-                  <div className="bg-muted rounded-xl aspect-video flex items-center justify-center border-2 border-dashed border-muted-foreground/20">
-                    <div className="text-center p-4">
-                      <p className="text-muted-foreground font-medium">Video / Diagram Placeholder</p>
-                      <p className="text-xs text-muted-foreground/60 mt-1">Media content would appear here</p>
-                    </div>
-                  </div>
-                )}
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Source</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      This content is sourced from the official USA Baseball Mobile Coach application.
-                    </p>
-                    <a href={drill.url} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" className="w-full">
-                        View Original Source <ExternalLink className="ml-2 h-3 w-3" />
-                      </Button>
-                    </a>
-                  </CardContent>
-                </Card>
               </div>
             </div>
           </div>
