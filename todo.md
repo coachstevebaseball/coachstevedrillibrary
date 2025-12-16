@@ -15,3 +15,7 @@
 - [x] Implement access control middleware for drills
 - [x] Add "Active Client" status toggle in admin panel
 - [x] Test access control workflows (active vs inactive clients)
+
+## Quick Fix - Preview Mode
+- [x] Add development bypass mode for drill content access
+- [x] Test preview mode functionality

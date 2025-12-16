@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";;
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink, Lock, LogIn } from "lucide-react";
-import { getLoginUrl } from "@/const";
+import { getLoginUrl, PREVIEW_MODE } from "@/const";
 import { Link, useRoute } from "wouter";
 import drillsData from "@/data/drills.json";
 
@@ -44,8 +44,8 @@ export default function DrillDetail() {
   const drill = drillsData.find(d => d.id.toString() === id);
   const details = id && drillDetails[id as keyof typeof drillDetails];
 
-  // Check if user has access
-  const hasAccess = user && (user.role === 'admin' || user.isActiveClient === 1);
+  // Check if user has access (or if preview mode is enabled)
+  const hasAccess = PREVIEW_MODE || (user && (user.role === 'admin' || user.isActiveClient === 1));
 
   if (loading) {
     return (
