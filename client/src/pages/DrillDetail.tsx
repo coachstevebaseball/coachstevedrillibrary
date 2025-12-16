@@ -113,42 +113,7 @@ export default function DrillDetail() {
               </div>
             )}
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card>
-                <CardContent className="pt-6 flex items-center gap-4">
-                  <div className="bg-blue-100 p-3 rounded-full text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-                    <Clock className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground font-medium">Time</p>
-                    <p className="font-bold">{details.time}</p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6 flex items-center gap-4">
-                  <div className="bg-green-100 p-3 rounded-full text-green-600 dark:bg-green-900/30 dark:text-green-400">
-                    <Users className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground font-medium">Athletes</p>
-                    <p className="font-bold text-sm">{details.athletes}</p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6 flex items-center gap-4">
-                  <div className="bg-orange-100 p-3 rounded-full text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">
-                    <Dumbbell className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground font-medium">Equipment</p>
-                    <p className="font-bold text-sm">{details.equipment}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+
 
             {/* Goal */}
             <Card className="border-l-4 border-l-secondary">
