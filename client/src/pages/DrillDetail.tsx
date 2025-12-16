@@ -34,6 +34,50 @@ const drillDetails = {
       "The hitter can also move the tee to different contact points (inside, middle, outside)"
     ],
     videoUrl: "https://www.youtube.com/embed/r4eylEht9Fk"
+  },
+  "28": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
+    time: "10 minutes",
+    equipment: "Bat, helmet, home plate, and a bucket of baseballs",
+    goal: "Focus on driving the ball up the middle by hitting the inside of the ball",
+    description: [
+      "Hitter sets up even with the plate",
+      "Coach sets up to the opposite side of the hitter at an angle, about 10 feet away from the hitter",
+      "Coach should make sure to be at a far enough angle to not get hit by the ball",
+      "Coach underhand tosses the ball across the middle of the plate",
+      "Hitter tries to hit the ball back up the middle, working on timing with the coach's pitches and being sure not to rush through the drill",
+      "Focus should be hitting the ball back up the middle, staying inside the baseball",
+      "Partners switch after 10 swings"
+    ],
+    addDifficulty: [
+      "To add a degree of difficulty, coaches can throw pitches inside and outside",
+      "Hitters should try to hit outside pitches to the opposite field (or opposite side in a cage)",
+      "Hitters should try to hit inside pitches back up the middle or a little to the pull side of the middle"
+    ],
+    videoUrl: "https://www.youtube.com/embed/DbceoWEor9c"
+  },
+  "72": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
+    time: "10 minutes",
+    equipment: "Screen for coach to throw behind, home plate, and a bucket of baseballs",
+    goal: "Focus on not anticipating pitches and being under control when hitting",
+    description: [
+      "Screen set up 30 feet from the plate, hitter sets up even with the plate",
+      "Coach underhand throws the ball down the middle of the plate on a line at a medium to fast speed from behind the screen",
+      "Hitter hits the ball back up the middle of the cage",
+      "Every couple of tosses, the coach throws a change-up at a slow speed",
+      "The coach should check the position the player is in, making sure they have not started their swing before the change-up gets to them",
+      "If the player has already started their swing, the player should focus on being under better control and not anticipating and jumping at pitches",
+      "Partners switch after 10 swings"
+    ],
+    addDifficulty: [
+      "To add a degree of difficulty, coaches can throw pitches inside and outside"
+    ],
+    videoUrl: "https://www.youtube.com/embed/SfP2RcIwaZQ"
   }
 };
 

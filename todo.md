@@ -25,3 +25,10 @@
 - [x] Add active client demo account
 - [x] Add inactive client demo account
 - [x] Verify demo accounts in admin dashboard
+
+## Add More Drill Details
+- [x] Extract Angle Flips drill content and video
+- [x] Extract Change-Up Front Toss drill content and video
+- [x] Update drills.json with correct URLs
+- [x] Add drill details to DrillDetail component
+- [x] Test new drill pages
