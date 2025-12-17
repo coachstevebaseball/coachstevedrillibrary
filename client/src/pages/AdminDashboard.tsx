@@ -28,6 +28,13 @@ export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const utils = trpc.useUtils();
 
+  // Move useEffect to the top before any conditional returns
+  useEffect(() => {
+    if (!user && !authLoading) {
+      setLocation("/");
+    }
+  }, [user, authLoading, setLocation]);
+
   const { data: allUsers, isLoading } = trpc.admin.getAllUsers.useQuery(undefined, {
     enabled: user?.role === "admin",
   });
@@ -49,12 +56,6 @@ export default function AdminDashboard() {
       </div>
     );
   }
-
-  useEffect(() => {
-    if (!user && !authLoading) {
-      setLocation("/");
-    }
-  }, [user, authLoading, setLocation]);
 
   if (!user || user.role !== "admin") {
     return (
