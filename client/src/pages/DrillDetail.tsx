@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";;
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink, Lock, LogIn } from "lucide-react";
 import { getLoginUrl, PREVIEW_MODE } from "@/const";
-import { Link, useRoute } from "wouter";
+import { Link, useRoute, useParams } from "wouter";
 import drillsData from "@/data/drills.json";
 
 // Drill details with video URLs and content
@@ -681,208 +681,79 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/WQnBi1-4riw"
   },
-}
+  
+};
 
 export default function DrillDetail() {
-  const { user, loading } = useAuth();
-  const [match, params] = useRoute("/drill/:id");
-  const id = params?.id;
-  const drill = drillsData.find(d => d.id.toString() === id);
-  const details = id && drillDetails[id as keyof typeof drillDetails];
+  const { id } = useParams<{ id: string }>();
+  const [drillContent, setDrillContent] = useState<any>(null);
+  
+  useEffect(() => {
+    if (id && drillDetails[id as keyof typeof drillDetails]) {
+      setDrillContent(drillDetails[id as keyof typeof drillDetails]);
+    }
+  }, [id]);
 
-  // Check if user has access (or if preview mode is enabled)
-  const hasAccess = PREVIEW_MODE || (user && (user.role === 'admin' || user.isActiveClient === 1));
-
-  if (loading) {
-    return (
-      <div className="container py-12 text-center">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  if (!drill) {
-    return (
-      <div className="container py-12 text-center">
-        <h2 className="text-2xl font-bold mb-4">Drill not found</h2>
-        <Link href="/">
-          <Button>Back to Directory</Button>
-        </Link>
-      </div>
-    );
+  if (!drillContent) {
+    return <div className="text-center py-12">Drill not found</div>;
   }
 
   return (
-    <div className="min-h-screen bg-background pb-12">
-      {/* Access Control Check */}
-      {!hasAccess && (
-        <div className="container py-12">
-          <Card className="max-w-2xl mx-auto border-2">
-            <CardHeader className="text-center">
-              <div className="mx-auto bg-muted h-16 w-16 rounded-full flex items-center justify-center mb-4">
-                <Lock className="h-8 w-8 text-muted-foreground" />
-              </div>
-              <CardTitle className="text-2xl">Client Access Required</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center space-y-4">
-              <p className="text-muted-foreground">
-                This drill content is only available to active clients. Please log in with an authorized account to view the full drill details.
-              </p>
-              {!user ? (
-                <a href={getLoginUrl()}>
-                  <Button size="lg" className="gap-2">
-                    <LogIn className="h-5 w-5" />
-                    Login to Access
-                  </Button>
-                </a>
-              ) : (
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
-                    Your account does not have active client access. Please contact the administrator.
-                  </p>
-                  <Link href="/">
-                    <Button variant="outline">Return to Directory</Button>
-                  </Link>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Header */}
-      {hasAccess && (
-      <>
-      <header className="bg-primary text-primary-foreground py-8 mb-8">
-        <div className="container">
-          <Link href="/">
-            <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 mb-4 pl-0">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Directory
-            </Button>
-          </Link>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <Badge variant="secondary" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
-                  {drill.difficulty}
-                </Badge>
-                {drill.categories.map(cat => (
-                  <Badge key={cat} variant="outline" className="text-primary-foreground border-primary-foreground/30">
-                    {cat}
-                  </Badge>
-                ))}
-              </div>
-              <h1 className="text-3xl md:text-4xl font-heading font-bold">{drill.name}</h1>
+    <div className="container py-12">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
+          {drillContent.videoUrl && (
+            <div className="mb-8 aspect-video bg-black rounded-lg overflow-hidden">
+              <iframe
+                src={drillContent.videoUrl}
+                title="Drill Video"
+                className="w-full h-full"
+                allowFullScreen
+              />
             </div>
+          )}
+          
+          <div className="prose prose-invert max-w-none">
+            <h1>{drillContent.skillSet}</h1>
+            <p className="text-lg text-gray-300">{drillContent.goal}</p>
             
-            {/* Fallback to external link if we don't have internal details */}
-            {!details && (
-              <a href={drill.url} target="_blank" rel="noopener noreferrer">
-                <Button variant="secondary">
-                  View on USA Baseball <ExternalLink className="ml-2 h-4 w-4" />
-                </Button>
-              </a>
-            )}
+            <h2>Instructions</h2>
+            <ul>
+              {drillContent.description.map((step: string, i: number) => (
+                <li key={i}>{step}</li>
+              ))}
+            </ul>
+            
+            <h2>Add Difficulty</h2>
+            <ul>
+              {drillContent.addDifficulty.map((variation: string, i: number) => (
+                <li key={i}>{variation}</li>
+              ))}
+            </ul>
           </div>
         </div>
-      </header>
-
-      <div className="container max-w-4xl">
-        {details ? (
-          <div className="grid gap-8">
-            {/* Video Section - Moved to Top */}
-            {details.videoUrl ? (
-              <div className="rounded-xl overflow-hidden shadow-lg aspect-video bg-black w-full">
-                <iframe 
-                  src={details.videoUrl} 
-                  title={`${drill.name} Video`}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                  allowFullScreen
-                />
-              </div>
-            ) : (
-              <div className="bg-muted rounded-xl aspect-video flex items-center justify-center border-2 border-dashed border-muted-foreground/20 w-full">
-                <div className="text-center p-4">
-                  <p className="text-muted-foreground font-medium">Video / Diagram Placeholder</p>
-                  <p className="text-xs text-muted-foreground/60 mt-1">Media content would appear here</p>
-                </div>
-              </div>
-            )}
-
-
-
-            {/* Goal */}
-            <Card className="border-l-4 border-l-secondary">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-xl">
-                  <Target className="h-5 w-5 text-secondary" />
-                  Drill Goal
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-lg">{details.goal}</p>
-              </CardContent>
-            </Card>
-
-            {/* Instructions */}
-            <div className="grid md:grid-cols-1 gap-8">
-              <div className="space-y-8">
-                <section>
-                  <h2 className="text-2xl font-heading font-bold mb-4 flex items-center gap-2">
-                    <span className="bg-primary text-primary-foreground h-8 w-8 rounded-full flex items-center justify-center text-sm">1</span>
-                    Instructions
-                  </h2>
-                  <div className="bg-card rounded-xl border p-6 shadow-sm space-y-4">
-                    <ul className="space-y-3">
-                      {details.description.map((step: string, i: number) => (
-                        <li key={i} className="flex gap-3">
-                          <div className="h-2 w-2 bg-secondary rounded-full mt-2 shrink-0" />
-                          <span className="leading-relaxed">{step}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </section>
-
-                {details.addDifficulty.length > 0 && (
-                <section>
-                  <h2 className="text-2xl font-heading font-bold mb-4 flex items-center gap-2">
-                    <span className="bg-primary text-primary-foreground h-8 w-8 rounded-full flex items-center justify-center text-sm">2</span>
-                    Add Difficulty
-                  </h2>
-                  <div className="bg-muted/30 rounded-xl border p-6 space-y-4">
-                    <ul className="space-y-3">
-                      {details.addDifficulty.map((step: string, i: number) => (
-                        <li key={i} className="flex gap-3">
-                          <div className="h-2 w-2 bg-primary rounded-full mt-2 shrink-0" />
-                          <span className="leading-relaxed text-muted-foreground">{step}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </section>
-                )}
-              </div>
+        
+        <div className="lg:col-span-1">
+          <div className="bg-card rounded-lg p-6 space-y-4">
+            <div>
+              <p className="text-sm text-gray-400">Difficulty</p>
+              <p className="font-semibold">{drillContent.difficulty}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Time</p>
+              <p className="font-semibold">{drillContent.time}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Athletes</p>
+              <p className="font-semibold">{drillContent.athletes}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Equipment</p>
+              <p className="font-semibold">{drillContent.equipment}</p>
             </div>
           </div>
-        ) : (
-          <div className="text-center py-12 bg-muted/30 rounded-xl border border-dashed">
-            <h3 className="text-xl font-bold mb-2">Content Not Available</h3>
-            <p className="text-muted-foreground max-w-md mx-auto mb-6">
-              We haven't extracted the detailed content for this drill yet. You can view it on the official website.
-            </p>
-            <a href={drill.url} target="_blank" rel="noopener noreferrer">
-              <Button>
-                View on USA Baseball <ExternalLink className="ml-2 h-4 w-4" />
-              </Button>
-            </a>
-          </div>
-        )}
+        </div>
       </div>
-      </>
-      )}
     </div>
   );
 }
