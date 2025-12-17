@@ -588,6 +588,99 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/mrrBuwWawL4"
   },
+  "23": {
+    skillSet: "Hitting",
+    difficulty: "Hard",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5 minutes",
+    equipment: "Tee, baseballs, net or screen",
+    goal: "Rotate the front shoulder and drive the ball back up the middle",
+    description: [
+      "Hitter progresses through three stages using a tee",
+      "Stage 1: Hitter stands open at a 90 degree angle to the tee",
+      "Focus is on keeping the front shoulder closed, not flying open",
+      "Stage 2: Hitter stands at a 45 degree angle",
+      "Stage 3: Hitter progress to standard batting stance",
+      "This drill is great for hitters that need help loading into their back hip",
+      "Hitter should perform 5 reps at each stage before moving to the next stage"
+    ],
+    addDifficulty: [
+      "Perform the same drill using front toss",
+      "Increase pitch speed",
+      "Add movement to the pitch"
+    ],
+    videoUrl: "https://www.youtube.com/embed/zHQ1-4hblnk"
+  },
+  "158": {
+    skillSet: "Hitting",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5 minutes",
+    equipment: "Tee, baseballs, net or screen",
+    goal: "Hit the ball up the middle, pull side, and opposite field based on contact point",
+    description: [
+      "Tee set up in front of the middle of the plate",
+      "Hitter sets up even with the plate, while partner places a ball on the tee",
+      "Hitter hits the ball at the middle contact point for 3 swings",
+      "Then moves the tee to the inside contact point for 3 swings",
+      "Then moves the tee to the outside contact point for 3 swings",
+      "Focus on hitting the middle ball up the middle, inside ball to pull side, outside pitch to opposite field",
+      "Partners switch after 9 swings"
+    ],
+    addDifficulty: [
+      "Move the tee to different contact point heights (low, middle, high)",
+      "Increase swing speed",
+      "Add movement to simulate pitch location"
+    ],
+    videoUrl: "https://www.youtube.com/embed/jDVgIQvuaXQ"
+  },
+  "203": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10 minutes",
+    equipment: "Bat, screen, home plate, baseballs",
+    goal: "Focus on identifying the pitch, strikes and taking good quality swings",
+    description: [
+      "Screen set up 18-20 feet from the plate",
+      "Hitter sets up even with the plate",
+      "Coach underhand throws the ball down at varying speeds and locations",
+      "Coach mixes up pitches to keep the hitter focused",
+      "Hitter should work on seeing the pitch out of the coach's hand",
+      "Focus on identifying the speed of the pitch, strikes and quality swings",
+      "Partners switch after 10 swings"
+    ],
+    addDifficulty: [
+      "Coaches can throw pitches inside and outside",
+      "Hitters should hit outside pitches to the opposite field",
+      "Hitters should try to hit inside pitches back up the middle"
+    ],
+    videoUrl: "https://www.youtube.com/embed/wkyOsDsGpA8"
+  },
+  "263": {
+    skillSet: "Hitting",
+    difficulty: "Hard",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10 minutes",
+    equipment: "Screen, 3 home plates, baseballs",
+    goal: "Keep good rhythm and timing with the pitcher at each plate distance",
+    description: [
+      "Screen set up 30 feet from the plate",
+      "Plates are set at roughly 30, 20, and 15 feet away from the screen",
+      "Hitter sets up even with the furthest plate (plate 1)",
+      "Coach throws overhand at a consistent speed from all plate distances",
+      "Hitter gets 3 swings at a plate, then moves to another",
+      "Focus on keeping rhythm and timing with the coach",
+      "Hit the ball back up the middle",
+      "Partners switch after rotating to all plates twice"
+    ],
+    addDifficulty: [
+      "Hitters can rotate plates after every swing",
+      "Increase the speed of throws",
+      "Add pitch movement"
+    ],
+    videoUrl: "https://www.youtube.com/embed/WQnBi1-4riw"
+  },
 }
 
 export default function DrillDetail() {
