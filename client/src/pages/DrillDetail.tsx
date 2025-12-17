@@ -192,12 +192,14 @@ const drillDetails: Record<string, {
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
     time: "5 minutes",
     equipment: "Bat, tee or soft toss setup, baseballs",
-    goal: "Develop proper swing plane and bat path",
+    goal: "Decline Swings train an efficient swing plane and consistent barrel path by swinging on a slight downward angle. The drill reinforces posture, balance, and line-drive contact.",
     description: [
-      "Hitter sets up on a slight decline or uses a decline board",
-      "Focus on swinging on a slight upward plane",
-      "Drive through the ball with proper mechanics",
-      "Partners switch after 5 swings"
+      "Purpose: Improve barrel control, Match bat path to pitch plane, Reduce steep or looping swings",
+      "Coaching Emphasis: Maintain strong posture, Keep hands inside the ball, Finish through the middle",
+      "How to Perform: Set up on a slight decline or emphasize a declined bat path",
+      "Swing under control, focusing on clean contact",
+      "Drive the ball on a line and repeat",
+      "Usage: Best used as a mechanical reinforcement or early cage drill"
     ],
     addDifficulty: [
       "Increase the angle of decline"
@@ -1141,7 +1143,7 @@ export default function DrillDetail() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <Target className="h-5 w-5 text-secondary" />
-                  Drill Goal
+                  Drill Purpose
                 </CardTitle>
               </CardHeader>
               <CardContent>
