@@ -18,7 +18,7 @@ const drillDetails: Record<string, {
   equipment: string;
   goal: string;
   description: string[];
-  addDifficulty: string[];
+  addDifficulty?: string[];
   videoUrl: string | null;
 }> = {
   "1-2-3-drill": {
@@ -39,10 +39,6 @@ const drillDetails: Record<string, {
       "Hitter tries to hit the ball back up the middle",
       "Partners switch after 5 swings"
     ],
-    addDifficulty: [
-      "To add a degree of difficulty, one of the partners can stand 30 feet away on the other side of the net the players are hitting into and go through a dry pitch like a pitcher (without a ball), this gives the hitter a real visual of a pitcher (1, 2, 3 should still be separated motions)",
-      "The hitter can also move the tee to different contact points (inside, middle, outside)"
-    ],
     videoUrl: "https://www.youtube.com/embed/r4eylEht9Fk"
   },
   "angle-flips": {
@@ -61,11 +57,6 @@ const drillDetails: Record<string, {
       "Focus should be hitting the ball back up the middle, staying inside the baseball",
       "Partners switch after 10 swings"
     ],
-    addDifficulty: [
-      "To add a degree of difficulty, coaches can throw pitches inside and outside",
-      "Hitters should try to hit outside pitches to the opposite field (or opposite side in a cage)",
-      "Hitters should try to hit inside pitches back up the middle or a little to the pull side of the middle"
-    ],
     videoUrl: "https://www.youtube.com/embed/DbceoWEor9c"
   },
   "behind-the-hitter-toss-1-2-3": {
@@ -82,9 +73,6 @@ const drillDetails: Record<string, {
       "Use the 1-2-3 rhythm: 1-Load, 2-Stride, 3-Swing",
       "Partners switch after 10 swings"
     ],
-    addDifficulty: [
-      "Vary the speed and location of tosses"
-    ],
     videoUrl: "https://www.youtube.com/embed/QUR1x6V73yQ"
   },
   "belly-button-tee": {
@@ -99,9 +87,6 @@ const drillDetails: Record<string, {
       "Hitter focuses on making contact at the optimal point",
       "Drive the ball back up the middle",
       "Partners switch after 5 swings"
-    ],
-    addDifficulty: [
-      "Move the tee to different locations (inside, outside)"
     ],
     videoUrl: "https://www.youtube.com/embed/P0f_jlz6LKA"
   },
@@ -118,10 +103,6 @@ const drillDetails: Record<string, {
       "Focus on driving through the ball with the bottom hand",
       "Maintain proper body position throughout the swing",
       "Partners switch after 5 swings"
-    ],
-    addDifficulty: [
-      "Increase the number of swings",
-      "Move the tee to different contact points"
     ],
     videoUrl: "https://www.youtube.com/embed/r4eylEht9Fk"
   },
@@ -141,9 +122,6 @@ const drillDetails: Record<string, {
       "If the player has already started their swing, the player should focus on being under better control and not anticipating and jumping at pitches",
       "Partners switch after 10 swings"
     ],
-    addDifficulty: [
-      "To add a degree of difficulty, coaches can throw pitches inside and outside"
-    ],
     videoUrl: "https://www.youtube.com/embed/SfP2RcIwaZQ"
   },
   "change-up-tee": {
@@ -159,9 +137,6 @@ const drillDetails: Record<string, {
       "Practice the feel of hitting a change-up",
       "Drive the ball to the opposite field",
       "Partners switch after 5 swings"
-    ],
-    addDifficulty: [
-      "Alternate between fastball and change-up tee positions"
     ],
     videoUrl: "https://www.youtube.com/embed/Ql72Xq2DX9U"
   },
@@ -181,9 +156,6 @@ const drillDetails: Record<string, {
       "Hitter should focus on tracking the balls and seeing their colors and then reacting quickly to hit or take the pitch",
       "Partners switch after 10 swings"
     ],
-    addDifficulty: [
-      "To add a degree of difficulty, coaches can throw pitches inside and outside"
-    ],
     videoUrl: "https://www.youtube.com/embed/QUR1x6V73yQ"
   },
   "decline-swings": {
@@ -201,9 +173,6 @@ const drillDetails: Record<string, {
       "Drive the ball on a line and repeat",
       "Usage: Best used as a mechanical reinforcement or early cage drill"
     ],
-    addDifficulty: [
-      "Increase the angle of decline"
-    ],
     videoUrl: "https://www.youtube.com/embed/sgRnq_8G2XI"
   },
   "defense-stance": {
@@ -220,9 +189,6 @@ const drillDetails: Record<string, {
       "Practice getting into stance quickly from standing",
       "Hold position for 5-10 seconds at a time"
     ],
-    addDifficulty: [
-      "Add lateral movement drills from the stance"
-    ],
     videoUrl: "https://www.youtube.com/embed/l62xR2rGWrA"
   },
   "double-tee": {
@@ -238,11 +204,6 @@ const drillDetails: Record<string, {
       "Hitter sets up even with the plate, while other partner puts balls on the tees",
       "Hitter hits the ball, trying to hit a low line drive back up the middle, keeping the bat on the plane of the ball and the barrel behind the hands and extends their swing path to hit the second ball off the second tee with a smooth swing",
       "Partners switch after 5 swings"
-    ],
-    addDifficulty: [
-      "To add a degree of difficulty, the hitter can move the tee to different contact points (inside, middle, outside) as shown for a right handed hitter below, but still make sure to place the tee roughly 6 inches in front of where the contact point would be for each location.",
-      "Outside pitches should be hit to the opposite field, or opposite side of the screen or cage",
-      "Inside pitches should be hit up the middle or slightly to the pull side of the middle"
     ],
     videoUrl: "https://www.youtube.com/embed/6NT-D_z3r94"
   },
@@ -265,10 +226,6 @@ const drillDetails: Record<string, {
       "Great for hitters that cannot maintain proper body position without committing early to a pitch location",
       "Partners switch after 10 swings"
     ],
-    addDifficulty: [
-      "Decrease the time between setup and call",
-      "Add a middle tee option"
-    ],
     videoUrl: "https://www.youtube.com/embed/Ql72Xq2DX9U"
   },
   "extended-tee": {
@@ -283,9 +240,6 @@ const drillDetails: Record<string, {
       "Hitter sets up even with the plate, while other partner puts a ball on the tee",
       "Hitter hits the ball, trying to hit a low line drive back up the middle, keeping the bat on the plane of the ball and the barrel behind the hands",
       "Partners switch after 5 swings"
-    ],
-    addDifficulty: [
-      "Move the tee to different contact points (inside, middle, outside)"
     ],
     videoUrl: "https://www.youtube.com/embed/sgRnq_8G2XI"
   },
@@ -304,10 +258,6 @@ const drillDetails: Record<string, {
       "Focus should be on good quality swings, with hitters finishing their swing and staying balanced",
       "Partners switch after 10 swings"
     ],
-    addDifficulty: [
-      "Increase the speed of the tosses",
-      "Add location variation (inside, outside)"
-    ],
     videoUrl: "https://www.youtube.com/embed/l62xR2rGWrA"
   },
   "flaw-casting-the-hands-outside-of-the-ball": {
@@ -323,7 +273,6 @@ const drillDetails: Record<string, {
       "Use inside toss drills to reinforce proper hand path",
       "Video analysis can help identify the issue"
     ],
-    addDifficulty: [],
     videoUrl: "https://www.youtube.com/embed/xMVojRcf5p0"
   },
   "flaw-chopping-at-the-ball": {
@@ -339,7 +288,6 @@ const drillDetails: Record<string, {
       "Use extension drills to promote proper follow-through",
       "Practice hitting line drives back up the middle"
     ],
-    addDifficulty: [],
     videoUrl: "https://www.youtube.com/embed/gGriRVDyGI4"
   },
   "flaw-collapsing-the-backside": {
@@ -355,7 +303,6 @@ const drillDetails: Record<string, {
       "Use balance drills to strengthen the lower half",
       "Practice keeping weight back until contact"
     ],
-    addDifficulty: [],
     videoUrl: "https://www.youtube.com/embed/r365LTS6JUI"
   },
   "flaw-contact-point-too-far-out-front": {
@@ -371,7 +318,6 @@ const drillDetails: Record<string, {
       "Use opposite field hitting drills",
       "Practice patience at the plate"
     ],
-    addDifficulty: [],
     videoUrl: "https://www.youtube.com/embed/xE6d7WyVnJc"
   },
   "flaw-hands-dropping-too-low": {
@@ -387,7 +333,6 @@ const drillDetails: Record<string, {
       "Use high tee drills to reinforce proper hand position",
       "Practice short, compact swings"
     ],
-    addDifficulty: [],
     videoUrl: "https://www.youtube.com/embed/2-GSXHCtXBU"
   },
   "flaw-improper-stance": {
@@ -404,7 +349,6 @@ const drillDetails: Record<string, {
       "Check hand position and grip",
       "Make adjustments as needed for comfort and power"
     ],
-    addDifficulty: [],
     videoUrl: "https://www.youtube.com/embed/lKRM1GTczuI"
   },
   "front-hip-toss": {
@@ -424,7 +368,6 @@ const drillDetails: Record<string, {
       "Ideal for hitters that do not use their lower half or they cast their hands when swinging",
       "Partners switch after 10 swings"
     ],
-    addDifficulty: [],
     videoUrl: "https://www.youtube.com/embed/P0f_jlz6LKA"
   },
   "interval-throwing": {
@@ -448,11 +391,6 @@ const drillDetails: Record<string, {
       "Players 130-140 feet apart: Players throw the ball back and forth using good throwing mechanics. A crow hop should be used to reduce strain on the arm. Players each make 5 throws, then move back to next progression",
       "Cool Down: Players should slow start working their way back to the 45 foot distance, making throws on their way back in"
     ],
-    addDifficulty: [
-      "Keep good throwing form with elbow closed on release without flying open",
-      "Keep throws on as much of a line as possible, do not put high arc on throws to increase distance. It is okay if the ball bounces before getting to the partner",
-      "Cool down by slowly moving back in after making 5 throws at the furthest distance so that the long toss progression ends back at 45 feet"
-    ],
     videoUrl: "https://www.youtube.com/embed/X7Vxv4bxKBs"
   },
   "1-2-3-rhythm-tee": {
@@ -472,11 +410,6 @@ const drillDetails: Record<string, {
       "Focus on rhythm and timing rather than power",
       "Partners switch after 5 swings"
     ],
-    addDifficulty: [
-      "Move tee to different contact points (inside, middle, outside)",
-      "Have partner throw from behind net to simulate pitcher view",
-      "Increase speed of 1-2-3 cadence for faster reaction"
-    ],
     videoUrl: "https://www.youtube.com/embed/BHfyJQLujhs"
   },
   "1st-base-flip-to-pitcher": {
@@ -493,11 +426,6 @@ const drillDetails: Record<string, {
       "Focus on quick footwork and accurate flip",
       "Flip should be chest-high and on the inside of the bag",
       "Repeat for multiple ground balls"
-    ],
-    addDifficulty: [
-      "Increase speed of ground balls",
-      "Vary the angle and distance of ground balls",
-      "Add runner on base to simulate game situation"
     ],
     videoUrl: "https://www.youtube.com/embed/ks7qctrCuHg"
   },
@@ -516,11 +444,6 @@ const drillDetails: Record<string, {
       "Flip should be chest-high and on the inside of the bag",
       "Repeat for multiple ground balls"
     ],
-    addDifficulty: [
-      "Increase speed of ground balls",
-      "Vary the angle and distance of ground balls",
-      "Add runner on base to simulate game situation"
-    ],
     videoUrl: "https://www.youtube.com/embed/nRKx7jcbnIU"
   },
   "advanced-batting-practice": {
@@ -538,11 +461,6 @@ const drillDetails: Record<string, {
       "Rotate positions after each round",
       "Focus on proper footwork, throwing mechanics, and communication"
     ],
-    addDifficulty: [
-      "Increase speed of ground balls",
-      "Add double play situations",
-      "Decrease time between throws"
-    ],
     videoUrl: "https://www.youtube.com/embed/ZbZSe6N_BXs"
   },
   "arm-path-drill": {
@@ -559,11 +477,6 @@ const drillDetails: Record<string, {
       "Player fields the ball and throws it back",
       "Focus on quick reaction time and accuracy",
       "Complete as many tosses as possible in 30 seconds"
-    ],
-    addDifficulty: [
-      "Increase distance between player and coach",
-      "Vary the height and location of tosses",
-      "Add footwork requirements"
     ],
     videoUrl: "https://www.youtube.com/embed/aqz-KE-bpKQ"
   },
@@ -583,11 +496,6 @@ const drillDetails: Record<string, {
       "Focus on compact swing mechanics and bat control",
       "Partners switch after 10 swings"
     ],
-    addDifficulty: [
-      "Increase the speed of pitches if transitioning to live pitching",
-      "Move the tee to different contact points (inside, middle, outside)",
-      "Add a small step or weight shift while maintaining no stride"
-    ],
     videoUrl: "https://www.youtube.com/embed/mrrBuwWawL4"
   },
   "9045even-progression-tee": {
@@ -605,11 +513,6 @@ const drillDetails: Record<string, {
       "Stage 3: Hitter progress to standard batting stance",
       "This drill is great for hitters that need help loading into their back hip",
       "Hitter should perform 5 reps at each stage before moving to the next stage"
-    ],
-    addDifficulty: [
-      "Perform the same drill using front toss",
-      "Increase pitch speed",
-      "Add movement to the pitch"
     ],
     videoUrl: "https://www.youtube.com/embed/zHQ1-4hblnk"
   },
@@ -629,11 +532,6 @@ const drillDetails: Record<string, {
       "Focus on hitting the middle ball up the middle, inside ball to pull side, outside pitch to opposite field",
       "Partners switch after 9 swings"
     ],
-    addDifficulty: [
-      "Move the tee to different contact point heights (low, middle, high)",
-      "Increase swing speed",
-      "Add movement to simulate pitch location"
-    ],
     videoUrl: "https://www.youtube.com/embed/jDVgIQvuaXQ"
   },
   "random-front-toss": {
@@ -651,11 +549,6 @@ const drillDetails: Record<string, {
       "Hitter should work on seeing the pitch out of the coach's hand",
       "Focus on identifying the speed of the pitch, strikes and quality swings",
       "Partners switch after 10 swings"
-    ],
-    addDifficulty: [
-      "Coaches can throw pitches inside and outside",
-      "Hitters should hit outside pitches to the opposite field",
-      "Hitters should try to hit inside pitches back up the middle"
     ],
     videoUrl: "https://www.youtube.com/embed/wkyOsDsGpA8"
   },
@@ -676,11 +569,6 @@ const drillDetails: Record<string, {
       "Hit the ball back up the middle",
       "Partners switch after rotating to all plates twice"
     ],
-    addDifficulty: [
-      "Hitters can rotate plates after every swing",
-      "Increase the speed of throws",
-      "Add pitch movement"
-    ],
     videoUrl: "https://www.youtube.com/embed/WQnBi1-4riw"
   },
   "two-ball-front-toss": {
@@ -694,11 +582,6 @@ const drillDetails: Record<string, {
       "Watch the video for detailed instructions",
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
-    ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
     ],
     videoUrl: "https://www.youtube.com/embed/wT1rnXTHX8U"
   },
@@ -714,11 +597,6 @@ const drillDetails: Record<string, {
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
     ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
-    ],
     videoUrl: "https://www.youtube.com/embed/MxoNAJAp1Oc"
   },
   "high-tee": {
@@ -732,11 +610,6 @@ const drillDetails: Record<string, {
       "Watch the video for detailed instructions",
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
-    ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
     ],
     videoUrl: "https://www.youtube.com/embed/UPvLzEv81go"
   },
@@ -752,11 +625,6 @@ const drillDetails: Record<string, {
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
     ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
-    ],
     videoUrl: "https://www.youtube.com/embed/dWJhVoP4T-8"
   },
   "knob-inside-the-ball-toss": {
@@ -770,11 +638,6 @@ const drillDetails: Record<string, {
       "Watch the video for detailed instructions",
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
-    ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
     ],
     videoUrl: "https://www.youtube.com/embed/622uNsPEfs8"
   },
@@ -790,11 +653,6 @@ const drillDetails: Record<string, {
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
     ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
-    ],
     videoUrl: "https://www.youtube.com/embed/b0fEHcXTsVA"
   },
   "short-bat-top-hand-tee": {
@@ -808,11 +666,6 @@ const drillDetails: Record<string, {
       "Watch the video for detailed instructions",
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
-    ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
     ],
     videoUrl: "https://www.youtube.com/embed/GMwc7OtTHfU"
   },
@@ -828,11 +681,6 @@ const drillDetails: Record<string, {
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
     ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
-    ],
     videoUrl: "https://www.youtube.com/embed/39H9sv-_UVU"
   },
   "balanced-stationary-drill": {
@@ -846,11 +694,6 @@ const drillDetails: Record<string, {
       "Watch the video for detailed instructions",
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
-    ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
     ],
     videoUrl: "https://www.youtube.com/embed/IVyjtnacgaE"
   },
@@ -866,11 +709,6 @@ const drillDetails: Record<string, {
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
     ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
-    ],
     videoUrl: "https://www.youtube.com/embed/Jt_2Znyv7xE"
   },
   "crow-hops": {
@@ -884,11 +722,6 @@ const drillDetails: Record<string, {
       "Watch the video for detailed instructions",
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
-    ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
     ],
     videoUrl: "https://www.youtube.com/embed/3Xb2Hqr-cbE"
   },
@@ -904,11 +737,6 @@ const drillDetails: Record<string, {
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
     ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
-    ],
     videoUrl: "https://www.youtube.com/embed/xV8PY67NWiw"
   },
   "daily-flat-ground-work": {
@@ -922,11 +750,6 @@ const drillDetails: Record<string, {
       "Watch the video for detailed instructions",
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
-    ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
     ],
     videoUrl: "https://www.youtube.com/embed/MnDGnwKUq34"
   },
@@ -942,11 +765,6 @@ const drillDetails: Record<string, {
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
     ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
-    ],
     videoUrl: "https://www.youtube.com/embed/jYp0511ckBA"
   },
   "drag-bunt": {
@@ -960,11 +778,6 @@ const drillDetails: Record<string, {
       "Watch the video for detailed instructions",
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
-    ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
     ],
     videoUrl: "https://www.youtube.com/embed/vpp6Snputsk"
   },
@@ -980,11 +793,6 @@ const drillDetails: Record<string, {
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
     ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
-    ],
     videoUrl: "https://www.youtube.com/embed/rZYnNQX9Zlc"
   },
   "hook-ems": {
@@ -998,11 +806,6 @@ const drillDetails: Record<string, {
       "Watch the video for detailed instructions",
       "Follow the progression shown in the video",
       "Practice with proper form and focus"
-    ],
-    addDifficulty: [
-      "Increase speed or intensity",
-      "Add more repetitions",
-      "Vary the drill conditions"
     ],
     videoUrl: "https://www.youtube.com/embed/Hdw8h4y4eS0"
   },
@@ -1171,24 +974,6 @@ export default function DrillDetail() {
                   </div>
                 </section>
 
-                {details.addDifficulty.length > 0 && (
-                <section>
-                  <h2 className="text-2xl font-heading font-bold mb-4 flex items-center gap-2">
-                    <span className="bg-primary text-primary-foreground h-8 w-8 rounded-full flex items-center justify-center text-sm">2</span>
-                    Add Difficulty
-                  </h2>
-                  <div className="bg-muted/30 rounded-xl border p-6 space-y-4">
-                    <ul className="space-y-3">
-                      {details.addDifficulty.map((step: string, i: number) => (
-                        <li key={i} className="flex gap-3">
-                          <div className="h-2 w-2 bg-primary rounded-full mt-2 shrink-0" />
-                          <span className="leading-relaxed text-muted-foreground">{step}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </section>
-                )}
               </div>
             </div>
           </div>

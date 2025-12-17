@@ -103,7 +103,7 @@ export default function Home() {
           <div className="max-w-3xl">
             <div className="flex items-center gap-3 mb-4">
               <div className="h-1 w-12 bg-secondary rounded-full" />
-              <span className="text-secondary font-bold tracking-wider uppercase text-sm">USA Baseball Mobile Coach</span>
+              <span className="text-secondary font-bold tracking-wider uppercase text-sm">Coach Steve's Mobile Coach</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-heading font-bold mb-6 leading-tight">
               Drills Directory

@@ -269,17 +269,6 @@
     "is_direct_link": false
   },
   {
-    "id": "agility-drills",
-    "name": "Agility Drills",
-    "difficulty": "Easy",
-    "categories": [
-      "Strength and Conditioning"
-    ],
-    "duration": "30m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=agility-drills",
-    "is_direct_link": false
-  },
-  {
     "id": "all-the-way-through-1st-base",
     "name": "All the Way Through 1st Base",
     "difficulty": "Easy",
@@ -706,17 +695,6 @@
     "is_direct_link": false
   },
   {
-    "id": "body-weight-exercises",
-    "name": "Body Weight Exercises",
-    "difficulty": "Easy",
-    "categories": [
-      "Strength and Conditioning"
-    ],
-    "duration": "30m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=body-weight-exercises",
-    "is_direct_link": false
-  },
-  {
     "id": "bottom-hand-tee",
     "name": "Bottom Hand Tee",
     "difficulty": "Easy",
@@ -838,39 +816,6 @@
     "duration": "10m",
     "url": "https://usabdevelops.com/page/1363/drills/3224/color-front-toss",
     "is_direct_link": true
-  },
-  {
-    "id": "core-strengthening-exercises-rotational",
-    "name": "Core Strengthening Exercises- Rotational",
-    "difficulty": "Easy",
-    "categories": [
-      "Strength and Conditioning"
-    ],
-    "duration": "20m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=core-strengthening-exercises--rotational",
-    "is_direct_link": false
-  },
-  {
-    "id": "core-strengthening-exercises-ground",
-    "name": "Core Strengthening Exercises-Ground",
-    "difficulty": "Easy",
-    "categories": [
-      "Strength and Conditioning"
-    ],
-    "duration": "20m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=core-strengthening-exercises-ground",
-    "is_direct_link": false
-  },
-  {
-    "id": "core-strengthening-exercises-seated",
-    "name": "Core Strengthening Exercises-Seated",
-    "difficulty": "Easy",
-    "categories": [
-      "Strength and Conditioning"
-    ],
-    "duration": "20m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=core-strengthening-exercises-seated",
-    "is_direct_link": false
   },
   {
     "id": "cross-partner-framing",
@@ -1354,28 +1299,6 @@
     "is_direct_link": false
   },
   {
-    "id": "flexibility-lower-body",
-    "name": "Flexibility- Lower Body",
-    "difficulty": "Easy",
-    "categories": [
-      "Strength and Conditioning"
-    ],
-    "duration": "20m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=flexibility--lower-body",
-    "is_direct_link": false
-  },
-  {
-    "id": "flexibility-upper-body",
-    "name": "Flexibility- Upper Body",
-    "difficulty": "Easy",
-    "categories": [
-      "Strength and Conditioning"
-    ],
-    "duration": "20m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=flexibility--upper-body",
-    "is_direct_link": false
-  },
-  {
     "id": "fly-balls",
     "name": "Fly Balls",
     "difficulty": "Easy",
@@ -1815,17 +1738,6 @@
     "is_direct_link": false
   },
   {
-    "id": "medicine-ball-power-exercises",
-    "name": "Medicine Ball Power Exercises",
-    "difficulty": "Easy",
-    "categories": [
-      "Strength and Conditioning"
-    ],
-    "duration": "20m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=medicine-ball-power-exercises",
-    "is_direct_link": false
-  },
-  {
     "id": "no-glove-block",
     "name": "No Glove Block",
     "difficulty": "Medium",
@@ -2124,17 +2036,6 @@
     "is_direct_link": false
   },
   {
-    "id": "post-practice-clean-up",
-    "name": "Post-Practice Clean Up",
-    "difficulty": "Easy",
-    "categories": [
-      "Warm Up/Movement/Misc"
-    ],
-    "duration": "10m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=post-practice-clean-up",
-    "is_direct_link": false
-  },
-  {
     "id": "power-position",
     "name": "Power Position",
     "difficulty": "Easy",
@@ -2143,17 +2044,6 @@
     ],
     "duration": "5m",
     "url": "https://usabdevelops.com/page/1363/drills?q=power-position",
-    "is_direct_link": false
-  },
-  {
-    "id": "prepare",
-    "name": "Prepare",
-    "difficulty": "Easy",
-    "categories": [
-      "Warm Up/Movement/Misc"
-    ],
-    "duration": "20m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=prepare",
     "is_direct_link": false
   },
   {
@@ -2278,17 +2168,6 @@
     "is_direct_link": false
   },
   {
-    "id": "range-of-motion-exercises",
-    "name": "Range of Motion Exercises",
-    "difficulty": "Easy",
-    "categories": [
-      "Strength and Conditioning"
-    ],
-    "duration": "20m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=range-of-motion-exercises",
-    "is_direct_link": false
-  },
-  {
     "id": "rapid-fire-block",
     "name": "Rapid Fire Block",
     "difficulty": "Hard",
@@ -2366,17 +2245,6 @@
     "is_direct_link": false
   },
   {
-    "id": "review",
-    "name": "Review",
-    "difficulty": "Easy",
-    "categories": [
-      "Warm Up/Movement/Misc"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=review",
-    "is_direct_link": false
-  },
-  {
     "id": "rhythm-tee",
     "name": "Rhythm Tee",
     "difficulty": "Easy",
@@ -2419,17 +2287,6 @@
     ],
     "duration": "10m",
     "url": "https://usabdevelops.com/page/1363/drills?q=right-left-shuffle-fungo",
-    "is_direct_link": false
-  },
-  {
-    "id": "rotator-cuff-program",
-    "name": "Rotator Cuff Program",
-    "difficulty": "Easy",
-    "categories": [
-      "Strength and Conditioning"
-    ],
-    "duration": "20m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=rotator-cuff-program",
     "is_direct_link": false
   },
   {
@@ -3066,39 +2923,6 @@
     ],
     "duration": "5m",
     "url": "https://usabdevelops.com/page/1363/drills?q=volleyball-between-knees",
-    "is_direct_link": false
-  },
-  {
-    "id": "warm-up-stretch",
-    "name": "Warm Up & Stretch",
-    "difficulty": "Easy",
-    "categories": [
-      "Warm Up/Movement/Misc"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=warm-up-&-stretch",
-    "is_direct_link": false
-  },
-  {
-    "id": "warm-up-stretch-and-cool-down",
-    "name": "Warm Up, Stretch, and Cool Down",
-    "difficulty": "Easy",
-    "categories": [
-      "Warm Up/Movement/Misc"
-    ],
-    "duration": "20m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=warm-up,-stretch,-and-cool-down",
-    "is_direct_link": false
-  },
-  {
-    "id": "water-break",
-    "name": "Water Break",
-    "difficulty": "Easy",
-    "categories": [
-      "Warm Up/Movement/Misc"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=water-break",
     "is_direct_link": false
   },
   {
