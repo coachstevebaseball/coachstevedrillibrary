@@ -453,7 +453,119 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/X7Vxv4bxKBs"
   },
-};
+  "2": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
+    time: "5 minutes",
+    equipment: "Tee, baseballs, net or screen to hit into",
+    goal: "Develop rhythm and timing in the swing with proper sequencing",
+    description: [
+      "Tee set up slightly in front of the middle of the plate",
+      "Hitter sets up even with the plate",
+      "Coach or partner calls out 1, 2, 3 with pauses between each number",
+      "On 1: Hitter loads and shifts weight to back foot",
+      "On 2: Hitter strides while keeping hands back",
+      "On 3: Hitter swings and makes contact",
+      "Focus on rhythm and timing rather than power",
+      "Partners switch after 5 swings"
+    ],
+    addDifficulty: [
+      "Move tee to different contact points (inside, middle, outside)",
+      "Have partner throw from behind net to simulate pitcher view",
+      "Increase speed of 1-2-3 cadence for faster reaction"
+    ],
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+  },
+  "3": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "1 athlete and 1 coach, or 2 athletes as partners",
+    time: "5 minutes",
+    equipment: "Baseballs, glove, base",
+    goal: "Develop proper footwork and hand positioning for flipping to pitcher",
+    description: [
+      "1st baseman positions on the bag",
+      "Coach or partner rolls ground balls to the right of 1st base",
+      "1st baseman fields the ball and flips it to the pitcher covering the bag",
+      "Focus on quick footwork and accurate flip",
+      "Flip should be chest-high and on the inside of the bag",
+      "Repeat for multiple ground balls"
+    ],
+    addDifficulty: [
+      "Increase speed of ground balls",
+      "Vary the angle and distance of ground balls",
+      "Add runner on base to simulate game situation"
+    ],
+    videoUrl: "https://www.youtube.com/embed/jNQXAC9IVRw"
+  },
+  "10": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "1 athlete and 1 coach, or 2 athletes as partners",
+    time: "5 minutes",
+    equipment: "Baseballs, glove, base",
+    goal: "Develop proper footwork for backhand flips from the 2nd base position",
+    description: [
+      "2nd baseman positions in the field",
+      "Coach or partner rolls ground balls to the left of 2nd base",
+      "2nd baseman fields the ball with a backhand and flips to the pitcher",
+      "Focus on quick footwork and accurate backhand flip",
+      "Flip should be chest-high and on the inside of the bag",
+      "Repeat for multiple ground balls"
+    ],
+    addDifficulty: [
+      "Increase speed of ground balls",
+      "Vary the angle and distance of ground balls",
+      "Add runner on base to simulate game situation"
+    ],
+    videoUrl: "https://www.youtube.com/embed/9bZkp7q19f0"
+  },
+  "24": {
+    skillSet: "Infield",
+    difficulty: "Easy",
+    athletes: "4+ athletes",
+    time: "10 minutes",
+    equipment: "Baseballs, gloves, bases or cones",
+    goal: "Develop footwork and communication in a four-corner drill",
+    description: [
+      "Set up four bases or cones in a square pattern",
+      "Players position at each corner",
+      "Coach or partner hits or throws ground balls to each position",
+      "Players field the ball and throw to the next corner",
+      "Rotate positions after each round",
+      "Focus on proper footwork, throwing mechanics, and communication"
+    ],
+    addDifficulty: [
+      "Increase speed of ground balls",
+      "Add double play situations",
+      "Decrease time between throws"
+    ],
+    videoUrl: "https://www.youtube.com/embed/ZbZSe6N_BXs"
+  },
+  "30": {
+    skillSet: "Infield",
+    difficulty: "Easy",
+    athletes: "1 athlete and 1 coach",
+    time: "1 minute",
+    equipment: "Baseballs, glove",
+    goal: "Develop quick reflexes and hand-eye coordination for quick tosses",
+    description: [
+      "Player stands in ready position",
+      "Coach stands 10-15 feet away",
+      "Coach tosses the ball quickly to the player",
+      "Player fields the ball and throws it back",
+      "Focus on quick reaction time and accuracy",
+      "Complete as many tosses as possible in 30 seconds"
+    ],
+    addDifficulty: [
+      "Increase distance between player and coach",
+      "Vary the height and location of tosses",
+      "Add footwork requirements"
+    ],
+    videoUrl: "https://www.youtube.com/embed/aqz-KE-bpKQ"
+  },
+}
 
 export default function DrillDetail() {
   const { user, loading } = useAuth();
