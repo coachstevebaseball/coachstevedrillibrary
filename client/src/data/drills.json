@@ -1,6 +1,6 @@
 [
   {
-    "id": 1,
+    "id": "1-2-3-drill",
     "name": "1-2-3 Drill",
     "difficulty": "Easy",
     "categories": [
@@ -12,7 +12,7 @@
     "is_direct_link": true
   },
   {
-    "id": 2,
+    "id": "1-2-3-rhythm-tee",
     "name": "1-2-3 Rhythm Tee",
     "difficulty": "Medium",
     "categories": [
@@ -24,7 +24,7 @@
     "is_direct_link": false
   },
   {
-    "id": 3,
+    "id": "1st-base-flip-to-pitcher",
     "name": "1st Base Flip to Pitcher",
     "difficulty": "Medium",
     "categories": [
@@ -35,7 +35,7 @@
     "is_direct_link": false
   },
   {
-    "id": 4,
+    "id": "1st-base-inside-receiving",
     "name": "1st Base Inside Receiving",
     "difficulty": "Medium",
     "categories": [
@@ -46,7 +46,7 @@
     "is_direct_link": false
   },
   {
-    "id": 5,
+    "id": "1st-base-off-bag",
     "name": "1st Base Off Bag",
     "difficulty": "Medium",
     "categories": [
@@ -57,7 +57,7 @@
     "is_direct_link": false
   },
   {
-    "id": 6,
+    "id": "1st-base-receiving",
     "name": "1st Base Receiving",
     "difficulty": "Easy",
     "categories": [
@@ -68,7 +68,7 @@
     "is_direct_link": false
   },
   {
-    "id": 7,
+    "id": "1st-base-receiving-short-hops",
     "name": "1st Base Receiving Short Hops",
     "difficulty": "Medium",
     "categories": [
@@ -79,7 +79,7 @@
     "is_direct_link": false
   },
   {
-    "id": 8,
+    "id": "2nd-baseman-backhand-flip",
     "name": "2nd Baseman Backhand Flip",
     "difficulty": "Medium",
     "categories": [
@@ -90,7 +90,7 @@
     "is_direct_link": false
   },
   {
-    "id": 9,
+    "id": "2nd-baseman-drop-step-throw",
     "name": "2nd Baseman Drop Step Throw",
     "difficulty": "Medium",
     "categories": [
@@ -101,7 +101,7 @@
     "is_direct_link": false
   },
   {
-    "id": 10,
+    "id": "2nd-baseman-forehand-spin",
     "name": "2nd Baseman Forehand Spin",
     "difficulty": "Medium",
     "categories": [
@@ -112,7 +112,7 @@
     "is_direct_link": false
   },
   {
-    "id": 11,
+    "id": "2nd-baseman-underhand-flip",
     "name": "2nd Baseman Underhand Flip",
     "difficulty": "Medium",
     "categories": [
@@ -123,7 +123,7 @@
     "is_direct_link": false
   },
   {
-    "id": 12,
+    "id": "3-man-relay",
     "name": "3-Man Relay",
     "difficulty": "Medium",
     "categories": [
@@ -135,7 +135,7 @@
     "is_direct_link": false
   },
   {
-    "id": 13,
+    "id": "30-second-backhand",
     "name": "30 Second Backhand",
     "difficulty": "Easy",
     "categories": [
@@ -146,7 +146,7 @@
     "is_direct_link": false
   },
   {
-    "id": 14,
+    "id": "30-second-backhand-cross",
     "name": "30 Second Backhand Cross",
     "difficulty": "Medium",
     "categories": [
@@ -157,7 +157,7 @@
     "is_direct_link": false
   },
   {
-    "id": 15,
+    "id": "30-second-crow-hops",
     "name": "30 Second Crow Hops",
     "difficulty": "Easy",
     "categories": [
@@ -168,7 +168,7 @@
     "is_direct_link": false
   },
   {
-    "id": 16,
+    "id": "30-second-grounders",
     "name": "30 Second Grounders",
     "difficulty": "Easy",
     "categories": [
@@ -179,7 +179,7 @@
     "is_direct_link": false
   },
   {
-    "id": 17,
+    "id": "30-second-quick-toss",
     "name": "30 Second Quick Toss",
     "difficulty": "Easy",
     "categories": [
@@ -190,7 +190,7 @@
     "is_direct_link": false
   },
   {
-    "id": 18,
+    "id": "30-second-short-hops",
     "name": "30 Second Short Hops",
     "difficulty": "Easy",
     "categories": [
@@ -201,7 +201,7 @@
     "is_direct_link": false
   },
   {
-    "id": 19,
+    "id": "4-corners",
     "name": "4 Corners",
     "difficulty": "Easy",
     "categories": [
@@ -212,7 +212,7 @@
     "is_direct_link": false
   },
   {
-    "id": 20,
+    "id": "4-corners-bunting",
     "name": "4 Corners Bunting",
     "difficulty": "Medium",
     "categories": [
@@ -223,7 +223,7 @@
     "is_direct_link": false
   },
   {
-    "id": 21,
+    "id": "43-drill",
     "name": "4.3 Drill",
     "difficulty": "Hard",
     "categories": [
@@ -235,7 +235,7 @@
     "is_direct_link": false
   },
   {
-    "id": 22,
+    "id": "7-ball-front-toss",
     "name": "7 Ball Front Toss",
     "difficulty": "Medium",
     "categories": [
@@ -246,7 +246,7 @@
     "is_direct_link": false
   },
   {
-    "id": 23,
+    "id": "9045even-progression-tee",
     "name": "90/45/Even Progression Tee",
     "difficulty": "Hard",
     "categories": [
@@ -258,7 +258,7 @@
     "is_direct_link": false
   },
   {
-    "id": 24,
+    "id": "advanced-batting-practice",
     "name": "Advanced Batting Practice",
     "difficulty": "Hard",
     "categories": [
@@ -269,7 +269,7 @@
     "is_direct_link": false
   },
   {
-    "id": 25,
+    "id": "agility-drills",
     "name": "Agility Drills",
     "difficulty": "Easy",
     "categories": [
@@ -280,7 +280,7 @@
     "is_direct_link": false
   },
   {
-    "id": 26,
+    "id": "all-the-way-through-1st-base",
     "name": "All the Way Through 1st Base",
     "difficulty": "Easy",
     "categories": [
@@ -291,7 +291,7 @@
     "is_direct_link": false
   },
   {
-    "id": 27,
+    "id": "all-together-receiving",
     "name": "All Together Receiving",
     "difficulty": "Medium",
     "categories": [
@@ -302,7 +302,7 @@
     "is_direct_link": false
   },
   {
-    "id": 28,
+    "id": "angle-flips",
     "name": "Angle Flips",
     "difficulty": "Medium",
     "categories": [
@@ -313,7 +313,7 @@
     "is_direct_link": true
   },
   {
-    "id": 29,
+    "id": "angled-force-plate-tee-back-foot",
     "name": "Angled Force Plate Tee - Back Foot",
     "difficulty": "Medium",
     "categories": [
@@ -325,7 +325,7 @@
     "is_direct_link": false
   },
   {
-    "id": 30,
+    "id": "arm-path-drill",
     "name": "Arm Path Drill",
     "difficulty": "Medium",
     "categories": [
@@ -336,7 +336,7 @@
     "is_direct_link": false
   },
   {
-    "id": 31,
+    "id": "arm-speed",
     "name": "Arm Speed",
     "difficulty": "Easy",
     "categories": [
@@ -347,7 +347,7 @@
     "is_direct_link": false
   },
   {
-    "id": 32,
+    "id": "back-foot-cone-tee",
     "name": "Back Foot Cone Tee",
     "difficulty": "Medium",
     "categories": [
@@ -359,7 +359,7 @@
     "is_direct_link": false
   },
   {
-    "id": 33,
+    "id": "back-hip-load-tee",
     "name": "Back Hip Load Tee",
     "difficulty": "Hard",
     "categories": [
@@ -371,7 +371,7 @@
     "is_direct_link": false
   },
   {
-    "id": 34,
+    "id": "back-net-constraint-tee",
     "name": "Back Net Constraint Tee",
     "difficulty": "Hard",
     "categories": [
@@ -383,7 +383,7 @@
     "is_direct_link": false
   },
   {
-    "id": 35,
+    "id": "backhand-cross-and-throw",
     "name": "Backhand Cross and Throw",
     "difficulty": "Medium",
     "categories": [
@@ -394,7 +394,7 @@
     "is_direct_link": false
   },
   {
-    "id": 36,
+    "id": "backhand-pick-stick-fungo",
     "name": "Backhand Pick & Stick Fungo",
     "difficulty": "Medium",
     "categories": [
@@ -405,7 +405,7 @@
     "is_direct_link": false
   },
   {
-    "id": 37,
+    "id": "backhand-rake-fungo",
     "name": "Backhand Rake Fungo",
     "difficulty": "Medium",
     "categories": [
@@ -416,7 +416,7 @@
     "is_direct_link": false
   },
   {
-    "id": 38,
+    "id": "backside-angle-toss",
     "name": "Backside Angle Toss",
     "difficulty": "Hard",
     "categories": [
@@ -427,7 +427,7 @@
     "is_direct_link": false
   },
   {
-    "id": 39,
+    "id": "balance-beam",
     "name": "Balance Beam",
     "difficulty": "Medium",
     "categories": [
@@ -438,7 +438,7 @@
     "is_direct_link": false
   },
   {
-    "id": 40,
+    "id": "balance-drill",
     "name": "Balance Drill",
     "difficulty": "Easy",
     "categories": [
@@ -449,7 +449,7 @@
     "is_direct_link": false
   },
   {
-    "id": 41,
+    "id": "balance-pause-drill",
     "name": "Balance Pause Drill",
     "difficulty": "Medium",
     "categories": [
@@ -460,7 +460,7 @@
     "is_direct_link": false
   },
   {
-    "id": 42,
+    "id": "balanced-stationary-drill",
     "name": "Balanced Stationary Drill",
     "difficulty": "Medium",
     "categories": [
@@ -471,7 +471,7 @@
     "is_direct_link": false
   },
   {
-    "id": 43,
+    "id": "balanced-stationary-drill-with-upper-body",
     "name": "Balanced Stationary Drill with Upper Body",
     "difficulty": "Medium",
     "categories": [
@@ -482,7 +482,7 @@
     "is_direct_link": false
   },
   {
-    "id": 44,
+    "id": "ball-down-front-toss",
     "name": "Ball Down Front Toss",
     "difficulty": "Easy",
     "categories": [
@@ -493,7 +493,7 @@
     "is_direct_link": false
   },
   {
-    "id": 45,
+    "id": "ball-in-hand",
     "name": "Ball in Hand",
     "difficulty": "Medium",
     "categories": [
@@ -504,7 +504,7 @@
     "is_direct_link": false
   },
   {
-    "id": 46,
+    "id": "ball-in-the-sun",
     "name": "Ball in the Sun",
     "difficulty": "Easy",
     "categories": [
@@ -515,7 +515,7 @@
     "is_direct_link": false
   },
   {
-    "id": 47,
+    "id": "ball-hit-front-toss",
     "name": "Ball-Hit Front Toss",
     "difficulty": "Easy",
     "categories": [
@@ -526,7 +526,7 @@
     "is_direct_link": false
   },
   {
-    "id": 48,
+    "id": "balls-in-the-dirt-breaks",
     "name": "Balls In the Dirt Breaks",
     "difficulty": "Easy",
     "categories": [
@@ -537,7 +537,7 @@
     "is_direct_link": false
   },
   {
-    "id": 49,
+    "id": "baserunning-circuit",
     "name": "Baserunning Circuit",
     "difficulty": "Easy",
     "categories": [
@@ -548,7 +548,7 @@
     "is_direct_link": false
   },
   {
-    "id": 50,
+    "id": "baserunning-conditioning",
     "name": "Baserunning Conditioning",
     "difficulty": "Easy",
     "categories": [
@@ -559,7 +559,7 @@
     "is_direct_link": false
   },
   {
-    "id": 51,
+    "id": "basic-blocking",
     "name": "Basic Blocking",
     "difficulty": "Medium",
     "categories": [
@@ -570,7 +570,7 @@
     "is_direct_link": false
   },
   {
-    "id": 52,
+    "id": "basic-receiving",
     "name": "Basic Receiving",
     "difficulty": "Easy",
     "categories": [
@@ -581,7 +581,7 @@
     "is_direct_link": false
   },
   {
-    "id": 53,
+    "id": "bat-behind-hips",
     "name": "Bat Behind Hips",
     "difficulty": "Easy",
     "categories": [
@@ -592,7 +592,7 @@
     "is_direct_link": false
   },
   {
-    "id": 54,
+    "id": "batting-practice-1-coach",
     "name": "Batting Practice - 1 Coach",
     "difficulty": "Unknown",
     "categories": [
@@ -604,7 +604,7 @@
     "is_direct_link": false
   },
   {
-    "id": 55,
+    "id": "batting-practice-2-coaches",
     "name": "Batting Practice - 2+ Coaches",
     "difficulty": "Unknown",
     "categories": [
@@ -616,7 +616,7 @@
     "is_direct_link": false
   },
   {
-    "id": 56,
+    "id": "batting-practice-3-coaches",
     "name": "Batting Practice - 3+ Coaches",
     "difficulty": "Unknown",
     "categories": [
@@ -628,7 +628,7 @@
     "is_direct_link": false
   },
   {
-    "id": 57,
+    "id": "beginners-batting-practice",
     "name": "Beginner's Batting Practice",
     "difficulty": "Easy",
     "categories": [
@@ -639,7 +639,7 @@
     "is_direct_link": false
   },
   {
-    "id": 58,
+    "id": "behind-the-hitter-toss-1-2-3",
     "name": "Behind the Hitter Toss 1-2-3",
     "difficulty": "Hard",
     "categories": [
@@ -650,7 +650,7 @@
     "is_direct_link": false
   },
   {
-    "id": 59,
+    "id": "belly-button-tee",
     "name": "Belly Button Tee",
     "difficulty": "Easy",
     "categories": [
@@ -662,7 +662,7 @@
     "is_direct_link": false
   },
   {
-    "id": 60,
+    "id": "bite-the-ball",
     "name": "Bite the Ball",
     "difficulty": "Easy",
     "categories": [
@@ -673,7 +673,7 @@
     "is_direct_link": false
   },
   {
-    "id": 61,
+    "id": "block-and-recover",
     "name": "Block and Recover",
     "difficulty": "Medium",
     "categories": [
@@ -684,7 +684,7 @@
     "is_direct_link": false
   },
   {
-    "id": 62,
+    "id": "block-recover-throw",
     "name": "Block, Recover, Throw",
     "difficulty": "Medium",
     "categories": [
@@ -695,7 +695,7 @@
     "is_direct_link": false
   },
   {
-    "id": 63,
+    "id": "blocking-and-recovery",
     "name": "Blocking and Recovery",
     "difficulty": "Medium",
     "categories": [
@@ -706,7 +706,7 @@
     "is_direct_link": false
   },
   {
-    "id": 64,
+    "id": "body-weight-exercises",
     "name": "Body Weight Exercises",
     "difficulty": "Easy",
     "categories": [
@@ -717,7 +717,7 @@
     "is_direct_link": false
   },
   {
-    "id": 65,
+    "id": "bottom-hand-tee",
     "name": "Bottom Hand Tee",
     "difficulty": "Easy",
     "categories": [
@@ -729,7 +729,7 @@
     "is_direct_link": false
   },
   {
-    "id": 66,
+    "id": "box-drill-2nd-baseman-double-play-feeds",
     "name": "Box Drill- 2nd Baseman Double Play Feeds",
     "difficulty": "Medium",
     "categories": [
@@ -740,7 +740,7 @@
     "is_direct_link": false
   },
   {
-    "id": 67,
+    "id": "box-drill-shortstop-double-play-feeds",
     "name": "Box Drill- Shortstop Double Play Feeds",
     "difficulty": "Medium",
     "categories": [
@@ -751,7 +751,7 @@
     "is_direct_link": false
   },
   {
-    "id": 68,
+    "id": "break-down-and-come-through",
     "name": "Break Down and Come Through",
     "difficulty": "Easy",
     "categories": [
@@ -762,7 +762,7 @@
     "is_direct_link": false
   },
   {
-    "id": 69,
+    "id": "break-of-the-hands-drill",
     "name": "Break of the Hands Drill",
     "difficulty": "Easy",
     "categories": [
@@ -773,7 +773,7 @@
     "is_direct_link": false
   },
   {
-    "id": 70,
+    "id": "chair-drill",
     "name": "Chair Drill",
     "difficulty": "Medium",
     "categories": [
@@ -784,7 +784,7 @@
     "is_direct_link": false
   },
   {
-    "id": 71,
+    "id": "change-up-catch",
     "name": "Change-Up Catch",
     "difficulty": "Easy",
     "categories": [
@@ -795,7 +795,7 @@
     "is_direct_link": false
   },
   {
-    "id": 72,
+    "id": "change-up-front-toss",
     "name": "Change-Up Front Toss",
     "difficulty": "Medium",
     "categories": [
@@ -806,7 +806,7 @@
     "is_direct_link": true
   },
   {
-    "id": 73,
+    "id": "change-up-grips",
     "name": "Change-Up Grips",
     "difficulty": "Easy",
     "categories": [
@@ -817,7 +817,7 @@
     "is_direct_link": false
   },
   {
-    "id": 74,
+    "id": "change-up-tee",
     "name": "Change-Up Tee",
     "difficulty": "Hard",
     "categories": [
@@ -829,7 +829,7 @@
     "is_direct_link": false
   },
   {
-    "id": 75,
+    "id": "color-front-toss",
     "name": "Color Front Toss",
     "difficulty": "Hard",
     "categories": [
@@ -840,7 +840,7 @@
     "is_direct_link": true
   },
   {
-    "id": 76,
+    "id": "core-strengthening-exercises-rotational",
     "name": "Core Strengthening Exercises- Rotational",
     "difficulty": "Easy",
     "categories": [
@@ -851,7 +851,7 @@
     "is_direct_link": false
   },
   {
-    "id": 77,
+    "id": "core-strengthening-exercises-ground",
     "name": "Core Strengthening Exercises-Ground",
     "difficulty": "Easy",
     "categories": [
@@ -862,7 +862,7 @@
     "is_direct_link": false
   },
   {
-    "id": 78,
+    "id": "core-strengthening-exercises-seated",
     "name": "Core Strengthening Exercises-Seated",
     "difficulty": "Easy",
     "categories": [
@@ -873,7 +873,7 @@
     "is_direct_link": false
   },
   {
-    "id": 79,
+    "id": "cross-partner-framing",
     "name": "Cross Partner Framing",
     "difficulty": "Hard",
     "categories": [
@@ -884,7 +884,7 @@
     "is_direct_link": false
   },
   {
-    "id": 80,
+    "id": "crow-hops",
     "name": "Crow Hops",
     "difficulty": "Medium",
     "categories": [
@@ -895,7 +895,7 @@
     "is_direct_link": false
   },
   {
-    "id": 81,
+    "id": "cup-ball-game",
     "name": "Cup Ball Game",
     "difficulty": "Easy",
     "categories": [
@@ -906,7 +906,7 @@
     "is_direct_link": false
   },
   {
-    "id": 82,
+    "id": "cut-offs-for-infield",
     "name": "Cut Offs for Infield",
     "difficulty": "Easy",
     "categories": [
@@ -918,7 +918,7 @@
     "is_direct_link": false
   },
   {
-    "id": 83,
+    "id": "cut-offs-for-outfield",
     "name": "Cut Offs for Outfield",
     "difficulty": "Easy",
     "categories": [
@@ -930,7 +930,7 @@
     "is_direct_link": false
   },
   {
-    "id": 84,
+    "id": "daily-band-work",
     "name": "Daily Band Work",
     "difficulty": "Easy",
     "categories": [
@@ -941,7 +941,7 @@
     "is_direct_link": false
   },
   {
-    "id": 85,
+    "id": "daily-flat-ground-work",
     "name": "Daily Flat Ground Work",
     "difficulty": "Easy",
     "categories": [
@@ -952,7 +952,7 @@
     "is_direct_link": false
   },
   {
-    "id": 86,
+    "id": "daily-throwing-program",
     "name": "Daily Throwing Program",
     "difficulty": "Easy",
     "categories": [
@@ -963,7 +963,7 @@
     "is_direct_link": false
   },
   {
-    "id": 87,
+    "id": "decline-swings",
     "name": "Decline Swings",
     "difficulty": "Easy",
     "categories": [
@@ -974,7 +974,7 @@
     "is_direct_link": false
   },
   {
-    "id": 88,
+    "id": "defense-prep",
     "name": "Defense Prep",
     "difficulty": "Easy",
     "categories": [
@@ -985,7 +985,7 @@
     "is_direct_link": false
   },
   {
-    "id": 89,
+    "id": "defense-stance",
     "name": "Defense Stance",
     "difficulty": "Easy",
     "categories": [
@@ -996,7 +996,7 @@
     "is_direct_link": false
   },
   {
-    "id": 90,
+    "id": "defensive-stations-in-and-out",
     "name": "Defensive Stations - In and Out",
     "difficulty": "Easy",
     "categories": [
@@ -1008,7 +1008,7 @@
     "is_direct_link": false
   },
   {
-    "id": 91,
+    "id": "defensive-stations-if-of-p-c",
     "name": "Defensive Stations \u2013 IF, OF, P, C",
     "difficulty": "Easy",
     "categories": [
@@ -1020,7 +1020,7 @@
     "is_direct_link": false
   },
   {
-    "id": 92,
+    "id": "double-ball-toss",
     "name": "Double Ball Toss",
     "difficulty": "Medium",
     "categories": [
@@ -1031,7 +1031,7 @@
     "is_direct_link": false
   },
   {
-    "id": 93,
+    "id": "double-play-drill",
     "name": "Double Play Drill",
     "difficulty": "Medium",
     "categories": [
@@ -1043,7 +1043,7 @@
     "is_direct_link": false
   },
   {
-    "id": 94,
+    "id": "double-play-footwork-2b-drop-step",
     "name": "Double Play Footwork- 2B Drop Step",
     "difficulty": "Medium",
     "categories": [
@@ -1054,7 +1054,7 @@
     "is_direct_link": false
   },
   {
-    "id": 95,
+    "id": "double-play-footwork-2b-rocker-step",
     "name": "Double Play Footwork- 2B Rocker Step",
     "difficulty": "Medium",
     "categories": [
@@ -1065,7 +1065,7 @@
     "is_direct_link": false
   },
   {
-    "id": 96,
+    "id": "double-play-footwork-2b-step-across",
     "name": "Double Play Footwork- 2B Step Across",
     "difficulty": "Medium",
     "categories": [
@@ -1076,7 +1076,7 @@
     "is_direct_link": false
   },
   {
-    "id": 97,
+    "id": "double-play-footwork-ss-back-cross",
     "name": "Double Play Footwork- SS Back Cross",
     "difficulty": "Medium",
     "categories": [
@@ -1087,7 +1087,7 @@
     "is_direct_link": false
   },
   {
-    "id": 98,
+    "id": "double-play-footwork-ss-front-cross",
     "name": "Double Play Footwork- SS Front Cross",
     "difficulty": "Medium",
     "categories": [
@@ -1098,7 +1098,7 @@
     "is_direct_link": false
   },
   {
-    "id": 99,
+    "id": "double-play-footwork-ss-pop-feet",
     "name": "Double Play Footwork- SS Pop Feet",
     "difficulty": "Medium",
     "categories": [
@@ -1109,7 +1109,7 @@
     "is_direct_link": false
   },
   {
-    "id": 100,
+    "id": "double-tee",
     "name": "Double Tee",
     "difficulty": "Medium",
     "categories": [
@@ -1121,7 +1121,7 @@
     "is_direct_link": true
   },
   {
-    "id": 101,
+    "id": "double-tee-decision-making",
     "name": "Double Tee Decision Making",
     "difficulty": "Medium",
     "categories": [
@@ -1133,7 +1133,7 @@
     "is_direct_link": false
   },
   {
-    "id": 102,
+    "id": "drag-bunt",
     "name": "Drag Bunt",
     "difficulty": "Medium",
     "categories": [
@@ -1144,7 +1144,7 @@
     "is_direct_link": false
   },
   {
-    "id": 103,
+    "id": "drop-and-block-line",
     "name": "Drop and Block Line",
     "difficulty": "Easy",
     "categories": [
@@ -1155,7 +1155,7 @@
     "is_direct_link": false
   },
   {
-    "id": 104,
+    "id": "drop-step-cones",
     "name": "Drop Step Cones",
     "difficulty": "Easy",
     "categories": [
@@ -1166,7 +1166,7 @@
     "is_direct_link": false
   },
   {
-    "id": 105,
+    "id": "drop-step-groundballs",
     "name": "Drop Step Groundballs",
     "difficulty": "Easy",
     "categories": [
@@ -1177,7 +1177,7 @@
     "is_direct_link": false
   },
   {
-    "id": 106,
+    "id": "execute-on-the-field",
     "name": "Execute - On the Field",
     "difficulty": "Easy",
     "categories": [
@@ -1188,7 +1188,7 @@
     "is_direct_link": false
   },
   {
-    "id": 107,
+    "id": "extended-tee",
     "name": "Extended Tee",
     "difficulty": "Medium",
     "categories": [
@@ -1200,7 +1200,7 @@
     "is_direct_link": false
   },
   {
-    "id": 108,
+    "id": "fastball-front-toss",
     "name": "Fastball Front Toss",
     "difficulty": "Easy",
     "categories": [
@@ -1211,7 +1211,7 @@
     "is_direct_link": false
   },
   {
-    "id": 109,
+    "id": "flat-ground",
     "name": "Flat Ground",
     "difficulty": "Easy",
     "categories": [
@@ -1222,7 +1222,7 @@
     "is_direct_link": false
   },
   {
-    "id": 110,
+    "id": "flaw-casting-the-hands-outside-of-the-ball",
     "name": "Flaw- Casting the Hands Outside of the Ball",
     "difficulty": "Hard",
     "categories": [
@@ -1233,7 +1233,7 @@
     "is_direct_link": false
   },
   {
-    "id": 111,
+    "id": "flaw-chopping-at-the-ball",
     "name": "Flaw- Chopping at the Ball",
     "difficulty": "Easy",
     "categories": [
@@ -1244,7 +1244,7 @@
     "is_direct_link": false
   },
   {
-    "id": 112,
+    "id": "flaw-collapsing-the-backside",
     "name": "Flaw- Collapsing the Backside",
     "difficulty": "Medium",
     "categories": [
@@ -1255,7 +1255,7 @@
     "is_direct_link": false
   },
   {
-    "id": 113,
+    "id": "flaw-contact-point-too-far-out-front",
     "name": "Flaw- Contact Point too Far Out Front",
     "difficulty": "Hard",
     "categories": [
@@ -1266,7 +1266,7 @@
     "is_direct_link": false
   },
   {
-    "id": 114,
+    "id": "flaw-hands-dropping-too-low",
     "name": "Flaw- Hands Dropping too Low",
     "difficulty": "Medium",
     "categories": [
@@ -1277,7 +1277,7 @@
     "is_direct_link": false
   },
   {
-    "id": 115,
+    "id": "flaw-improper-stance",
     "name": "Flaw- Improper Stance",
     "difficulty": "Easy",
     "categories": [
@@ -1288,7 +1288,7 @@
     "is_direct_link": false
   },
   {
-    "id": 116,
+    "id": "flaw-lack-of-separation",
     "name": "Flaw- Lack of Separation",
     "difficulty": "Hard",
     "categories": [
@@ -1299,7 +1299,7 @@
     "is_direct_link": false
   },
   {
-    "id": 117,
+    "id": "flaw-loop-in-the-barrel",
     "name": "Flaw- Loop in the Barrel",
     "difficulty": "Medium",
     "categories": [
@@ -1310,7 +1310,7 @@
     "is_direct_link": false
   },
   {
-    "id": 118,
+    "id": "flaw-lunging-to-the-ball",
     "name": "Flaw- Lunging to the Ball",
     "difficulty": "Medium",
     "categories": [
@@ -1321,7 +1321,7 @@
     "is_direct_link": false
   },
   {
-    "id": 119,
+    "id": "flaw-no-lower-half",
     "name": "Flaw- No Lower Half",
     "difficulty": "Easy",
     "categories": [
@@ -1332,7 +1332,7 @@
     "is_direct_link": false
   },
   {
-    "id": 120,
+    "id": "flaw-soft-front-knee",
     "name": "Flaw- Soft Front Knee",
     "difficulty": "Hard",
     "categories": [
@@ -1343,7 +1343,7 @@
     "is_direct_link": false
   },
   {
-    "id": 121,
+    "id": "flaw-stepping-in-the-bucket",
     "name": "Flaw- Stepping in the Bucket",
     "difficulty": "Easy",
     "categories": [
@@ -1354,7 +1354,7 @@
     "is_direct_link": false
   },
   {
-    "id": 122,
+    "id": "flexibility-lower-body",
     "name": "Flexibility- Lower Body",
     "difficulty": "Easy",
     "categories": [
@@ -1365,7 +1365,7 @@
     "is_direct_link": false
   },
   {
-    "id": 123,
+    "id": "flexibility-upper-body",
     "name": "Flexibility- Upper Body",
     "difficulty": "Easy",
     "categories": [
@@ -1376,7 +1376,7 @@
     "is_direct_link": false
   },
   {
-    "id": 124,
+    "id": "fly-balls",
     "name": "Fly Balls",
     "difficulty": "Easy",
     "categories": [
@@ -1387,7 +1387,7 @@
     "is_direct_link": false
   },
   {
-    "id": 125,
+    "id": "follow-through-swing",
     "name": "Follow Through Swing",
     "difficulty": "Easy",
     "categories": [
@@ -1398,7 +1398,7 @@
     "is_direct_link": false
   },
   {
-    "id": 126,
+    "id": "forehand-range",
     "name": "Forehand Range",
     "difficulty": "Medium",
     "categories": [
@@ -1409,7 +1409,7 @@
     "is_direct_link": false
   },
   {
-    "id": 127,
+    "id": "four-corners",
     "name": "Four Corners",
     "difficulty": "Hard",
     "categories": [
@@ -1420,7 +1420,7 @@
     "is_direct_link": false
   },
   {
-    "id": 128,
+    "id": "free-play",
     "name": "Free Play",
     "difficulty": "Easy",
     "categories": [
@@ -1431,7 +1431,7 @@
     "is_direct_link": false
   },
   {
-    "id": 129,
+    "id": "front-hip-toss",
     "name": "Front Hip Toss",
     "difficulty": "Medium",
     "categories": [
@@ -1442,7 +1442,7 @@
     "is_direct_link": true
   },
   {
-    "id": 130,
+    "id": "fungo-charge",
     "name": "Fungo Charge",
     "difficulty": "Hard",
     "categories": [
@@ -1453,7 +1453,7 @@
     "is_direct_link": false
   },
   {
-    "id": 131,
+    "id": "fungo-for-hitters",
     "name": "Fungo For Hitters",
     "difficulty": "Medium",
     "categories": [
@@ -1464,7 +1464,7 @@
     "is_direct_link": false
   },
   {
-    "id": 132,
+    "id": "groundball-on-knees-progression",
     "name": "Groundball on Knees Progression",
     "difficulty": "Medium",
     "categories": [
@@ -1475,7 +1475,7 @@
     "is_direct_link": false
   },
   {
-    "id": 133,
+    "id": "grounders",
     "name": "Grounders",
     "difficulty": "Easy",
     "categories": [
@@ -1486,7 +1486,7 @@
     "is_direct_link": false
   },
   {
-    "id": 134,
+    "id": "half-swing-drill",
     "name": "Half Swing Drill",
     "difficulty": "Medium",
     "categories": [
@@ -1497,7 +1497,7 @@
     "is_direct_link": false
   },
   {
-    "id": 135,
+    "id": "hand-break-drill",
     "name": "Hand Break Drill",
     "difficulty": "Medium",
     "categories": [
@@ -1508,7 +1508,7 @@
     "is_direct_link": false
   },
   {
-    "id": 136,
+    "id": "heavy-front-side-drill",
     "name": "Heavy Front Side Drill",
     "difficulty": "Easy",
     "categories": [
@@ -1519,7 +1519,7 @@
     "is_direct_link": false
   },
   {
-    "id": 137,
+    "id": "high-choppers",
     "name": "High Choppers",
     "difficulty": "Medium",
     "categories": [
@@ -1530,7 +1530,7 @@
     "is_direct_link": false
   },
   {
-    "id": 138,
+    "id": "high-choppers-fungo",
     "name": "High Choppers Fungo",
     "difficulty": "Medium",
     "categories": [
@@ -1541,7 +1541,7 @@
     "is_direct_link": false
   },
   {
-    "id": 139,
+    "id": "high-tee",
     "name": "High Tee",
     "difficulty": "Medium",
     "categories": [
@@ -1553,7 +1553,7 @@
     "is_direct_link": false
   },
   {
-    "id": 140,
+    "id": "hip-loading-balance-disc-tee",
     "name": "Hip Loading Balance Disc Tee",
     "difficulty": "Hard",
     "categories": [
@@ -1565,7 +1565,7 @@
     "is_direct_link": false
   },
   {
-    "id": 141,
+    "id": "hit-and-run",
     "name": "Hit and Run",
     "difficulty": "Hard",
     "categories": [
@@ -1576,7 +1576,7 @@
     "is_direct_link": false
   },
   {
-    "id": 142,
+    "id": "hook-ems",
     "name": "Hook 'Ems",
     "difficulty": "Hard",
     "categories": [
@@ -1587,7 +1587,7 @@
     "is_direct_link": false
   },
   {
-    "id": 143,
+    "id": "indoor-facility-defensive-stations",
     "name": "Indoor Facility Defensive Stations",
     "difficulty": "Easy",
     "categories": [
@@ -1598,7 +1598,7 @@
     "is_direct_link": false
   },
   {
-    "id": 144,
+    "id": "infield-and-outfield",
     "name": "Infield and Outfield",
     "difficulty": "Medium",
     "categories": [
@@ -1610,7 +1610,7 @@
     "is_direct_link": false
   },
   {
-    "id": 145,
+    "id": "infield-hands-routine",
     "name": "Infield Hands Routine",
     "difficulty": "Easy",
     "categories": [
@@ -1621,7 +1621,7 @@
     "is_direct_link": false
   },
   {
-    "id": 146,
+    "id": "insideoutside-tee",
     "name": "Inside/Outside Tee",
     "difficulty": "Easy",
     "categories": [
@@ -1633,7 +1633,7 @@
     "is_direct_link": false
   },
   {
-    "id": 147,
+    "id": "intentional-throwing",
     "name": "Intentional Throwing",
     "difficulty": "Easy",
     "categories": [
@@ -1644,7 +1644,7 @@
     "is_direct_link": false
   },
   {
-    "id": 148,
+    "id": "interval-throwing",
     "name": "Interval Throwing",
     "difficulty": "Easy",
     "categories": [
@@ -1655,7 +1655,7 @@
     "is_direct_link": false
   },
   {
-    "id": 149,
+    "id": "keep-it-close-block",
     "name": "Keep it Close Block",
     "difficulty": "Medium",
     "categories": [
@@ -1666,7 +1666,7 @@
     "is_direct_link": false
   },
   {
-    "id": 150,
+    "id": "knee-short-hops",
     "name": "Knee Short Hops",
     "difficulty": "Easy",
     "categories": [
@@ -1677,7 +1677,7 @@
     "is_direct_link": false
   },
   {
-    "id": 151,
+    "id": "knee-to-knee-tee",
     "name": "Knee to Knee Tee",
     "difficulty": "Easy",
     "categories": [
@@ -1689,7 +1689,7 @@
     "is_direct_link": false
   },
   {
-    "id": 152,
+    "id": "knob-inside-the-ball-toss",
     "name": "Knob Inside the Ball Toss",
     "difficulty": "Easy",
     "categories": [
@@ -1700,7 +1700,7 @@
     "is_direct_link": false
   },
   {
-    "id": 153,
+    "id": "leads-from-1st-base",
     "name": "Leads from 1st Base",
     "difficulty": "Easy",
     "categories": [
@@ -1711,7 +1711,7 @@
     "is_direct_link": false
   },
   {
-    "id": 154,
+    "id": "leads-from-2nd-base",
     "name": "Leads from 2nd Base",
     "difficulty": "Easy",
     "categories": [
@@ -1722,7 +1722,7 @@
     "is_direct_link": false
   },
   {
-    "id": 155,
+    "id": "leads-from-3rd-base",
     "name": "Leads from 3rd Base",
     "difficulty": "Easy",
     "categories": [
@@ -1733,7 +1733,7 @@
     "is_direct_link": false
   },
   {
-    "id": 156,
+    "id": "lincecum-drill",
     "name": "Lincecum Drill",
     "difficulty": "Easy",
     "categories": [
@@ -1744,7 +1744,7 @@
     "is_direct_link": false
   },
   {
-    "id": 157,
+    "id": "live-situational-scrimmage",
     "name": "Live Situational Scrimmage",
     "difficulty": "Medium",
     "categories": [
@@ -1756,7 +1756,7 @@
     "is_direct_link": false
   },
   {
-    "id": 158,
+    "id": "location-tee",
     "name": "Location Tee",
     "difficulty": "Easy",
     "categories": [
@@ -1768,7 +1768,7 @@
     "is_direct_link": false
   },
   {
-    "id": 159,
+    "id": "long-tee",
     "name": "Long Tee",
     "difficulty": "Hard",
     "categories": [
@@ -1780,7 +1780,7 @@
     "is_direct_link": false
   },
   {
-    "id": 160,
+    "id": "long-toss",
     "name": "Long Toss",
     "difficulty": "Easy",
     "categories": [
@@ -1791,7 +1791,7 @@
     "is_direct_link": false
   },
   {
-    "id": 161,
+    "id": "low-tee",
     "name": "Low Tee",
     "difficulty": "Medium",
     "categories": [
@@ -1803,7 +1803,7 @@
     "is_direct_link": false
   },
   {
-    "id": 162,
+    "id": "low-tee-mini-bat",
     "name": "Low Tee Mini Bat",
     "difficulty": "Medium",
     "categories": [
@@ -1815,7 +1815,7 @@
     "is_direct_link": false
   },
   {
-    "id": 163,
+    "id": "medicine-ball-power-exercises",
     "name": "Medicine Ball Power Exercises",
     "difficulty": "Easy",
     "categories": [
@@ -1826,7 +1826,7 @@
     "is_direct_link": false
   },
   {
-    "id": 164,
+    "id": "no-glove-block",
     "name": "No Glove Block",
     "difficulty": "Medium",
     "categories": [
@@ -1837,7 +1837,7 @@
     "is_direct_link": false
   },
   {
-    "id": 165,
+    "id": "no-glove-exchange",
     "name": "No Glove Exchange",
     "difficulty": "Medium",
     "categories": [
@@ -1848,7 +1848,7 @@
     "is_direct_link": false
   },
   {
-    "id": 166,
+    "id": "no-stride-tee",
     "name": "No Stride Tee",
     "difficulty": "Easy",
     "categories": [
@@ -1860,7 +1860,7 @@
     "is_direct_link": false
   },
   {
-    "id": 167,
+    "id": "nose-behind-ball",
     "name": "Nose Behind Ball",
     "difficulty": "Medium",
     "categories": [
@@ -1871,7 +1871,7 @@
     "is_direct_link": false
   },
   {
-    "id": 168,
+    "id": "off-speed-front-toss",
     "name": "Off-Speed Front Toss",
     "difficulty": "Medium",
     "categories": [
@@ -1882,7 +1882,7 @@
     "is_direct_link": false
   },
   {
-    "id": 169,
+    "id": "offensive-stations-tee-and-live-hitting",
     "name": "Offensive Stations - Tee and Live Hitting",
     "difficulty": "Easy",
     "categories": [
@@ -1894,7 +1894,7 @@
     "is_direct_link": false
   },
   {
-    "id": 170,
+    "id": "offensive-stations-cage-work-and-baserunning",
     "name": "Offensive Stations \u2013 Cage Work and Baserunning",
     "difficulty": "Easy",
     "categories": [
@@ -1905,7 +1905,7 @@
     "is_direct_link": false
   },
   {
-    "id": 171,
+    "id": "on-the-run",
     "name": "On the Run",
     "difficulty": "Medium",
     "categories": [
@@ -1916,7 +1916,7 @@
     "is_direct_link": false
   },
   {
-    "id": 172,
+    "id": "on-the-run-fungo",
     "name": "On the Run Fungo",
     "difficulty": "Medium",
     "categories": [
@@ -1927,7 +1927,7 @@
     "is_direct_link": false
   },
   {
-    "id": 173,
+    "id": "one-cut-competition",
     "name": "One Cut Competition",
     "difficulty": "Hard",
     "categories": [
@@ -1938,7 +1938,7 @@
     "is_direct_link": false
   },
   {
-    "id": 174,
+    "id": "one-knee-drill",
     "name": "One Knee Drill",
     "difficulty": "Easy",
     "categories": [
@@ -1949,7 +1949,7 @@
     "is_direct_link": false
   },
   {
-    "id": 175,
+    "id": "one-handed-hitting",
     "name": "One-Handed Hitting",
     "difficulty": "Hard",
     "categories": [
@@ -1960,7 +1960,7 @@
     "is_direct_link": false
   },
   {
-    "id": 176,
+    "id": "outfield-communication",
     "name": "Outfield Communication",
     "difficulty": "Easy",
     "categories": [
@@ -1972,7 +1972,7 @@
     "is_direct_link": false
   },
   {
-    "id": 177,
+    "id": "outfield-groundballs",
     "name": "Outfield Groundballs",
     "difficulty": "Easy",
     "categories": [
@@ -1983,7 +1983,7 @@
     "is_direct_link": false
   },
   {
-    "id": 178,
+    "id": "outside-angle-toss",
     "name": "Outside Angle Toss",
     "difficulty": "Easy",
     "categories": [
@@ -1994,7 +1994,7 @@
     "is_direct_link": false
   },
   {
-    "id": 179,
+    "id": "outside-tee",
     "name": "Outside Tee",
     "difficulty": "Easy",
     "categories": [
@@ -2006,7 +2006,7 @@
     "is_direct_link": false
   },
   {
-    "id": 180,
+    "id": "overload-bat-soft-toss",
     "name": "Overload Bat Soft Toss",
     "difficulty": "Easy",
     "categories": [
@@ -2017,7 +2017,7 @@
     "is_direct_link": false
   },
   {
-    "id": 181,
+    "id": "pfp-circuit",
     "name": "PFP Circuit",
     "difficulty": "Easy",
     "categories": [
@@ -2029,7 +2029,7 @@
     "is_direct_link": false
   },
   {
-    "id": 182,
+    "id": "pfp-bunts-on-1st-base-side",
     "name": "PFP- Bunts on 1st Base Side",
     "difficulty": "Medium",
     "categories": [
@@ -2041,7 +2041,7 @@
     "is_direct_link": false
   },
   {
-    "id": 183,
+    "id": "pfp-bunts-on-3rd-base-side",
     "name": "PFP- Bunts on 3rd Base Side",
     "difficulty": "Medium",
     "categories": [
@@ -2053,7 +2053,7 @@
     "is_direct_link": false
   },
   {
-    "id": 184,
+    "id": "pfp-comebackers",
     "name": "PFP- Comebackers",
     "difficulty": "Medium",
     "categories": [
@@ -2065,7 +2065,7 @@
     "is_direct_link": false
   },
   {
-    "id": 185,
+    "id": "pfp-cover-1st-base",
     "name": "PFP- Cover 1st Base",
     "difficulty": "Medium",
     "categories": [
@@ -2077,7 +2077,7 @@
     "is_direct_link": false
   },
   {
-    "id": 186,
+    "id": "pirate-drill",
     "name": "Pirate Drill",
     "difficulty": "Hard",
     "categories": [
@@ -2089,7 +2089,7 @@
     "is_direct_link": false
   },
   {
-    "id": 187,
+    "id": "pitchers-bunt-defense",
     "name": "Pitcher's Bunt Defense",
     "difficulty": "Medium",
     "categories": [
@@ -2101,7 +2101,7 @@
     "is_direct_link": false
   },
   {
-    "id": 188,
+    "id": "pivot-footwork",
     "name": "Pivot Footwork",
     "difficulty": "Medium",
     "categories": [
@@ -2112,7 +2112,7 @@
     "is_direct_link": false
   },
   {
-    "id": 189,
+    "id": "pop-ups",
     "name": "Pop-Ups",
     "difficulty": "Hard",
     "categories": [
@@ -2124,7 +2124,7 @@
     "is_direct_link": false
   },
   {
-    "id": 190,
+    "id": "post-practice-clean-up",
     "name": "Post-Practice Clean Up",
     "difficulty": "Easy",
     "categories": [
@@ -2135,7 +2135,7 @@
     "is_direct_link": false
   },
   {
-    "id": 191,
+    "id": "power-position",
     "name": "Power Position",
     "difficulty": "Easy",
     "categories": [
@@ -2146,7 +2146,7 @@
     "is_direct_link": false
   },
   {
-    "id": 192,
+    "id": "prepare",
     "name": "Prepare",
     "difficulty": "Easy",
     "categories": [
@@ -2157,7 +2157,7 @@
     "is_direct_link": false
   },
   {
-    "id": 193,
+    "id": "preset-backhand-pick-stick",
     "name": "Preset Backhand Pick & Stick",
     "difficulty": "Easy",
     "categories": [
@@ -2168,7 +2168,7 @@
     "is_direct_link": false
   },
   {
-    "id": 194,
+    "id": "preset-backhand-rake",
     "name": "Preset Backhand Rake",
     "difficulty": "Easy",
     "categories": [
@@ -2179,7 +2179,7 @@
     "is_direct_link": false
   },
   {
-    "id": 195,
+    "id": "preset-block",
     "name": "Preset Block",
     "difficulty": "Easy",
     "categories": [
@@ -2190,7 +2190,7 @@
     "is_direct_link": false
   },
   {
-    "id": 196,
+    "id": "push-bunt",
     "name": "Push Bunt",
     "difficulty": "Hard",
     "categories": [
@@ -2201,7 +2201,7 @@
     "is_direct_link": false
   },
   {
-    "id": 197,
+    "id": "quarterback-adjustments",
     "name": "Quarterback Adjustments",
     "difficulty": "Medium",
     "categories": [
@@ -2212,7 +2212,7 @@
     "is_direct_link": false
   },
   {
-    "id": 198,
+    "id": "quarterback-angle-throw",
     "name": "Quarterback Angle Throw",
     "difficulty": "Medium",
     "categories": [
@@ -2223,7 +2223,7 @@
     "is_direct_link": false
   },
   {
-    "id": 199,
+    "id": "quarterback-over-the-shoulder",
     "name": "Quarterback Over the Shoulder",
     "difficulty": "Medium",
     "categories": [
@@ -2234,7 +2234,7 @@
     "is_direct_link": false
   },
   {
-    "id": 200,
+    "id": "quick-hands",
     "name": "Quick Hands",
     "difficulty": "Medium",
     "categories": [
@@ -2245,7 +2245,7 @@
     "is_direct_link": false
   },
   {
-    "id": 201,
+    "id": "quick-hands-fielding",
     "name": "Quick Hands Fielding",
     "difficulty": "Medium",
     "categories": [
@@ -2256,7 +2256,7 @@
     "is_direct_link": false
   },
   {
-    "id": 202,
+    "id": "rainbow-route",
     "name": "Rainbow Route",
     "difficulty": "Medium",
     "categories": [
@@ -2267,7 +2267,7 @@
     "is_direct_link": false
   },
   {
-    "id": 203,
+    "id": "random-front-toss",
     "name": "Random Front Toss",
     "difficulty": "Medium",
     "categories": [
@@ -2278,7 +2278,7 @@
     "is_direct_link": false
   },
   {
-    "id": 204,
+    "id": "range-of-motion-exercises",
     "name": "Range of Motion Exercises",
     "difficulty": "Easy",
     "categories": [
@@ -2289,7 +2289,7 @@
     "is_direct_link": false
   },
   {
-    "id": 205,
+    "id": "rapid-fire-block",
     "name": "Rapid Fire Block",
     "difficulty": "Hard",
     "categories": [
@@ -2300,7 +2300,7 @@
     "is_direct_link": false
   },
   {
-    "id": 206,
+    "id": "rapid-fire-fungo",
     "name": "Rapid Fire Fungo",
     "difficulty": "Medium",
     "categories": [
@@ -2311,7 +2311,7 @@
     "is_direct_link": false
   },
   {
-    "id": 207,
+    "id": "rapid-fire-receiving",
     "name": "Rapid Fire Receiving",
     "difficulty": "Hard",
     "categories": [
@@ -2322,7 +2322,7 @@
     "is_direct_link": false
   },
   {
-    "id": 208,
+    "id": "rapid-fire-toss",
     "name": "Rapid Fire Toss",
     "difficulty": "Medium",
     "categories": [
@@ -2333,7 +2333,7 @@
     "is_direct_link": false
   },
   {
-    "id": 209,
+    "id": "read-and-react",
     "name": "Read and React",
     "difficulty": "Easy",
     "categories": [
@@ -2344,7 +2344,7 @@
     "is_direct_link": false
   },
   {
-    "id": 210,
+    "id": "relaxed-receiving",
     "name": "Relaxed Receiving",
     "difficulty": "Easy",
     "categories": [
@@ -2355,7 +2355,7 @@
     "is_direct_link": false
   },
   {
-    "id": 211,
+    "id": "reverse-stride",
     "name": "Reverse Stride",
     "difficulty": "Medium",
     "categories": [
@@ -2366,7 +2366,7 @@
     "is_direct_link": false
   },
   {
-    "id": 212,
+    "id": "review",
     "name": "Review",
     "difficulty": "Easy",
     "categories": [
@@ -2377,7 +2377,7 @@
     "is_direct_link": false
   },
   {
-    "id": 213,
+    "id": "rhythm-tee",
     "name": "Rhythm Tee",
     "difficulty": "Easy",
     "categories": [
@@ -2389,7 +2389,7 @@
     "is_direct_link": false
   },
   {
-    "id": 214,
+    "id": "right-left-block",
     "name": "Right Left Block",
     "difficulty": "Easy",
     "categories": [
@@ -2400,7 +2400,7 @@
     "is_direct_link": false
   },
   {
-    "id": 215,
+    "id": "right-left-shuffle",
     "name": "Right Left Shuffle",
     "difficulty": "Medium",
     "categories": [
@@ -2411,7 +2411,7 @@
     "is_direct_link": false
   },
   {
-    "id": 216,
+    "id": "right-left-shuffle-fungo",
     "name": "Right Left Shuffle Fungo",
     "difficulty": "Medium",
     "categories": [
@@ -2422,7 +2422,7 @@
     "is_direct_link": false
   },
   {
-    "id": 217,
+    "id": "rotator-cuff-program",
     "name": "Rotator Cuff Program",
     "difficulty": "Easy",
     "categories": [
@@ -2433,7 +2433,7 @@
     "is_direct_link": false
   },
   {
-    "id": 218,
+    "id": "rounding-1st-base",
     "name": "Rounding 1st Base",
     "difficulty": "Easy",
     "categories": [
@@ -2444,7 +2444,7 @@
     "is_direct_link": false
   },
   {
-    "id": 219,
+    "id": "running-short-hops",
     "name": "Running Short Hops",
     "difficulty": "Hard",
     "categories": [
@@ -2455,7 +2455,7 @@
     "is_direct_link": false
   },
   {
-    "id": 220,
+    "id": "sacrifice-bunt",
     "name": "Sacrifice Bunt",
     "difficulty": "Easy",
     "categories": [
@@ -2466,7 +2466,7 @@
     "is_direct_link": false
   },
   {
-    "id": 221,
+    "id": "safety-squeeze-bunt",
     "name": "Safety Squeeze Bunt",
     "difficulty": "Medium",
     "categories": [
@@ -2477,7 +2477,7 @@
     "is_direct_link": false
   },
   {
-    "id": 222,
+    "id": "scissor-tee-and-soft-toss",
     "name": "Scissor Tee and Soft Toss",
     "difficulty": "Easy",
     "categories": [
@@ -2489,7 +2489,7 @@
     "is_direct_link": false
   },
   {
-    "id": 223,
+    "id": "separation-progression-tee",
     "name": "Separation Progression Tee",
     "difficulty": "Medium",
     "categories": [
@@ -2501,7 +2501,7 @@
     "is_direct_link": false
   },
   {
-    "id": 224,
+    "id": "short-base-team-bunt-drill",
     "name": "Short Base Team Bunt Drill",
     "difficulty": "Hard",
     "categories": [
@@ -2512,7 +2512,7 @@
     "is_direct_link": false
   },
   {
-    "id": 225,
+    "id": "short-bat-bottom-hand-front-toss",
     "name": "Short Bat Bottom Hand Front Toss",
     "difficulty": "Medium",
     "categories": [
@@ -2523,7 +2523,7 @@
     "is_direct_link": false
   },
   {
-    "id": 226,
+    "id": "short-bat-bottom-hand-tee",
     "name": "Short Bat Bottom Hand Tee",
     "difficulty": "Easy",
     "categories": [
@@ -2535,7 +2535,7 @@
     "is_direct_link": false
   },
   {
-    "id": 227,
+    "id": "short-bat-top-hand-front-toss",
     "name": "Short Bat Top Hand Front Toss",
     "difficulty": "Medium",
     "categories": [
@@ -2546,7 +2546,7 @@
     "is_direct_link": false
   },
   {
-    "id": 228,
+    "id": "short-bat-top-hand-tee",
     "name": "Short Bat Top Hand Tee",
     "difficulty": "Easy",
     "categories": [
@@ -2558,7 +2558,7 @@
     "is_direct_link": false
   },
   {
-    "id": 229,
+    "id": "short-fungo-circle-drill",
     "name": "Short Fungo Circle Drill",
     "difficulty": "Hard",
     "categories": [
@@ -2569,7 +2569,7 @@
     "is_direct_link": false
   },
   {
-    "id": 230,
+    "id": "short-hops",
     "name": "Short Hops",
     "difficulty": "Medium",
     "categories": [
@@ -2580,7 +2580,7 @@
     "is_direct_link": false
   },
   {
-    "id": 231,
+    "id": "shortstop-backhand-spin",
     "name": "Shortstop Backhand Spin",
     "difficulty": "Medium",
     "categories": [
@@ -2591,7 +2591,7 @@
     "is_direct_link": false
   },
   {
-    "id": 232,
+    "id": "shortstop-drop-step-throw",
     "name": "Shortstop Drop Step Throw",
     "difficulty": "Medium",
     "categories": [
@@ -2602,7 +2602,7 @@
     "is_direct_link": false
   },
   {
-    "id": 233,
+    "id": "shortstop-flips-to-second",
     "name": "Shortstop Flips to Second",
     "difficulty": "Easy",
     "categories": [
@@ -2613,7 +2613,7 @@
     "is_direct_link": false
   },
   {
-    "id": 234,
+    "id": "shortstop-forehand-flip",
     "name": "Shortstop Forehand Flip",
     "difficulty": "Medium",
     "categories": [
@@ -2624,7 +2624,7 @@
     "is_direct_link": false
   },
   {
-    "id": 235,
+    "id": "shoulder-weight-exercises",
     "name": "Shoulder Weight Exercises",
     "difficulty": "Easy",
     "categories": [
@@ -2635,7 +2635,7 @@
     "is_direct_link": false
   },
   {
-    "id": 236,
+    "id": "show-knuckles-drill",
     "name": "Show Knuckles Drill",
     "difficulty": "Easy",
     "categories": [
@@ -2646,7 +2646,7 @@
     "is_direct_link": false
   },
   {
-    "id": 237,
+    "id": "shuffle-gather-throw-fungo",
     "name": "Shuffle Gather Throw Fungo",
     "difficulty": "Easy",
     "categories": [
@@ -2657,7 +2657,7 @@
     "is_direct_link": false
   },
   {
-    "id": 238,
+    "id": "side-toss",
     "name": "Side Toss",
     "difficulty": "Medium",
     "categories": [
@@ -2668,7 +2668,7 @@
     "is_direct_link": false
   },
   {
-    "id": 239,
+    "id": "slow-rollers",
     "name": "Slow Rollers",
     "difficulty": "Easy",
     "categories": [
@@ -2679,7 +2679,7 @@
     "is_direct_link": false
   },
   {
-    "id": 240,
+    "id": "slow-rollers-fungo",
     "name": "Slow Rollers Fungo",
     "difficulty": "Medium",
     "categories": [
@@ -2690,7 +2690,7 @@
     "is_direct_link": false
   },
   {
-    "id": 241,
+    "id": "soft-toss",
     "name": "Soft Toss",
     "difficulty": "Medium",
     "categories": [
@@ -2701,7 +2701,7 @@
     "is_direct_link": false
   },
   {
-    "id": 242,
+    "id": "speed-and-acceleration-training",
     "name": "Speed and Acceleration Training",
     "difficulty": "Easy",
     "categories": [
@@ -2712,7 +2712,7 @@
     "is_direct_link": false
   },
   {
-    "id": 243,
+    "id": "speed-square",
     "name": "Speed Square",
     "difficulty": "Medium",
     "categories": [
@@ -2723,7 +2723,7 @@
     "is_direct_link": false
   },
   {
-    "id": 244,
+    "id": "squared-throwing",
     "name": "Squared Throwing",
     "difficulty": "Easy",
     "categories": [
@@ -2734,7 +2734,7 @@
     "is_direct_link": false
   },
   {
-    "id": 245,
+    "id": "stance-distance-check",
     "name": "Stance Distance Check",
     "difficulty": "Easy",
     "categories": [
@@ -2745,7 +2745,7 @@
     "is_direct_link": false
   },
   {
-    "id": 246,
+    "id": "stations-catching-infield-baserunning",
     "name": "Stations - Catching, Infield, Baserunning",
     "difficulty": "Easy",
     "categories": [
@@ -2756,7 +2756,7 @@
     "is_direct_link": false
   },
   {
-    "id": 247,
+    "id": "stations-infield-game-situations",
     "name": "Stations - Infield Game Situations",
     "difficulty": "Medium",
     "categories": [
@@ -2768,7 +2768,7 @@
     "is_direct_link": false
   },
   {
-    "id": 248,
+    "id": "steal-breaks-1st-and-2nd",
     "name": "Steal Breaks- 1st and 2nd",
     "difficulty": "Easy",
     "categories": [
@@ -2779,7 +2779,7 @@
     "is_direct_link": false
   },
   {
-    "id": 249,
+    "id": "steal-leads-from-1st-base",
     "name": "Steal Leads from 1st Base",
     "difficulty": "Easy",
     "categories": [
@@ -2790,7 +2790,7 @@
     "is_direct_link": false
   },
   {
-    "id": 250,
+    "id": "step-drills",
     "name": "Step Drills",
     "difficulty": "Easy",
     "categories": [
@@ -2801,7 +2801,7 @@
     "is_direct_link": false
   },
   {
-    "id": 251,
+    "id": "stick-the-pitch",
     "name": "Stick the Pitch",
     "difficulty": "Easy",
     "categories": [
@@ -2812,7 +2812,7 @@
     "is_direct_link": false
   },
   {
-    "id": 252,
+    "id": "stride-to-spot",
     "name": "Stride to Spot",
     "difficulty": "Easy",
     "categories": [
@@ -2823,7 +2823,7 @@
     "is_direct_link": false
   },
   {
-    "id": 253,
+    "id": "sway",
     "name": "Sway",
     "difficulty": "Easy",
     "categories": [
@@ -2834,7 +2834,7 @@
     "is_direct_link": false
   },
   {
-    "id": 254,
+    "id": "tandem",
     "name": "Tandem",
     "difficulty": "Easy",
     "categories": [
@@ -2845,7 +2845,7 @@
     "is_direct_link": false
   },
   {
-    "id": 255,
+    "id": "target-tee",
     "name": "Target Tee",
     "difficulty": "Hard",
     "categories": [
@@ -2857,7 +2857,7 @@
     "is_direct_link": false
   },
   {
-    "id": 256,
+    "id": "team-baserunning",
     "name": "Team Baserunning",
     "difficulty": "Easy",
     "categories": [
@@ -2868,7 +2868,7 @@
     "is_direct_link": false
   },
   {
-    "id": 257,
+    "id": "team-bunting-stations",
     "name": "Team Bunting Stations",
     "difficulty": "Medium",
     "categories": [
@@ -2879,7 +2879,7 @@
     "is_direct_link": false
   },
   {
-    "id": 258,
+    "id": "team-situations",
     "name": "Team Situations",
     "difficulty": "Medium",
     "categories": [
@@ -2890,7 +2890,7 @@
     "is_direct_link": false
   },
   {
-    "id": 259,
+    "id": "tees-with-timing",
     "name": "Tees with Timing",
     "difficulty": "Easy",
     "categories": [
@@ -2902,7 +2902,7 @@
     "is_direct_link": false
   },
   {
-    "id": 260,
+    "id": "tennis-ball-block",
     "name": "Tennis Ball Block",
     "difficulty": "Easy",
     "categories": [
@@ -2913,7 +2913,7 @@
     "is_direct_link": false
   },
   {
-    "id": 261,
+    "id": "tennis-ball-pop-ups",
     "name": "Tennis Ball Pop-Ups",
     "difficulty": "Easy",
     "categories": [
@@ -2924,7 +2924,7 @@
     "is_direct_link": false
   },
   {
-    "id": 262,
+    "id": "tennis-ball-soft-hands",
     "name": "Tennis Ball Soft Hands",
     "difficulty": "Easy",
     "categories": [
@@ -2935,7 +2935,7 @@
     "is_direct_link": false
   },
   {
-    "id": 263,
+    "id": "three-plate-front-toss",
     "name": "Three-Plate Front Toss",
     "difficulty": "Hard",
     "categories": [
@@ -2946,7 +2946,7 @@
     "is_direct_link": false
   },
   {
-    "id": 264,
+    "id": "throw-the-bat",
     "name": "Throw the Bat",
     "difficulty": "Easy",
     "categories": [
@@ -2957,7 +2957,7 @@
     "is_direct_link": false
   },
   {
-    "id": 265,
+    "id": "throwing-footwork-for-catchers",
     "name": "Throwing Footwork for Catchers",
     "difficulty": "Medium",
     "categories": [
@@ -2968,7 +2968,7 @@
     "is_direct_link": false
   },
   {
-    "id": 266,
+    "id": "tic-tac-toe",
     "name": "Tic Tac Toe",
     "difficulty": "Medium",
     "categories": [
@@ -2979,7 +2979,7 @@
     "is_direct_link": false
   },
   {
-    "id": 267,
+    "id": "tight-tee",
     "name": "Tight Tee",
     "difficulty": "Easy",
     "categories": [
@@ -2991,7 +2991,7 @@
     "is_direct_link": false
   },
   {
-    "id": 268,
+    "id": "top-drop-drill",
     "name": "Top Drop Drill",
     "difficulty": "Medium",
     "categories": [
@@ -3002,7 +3002,7 @@
     "is_direct_link": false
   },
   {
-    "id": 269,
+    "id": "top-hand-tee",
     "name": "Top Hand Tee",
     "difficulty": "Easy",
     "categories": [
@@ -3014,7 +3014,7 @@
     "is_direct_link": false
   },
   {
-    "id": 270,
+    "id": "turn-the-glove-over",
     "name": "Turn the Glove Over",
     "difficulty": "Easy",
     "categories": [
@@ -3025,7 +3025,7 @@
     "is_direct_link": false
   },
   {
-    "id": 271,
+    "id": "two-ball-front-toss",
     "name": "Two-Ball Front Toss",
     "difficulty": "Hard",
     "categories": [
@@ -3036,7 +3036,7 @@
     "is_direct_link": false
   },
   {
-    "id": 272,
+    "id": "underload-bat-soft-toss",
     "name": "Underload Bat Soft Toss",
     "difficulty": "Easy",
     "categories": [
@@ -3047,7 +3047,7 @@
     "is_direct_link": false
   },
   {
-    "id": 273,
+    "id": "upper-body-throwing",
     "name": "Upper Body Throwing",
     "difficulty": "Easy",
     "categories": [
@@ -3058,7 +3058,7 @@
     "is_direct_link": false
   },
   {
-    "id": 274,
+    "id": "volleyball-between-knees",
     "name": "Volleyball Between Knees",
     "difficulty": "Easy",
     "categories": [
@@ -3069,7 +3069,7 @@
     "is_direct_link": false
   },
   {
-    "id": 275,
+    "id": "warm-up-stretch",
     "name": "Warm Up & Stretch",
     "difficulty": "Easy",
     "categories": [
@@ -3080,7 +3080,7 @@
     "is_direct_link": false
   },
   {
-    "id": 276,
+    "id": "warm-up-stretch-and-cool-down",
     "name": "Warm Up, Stretch, and Cool Down",
     "difficulty": "Easy",
     "categories": [
@@ -3091,7 +3091,7 @@
     "is_direct_link": false
   },
   {
-    "id": 277,
+    "id": "water-break",
     "name": "Water Break",
     "difficulty": "Easy",
     "categories": [
@@ -3102,7 +3102,7 @@
     "is_direct_link": false
   },
   {
-    "id": 278,
+    "id": "weighted-ball-front-toss",
     "name": "Weighted Ball Front Toss",
     "difficulty": "Medium",
     "categories": [
@@ -3113,7 +3113,7 @@
     "is_direct_link": false
   },
   {
-    "id": 279,
+    "id": "whiffle-ball-toss",
     "name": "Whiffle Ball Toss",
     "difficulty": "Easy",
     "categories": [
@@ -3124,7 +3124,7 @@
     "is_direct_link": false
   },
   {
-    "id": 280,
+    "id": "working-in-set-position",
     "name": "Working in Set Position",
     "difficulty": "Medium",
     "categories": [
@@ -3135,7 +3135,7 @@
     "is_direct_link": false
   },
   {
-    "id": 281,
+    "id": "wrist-strength-tee",
     "name": "Wrist Strength Tee",
     "difficulty": "Easy",
     "categories": [

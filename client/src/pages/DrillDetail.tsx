@@ -21,7 +21,7 @@ const drillDetails: Record<string, {
   addDifficulty: string[];
   videoUrl: string | null;
 }> = {
-  "1": {
+  "1-2-3-drill": {
     skillSet: "Hitting",
     difficulty: "Easy",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -45,7 +45,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/r4eylEht9Fk"
   },
-  "28": {
+  "angle-flips": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -68,7 +68,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/DbceoWEor9c"
   },
-  "58": {
+  "behind-the-hitter-toss-1-2-3": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -87,7 +87,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/QUR1x6V73yQ"
   },
-  "59": {
+  "belly-button-tee": {
     skillSet: "Hitting",
     difficulty: "Easy",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -105,7 +105,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/P0f_jlz6LKA"
   },
-  "65": {
+  "bottom-hand-tee": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -125,7 +125,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/r4eylEht9Fk"
   },
-  "72": {
+  "change-up-front-toss": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -146,7 +146,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/SfP2RcIwaZQ"
   },
-  "74": {
+  "change-up-tee": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -165,7 +165,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/Ql72Xq2DX9U"
   },
-  "75": {
+  "color-front-toss": {
     skillSet: "Hitting",
     difficulty: "Hard",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -186,7 +186,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/QUR1x6V73yQ"
   },
-  "87": {
+  "decline-swings": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -204,7 +204,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/sgRnq_8G2XI"
   },
-  "89": {
+  "defense-stance": {
     skillSet: "Infield",
     difficulty: "Easy",
     athletes: "1+ athletes",
@@ -223,7 +223,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/l62xR2rGWrA"
   },
-  "100": {
+  "double-tee": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -244,7 +244,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/6NT-D_z3r94"
   },
-  "101": {
+  "double-tee-decision-making": {
     skillSet: "Hitting",
     difficulty: "Hard",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -269,7 +269,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/Ql72Xq2DX9U"
   },
-  "107": {
+  "extended-tee": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -287,7 +287,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/sgRnq_8G2XI"
   },
-  "108": {
+  "fastball-front-toss": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -308,7 +308,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/l62xR2rGWrA"
   },
-  "110": {
+  "flaw-casting-the-hands-outside-of-the-ball": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach",
@@ -324,7 +324,7 @@ const drillDetails: Record<string, {
     addDifficulty: [],
     videoUrl: "https://www.youtube.com/embed/xMVojRcf5p0"
   },
-  "111": {
+  "flaw-chopping-at-the-ball": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach",
@@ -340,7 +340,7 @@ const drillDetails: Record<string, {
     addDifficulty: [],
     videoUrl: "https://www.youtube.com/embed/gGriRVDyGI4"
   },
-  "112": {
+  "flaw-collapsing-the-backside": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach",
@@ -356,7 +356,7 @@ const drillDetails: Record<string, {
     addDifficulty: [],
     videoUrl: "https://www.youtube.com/embed/r365LTS6JUI"
   },
-  "113": {
+  "flaw-contact-point-too-far-out-front": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach",
@@ -372,7 +372,7 @@ const drillDetails: Record<string, {
     addDifficulty: [],
     videoUrl: "https://www.youtube.com/embed/xE6d7WyVnJc"
   },
-  "114": {
+  "flaw-hands-dropping-too-low": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach",
@@ -388,7 +388,7 @@ const drillDetails: Record<string, {
     addDifficulty: [],
     videoUrl: "https://www.youtube.com/embed/2-GSXHCtXBU"
   },
-  "115": {
+  "flaw-improper-stance": {
     skillSet: "Hitting",
     difficulty: "Easy",
     athletes: "1-2 athletes and 1 coach",
@@ -405,7 +405,7 @@ const drillDetails: Record<string, {
     addDifficulty: [],
     videoUrl: "https://www.youtube.com/embed/lKRM1GTczuI"
   },
-  "129": {
+  "front-hip-toss": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -425,7 +425,7 @@ const drillDetails: Record<string, {
     addDifficulty: [],
     videoUrl: "https://www.youtube.com/embed/P0f_jlz6LKA"
   },
-  "148": {
+  "interval-throwing": {
     skillSet: "Throwing",
     difficulty: "Easy",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners (all players)",
@@ -453,7 +453,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/X7Vxv4bxKBs"
   },
-  "2": {
+  "1-2-3-rhythm-tee": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -477,7 +477,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/BHfyJQLujhs"
   },
-  "3": {
+  "1st-base-flip-to-pitcher": {
     skillSet: "Infield",
     difficulty: "Medium",
     athletes: "1 athlete and 1 coach, or 2 athletes as partners",
@@ -499,7 +499,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/ks7qctrCuHg"
   },
-  "10": {
+  "2nd-baseman-forehand-spin": {
     skillSet: "Infield",
     difficulty: "Medium",
     athletes: "1 athlete and 1 coach, or 2 athletes as partners",
@@ -521,7 +521,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/nRKx7jcbnIU"
   },
-  "24": {
+  "advanced-batting-practice": {
     skillSet: "Infield",
     difficulty: "Easy",
     athletes: "4+ athletes",
@@ -543,7 +543,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/ZbZSe6N_BXs"
   },
-  "30": {
+  "arm-path-drill": {
     skillSet: "Infield",
     difficulty: "Easy",
     athletes: "1 athlete and 1 coach",
@@ -565,7 +565,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/aqz-KE-bpKQ"
   },
-  "166": {
+  "no-stride-tee": {
     skillSet: "Hitting",
     difficulty: "Easy",
     athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
@@ -588,7 +588,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/mrrBuwWawL4"
   },
-  "23": {
+  "9045even-progression-tee": {
     skillSet: "Hitting",
     difficulty: "Hard",
     athletes: "1-2 athletes and 1 coach",
@@ -611,7 +611,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/zHQ1-4hblnk"
   },
-  "158": {
+  "location-tee": {
     skillSet: "Hitting",
     difficulty: "Easy",
     athletes: "1-2 athletes and 1 coach",
@@ -634,7 +634,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/jDVgIQvuaXQ"
   },
-  "203": {
+  "random-front-toss": {
     skillSet: "Hitting",
     difficulty: "Medium",
     athletes: "1-2 athletes and 1 coach",
@@ -657,7 +657,7 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/wkyOsDsGpA8"
   },
-  "263": {
+  "three-plate-front-toss": {
     skillSet: "Hitting",
     difficulty: "Hard",
     athletes: "1-2 athletes and 1 coach",

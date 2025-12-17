@@ -12,7 +12,7 @@ import drillsData from "@/data/drills.json";
 
 // Types
 interface Drill {
-  id: number;
+  id: string;
   name: string;
   difficulty: string;
   categories: string[];
