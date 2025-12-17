@@ -424,7 +424,35 @@ const drillDetails: Record<string, {
     ],
     addDifficulty: [],
     videoUrl: "https://www.youtube.com/embed/P0f_jlz6LKA"
-  }
+  },
+  "148": {
+    skillSet: "Throwing",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners (all players)",
+    time: "12-15 minutes",
+    equipment: "Gloves and balls",
+    goal: "Prepare arm for pitching by going through a proper warm up routine",
+    description: [
+      "Players in partners spread out along the right or left field foul line",
+      "The player on the foul line will stay in that spot as their partner moves back to each distance",
+      "One Knee (5-10 ft.): Players down on their throwing side knee, glove side knee is up, shoulders square to their partner and throw back and forth, following through on each throw. Players each make 10 throws, then move back to next progression",
+      "Close Squared Throwing (10-15 ft.): Players stand with shoulders square to their partner, feet shoulder width apart, starting with their hands together and throw back and forth, letting the elbows close on release. Players each make 10 throws, then move back to next progression",
+      "Squared Throwing (15-20 ft.): Players stand with shoulders square to their partner, feet shoulder width apart, starting with their hands rotating together and throw back and forth, letting the elbows close on release. Players each make 10 throws, then move back to next progression",
+      "Standing Throwing Position (30-40 ft.): Players stand in normal starting position of throwing, take a deep breath, and throw to their partner, rotating and following through. Players take their time throwing back and forth. Players each make 10 throws",
+      "Players 45 feet apart: Players throw the ball back and forth using good throwing mechanics. Players each make 10 throws, then move back to next progression",
+      "Players 60 feet apart: Players throw the ball back and forth using good throwing mechanics. Players each make 9 throws, then move back to next progression",
+      "Players 90 feet apart: Players throw the ball back and forth using good throwing mechanics. Players each make 8 throws, then move back to next progression",
+      "Players 120 feet apart: Players throw the ball back and forth using good throwing mechanics. A crow hop should be used to reduce strain on the arm. Players each make 5 throws, then move back to next progression",
+      "Players 130-140 feet apart: Players throw the ball back and forth using good throwing mechanics. A crow hop should be used to reduce strain on the arm. Players each make 5 throws, then move back to next progression",
+      "Cool Down: Players should slow start working their way back to the 45 foot distance, making throws on their way back in"
+    ],
+    addDifficulty: [
+      "Keep good throwing form with elbow closed on release without flying open",
+      "Keep throws on as much of a line as possible, do not put high arc on throws to increase distance. It is okay if the ball bounces before getting to the partner",
+      "Cool down by slowly moving back in after making 5 throws at the furthest distance so that the long toss progression ends back at 45 feet"
+    ],
+    videoUrl: "https://www.youtube.com/embed/X7Vxv4bxKBs"
+  },
 };
 
 export default function DrillDetail() {
