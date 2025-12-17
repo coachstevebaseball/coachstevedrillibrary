@@ -681,6 +681,329 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/WQnBi1-4riw"
   },
+  "two-ball-front-toss": {
+    skillSet: "Hitting",
+    difficulty: "Hard",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/wT1rnXTHX8U"
+  },
+  "one-handed-hitting": {
+    skillSet: "Hitting",
+    difficulty: "Hard",
+    athletes: "1-2 athletes and 1 coach",
+    time: "15m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/MxoNAJAp1Oc"
+  },
+  "high-tee": {
+    skillSet: "Hitting",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/UPvLzEv81go"
+  },
+  "double-ball-toss": {
+    skillSet: "Hitting",
+    difficulty: "Hard",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/dWJhVoP4T-8"
+  },
+  "knob-inside-the-ball-toss": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/622uNsPEfs8"
+  },
+  "short-bat-bottom-hand-tee": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/b0fEHcXTsVA"
+  },
+  "short-bat-top-hand-tee": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/GMwc7OtTHfU"
+  },
+  "balance-pause-drill": {
+    skillSet: "Hitting",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/39H9sv-_UVU"
+  },
+  "balanced-stationary-drill": {
+    skillSet: "Hitting",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/IVyjtnacgaE"
+  },
+  "change-up-catch": {
+    skillSet: "Throwing",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/Jt_2Znyv7xE"
+  },
+  "crow-hops": {
+    skillSet: "Throwing",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/3Xb2Hqr-cbE"
+  },
+  "daily-band-work": {
+    skillSet: "Throwing",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/xV8PY67NWiw"
+  },
+  "daily-flat-ground-work": {
+    skillSet: "Throwing",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/MnDGnwKUq34"
+  },
+  "daily-throwing-program": {
+    skillSet: "Throwing",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/jYp0511ckBA"
+  },
+  "drag-bunt": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/vpp6Snputsk"
+  },
+  "heavy-front-side-drill": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/rZYnNQX9Zlc"
+  },
+  "hook-ems": {
+    skillSet: "Hitting",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, bat, tee or coach",
+    goal: "Develop proper technique and timing",
+    description: [
+      "Watch the video for detailed instructions",
+      "Follow the progression shown in the video",
+      "Practice with proper form and focus"
+    ],
+    addDifficulty: [
+      "Increase speed or intensity",
+      "Add more repetitions",
+      "Vary the drill conditions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/Hdw8h4y4eS0"
+  },
 }
 
 export default function DrillDetail() {
