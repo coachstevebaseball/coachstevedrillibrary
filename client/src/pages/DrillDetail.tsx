@@ -8,9 +8,19 @@ import { getLoginUrl, PREVIEW_MODE } from "@/const";
 import { Link, useRoute } from "wouter";
 import drillsData from "@/data/drills.json";
 
-// Mock data for the 1-2-3 Drill (since we only extracted this one for now)
-// In a real app, we would fetch this or have it all in the JSON
-const drillDetails = {
+// Drill details with video URLs and content
+// Keys are the drill IDs from drills.json
+const drillDetails: Record<string, {
+  skillSet: string;
+  difficulty: string;
+  athletes: string;
+  time: string;
+  equipment: string;
+  goal: string;
+  description: string[];
+  addDifficulty: string[];
+  videoUrl: string | null;
+}> = {
   "1": {
     skillSet: "Hitting",
     difficulty: "Easy",
@@ -22,7 +32,7 @@ const drillDetails = {
       "Tee set up slightly in front of the middle of the plate",
       "Hitter sets up even with the plate, while other partner puts a ball on the tee",
       "Hitter gets ready, looks forward to visualize a pitcher",
-      "Partner then calls out “1, 2, 3” pausing after each number, on each number hitter will:",
+      "Partner then calls out \"1, 2, 3\" pausing after each number, on each number hitter will:",
       "1: Hitter loads shifting weight to back foot",
       "2: Hitter strides while staying balanced, hands separate to move back from the shoulder",
       "3: Hitter swings and hits the ball",
@@ -58,6 +68,63 @@ const drillDetails = {
     ],
     videoUrl: "https://www.youtube.com/embed/DbceoWEor9c"
   },
+  "58": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
+    time: "10 minutes",
+    equipment: "Bat, baseballs, screen for coach to throw behind",
+    goal: "Develop timing and rhythm with pitches coming from behind",
+    description: [
+      "Coach sets up behind the hitter at a safe distance",
+      "Coach underhand tosses the ball from behind the hitter",
+      "Hitter focuses on timing and tracking the ball",
+      "Use the 1-2-3 rhythm: 1-Load, 2-Stride, 3-Swing",
+      "Partners switch after 10 swings"
+    ],
+    addDifficulty: [
+      "Vary the speed and location of tosses"
+    ],
+    videoUrl: "https://www.youtube.com/embed/QUR1x6V73yQ"
+  },
+  "59": {
+    skillSet: "Hitting",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
+    time: "5 minutes",
+    equipment: "Tee, baseballs, net or screen to hit into",
+    goal: "Develop proper contact point at the belly button area",
+    description: [
+      "Set up the tee at belly button height",
+      "Hitter focuses on making contact at the optimal point",
+      "Drive the ball back up the middle",
+      "Partners switch after 5 swings"
+    ],
+    addDifficulty: [
+      "Move the tee to different locations (inside, outside)"
+    ],
+    videoUrl: "https://www.youtube.com/embed/P0f_jlz6LKA"
+  },
+  "65": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
+    time: "5 minutes",
+    equipment: "Tee, baseballs, net or screen to hit into",
+    goal: "Strengthen the bottom hand and develop proper swing mechanics",
+    description: [
+      "Hitter grips the bat with only the bottom hand",
+      "Tee set up at waist height",
+      "Focus on driving through the ball with the bottom hand",
+      "Maintain proper body position throughout the swing",
+      "Partners switch after 5 swings"
+    ],
+    addDifficulty: [
+      "Increase the number of swings",
+      "Move the tee to different contact points"
+    ],
+    videoUrl: "https://www.youtube.com/embed/r4eylEht9Fk"
+  },
   "72": {
     skillSet: "Hitting",
     difficulty: "Medium",
@@ -78,6 +145,25 @@ const drillDetails = {
       "To add a degree of difficulty, coaches can throw pitches inside and outside"
     ],
     videoUrl: "https://www.youtube.com/embed/SfP2RcIwaZQ"
+  },
+  "74": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
+    time: "5 minutes",
+    equipment: "Tee, baseballs, net or screen to hit into",
+    goal: "Practice timing adjustments for off-speed pitches",
+    description: [
+      "Set up the tee slightly back from normal contact point",
+      "Hitter focuses on staying back and waiting for the ball",
+      "Practice the feel of hitting a change-up",
+      "Drive the ball to the opposite field",
+      "Partners switch after 5 swings"
+    ],
+    addDifficulty: [
+      "Alternate between fastball and change-up tee positions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/Ql72Xq2DX9U"
   },
   "75": {
     skillSet: "Hitting",
@@ -100,6 +186,43 @@ const drillDetails = {
     ],
     videoUrl: "https://www.youtube.com/embed/QUR1x6V73yQ"
   },
+  "87": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
+    time: "5 minutes",
+    equipment: "Bat, tee or soft toss setup, baseballs",
+    goal: "Develop proper swing plane and bat path",
+    description: [
+      "Hitter sets up on a slight decline or uses a decline board",
+      "Focus on swinging on a slight upward plane",
+      "Drive through the ball with proper mechanics",
+      "Partners switch after 5 swings"
+    ],
+    addDifficulty: [
+      "Increase the angle of decline"
+    ],
+    videoUrl: "https://www.youtube.com/embed/sgRnq_8G2XI"
+  },
+  "89": {
+    skillSet: "Infield",
+    difficulty: "Easy",
+    athletes: "1+ athletes",
+    time: "5 minutes",
+    equipment: "Glove",
+    goal: "Develop proper defensive ready position",
+    description: [
+      "Feet shoulder-width apart, knees bent",
+      "Weight on the balls of the feet",
+      "Glove out in front, ready position",
+      "Practice getting into stance quickly from standing",
+      "Hold position for 5-10 seconds at a time"
+    ],
+    addDifficulty: [
+      "Add lateral movement drills from the stance"
+    ],
+    videoUrl: "https://www.youtube.com/embed/l62xR2rGWrA"
+  },
   "100": {
     skillSet: "Hitting",
     difficulty: "Medium",
@@ -120,6 +243,167 @@ const drillDetails = {
       "Inside pitches should be hit up the middle or slightly to the pull side of the middle"
     ],
     videoUrl: "https://www.youtube.com/embed/6NT-D_z3r94"
+  },
+  "101": {
+    skillSet: "Hitting",
+    difficulty: "Hard",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
+    time: "10 minutes",
+    equipment: "Tees, baseballs, net or screen to hit into",
+    goal: "Adjustability in the swing, maintain proper body position throughout the process",
+    description: [
+      "One tee set up to hit the ball to the pullside field",
+      "One tee is set up on the outside corner to hit the ball to the opposite field - the outside tee must be higher than the inside tee",
+      "Hitter sets up even with the plate, while partner places a ball on the tees",
+      "Hitter begins loading phase, partner then calls out \"outside\" or \"inside\"",
+      "Hitter then hits off the corresponding tee, missing the other tee",
+      "Focus is to have adjustability in the swing, maintaining proper body position throughout the process",
+      "Objective is to be able to hit either pitch called effectively in the desired location",
+      "Partner resets the ball on the tee that was called out and repeats process",
+      "Great for hitters that cannot maintain proper body position without committing early to a pitch location",
+      "Partners switch after 10 swings"
+    ],
+    addDifficulty: [
+      "Decrease the time between setup and call",
+      "Add a middle tee option"
+    ],
+    videoUrl: "https://www.youtube.com/embed/Ql72Xq2DX9U"
+  },
+  "107": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
+    time: "5 minutes",
+    equipment: "Tee, baseballs, net or screen to hit into",
+    goal: "Keep the bat on the plane of the baseball, and drive the baseball up the middle",
+    description: [
+      "Tee set up in front of the middle of the plate, roughly 6 inches out front of the plate",
+      "Hitter sets up even with the plate, while other partner puts a ball on the tee",
+      "Hitter hits the ball, trying to hit a low line drive back up the middle, keeping the bat on the plane of the ball and the barrel behind the hands",
+      "Partners switch after 5 swings"
+    ],
+    addDifficulty: [
+      "Move the tee to different contact points (inside, middle, outside)"
+    ],
+    videoUrl: "https://www.youtube.com/embed/sgRnq_8G2XI"
+  },
+  "108": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
+    time: "10 minutes",
+    equipment: "Screen for coach to throw behind, home plate, and a bucket of baseballs",
+    goal: "Focus on rhythm of the hitter with the pitcher and driving the ball up the middle",
+    description: [
+      "Screen set up 30 feet from the plate",
+      "Hitter sets up even with the plate",
+      "Coach underhand throws the ball down the middle of the plate on a line at a slow to medium speed from behind the screen",
+      "Hitter tries to hit the ball back up the middle, working on timing with the coach's pitches",
+      "Focus should be on good quality swings, with hitters finishing their swing and staying balanced",
+      "Partners switch after 10 swings"
+    ],
+    addDifficulty: [
+      "Increase the speed of the tosses",
+      "Add location variation (inside, outside)"
+    ],
+    videoUrl: "https://www.youtube.com/embed/l62xR2rGWrA"
+  },
+  "110": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10 minutes",
+    equipment: "Bat, tee or soft toss setup, baseballs",
+    goal: "Correct the flaw of casting hands outside the ball",
+    description: [
+      "Identify the casting flaw in the hitter's swing",
+      "Focus on keeping hands inside the ball",
+      "Use inside toss drills to reinforce proper hand path",
+      "Video analysis can help identify the issue"
+    ],
+    addDifficulty: [],
+    videoUrl: "https://www.youtube.com/embed/xMVojRcf5p0"
+  },
+  "111": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10 minutes",
+    equipment: "Bat, tee or soft toss setup, baseballs",
+    goal: "Correct the flaw of chopping at the ball",
+    description: [
+      "Identify the chopping flaw in the hitter's swing",
+      "Focus on staying through the ball with a level swing",
+      "Use extension drills to promote proper follow-through",
+      "Practice hitting line drives back up the middle"
+    ],
+    addDifficulty: [],
+    videoUrl: "https://www.youtube.com/embed/gGriRVDyGI4"
+  },
+  "112": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10 minutes",
+    equipment: "Bat, tee or soft toss setup, baseballs",
+    goal: "Correct the flaw of collapsing the backside",
+    description: [
+      "Identify when the hitter's back leg collapses during the swing",
+      "Focus on maintaining a strong back side throughout the swing",
+      "Use balance drills to strengthen the lower half",
+      "Practice keeping weight back until contact"
+    ],
+    addDifficulty: [],
+    videoUrl: "https://www.youtube.com/embed/r365LTS6JUI"
+  },
+  "113": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10 minutes",
+    equipment: "Bat, tee or soft toss setup, baseballs",
+    goal: "Correct the flaw of contact point being too far out front",
+    description: [
+      "Identify when the hitter is making contact too far out front",
+      "Focus on letting the ball travel deeper into the zone",
+      "Use opposite field hitting drills",
+      "Practice patience at the plate"
+    ],
+    addDifficulty: [],
+    videoUrl: "https://www.youtube.com/embed/xE6d7WyVnJc"
+  },
+  "114": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10 minutes",
+    equipment: "Bat, tee or soft toss setup, baseballs",
+    goal: "Correct the flaw of hands dropping too low",
+    description: [
+      "Identify when the hitter's hands drop before the swing",
+      "Focus on keeping hands at shoulder height through load",
+      "Use high tee drills to reinforce proper hand position",
+      "Practice short, compact swings"
+    ],
+    addDifficulty: [],
+    videoUrl: "https://www.youtube.com/embed/2-GSXHCtXBU"
+  },
+  "115": {
+    skillSet: "Hitting",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5 minutes",
+    equipment: "Bat",
+    goal: "Correct improper batting stance",
+    description: [
+      "Evaluate the hitter's current stance",
+      "Check feet positioning - shoulder width apart",
+      "Ensure proper weight distribution",
+      "Check hand position and grip",
+      "Make adjustments as needed for comfort and power"
+    ],
+    addDifficulty: [],
+    videoUrl: "https://www.youtube.com/embed/lKRM1GTczuI"
   },
   "129": {
     skillSet: "Hitting",
@@ -306,6 +590,7 @@ export default function DrillDetail() {
                   </div>
                 </section>
 
+                {details.addDifficulty.length > 0 && (
                 <section>
                   <h2 className="text-2xl font-heading font-bold mb-4 flex items-center gap-2">
                     <span className="bg-primary text-primary-foreground h-8 w-8 rounded-full flex items-center justify-center text-sm">2</span>
@@ -322,6 +607,7 @@ export default function DrillDetail() {
                     </ul>
                   </div>
                 </section>
+                )}
               </div>
             </div>
           </div>

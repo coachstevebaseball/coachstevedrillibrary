@@ -21,6 +21,7 @@ import { Switch } from "@/components/ui/switch";
 import { Loader2, Users, Shield, CheckCircle2, XCircle } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
@@ -49,12 +50,13 @@ export default function AdminDashboard() {
     );
   }
 
-  if (!user) {
-    setLocation("/");
-    return null;
-  }
+  useEffect(() => {
+    if (!user && !authLoading) {
+      setLocation("/");
+    }
+  }, [user, authLoading, setLocation]);
 
-  if (user.role !== "admin") {
+  if (!user || user.role !== "admin") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <Card className="max-w-md">
