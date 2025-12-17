@@ -1,37 +1,12 @@
+import { useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";;
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink, Lock, LogIn, ChevronDown, AlertCircle, TrendingUp, Lightbulb } from "lucide-react";
-import { getCategoryConfig } from "@/lib/categoryColors";
+import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink, Lock, LogIn } from "lucide-react";
 import { getLoginUrl, PREVIEW_MODE } from "@/const";
 import { Link, useRoute } from "wouter";
-import { useState } from "react";
 import drillsData from "@/data/drills.json";
-
-// Collapsible section component
-function CollapsibleSection({ title, icon: Icon, children, defaultOpen = false }: { title: string; icon: any; children: React.ReactNode; defaultOpen?: boolean }) {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-  return (
-    <div className="border rounded-lg overflow-hidden">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 bg-muted/50 hover:bg-muted transition-colors font-semibold text-left"
-      >
-        <div className="flex items-center gap-2">
-          <Icon className="h-5 w-5 text-secondary" />
-          {title}
-        </div>
-        <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-      </button>
-      {isOpen && (
-        <div className="p-4 bg-background border-t">
-          {children}
-        </div>
-      )}
-    </div>
-  );
-}
 
 // Drill details with video URLs and content
 // Keys are the drill IDs from drills.json
@@ -906,7 +881,7 @@ export default function DrillDetail() {
       {/* Header */}
       {hasAccess && (
       <>
-      <header className="bg-primary text-primary-foreground py-6 md:py-10 mb-8">
+      <header className="bg-primary text-primary-foreground py-8 mb-8">
         <div className="container">
           <Link href="/">
             <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 mb-4 pl-0">
@@ -915,21 +890,18 @@ export default function DrillDetail() {
             </Button>
           </Link>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div className="flex-1">
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                <Badge variant="secondary" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-bold">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <Badge variant="secondary" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
                   {drill.difficulty}
                 </Badge>
-                {drill.categories.map(cat => {
-                  const config = getCategoryConfig(cat);
-                  return (
-                    <Badge key={cat} className={`${config.bgColor} ${config.color} font-semibold border`}>
-                      {cat}
-                    </Badge>
-                  );
-                })}
+                {drill.categories.map(cat => (
+                  <Badge key={cat} variant="outline" className="text-primary-foreground border-primary-foreground/30">
+                    {cat}
+                  </Badge>
+                ))}
               </div>
-              <h1 className="text-4xl md:text-5xl font-heading font-black leading-tight">{drill.name}</h1>
+              <h1 className="text-3xl md:text-4xl font-heading font-bold">{drill.name}</h1>
             </div>
             
             {/* Fallback to external link if we don't have internal details */}
@@ -969,92 +941,40 @@ export default function DrillDetail() {
 
 
 
-            {/* Coaching Cues - Above the Fold */}
-            <Card className="border-l-4 border-l-secondary bg-gradient-to-br from-secondary/5 to-background">
+            {/* Goal */}
+            <Card className="border-l-4 border-l-secondary">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-2xl font-black">
-                  <Lightbulb className="h-6 w-6 text-secondary" />
-                  Coaching Focus
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <Target className="h-5 w-5 text-secondary" />
+                  Drill Purpose
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-lg font-semibold text-foreground leading-relaxed">{details.goal}</p>
+                <p className="text-lg">{details.goal}</p>
               </CardContent>
             </Card>
 
-            {/* Quick Info Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="bg-muted rounded-lg p-3 border">
-                <div className="text-xs font-bold text-muted-foreground uppercase mb-1">Time</div>
-                <div className="font-bold text-foreground">{details.time}</div>
-              </div>
-              <div className="bg-muted rounded-lg p-3 border">
-                <div className="text-xs font-bold text-muted-foreground uppercase mb-1">Athletes</div>
-                <div className="font-bold text-foreground text-sm">{details.athletes.split(',')[0]}</div>
-              </div>
-              <div className="bg-muted rounded-lg p-3 border">
-                <div className="text-xs font-bold text-muted-foreground uppercase mb-1">Equipment</div>
-                <div className="font-bold text-foreground text-sm">{details.equipment.split(',')[0]}</div>
-              </div>
-              <div className="bg-muted rounded-lg p-3 border">
-                <div className="text-xs font-bold text-muted-foreground uppercase mb-1">Skill Set</div>
-                <div className="font-bold text-foreground text-sm">{details.skillSet}</div>
-              </div>
-            </div>
-
             {/* Instructions */}
-            <section>
-              <h2 className="text-3xl font-heading font-black mb-4 flex items-center gap-2">
-                <span className="bg-primary text-primary-foreground h-10 w-10 rounded-full flex items-center justify-center text-sm font-bold">1</span>
-                Step-by-Step Instructions
-              </h2>
-              <div className="bg-card rounded-xl border p-6 shadow-sm space-y-4">
-                <ul className="space-y-4">
-                  {details.description.map((step: string, i: number) => (
-                    <li key={i} className="flex gap-3">
-                      <div className="h-3 w-3 bg-secondary rounded-full mt-1.5 shrink-0" />
-                      <span className="leading-relaxed text-base">{step}</span>
-                    </li>
-                  ))}
-                </ul>
+            <div className="grid md:grid-cols-1 gap-8">
+              <div className="space-y-8">
+                <section>
+                  <h2 className="text-2xl font-heading font-bold mb-4 flex items-center gap-2">
+                    <span className="bg-primary text-primary-foreground h-8 w-8 rounded-full flex items-center justify-center text-sm">1</span>
+                    Instructions
+                  </h2>
+                  <div className="bg-card rounded-xl border p-6 shadow-sm space-y-4">
+                    <ul className="space-y-3">
+                      {details.description.map((step: string, i: number) => (
+                        <li key={i} className="flex gap-3">
+                          <div className="h-2 w-2 bg-secondary rounded-full mt-2 shrink-0" />
+                          <span className="leading-relaxed">{step}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </section>
+
               </div>
-            </section>
-
-            {/* Collapsible Sections */}
-            <div className="space-y-4">
-              <CollapsibleSection title="Common Mistakes" icon={AlertCircle}>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex gap-2">
-                    <span className="text-secondary font-bold">•</span>
-                    <span>Rushing through the drill - Focus on quality repetitions over quantity</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-secondary font-bold">•</span>
-                    <span>Improper setup - Ensure athletes understand the starting position before beginning</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-secondary font-bold">•</span>
-                    <span>Lack of coaching emphasis - Provide clear feedback after each repetition</span>
-                  </li>
-                </ul>
-              </CollapsibleSection>
-
-              <CollapsibleSection title="Progressions" icon={TrendingUp}>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex gap-2">
-                    <span className="text-secondary font-bold">→</span>
-                    <span><strong>Beginner:</strong> Focus on proper mechanics with slower pace</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-secondary font-bold">→</span>
-                    <span><strong>Intermediate:</strong> Increase speed and add game-like situations</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-secondary font-bold">→</span>
-                    <span><strong>Advanced:</strong> Add pressure and competitive elements</span>
-                  </li>
-                </ul>
-              </CollapsibleSection>
             </div>
           </div>
         ) : (

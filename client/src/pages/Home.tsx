@@ -1,14 +1,15 @@
-import { useState, useMemo } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, ExternalLink, Clock, Activity, Dumbbell, Users, ChevronRight, LogIn, LogOut, Shield } from "lucide-react";
+import { Search, Filter, ExternalLink, Clock, Activity, Dumbbell, Users, ChevronRight, LogIn, LogOut, Shield, X } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
 import drillsData from "@/data/drills.json";
+import { getCategoryConfig } from "@/lib/categoryColors";
+import { useState, useMemo } from "react";
 
 // Types
 interface Drill {
@@ -59,6 +60,8 @@ export default function Home() {
     }
   };
 
+  const hasActiveFilters = searchQuery !== "" || difficultyFilter !== "All" || categoryFilter !== "All";
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Hero Section */}
@@ -72,7 +75,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-primary/80 to-primary/95" />
         </div>
         
-        <div className="container relative z-10 py-16 md:py-24">
+        <div className="container relative z-10 py-12 md:py-20">
           {/* Auth & Admin Controls */}
           <div className="flex justify-end gap-3 mb-8">
             {user ? (
@@ -100,28 +103,27 @@ export default function Home() {
             )}
           </div>
           
-          <div className="max-w-3xl">
-            <div className="flex items-center gap-3 mb-4">
+          <div className="max-w-4xl">
+            <div className="flex items-center gap-3 mb-3">
               <div className="h-1 w-12 bg-secondary rounded-full" />
-              <span className="text-secondary font-bold tracking-wider uppercase text-sm">Coach Steve's Mobile Coach</span>
+              <span className="text-secondary font-bold tracking-wider uppercase text-xs">Coach Steve's Mobile Coach</span>
             </div>
-            <h1 className="text-4xl md:text-6xl font-heading font-bold mb-6 leading-tight">
+            <h1 className="text-5xl md:text-7xl font-heading font-black mb-4 leading-tight">
               Drills Directory
             </h1>
-            <p className="text-xl text-primary-foreground/80 mb-8 max-w-2xl leading-relaxed">
-              Access the complete library of {drillsData.length} professional baseball drills. 
-              Filter by skill set, difficulty, and duration to build the perfect practice plan.
+            <p className="text-lg text-primary-foreground/90 mb-10 max-w-3xl leading-relaxed font-medium">
+              {drillsData.length} professional baseball drills. Filter by skill set, difficulty, and duration to build the perfect practice plan.
             </p>
             
             {/* Search Bar in Hero */}
-            <div className="relative max-w-xl">
+            <div className="relative max-w-2xl">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-muted-foreground" />
               </div>
               <Input
                 type="text"
-                placeholder="Search for a drill (e.g., '1-2-3 Drill', 'Bunting')..."
-                className="pl-11 py-6 text-lg bg-background/95 text-foreground border-0 shadow-xl rounded-xl focus-visible:ring-2 focus-visible:ring-secondary"
+                placeholder="Search drills... (e.g., '1-2-3 Drill', 'Bunting', 'Throwing')"
+                className="pl-11 py-7 text-base bg-background/95 text-foreground border-0 shadow-2xl rounded-2xl focus-visible:ring-2 focus-visible:ring-secondary font-medium"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -131,116 +133,143 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 container py-12">
-        {/* Filters */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8 items-center justify-between bg-card p-4 rounded-xl border shadow-sm">
-          <div className="flex items-center gap-2 text-muted-foreground font-medium">
-            <Filter className="h-5 w-5" />
-            <span>Filters:</span>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-            <Select value={difficultyFilter} onValueChange={setDifficultyFilter}>
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="Difficulty" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All">All Difficulties</SelectItem>
-                <SelectItem value="Easy">Easy</SelectItem>
-                <SelectItem value="Medium">Medium</SelectItem>
-                <SelectItem value="Hard">Hard</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-full sm:w-[220px]">
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent>
-                {allCategories.map(cat => (
-                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+      <main className="flex-1 container py-8 md:py-12">
+        {/* Enhanced Filters */}
+        <div className="bg-card border rounded-2xl p-5 md:p-6 shadow-sm mb-10">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-foreground font-bold text-lg">
+                <Filter className="h-5 w-5 text-secondary" />
+                <span>Filter Drills</span>
+              </div>
+              {hasActiveFilters && (
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setDifficultyFilter("All");
+                    setCategoryFilter("All");
+                  }}
+                  className="text-muted-foreground hover:text-foreground gap-1"
+                >
+                  <X className="h-4 w-4" />
+                  Clear All
+                </Button>
+              )}
+            </div>
             
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setSearchQuery("");
-                setDifficultyFilter("All");
-                setCategoryFilter("All");
-              }}
-              className="whitespace-nowrap"
-            >
-              Reset Filters
-            </Button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <label className="text-sm font-semibold text-muted-foreground mb-2 block">Difficulty</label>
+                <Select value={difficultyFilter} onValueChange={setDifficultyFilter}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="All Difficulties" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="All">All Difficulties</SelectItem>
+                    <SelectItem value="Easy">Easy</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value="Hard">Hard</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="text-sm font-semibold text-muted-foreground mb-2 block">Skill Set</label>
+                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="All Skill Sets" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {allCategories.map(cat => (
+                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-end">
+                <div className="text-sm text-muted-foreground font-medium">
+                  <span className="text-foreground font-bold text-lg">{filteredDrills.length}</span> drills found
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Results Count */}
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-heading font-bold text-foreground">
-            Available Drills
-            <span className="ml-3 text-lg font-normal text-muted-foreground bg-muted px-3 py-1 rounded-full">
-              {filteredDrills.length}
-            </span>
-          </h2>
-        </div>
-
-        {/* Drills Grid */}
+        {/* Results Section */}
         {filteredDrills.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredDrills.map((drill) => (
-              <Link 
-                key={drill.id} 
-                href={`/drill/${drill.id}`}
-                className="group block h-full"
-              >
-                <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-l-4 border-l-transparent hover:border-l-secondary overflow-hidden flex flex-col">
-                  <CardHeader className="pb-3">
-                    <div className="flex justify-between items-start gap-2 mb-2">
-                      <Badge variant="outline" className={`${getDifficultyColor(drill.difficulty)} font-medium border`}>
-                        {drill.difficulty}
-                      </Badge>
-                      {drill.duration !== "Unknown" && (
-                        <div className="flex items-center text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded">
-                          <Clock className="h-3 w-3 mr-1" />
-                          {drill.duration}
+          <div>
+            <h2 className="text-3xl font-heading font-bold text-foreground mb-8">
+              {categoryFilter !== "All" ? `${categoryFilter} Drills` : "All Drills"}
+            </h2>
+            
+            {/* Drills Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredDrills.map((drill) => {
+                const primaryCategory = drill.categories[0];
+                const categoryConfig = getCategoryConfig(primaryCategory);
+                
+                return (
+                  <Link 
+                    key={drill.id} 
+                    href={`/drill/${drill.id}`}
+                    className="group block h-full"
+                  >
+                    <Card className="h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border-l-4 border-l-transparent overflow-hidden flex flex-col">
+                      <CardHeader className="pb-3 bg-gradient-to-br from-background to-muted/30">
+                        <div className="flex justify-between items-start gap-2 mb-3">
+                          <Badge variant="outline" className={`${getDifficultyColor(drill.difficulty)} font-bold border text-xs`}>
+                            {drill.difficulty}
+                          </Badge>
+                          {drill.duration !== "Unknown" && (
+                            <div className="flex items-center text-xs font-medium text-muted-foreground bg-background px-2.5 py-1.5 rounded-lg border">
+                              <Clock className="h-3 w-3 mr-1.5" />
+                              {drill.duration}
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                    <CardTitle className="text-xl font-heading leading-tight group-hover:text-primary transition-colors">
-                      {drill.name}
-                    </CardTitle>
-                  </CardHeader>
-                  
-                  <CardContent className="flex-1">
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {drill.categories.map((cat, idx) => (
-                        <Badge key={idx} variant="secondary" className="bg-muted text-muted-foreground hover:bg-muted/80 font-normal">
-                          {cat}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                  
-                  <CardFooter className="pt-0 pb-4 text-sm text-muted-foreground flex items-center justify-between border-t bg-muted/10 mt-auto p-4">
-                    <span className="flex items-center gap-1.5 group-hover:text-secondary transition-colors font-medium">
-                      View Drill Details
-                    </span>
-                    <ChevronRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-secondary" />
-                  </CardFooter>
-                </Card>
-              </Link>
-            ))}
+                        <CardTitle className="text-2xl font-heading font-black leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                          {drill.name}
+                        </CardTitle>
+                      </CardHeader>
+                      
+                      <CardContent className="flex-1 pt-4">
+                        <div className="flex flex-wrap gap-2">
+                          {drill.categories.map((cat, idx) => {
+                            const config = getCategoryConfig(cat);
+                            return (
+                              <Badge 
+                                key={idx} 
+                                className={`${config.bgColor} ${config.color} font-semibold text-xs border`}
+                              >
+                                {cat}
+                              </Badge>
+                            );
+                          })}
+                        </div>
+                      </CardContent>
+                      
+                      <CardFooter className="pt-3 pb-4 text-sm text-muted-foreground flex items-center justify-between border-t bg-muted/20 mt-auto p-4">
+                        <span className="flex items-center gap-1.5 group-hover:text-secondary transition-colors font-bold text-foreground">
+                          View Details
+                        </span>
+                        <ChevronRight className="h-5 w-5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 text-secondary" />
+                      </CardFooter>
+                    </Card>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         ) : (
-          <div className="text-center py-20 bg-muted/30 rounded-xl border border-dashed">
-            <div className="bg-muted h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="h-8 w-8 text-muted-foreground" />
+          <div className="text-center py-24 bg-muted/30 rounded-2xl border-2 border-dashed">
+            <div className="bg-muted h-20 w-20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Search className="h-10 w-10 text-muted-foreground" />
             </div>
-            <h3 className="text-xl font-bold mb-2">No drills found</h3>
-            <p className="text-muted-foreground max-w-md mx-auto mb-6">
+            <h3 className="text-2xl font-heading font-bold mb-3">No drills found</h3>
+            <p className="text-muted-foreground max-w-md mx-auto mb-8 text-lg">
               We couldn't find any drills matching your search criteria. Try adjusting your filters or search term.
             </p>
             <Button 
@@ -249,32 +278,19 @@ export default function Home() {
                 setDifficultyFilter("All");
                 setCategoryFilter("All");
               }}
+              className="gap-2"
             >
-              Clear All Filters
+              <X className="h-4 w-4" />
+              Clear Filters
             </Button>
           </div>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="bg-primary text-primary-foreground py-12 mt-auto border-t border-primary-foreground/10">
-        <div className="container">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 bg-secondary rounded flex items-center justify-center font-heading font-bold text-xl">
-                USAB
-              </div>
-              <div>
-                <h3 className="font-heading font-bold text-lg">USA Baseball Drills Directory</h3>
-                <p className="text-sm text-primary-foreground/60">Unofficial Directory Tool</p>
-              </div>
-            </div>
-            
-            <div className="text-sm text-primary-foreground/60 text-center md:text-right">
-              <p>Data sourced from USA Baseball Mobile Coach.</p>
-              <p className="mt-1">© {new Date().getFullYear()} All rights reserved.</p>
-            </div>
-          </div>
+      <footer className="bg-muted/50 border-t py-8 mt-12">
+        <div className="container text-center text-sm text-muted-foreground">
+          <p>Data sourced from USA Baseball Mobile Coach.</p>
         </div>
       </footer>
     </div>
