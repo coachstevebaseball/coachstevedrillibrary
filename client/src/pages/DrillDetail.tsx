@@ -475,7 +475,7 @@ const drillDetails: Record<string, {
       "Have partner throw from behind net to simulate pitcher view",
       "Increase speed of 1-2-3 cadence for faster reaction"
     ],
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+    videoUrl: "https://www.youtube.com/embed/BHfyJQLujhs"
   },
   "3": {
     skillSet: "Infield",
@@ -497,7 +497,7 @@ const drillDetails: Record<string, {
       "Vary the angle and distance of ground balls",
       "Add runner on base to simulate game situation"
     ],
-    videoUrl: "https://www.youtube.com/embed/jNQXAC9IVRw"
+    videoUrl: "https://www.youtube.com/embed/ks7qctrCuHg"
   },
   "10": {
     skillSet: "Infield",
@@ -519,7 +519,7 @@ const drillDetails: Record<string, {
       "Vary the angle and distance of ground balls",
       "Add runner on base to simulate game situation"
     ],
-    videoUrl: "https://www.youtube.com/embed/9bZkp7q19f0"
+    videoUrl: "https://www.youtube.com/embed/nRKx7jcbnIU"
   },
   "24": {
     skillSet: "Infield",
