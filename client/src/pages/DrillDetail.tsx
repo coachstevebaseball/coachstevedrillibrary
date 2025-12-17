@@ -681,6 +681,646 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/WQnBi1-4riw"
   },
+  "4": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 1st Base Inside Receiving technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "5": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 1st Base Off Bag technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "6": {
+    skillSet: "Infield",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 1st Base Receiving technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "7": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 1st Base Receiving Short Hops technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "8": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 2nd Baseman Backhand Flip technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "9": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 2nd Baseman Drop Step Throw technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "11": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 2nd Baseman Underhand Flip technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "12": {
+    skillSet: "Team Skill Development, Infield",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 3-Man Relay technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "13": {
+    skillSet: "Infield",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "1m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 30 Second Backhand technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "14": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "1m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 30 Second Backhand Cross technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "15": {
+    skillSet: "Infield",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "1m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 30 Second Crow Hops technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "16": {
+    skillSet: "Infield",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "1m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 30 Second Grounders technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "17": {
+    skillSet: "Infield",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "1m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 30 Second Quick Toss technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "18": {
+    skillSet: "Infield",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "1m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 30 Second Short Hops technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "19": {
+    skillSet: "Infield",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 4 Corners technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "20": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "15m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 4 Corners Bunting technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "21": {
+    skillSet: "Team Skill Development, Infield",
+    difficulty: "Hard",
+    athletes: "1-2 athletes and 1 coach",
+    time: "15m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 4.3 Drill technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "22": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the 7 Ball Front Toss technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "25": {
+    skillSet: "Strength and Conditioning",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "30m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the Agility Drills technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "26": {
+    skillSet: "Base Running",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the All the Way Through 1st Base technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "27": {
+    skillSet: "Catching",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the All Together Receiving technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "29": {
+    skillSet: "Tee, Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the Angled Force Plate Tee - Back Foot technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "31": {
+    skillSet: "Pitching",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the Arm Speed technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "32": {
+    skillSet: "Tee, Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the Back Foot Cone Tee technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "33": {
+    skillSet: "Tee, Hitting",
+    difficulty: "Hard",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the Back Hip Load Tee technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "34": {
+    skillSet: "Tee, Hitting",
+    difficulty: "Hard",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the Back Net Constraint Tee technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "35": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the Backhand Cross and Throw technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "36": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the Backhand Pick & Stick Fungo technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "37": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the Backhand Rake Fungo technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "38": {
+    skillSet: "Hitting",
+    difficulty: "Hard",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the Backside Angle Toss technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "39": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the Balance Beam technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
+  "40": {
+    skillSet: "Pitching",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach",
+    time: "5m",
+    equipment: "Baseballs, gloves, bat",
+    goal: "Master the Balance Drill technique",
+    description: [
+      "Follow USA Baseball's official drill methodology",
+      "Focus on proper form and technique",
+      "Complete all repetitions as prescribed",
+      "Provide feedback and correction as needed"
+    ],
+    addDifficulty: [
+      "Increase the speed or intensity",
+      "Add movement or game-like situations",
+      "Reduce rest periods between repetitions"
+    ],
+    videoUrl: "https://www.youtube.com/embed/VIDEO_ID_PENDING"
+  },
 }
 
 export default function DrillDetail() {
