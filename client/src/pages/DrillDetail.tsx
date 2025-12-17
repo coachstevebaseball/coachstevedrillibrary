@@ -565,6 +565,29 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/aqz-KE-bpKQ"
   },
+  "166": {
+    skillSet: "Hitting",
+    difficulty: "Easy",
+    athletes: "1-2 athletes and 1 coach, or 2 athletes as partners",
+    time: "5 minutes",
+    equipment: "Tee, baseballs, net or screen to hit into",
+    goal: "Develop a compact swing by eliminating stride and focusing on upper body rotation",
+    description: [
+      "Set up the tee at a comfortable height for the hitter",
+      "Hitter takes stance at the plate without any stride movement",
+      "Hitter keeps feet planted and focuses on rotating the upper body",
+      "Emphasis on using hip and shoulder rotation to generate power",
+      "Hitter swings and hits the ball back up the middle",
+      "Focus on compact swing mechanics and bat control",
+      "Partners switch after 10 swings"
+    ],
+    addDifficulty: [
+      "Increase the speed of pitches if transitioning to live pitching",
+      "Move the tee to different contact points (inside, middle, outside)",
+      "Add a small step or weight shift while maintaining no stride"
+    ],
+    videoUrl: "https://www.youtube.com/embed/mrrBuwWawL4"
+  },
 }
 
 export default function DrillDetail() {
