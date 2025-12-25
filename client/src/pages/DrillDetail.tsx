@@ -9,7 +9,9 @@ import { Link, useRoute } from "wouter";
 import { useState, useMemo, useEffect } from "react";
 import drillsData from "@/data/drills.json";
 import { VideoPlayer } from "@/components/VideoPlayer";
+import { EditDrillDetailsModal } from "@/components/EditDrillDetailsModal";
 import { trpc } from "@/lib/trpc";
+import { Edit, Trash2 } from "lucide-react";
 
 // Collapsible section component
 function CollapsibleSection({ title, icon: Icon, children, defaultOpen = false }: { title: string; icon: any; children: React.ReactNode; defaultOpen?: boolean }) {
@@ -904,6 +906,9 @@ export default function DrillDetail() {
   const [savedVideos, setSavedVideos] = useState<Record<string, string>>({});
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState<any>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   
   // Load video from database
   const { data: videoData } = trpc.videos.getVideo.useQuery(
@@ -1036,10 +1041,30 @@ export default function DrillDetail() {
             {/* Coaching Cues - Above the Fold */}
             <Card className="border-l-4 border-l-secondary bg-gradient-to-br from-secondary/5 to-background">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-2xl font-black">
-                  <Lightbulb className="h-6 w-6 text-secondary" />
-                  Coaching Focus
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-2xl font-black">
+                    <Lightbulb className="h-6 w-6 text-secondary" />
+                    Coaching Focus
+                  </CardTitle>
+                  {user && (user.role === 'admin' || user.role === 'coach') && (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setEditModalOpen(true)}
+                        className="flex items-center gap-1 px-3 py-2 rounded-md bg-primary/10 hover:bg-primary/20 text-primary transition-colors text-sm font-medium"
+                      >
+                        <Edit className="h-4 w-4" />
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => setShowDeleteConfirm(true)}
+                        className="flex items-center gap-1 px-3 py-2 rounded-md bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors text-sm font-medium"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
               </CardHeader>
               <CardContent>
                 <p className="text-lg font-semibold text-foreground leading-relaxed">{details.goal}</p>
@@ -1137,6 +1162,52 @@ export default function DrillDetail() {
       </div>
       </>
       )}
+      
+      {/* Delete Confirmation Dialog */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="max-w-md w-full">
+            <CardHeader>
+              <CardTitle>Delete Drill Details</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-6">
+                Are you sure you want to delete the drill details for "{drill?.name}"? This action cannot be undone.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowDeleteConfirm(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    // Delete mutation would go here
+                    alert("Delete functionality coming soon");
+                    setShowDeleteConfirm(false);
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+      
+      {/* Edit Drill Details Modal */}
+      <EditDrillDetailsModal
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
+        drillId={id || ''}
+        drillName={drill?.name || ''}
+        onSuccess={() => {
+          setRefreshKey(prev => prev + 1);
+          // Refetch drill details
+        }}
+      />
     </div>
   );
 }
