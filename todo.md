@@ -241,3 +241,13 @@
 - [x] Test pagination with search results
 - [x] Verify page resets when filters change
 - [x] Verified: 262 drills now paginated at 20 per page (14 pages total)
+
+
+## Remove Excluded Drill Categories
+- [x] Remove all Catching drills (30 removed)
+- [x] Remove all Team Skill Development drills (19 removed)
+- [x] Remove all Base Running drills (11 removed)
+- [x] Remove all Batting Practice drills (3 removed)
+- [x] Verify excluded drills no longer appear in directory
+- [x] Update drill count on home page (262 → 200 drills)
+- [x] Verified: Skill Set filter shows only Bunting, Hitting, Infield, Outfield, Pitching

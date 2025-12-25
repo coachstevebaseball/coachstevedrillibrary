@@ -121,18 +121,6 @@
     "is_direct_link": false
   },
   {
-    "id": "3-man-relay",
-    "name": "3-Man Relay",
-    "difficulty": "Medium",
-    "categories": [
-      "Team Skill Development",
-      "Infield"
-    ],
-    "duration": "10m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=3-man-relay",
-    "is_direct_link": false
-  },
-  {
     "id": "30-second-backhand",
     "name": "30 Second Backhand",
     "difficulty": "Easy",
@@ -221,18 +209,6 @@
     "is_direct_link": false
   },
   {
-    "id": "43-drill",
-    "name": "4.3 Drill",
-    "difficulty": "Hard",
-    "categories": [
-      "Team Skill Development",
-      "Infield"
-    ],
-    "duration": "15m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=4.3-drill",
-    "is_direct_link": false
-  },
-  {
     "id": "7-ball-front-toss",
     "name": "7 Ball Front Toss",
     "difficulty": "Medium",
@@ -263,28 +239,6 @@
     ],
     "duration": "60m",
     "url": "https://usabdevelops.com/page/1363/drills?q=advanced-batting-practice",
-    "is_direct_link": false
-  },
-  {
-    "id": "all-the-way-through-1st-base",
-    "name": "All the Way Through 1st Base",
-    "difficulty": "Easy",
-    "categories": [
-      "Base Running"
-    ],
-    "duration": "10m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=all-the-way-through-1st-base",
-    "is_direct_link": false
-  },
-  {
-    "id": "all-together-receiving",
-    "name": "All Together Receiving",
-    "difficulty": "Medium",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "10m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=all-together-receiving",
     "is_direct_link": false
   },
   {
@@ -508,61 +462,6 @@
     "is_direct_link": false
   },
   {
-    "id": "balls-in-the-dirt-breaks",
-    "name": "Balls In the Dirt Breaks",
-    "difficulty": "Easy",
-    "categories": [
-      "Base Running"
-    ],
-    "duration": "15m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=balls-in-the-dirt-breaks",
-    "is_direct_link": false
-  },
-  {
-    "id": "baserunning-circuit",
-    "name": "Baserunning Circuit",
-    "difficulty": "Easy",
-    "categories": [
-      "Base Running"
-    ],
-    "duration": "20m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=baserunning-circuit",
-    "is_direct_link": false
-  },
-  {
-    "id": "baserunning-conditioning",
-    "name": "Baserunning Conditioning",
-    "difficulty": "Easy",
-    "categories": [
-      "Base Running"
-    ],
-    "duration": "10m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=baserunning-conditioning",
-    "is_direct_link": false
-  },
-  {
-    "id": "basic-blocking",
-    "name": "Basic Blocking",
-    "difficulty": "Medium",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=basic-blocking",
-    "is_direct_link": false
-  },
-  {
-    "id": "basic-receiving",
-    "name": "Basic Receiving",
-    "difficulty": "Easy",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=basic-receiving",
-    "is_direct_link": false
-  },
-  {
     "id": "bat-behind-hips",
     "name": "Bat Behind Hips",
     "difficulty": "Easy",
@@ -571,42 +470,6 @@
     ],
     "duration": "5m",
     "url": "https://usabdevelops.com/page/1363/drills?q=bat-behind-hips",
-    "is_direct_link": false
-  },
-  {
-    "id": "batting-practice-1-coach",
-    "name": "Batting Practice - 1 Coach",
-    "difficulty": "Unknown",
-    "categories": [
-      "Batting Practice",
-      "Hitting"
-    ],
-    "duration": "60m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=batting-practice---1-coach",
-    "is_direct_link": false
-  },
-  {
-    "id": "batting-practice-2-coaches",
-    "name": "Batting Practice - 2+ Coaches",
-    "difficulty": "Unknown",
-    "categories": [
-      "Batting Practice",
-      "Hitting"
-    ],
-    "duration": "60m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=batting-practice---2+-coaches",
-    "is_direct_link": false
-  },
-  {
-    "id": "batting-practice-3-coaches",
-    "name": "Batting Practice - 3+ Coaches",
-    "difficulty": "Unknown",
-    "categories": [
-      "Batting Practice",
-      "Hitting"
-    ],
-    "duration": "60m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=batting-practice---3+-coaches",
     "is_direct_link": false
   },
   {
@@ -640,50 +503,6 @@
     ],
     "duration": "5m",
     "url": "https://usabdevelops.com/page/1363/drills?q=belly-button-tee",
-    "is_direct_link": false
-  },
-  {
-    "id": "bite-the-ball",
-    "name": "Bite the Ball",
-    "difficulty": "Easy",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=bite-the-ball",
-    "is_direct_link": false
-  },
-  {
-    "id": "block-and-recover",
-    "name": "Block and Recover",
-    "difficulty": "Medium",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=block-and-recover",
-    "is_direct_link": false
-  },
-  {
-    "id": "block-recover-throw",
-    "name": "Block, Recover, Throw",
-    "difficulty": "Medium",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=block,-recover,-throw",
-    "is_direct_link": false
-  },
-  {
-    "id": "blocking-and-recovery",
-    "name": "Blocking and Recovery",
-    "difficulty": "Medium",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "10m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=blocking-and-recovery",
     "is_direct_link": false
   },
   {
@@ -808,17 +627,6 @@
     "is_direct_link": true
   },
   {
-    "id": "cross-partner-framing",
-    "name": "Cross Partner Framing",
-    "difficulty": "Hard",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=cross-partner-framing",
-    "is_direct_link": false
-  },
-  {
     "id": "crow-hops",
     "name": "Crow Hops",
     "difficulty": "Medium",
@@ -838,30 +646,6 @@
     ],
     "duration": "35m",
     "url": "https://usabdevelops.com/page/1363/drills?q=cup-ball-game",
-    "is_direct_link": false
-  },
-  {
-    "id": "cut-offs-for-infield",
-    "name": "Cut Offs for Infield",
-    "difficulty": "Easy",
-    "categories": [
-      "Team Skill Development",
-      "Infield"
-    ],
-    "duration": "15m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=cut-offs-for-infield",
-    "is_direct_link": false
-  },
-  {
-    "id": "cut-offs-for-outfield",
-    "name": "Cut Offs for Outfield",
-    "difficulty": "Easy",
-    "categories": [
-      "Team Skill Development",
-      "Outfield"
-    ],
-    "duration": "15m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=cut-offs-for-outfield",
     "is_direct_link": false
   },
   {
@@ -931,30 +715,6 @@
     "is_direct_link": false
   },
   {
-    "id": "defensive-stations-in-and-out",
-    "name": "Defensive Stations - In and Out",
-    "difficulty": "Easy",
-    "categories": [
-      "Team Skill Development",
-      "Outfield"
-    ],
-    "duration": "30m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=defensive-stations---in-and-out",
-    "is_direct_link": false
-  },
-  {
-    "id": "defensive-stations-if-of-p-c",
-    "name": "Defensive Stations \u2013 IF, OF, P, C",
-    "difficulty": "Easy",
-    "categories": [
-      "Team Skill Development",
-      "Infield"
-    ],
-    "duration": "30m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=defensive-stations-\u2013-if,-of,-p,-c",
-    "is_direct_link": false
-  },
-  {
     "id": "double-ball-toss",
     "name": "Double Ball Toss",
     "difficulty": "Medium",
@@ -963,18 +723,6 @@
     ],
     "duration": "5m",
     "url": "https://usabdevelops.com/page/1363/drills?q=double-ball-toss",
-    "is_direct_link": false
-  },
-  {
-    "id": "double-play-drill",
-    "name": "Double Play Drill",
-    "difficulty": "Medium",
-    "categories": [
-      "Team Skill Development",
-      "Infield"
-    ],
-    "duration": "15m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=double-play-drill",
     "is_direct_link": false
   },
   {
@@ -1074,17 +822,6 @@
     ],
     "duration": "10m",
     "url": "https://usabdevelops.com/page/1363/drills?q=drag-bunt",
-    "is_direct_link": false
-  },
-  {
-    "id": "drop-and-block-line",
-    "name": "Drop and Block Line",
-    "difficulty": "Easy",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=drop-and-block-line",
     "is_direct_link": false
   },
   {
@@ -1506,18 +1243,6 @@
     "is_direct_link": false
   },
   {
-    "id": "infield-and-outfield",
-    "name": "Infield and Outfield",
-    "difficulty": "Medium",
-    "categories": [
-      "Team Skill Development",
-      "Outfield"
-    ],
-    "duration": "15m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=infield-and-outfield",
-    "is_direct_link": false
-  },
-  {
     "id": "infield-hands-routine",
     "name": "Infield Hands Routine",
     "difficulty": "Easy",
@@ -1562,17 +1287,6 @@
     "is_direct_link": false
   },
   {
-    "id": "keep-it-close-block",
-    "name": "Keep it Close Block",
-    "difficulty": "Medium",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=keep-it-close-block",
-    "is_direct_link": false
-  },
-  {
     "id": "knee-short-hops",
     "name": "Knee Short Hops",
     "difficulty": "Easy",
@@ -1606,39 +1320,6 @@
     "is_direct_link": false
   },
   {
-    "id": "leads-from-1st-base",
-    "name": "Leads from 1st Base",
-    "difficulty": "Easy",
-    "categories": [
-      "Base Running"
-    ],
-    "duration": "10m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=leads-from-1st-base",
-    "is_direct_link": false
-  },
-  {
-    "id": "leads-from-2nd-base",
-    "name": "Leads from 2nd Base",
-    "difficulty": "Easy",
-    "categories": [
-      "Base Running"
-    ],
-    "duration": "10m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=leads-from-2nd-base",
-    "is_direct_link": false
-  },
-  {
-    "id": "leads-from-3rd-base",
-    "name": "Leads from 3rd Base",
-    "difficulty": "Easy",
-    "categories": [
-      "Base Running"
-    ],
-    "duration": "10m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=leads-from-3rd-base",
-    "is_direct_link": false
-  },
-  {
     "id": "lincecum-drill",
     "name": "Lincecum Drill",
     "difficulty": "Easy",
@@ -1647,18 +1328,6 @@
     ],
     "duration": "4m",
     "url": "https://usabdevelops.com/page/1363/drills?q=lincecum-drill",
-    "is_direct_link": false
-  },
-  {
-    "id": "live-situational-scrimmage",
-    "name": "Live Situational Scrimmage",
-    "difficulty": "Medium",
-    "categories": [
-      "Team Skill Development",
-      "Hitting"
-    ],
-    "duration": "40m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=live-situational-scrimmage",
     "is_direct_link": false
   },
   {
@@ -1717,28 +1386,6 @@
     "is_direct_link": false
   },
   {
-    "id": "no-glove-block",
-    "name": "No Glove Block",
-    "difficulty": "Medium",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=no-glove-block",
-    "is_direct_link": false
-  },
-  {
-    "id": "no-glove-exchange",
-    "name": "No Glove Exchange",
-    "difficulty": "Medium",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=no-glove-exchange",
-    "is_direct_link": false
-  },
-  {
     "id": "no-stride-tee",
     "name": "No Stride Tee",
     "difficulty": "Easy",
@@ -1747,17 +1394,6 @@
     ],
     "duration": "5m",
     "url": "https://usabdevelops.com/page/1363/drills?q=no-stride-tee",
-    "is_direct_link": false
-  },
-  {
-    "id": "nose-behind-ball",
-    "name": "Nose Behind Ball",
-    "difficulty": "Medium",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=nose-behind-ball",
     "is_direct_link": false
   },
   {
@@ -1849,18 +1485,6 @@
     "is_direct_link": false
   },
   {
-    "id": "outfield-communication",
-    "name": "Outfield Communication",
-    "difficulty": "Easy",
-    "categories": [
-      "Team Skill Development",
-      "Outfield"
-    ],
-    "duration": "15m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=outfield-communication",
-    "is_direct_link": false
-  },
-  {
     "id": "outfield-groundballs",
     "name": "Outfield Groundballs",
     "difficulty": "Easy",
@@ -1905,113 +1529,6 @@
     "is_direct_link": false
   },
   {
-    "id": "pfp-circuit",
-    "name": "PFP Circuit",
-    "difficulty": "Easy",
-    "categories": [
-      "Team Skill Development",
-      "Pitching"
-    ],
-    "duration": "25m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=pfp-circuit",
-    "is_direct_link": false
-  },
-  {
-    "id": "pfp-bunts-on-1st-base-side",
-    "name": "PFP- Bunts on 1st Base Side",
-    "difficulty": "Medium",
-    "categories": [
-      "Team Skill Development",
-      "Pitching"
-    ],
-    "duration": "15m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=pfp--bunts-on-1st-base-side",
-    "is_direct_link": false
-  },
-  {
-    "id": "pfp-bunts-on-3rd-base-side",
-    "name": "PFP- Bunts on 3rd Base Side",
-    "difficulty": "Medium",
-    "categories": [
-      "Team Skill Development",
-      "Pitching"
-    ],
-    "duration": "15m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=pfp--bunts-on-3rd-base-side",
-    "is_direct_link": false
-  },
-  {
-    "id": "pfp-comebackers",
-    "name": "PFP- Comebackers",
-    "difficulty": "Medium",
-    "categories": [
-      "Team Skill Development",
-      "Pitching"
-    ],
-    "duration": "15m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=pfp--comebackers",
-    "is_direct_link": false
-  },
-  {
-    "id": "pfp-cover-1st-base",
-    "name": "PFP- Cover 1st Base",
-    "difficulty": "Medium",
-    "categories": [
-      "Team Skill Development",
-      "Pitching"
-    ],
-    "duration": "15m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=pfp--cover-1st-base",
-    "is_direct_link": false
-  },
-  {
-    "id": "pirate-drill",
-    "name": "Pirate Drill",
-    "difficulty": "Hard",
-    "categories": [
-      "Team Skill Development",
-      "Infield"
-    ],
-    "duration": "25m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=pirate-drill",
-    "is_direct_link": false
-  },
-  {
-    "id": "pitchers-bunt-defense",
-    "name": "Pitcher's Bunt Defense",
-    "difficulty": "Medium",
-    "categories": [
-      "Team Skill Development",
-      "Pitching"
-    ],
-    "duration": "10m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=pitcher's-bunt-defense",
-    "is_direct_link": false
-  },
-  {
-    "id": "pivot-footwork",
-    "name": "Pivot Footwork",
-    "difficulty": "Medium",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=pivot-footwork",
-    "is_direct_link": false
-  },
-  {
-    "id": "pop-ups",
-    "name": "Pop-Ups",
-    "difficulty": "Hard",
-    "categories": [
-      "Team Skill Development",
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=pop-ups",
-    "is_direct_link": false
-  },
-  {
     "id": "power-position",
     "name": "Power Position",
     "difficulty": "Easy",
@@ -2042,17 +1559,6 @@
     ],
     "duration": "5m",
     "url": "https://usabdevelops.com/page/1363/drills?q=preset-backhand-rake",
-    "is_direct_link": false
-  },
-  {
-    "id": "preset-block",
-    "name": "Preset Block",
-    "difficulty": "Easy",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=preset-block",
     "is_direct_link": false
   },
   {
@@ -2100,17 +1606,6 @@
     "is_direct_link": false
   },
   {
-    "id": "quick-hands",
-    "name": "Quick Hands",
-    "difficulty": "Medium",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=quick-hands",
-    "is_direct_link": false
-  },
-  {
     "id": "quick-hands-fielding",
     "name": "Quick Hands Fielding",
     "difficulty": "Medium",
@@ -2144,17 +1639,6 @@
     "is_direct_link": false
   },
   {
-    "id": "rapid-fire-block",
-    "name": "Rapid Fire Block",
-    "difficulty": "Hard",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=rapid-fire-block",
-    "is_direct_link": false
-  },
-  {
     "id": "rapid-fire-fungo",
     "name": "Rapid Fire Fungo",
     "difficulty": "Medium",
@@ -2163,17 +1647,6 @@
     ],
     "duration": "10m",
     "url": "https://usabdevelops.com/page/1363/drills?q=rapid-fire-fungo",
-    "is_direct_link": false
-  },
-  {
-    "id": "rapid-fire-receiving",
-    "name": "Rapid Fire Receiving",
-    "difficulty": "Hard",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=rapid-fire-receiving",
     "is_direct_link": false
   },
   {
@@ -2199,17 +1672,6 @@
     "is_direct_link": false
   },
   {
-    "id": "relaxed-receiving",
-    "name": "Relaxed Receiving",
-    "difficulty": "Easy",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=relaxed-receiving",
-    "is_direct_link": false
-  },
-  {
     "id": "reverse-stride",
     "name": "Reverse Stride",
     "difficulty": "Medium",
@@ -2232,17 +1694,6 @@
     "is_direct_link": false
   },
   {
-    "id": "right-left-block",
-    "name": "Right Left Block",
-    "difficulty": "Easy",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=right-left-block",
-    "is_direct_link": false
-  },
-  {
     "id": "right-left-shuffle",
     "name": "Right Left Shuffle",
     "difficulty": "Medium",
@@ -2262,17 +1713,6 @@
     ],
     "duration": "10m",
     "url": "https://usabdevelops.com/page/1363/drills?q=right-left-shuffle-fungo",
-    "is_direct_link": false
-  },
-  {
-    "id": "rounding-1st-base",
-    "name": "Rounding 1st Base",
-    "difficulty": "Easy",
-    "categories": [
-      "Base Running"
-    ],
-    "duration": "10m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=rounding-1st-base",
     "is_direct_link": false
   },
   {
@@ -2551,62 +1991,6 @@
     "is_direct_link": false
   },
   {
-    "id": "stations-catching-infield-baserunning",
-    "name": "Stations - Catching, Infield, Baserunning",
-    "difficulty": "Easy",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "30m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=stations---catching,-infield,-baserunning",
-    "is_direct_link": false
-  },
-  {
-    "id": "stations-infield-game-situations",
-    "name": "Stations - Infield Game Situations",
-    "difficulty": "Medium",
-    "categories": [
-      "Team Skill Development",
-      "Infield"
-    ],
-    "duration": "25m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=stations---infield-game-situations",
-    "is_direct_link": false
-  },
-  {
-    "id": "steal-breaks-1st-and-2nd",
-    "name": "Steal Breaks- 1st and 2nd",
-    "difficulty": "Easy",
-    "categories": [
-      "Base Running"
-    ],
-    "duration": "15m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=steal-breaks--1st-and-2nd",
-    "is_direct_link": false
-  },
-  {
-    "id": "steal-leads-from-1st-base",
-    "name": "Steal Leads from 1st Base",
-    "difficulty": "Easy",
-    "categories": [
-      "Base Running"
-    ],
-    "duration": "10m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=steal-leads-from-1st-base",
-    "is_direct_link": false
-  },
-  {
-    "id": "stick-the-pitch",
-    "name": "Stick the Pitch",
-    "difficulty": "Easy",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=stick-the-pitch",
-    "is_direct_link": false
-  },
-  {
     "id": "stride-to-spot",
     "name": "Stride to Spot",
     "difficulty": "Easy",
@@ -2615,17 +1999,6 @@
     ],
     "duration": "3m",
     "url": "https://usabdevelops.com/page/1363/drills?q=stride-to-spot",
-    "is_direct_link": false
-  },
-  {
-    "id": "sway",
-    "name": "Sway",
-    "difficulty": "Easy",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=sway",
     "is_direct_link": false
   },
   {
@@ -2648,17 +2021,6 @@
     ],
     "duration": "10m",
     "url": "https://usabdevelops.com/page/1363/drills?q=target-tee",
-    "is_direct_link": false
-  },
-  {
-    "id": "team-baserunning",
-    "name": "Team Baserunning",
-    "difficulty": "Easy",
-    "categories": [
-      "Base Running"
-    ],
-    "duration": "20m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=team-baserunning",
     "is_direct_link": false
   },
   {
@@ -2695,39 +2057,6 @@
     "is_direct_link": false
   },
   {
-    "id": "tennis-ball-block",
-    "name": "Tennis Ball Block",
-    "difficulty": "Easy",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=tennis-ball-block",
-    "is_direct_link": false
-  },
-  {
-    "id": "tennis-ball-pop-ups",
-    "name": "Tennis Ball Pop-Ups",
-    "difficulty": "Easy",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=tennis-ball-pop-ups",
-    "is_direct_link": false
-  },
-  {
-    "id": "tennis-ball-soft-hands",
-    "name": "Tennis Ball Soft Hands",
-    "difficulty": "Easy",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=tennis-ball-soft-hands",
-    "is_direct_link": false
-  },
-  {
     "id": "three-plate-front-toss",
     "name": "Three-Plate Front Toss",
     "difficulty": "Hard",
@@ -2747,28 +2076,6 @@
     ],
     "duration": "10m",
     "url": "https://usabdevelops.com/page/1363/drills?q=throw-the-bat",
-    "is_direct_link": false
-  },
-  {
-    "id": "throwing-footwork-for-catchers",
-    "name": "Throwing Footwork for Catchers",
-    "difficulty": "Medium",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=throwing-footwork-for-catchers",
-    "is_direct_link": false
-  },
-  {
-    "id": "tic-tac-toe",
-    "name": "Tic Tac Toe",
-    "difficulty": "Medium",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=tic-tac-toe",
     "is_direct_link": false
   },
   {
@@ -2802,17 +2109,6 @@
     ],
     "duration": "5m",
     "url": "https://usabdevelops.com/page/1363/drills?q=top-hand-tee",
-    "is_direct_link": false
-  },
-  {
-    "id": "turn-the-glove-over",
-    "name": "Turn the Glove Over",
-    "difficulty": "Easy",
-    "categories": [
-      "Catching"
-    ],
-    "duration": "5m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=turn-the-glove-over",
     "is_direct_link": false
   },
   {
