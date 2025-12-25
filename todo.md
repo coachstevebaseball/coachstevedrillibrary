@@ -232,3 +232,12 @@
 - [x] Test edit workflow (modify and save changes)
 - [x] Test delete workflow (confirm and remove)
 - [x] Verify edit/delete UI displays correctly on drill pages
+
+
+## Home Page Pagination
+- [x] Add pagination logic to Home component (20 drills per page)
+- [x] Add pagination controls (Previous/Next buttons, page indicator)
+- [x] Test pagination with filters applied
+- [x] Test pagination with search results
+- [x] Verify page resets when filters change
+- [x] Verified: 262 drills now paginated at 20 per page (14 pages total)

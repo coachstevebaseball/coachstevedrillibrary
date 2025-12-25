@@ -30,6 +30,8 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState("All");
   const [categoryFilter, setCategoryFilter] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const DRILLS_PER_PAGE = 20;
 
   // Extract unique categories
   const allCategories = useMemo(() => {
@@ -49,6 +51,18 @@ export default function Home() {
       return matchesSearch && matchesDifficulty && matchesCategory;
     });
   }, [searchQuery, difficultyFilter, categoryFilter]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredDrills.length / DRILLS_PER_PAGE);
+  const startIndex = (currentPage - 1) * DRILLS_PER_PAGE;
+  const endIndex = startIndex + DRILLS_PER_PAGE;
+  const paginatedDrills = filteredDrills.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filters change
+  const handleFilterChange = (setter: any, value: any) => {
+    setCurrentPage(1);
+    setter(value);
+  };
 
   // Get difficulty color
   const getDifficultyColor = (difficulty: string) => {
@@ -178,7 +192,7 @@ export default function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
                 <label className="text-sm font-semibold text-muted-foreground mb-2 block">Difficulty</label>
-                <Select value={difficultyFilter} onValueChange={setDifficultyFilter}>
+                <Select value={difficultyFilter} onValueChange={(value) => handleFilterChange(setDifficultyFilter, value)}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="All Difficulties" />
                   </SelectTrigger>
@@ -193,7 +207,7 @@ export default function Home() {
 
               <div>
                 <label className="text-sm font-semibold text-muted-foreground mb-2 block">Skill Set</label>
-                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <Select value={categoryFilter} onValueChange={(value) => handleFilterChange(setCategoryFilter, value)}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="All Skill Sets" />
                   </SelectTrigger>
@@ -223,7 +237,7 @@ export default function Home() {
             
             {/* Drills Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredDrills.map((drill) => {
+              {paginatedDrills.map((drill) => {
                 const primaryCategory = drill.categories[0];
                 const categoryConfig = getCategoryConfig(primaryCategory);
                 
@@ -278,6 +292,47 @@ export default function Home() {
                 );
               })}
             </div>
+            
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between mt-12 pt-8 border-t">
+                <div className="text-sm text-muted-foreground font-medium">
+                  Page <span className="font-bold text-foreground">{currentPage}</span> of <span className="font-bold text-foreground">{totalPages}</span>
+                  <span className="ml-4">Showing {startIndex + 1}-{Math.min(endIndex, filteredDrills.length)} of {filteredDrills.length} drills</span>
+                </div>
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                    disabled={currentPage === 1}
+                    className="gap-2"
+                  >
+                    ← Previous
+                  </Button>
+                  <div className="flex items-center gap-2">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                      <Button
+                        key={page}
+                        variant={page === currentPage ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCurrentPage(page)}
+                        className="min-w-10"
+                      >
+                        {page}
+                      </Button>
+                    ))}
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                    disabled={currentPage === totalPages}
+                    className="gap-2"
+                  >
+                    Next →
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="text-center py-24 bg-muted/30 rounded-2xl border-2 border-dashed">
