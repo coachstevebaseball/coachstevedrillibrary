@@ -201,3 +201,8 @@
 - [x] Test video queries on drills without videos
 - [x] Verify no console errors on home page
 - [x] Verify no console errors on drill detail pages
+
+## Add Missing Drill Details for Video Display
+- [x] Add Ball in the Sun drill details to DrillDetail component
+- [ ] Identify other drills without internal details that need to be added
+- [ ] Add remaining drills to enable video display across all drills

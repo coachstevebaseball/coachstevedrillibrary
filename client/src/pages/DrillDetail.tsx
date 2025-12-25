@@ -854,6 +854,23 @@ const drillDetails: Record<string, {
     ],
     videoUrl: null
   },
+  "ball-in-the-sun": {
+    skillSet: "Outfield",
+    difficulty: "Easy",
+    athletes: "1 athlete and 1 coach",
+    time: "5 minutes",
+    equipment: "Baseballs, glove",
+    goal: "Develop ability to track and catch fly balls in difficult lighting conditions",
+    description: [
+      "Athlete positions in outfield facing the sun or bright light",
+      "Coach throws or hits fly balls at varying heights and distances",
+      "Athlete must track the ball while dealing with sun glare",
+      "Focus on proper positioning and glove placement",
+      "Practice calling for the ball and communicating with teammates",
+      "Repeat for multiple sets"
+    ],
+    videoUrl: null
+  },
 }
 
 export default function DrillDetail() {
