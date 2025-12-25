@@ -64,3 +64,16 @@
 - [ ] Test assignment creation/deletion
 - [ ] Test status tracking
 - [ ] Mobile responsiveness testing
+
+
+## Athlete Portal - Player Drill Tracking
+- [x] Create AthletePortal page component
+- [x] Display assigned drills for current user
+- [x] Show drill status (Assigned, In Progress, Completed)
+- [x] Create drill detail modal/view for athletes
+- [x] Implement progress tracking interface
+- [x] Add ability to mark drills as complete
+- [x] Show completion dates and coach notes
+- [x] Add filter by status
+- [x] Mobile-optimized athlete portal
+- [ ] Test athlete access and permissions
