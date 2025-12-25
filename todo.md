@@ -140,3 +140,10 @@
 - [x] Fix ProtectedRoute setState during render error
 - [x] Move navigation logic to useEffect hook
 - [x] Verify no TypeScript errors after fix
+
+## Athlete Navigation & Role Assignment Fix
+- [x] Fix missing useAuth import in Home.tsx
+- [x] Add convertToAthlete admin procedure to convert users to athlete role
+- [x] Create convertUserToAthlete database function
+- [ ] Test athlete can see "My Drills" button after role conversion
+- [ ] Test athlete can access athlete portal and see assigned drills

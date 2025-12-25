@@ -39,6 +39,15 @@ export const appRouter = router({
         const success = await db.toggleClientAccess(input.userId, input.isActive);
         return { success };
       }),
+    convertToAthlete: protectedProcedure
+      .input(z.object({ userId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        await db.convertUserToAthlete(input.userId);
+        return { success: true };
+      }),
   }),
 
   // Drill assignment router for coach dashboard

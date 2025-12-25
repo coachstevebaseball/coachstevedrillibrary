@@ -58,6 +58,10 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     } else if (user.openId === ENV.ownerOpenId) {
       values.role = 'admin';
       updateSet.role = 'admin';
+    } else {
+      // Assign 'user' role to new OAuth users by default
+      values.role = 'user';
+      // Only set role on insert, not on update (don't override existing roles)
     }
 
     if (!values.lastSignedIn) {
@@ -114,6 +118,24 @@ export async function toggleClientAccess(userId: number, isActive: boolean) {
     return true;
   } catch (error) {
     console.error("[Database] Failed to toggle client access:", error);
+    return false;
+  }
+}
+
+export async function convertUserToAthlete(userId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot convert user: database not available");
+    return false;
+  }
+
+  try {
+    await db.update(users)
+      .set({ role: 'athlete' })
+      .where(eq(users.id, userId));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to convert user to athlete:", error);
     return false;
   }
 }

@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, email, role, createdAt FROM users WHERE email = 'stevenlewisrept@gmail.com';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT id, email, role, createdAt FROM users WHERE email = 'stevenlewisrept@gmail.com';",
+  "rows": [
+    {
+      "id": "1710285",
+      "email": "stevenlewisrept@gmail.com",
+      "role": "user",
+      "createdAt": "2025-12-25 14:20:53"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\trole\tcreatedAt\n1710285\tstevenlewisrept@gmail.com\tuser\t2025-12-25 14:20:53\n",
+  "stderr": "",
+  "execution_time_ms": 605
+}

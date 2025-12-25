@@ -1,0 +1,30 @@
+{
+  "query": "SELECT id, email, role FROM users LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT id, email, role FROM users LIMIT 10;",
+  "rows": [
+    {
+      "id": "1",
+      "email": "coach@coachstevebaseball.com",
+      "role": "admin"
+    },
+    {
+      "id": "1710152",
+      "email": "stevenlewisgoldstein@gmail.com",
+      "role": "user"
+    },
+    {
+      "id": "1710209",
+      "email": "stevenlgoldstein16@gmail.com",
+      "role": "user"
+    },
+    {
+      "id": "1710285",
+      "email": "stevenlewisrept@gmail.com",
+      "role": "user"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\trole\n1\tcoach@coachstevebaseball.com\tadmin\n1710152\tstevenlewisgoldstein@gmail.com\tuser\n1710209\tstevenlgoldstein16@gmail.com\tuser\n1710285\tstevenlewisrept@gmail.com\tuser\n",
+  "stderr": "",
+  "execution_time_ms": 50
+}
