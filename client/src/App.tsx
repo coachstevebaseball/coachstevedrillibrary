@@ -10,6 +10,7 @@ import CoachDashboard from "./pages/CoachDashboard";
 import AthletePortal from "./pages/AthletePortal";
 import DrillDetail from "./pages/DrillDetail";
 import AcceptInvite from "./pages/AcceptInvite";
+import DrillGeneratorPage from "./pages/DrillGeneratorPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function Router() {
@@ -30,6 +31,12 @@ function Router() {
       <Route path={"/coach-dashboard"}>
         <ProtectedRoute requiredRole="coach">
           <CoachDashboard />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path={"/drill-generator"}>
+        <ProtectedRoute requiredRole="admin">
+          <DrillGeneratorPage />
         </ProtectedRoute>
       </Route>
       

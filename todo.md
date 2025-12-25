@@ -161,3 +161,12 @@
 - [x] Add email trigger when coach assigns drill to athlete
 - [x] Include drill details and link to athlete portal in email
 - [ ] Test email delivery on drill assignment
+
+## AI Drill Generator
+- [x] Set up Gemini API key and backend endpoint
+- [x] Create secure API route for drill generation
+- [x] Build AI Drill Generator UI component
+- [x] Add drill generator to coach dashboard
+- [ ] Allow saving generated drills to database
+- [ ] Test AI drill generation with various issues
+- [x] Display generated drills with proper formatting
