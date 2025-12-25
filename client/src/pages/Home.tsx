@@ -96,6 +96,14 @@ export default function Home() {
                     </Link>
                   </>
                 )}
+                {user.role === 'athlete' && (
+                  <Link href="/athlete-portal">
+                    <Button variant="secondary" size="sm" className="gap-2">
+                      <Activity className="h-4 w-4" />
+                      My Drills
+                    </Button>
+                  </Link>
+                )}
                 <Button variant="outline" size="sm" onClick={logout} className="gap-2 bg-background/20 hover:bg-background/30">
                   <LogOut className="h-4 w-4" />
                   Logout

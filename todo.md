@@ -127,3 +127,11 @@
 - [x] Fix AthletePortal to display assigned drills
 - [x] Verify drills load correctly
 - [x] Test athlete can see their assigned drills
+
+
+## Athlete Navigation Fix
+- [x] Add "Athlete Portal" button to home page for logged-in athletes
+- [x] Show appropriate buttons based on user role (coach/athlete)
+- [x] Update database schema to include athlete and coach roles
+- [x] Test athlete can navigate to portal from home page
+- [x] Test coach buttons still show correctly

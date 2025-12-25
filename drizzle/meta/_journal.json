@@ -29,6 +29,13 @@
       "when": 1766666068052,
       "tag": "0003_chilly_deathbird",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1766670431455,
+      "tag": "0004_talented_radioactive_man",
+      "breakpoints": true
     }
   ]
 }

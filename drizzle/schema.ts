@@ -16,7 +16,7 @@ export const users = mysqlTable("users", {
   name: text("name"),
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  role: mysqlEnum("role", ["user", "admin", "athlete", "coach"]).default("user").notNull(),
   /** Whether this user is an active client with access to drills */
   isActiveClient: int("isActiveClient").default(0).notNull(), // 0 = inactive, 1 = active
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -57,7 +57,7 @@ export const invites = mysqlTable("invites", {
   id: int("id").autoincrement().primaryKey(),
   email: varchar("email", { length: 320 }).notNull(),
   inviteToken: varchar("inviteToken", { length: 255 }).notNull().unique(),
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  role: mysqlEnum("role", ["user", "admin", "athlete", "coach"]).default("user").notNull(),
   status: mysqlEnum("status", ["pending", "accepted", "expired"]).default("pending").notNull(),
   expiresAt: timestamp("expiresAt").notNull(),
   acceptedAt: timestamp("acceptedAt"),
