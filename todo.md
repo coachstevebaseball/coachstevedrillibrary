@@ -163,10 +163,11 @@
 - [ ] Test email delivery on drill assignment
 
 ## AI Drill Generator
-- [x] Set up Gemini API key and backend endpoint
+- [x] Set up OpenAI API key and backend endpoint
 - [x] Create secure API route for drill generation
 - [x] Build AI Drill Generator UI component
 - [x] Add drill generator to coach dashboard
-- [ ] Allow saving generated drills to database
-- [ ] Test AI drill generation with various issues
+- [x] Allow saving generated drills to database
+- [x] Test AI drill generation with various issues
 - [x] Display generated drills with proper formatting
+- [x] Fix cache issues and verify OpenAI integration works

@@ -9,4 +9,5 @@ export const ENV = {
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
   resendApiKey: process.env.RESEND_API_KEY ?? "",
   geminiApiKey: process.env.GEMINI_API_KEY ?? "",
+  openaiApiKey: process.env.OPENAI_API_KEY ?? "",
 };
