@@ -46,3 +46,21 @@
 - [x] Update drills.json with correct URLs
 - [x] Add drill details to DrillDetail component
 - [x] Test new drill pages
+
+
+## Coach Dashboard - Drill Assignment System
+- [x] Add drillAssignments table to schema
+- [x] Add assignmentProgress table to schema
+- [x] Create database helper functions for assignments
+- [x] Create tRPC routes for drill assignments
+- [x] Create CoachDashboard page component
+- [x] Build user list view
+- [x] Build drill assignment interface
+- [x] Add assignment status tracking
+- [x] Implement assign/unassign drill functionality
+- [x] Track completion status
+- [x] Add coaching notes to assignments
+- [x] Filter and search assignments
+- [ ] Test assignment creation/deletion
+- [ ] Test status tracking
+- [ ] Mobile responsiveness testing

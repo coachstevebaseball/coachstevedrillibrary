@@ -81,12 +81,20 @@ export default function Home() {
             {user ? (
               <>
                 {user.role === 'admin' && (
-                  <Link href="/admin">
-                    <Button variant="secondary" size="sm" className="gap-2">
-                      <Shield className="h-4 w-4" />
-                      Admin Dashboard
-                    </Button>
-                  </Link>
+                  <>
+                    <Link href="/coach-dashboard">
+                      <Button variant="secondary" size="sm" className="gap-2">
+                        <Users className="h-4 w-4" />
+                        Coach Dashboard
+                      </Button>
+                    </Link>
+                    <Link href="/admin">
+                      <Button variant="secondary" size="sm" className="gap-2">
+                        <Shield className="h-4 w-4" />
+                        Admin Dashboard
+                      </Button>
+                    </Link>
+                  </>
                 )}
                 <Button variant="outline" size="sm" onClick={logout} className="gap-2 bg-background/20 hover:bg-background/30">
                   <LogOut className="h-4 w-4" />

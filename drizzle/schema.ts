@@ -27,4 +27,29 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+export const drillAssignments = mysqlTable("drillAssignments", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  drillId: varchar("drillId", { length: 255 }).notNull(),
+  drillName: varchar("drillName", { length: 255 }).notNull(),
+  status: mysqlEnum("status", ["assigned", "in-progress", "completed"]).default("assigned").notNull(),
+  notes: text("notes"),
+  assignedAt: timestamp("assignedAt").defaultNow().notNull(),
+  completedAt: timestamp("completedAt"),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type DrillAssignment = typeof drillAssignments.$inferSelect;
+export type InsertDrillAssignment = typeof drillAssignments.$inferInsert;
+
+export const assignmentProgress = mysqlTable("assignmentProgress", {
+  id: int("id").autoincrement().primaryKey(),
+  assignmentId: int("assignmentId").notNull(),
+  userId: int("userId").notNull(),
+  repsCompleted: int("repsCompleted").default(0).notNull(),
+  notes: text("notes"),
+  recordedAt: timestamp("recordedAt").defaultNow().notNull(),
+});
+
+export type AssignmentProgress = typeof assignmentProgress.$inferSelect;
+export type InsertAssignmentProgress = typeof assignmentProgress.$inferInsert;

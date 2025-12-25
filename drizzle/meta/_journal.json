@@ -15,6 +15,13 @@
       "when": 1765909758300,
       "tag": "0001_busy_meltdown",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1766652170932,
+      "tag": "0002_futuristic_thunderball",
+      "breakpoints": true
     }
   ]
 }

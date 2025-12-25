@@ -5,6 +5,7 @@ import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import * as db from "./db";
+import * as drillAssignmentDb from "./drillAssignments";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -36,6 +37,61 @@ export const appRouter = router({
         }
         const success = await db.toggleClientAccess(input.userId, input.isActive);
         return { success };
+      }),
+  }),
+
+  // Drill assignment router for coach dashboard
+  drillAssignments: router({
+    assignDrill: protectedProcedure
+      .input(z.object({ userId: z.number(), drillId: z.string(), drillName: z.string(), notes: z.string().optional() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        await drillAssignmentDb.assignDrill(input.userId, input.drillId, input.drillName, input.notes);
+        return { success: true };
+      }),
+    
+    unassignDrill: protectedProcedure
+      .input(z.object({ assignmentId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        await drillAssignmentDb.unassignDrill(input.assignmentId);
+        return { success: true };
+      }),
+    
+    updateStatus: protectedProcedure
+      .input(z.object({ assignmentId: z.number(), status: z.enum(["assigned", "in-progress", "completed"]) }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        await drillAssignmentDb.updateAssignmentStatus(input.assignmentId, input.status);
+        return { success: true };
+      }),
+    
+    getUserAssignments: protectedProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin' && ctx.user.id !== input.userId) {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Cannot view other users assignments' });
+        }
+        return await drillAssignmentDb.getUserAssignments(input.userId);
+      }),
+    
+    getAllAssignments: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== 'admin') {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+      }
+      return await drillAssignmentDb.getAllAssignments();
+    }),
+    
+    getAssignmentProgress: protectedProcedure
+      .input(z.object({ assignmentId: z.number() }))
+      .query(async ({ input }) => {
+        return await drillAssignmentDb.getAssignmentProgress(input.assignmentId);
       }),
   }),
 });
