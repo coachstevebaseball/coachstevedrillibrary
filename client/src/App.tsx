@@ -10,17 +10,36 @@ import CoachDashboard from "./pages/CoachDashboard";
 import AthletePortal from "./pages/AthletePortal";
 import DrillDetail from "./pages/DrillDetail";
 import AcceptInvite from "./pages/AcceptInvite";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function Router() {
-  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path={"/"} component={Home} />
-      <Route path={"/admin"} component={AdminDashboard} />
-      <Route path={"/coach-dashboard"} component={CoachDashboard} />
-      <Route path={"/athlete-portal"} component={AthletePortal} />
-      <Route path={"/drill/:id"} component={DrillDetail} />
       <Route path={"/accept-invite/:token"} component={AcceptInvite} />
+      <Route path={"/drill/:id"} component={DrillDetail} />
+      
+      {/* Protected Routes - Admin Only */}
+      <Route path={"/admin"}>
+        <ProtectedRoute requiredRole="admin">
+          <AdminDashboard />
+        </ProtectedRoute>
+      </Route>
+      
+      {/* Protected Routes - Coach Only */}
+      <Route path={"/coach-dashboard"}>
+        <ProtectedRoute requiredRole="coach">
+          <CoachDashboard />
+        </ProtectedRoute>
+      </Route>
+      
+      {/* Protected Routes - Athlete Only */}
+      <Route path={"/athlete-portal"}>
+        <ProtectedRoute requiredRole="athlete">
+          <AthletePortal />
+        </ProtectedRoute>
+      </Route>
+      
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

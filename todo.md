@@ -106,3 +106,17 @@
 - [x] Handle expired/invalid invite errors
 - [x] Add loading and error states
 - [x] Mobile-responsive design
+
+
+## Route Protection & Authentication
+- [x] Create ProtectedRoute wrapper component
+- [x] Implement authentication check middleware
+- [x] Add role-based access control (admin, athlete, coach)
+- [x] Protect Coach Dashboard (admin only)
+- [x] Protect Admin Dashboard (admin only)
+- [x] Protect Athlete Portal (athlete only)
+- [x] Redirect unauthenticated users to login
+- [x] Redirect unauthorized users to home
+- [x] Add loading state during auth check
+- [ ] Test access control for each role
+- [ ] Test redirect behavior
