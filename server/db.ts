@@ -139,3 +139,88 @@ export async function convertUserToAthlete(userId: number) {
     return false;
   }
 }
+
+// Drill video management functions
+export async function saveOrUpdateDrillVideo(drillId: string, videoUrl: string, userId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot save drill video: database not available");
+    return false;
+  }
+
+  try {
+    const { drillVideos } = await import("../drizzle/schema");
+    
+    // Check if video already exists
+    const existing = await db.select().from(drillVideos).where(eq(drillVideos.drillId, drillId)).limit(1);
+    
+    if (existing.length > 0) {
+      // Update existing video
+      await db.update(drillVideos)
+        .set({ videoUrl, updatedAt: new Date() })
+        .where(eq(drillVideos.drillId, drillId));
+    } else {
+      // Insert new video
+      await db.insert(drillVideos).values({
+        drillId,
+        videoUrl,
+        uploadedBy: userId,
+      });
+    }
+    
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to save drill video:", error);
+    return false;
+  }
+}
+
+export async function getDrillVideo(drillId: string) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get drill video: database not available");
+    return undefined;
+  }
+
+  try {
+    const { drillVideos } = await import("../drizzle/schema");
+    const result = await db.select().from(drillVideos).where(eq(drillVideos.drillId, drillId)).limit(1);
+    return result.length > 0 ? result[0] : undefined;
+  } catch (error) {
+    console.error("[Database] Failed to get drill video:", error);
+    return undefined;
+  }
+}
+
+export async function getAllDrillVideos() {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get drill videos: database not available");
+    return [];
+  }
+
+  try {
+    const { drillVideos } = await import("../drizzle/schema");
+    return await db.select().from(drillVideos);
+  } catch (error) {
+    console.error("[Database] Failed to get drill videos:", error);
+    return [];
+  }
+}
+
+export async function deleteDrillVideo(drillId: string) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot delete drill video: database not available");
+    return false;
+  }
+
+  try {
+    const { drillVideos } = await import("../drizzle/schema");
+    await db.delete(drillVideos).where(eq(drillVideos.drillId, drillId));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to delete drill video:", error);
+    return false;
+  }
+}

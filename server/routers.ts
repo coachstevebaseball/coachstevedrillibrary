@@ -123,6 +123,39 @@ export const appRouter = router({
   // Drill Generator router
   drillGenerator: drillGeneratorRouter,
 
+  // Drill videos router
+  videos: router({
+    saveVideo: protectedProcedure
+      .input(z.object({ drillId: z.string(), videoUrl: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
+        }
+        const success = await db.saveOrUpdateDrillVideo(input.drillId, input.videoUrl, ctx.user.id);
+        return { success };
+      }),
+    
+    getVideo: publicProcedure
+      .input(z.object({ drillId: z.string() }))
+      .query(async ({ input }) => {
+        return await db.getDrillVideo(input.drillId);
+      }),
+    
+    getAllVideos: publicProcedure.query(async () => {
+      return await db.getAllDrillVideos();
+    }),
+    
+    deleteVideo: protectedProcedure
+      .input(z.object({ drillId: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
+        }
+        const success = await db.deleteDrillVideo(input.drillId);
+        return { success };
+      }),
+  }),
+
   // Invite management router
   invites: router({
     createInvite: protectedProcedure

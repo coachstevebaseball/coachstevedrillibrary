@@ -1,0 +1,18 @@
+{
+  "query": "SELECT * FROM drillVideos WHERE drillId = '30-second-backhand';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT * FROM drillVideos WHERE drillId = '30-second-backhand';",
+  "rows": [
+    {
+      "id": "1",
+      "drillId": "30-second-backhand",
+      "videoUrl": "https://youtu.be/hL44kgDptuo",
+      "uploadedBy": "1",
+      "createdAt": "2025-12-25 16:47:28",
+      "updatedAt": "2025-12-25 16:47:28"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdrillId\tvideoUrl\tuploadedBy\tcreatedAt\tupdatedAt\n1\t30-second-backhand\thttps://youtu.be/hL44kgDptuo\t1\t2025-12-25 16:47:28\t2025-12-25 16:47:28\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

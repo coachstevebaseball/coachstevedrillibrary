@@ -3,20 +3,32 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Video, Search } from "lucide-react";
 import { Link } from "wouter";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import drillsData from "@/data/drills.json";
 import { VideoUrlManager } from "@/components/VideoUrlManager";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { trpc } from "@/lib/trpc";
 
 export function ManageDrillVideos() {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [drillVideos, setDrillVideos] = useState<Record<string, string>>(() => {
-    // Load saved videos from localStorage
-    const saved = localStorage.getItem('drillVideos');
-    return saved ? JSON.parse(saved) : {};
-  });
+  const [drillVideos, setDrillVideos] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load all videos from database on mount
+  const { data: videosData } = trpc.videos.getAllVideos.useQuery();
+  
+  useEffect(() => {
+    if (videosData) {
+      const videoMap: Record<string, string> = {};
+      videosData.forEach((v: any) => {
+        videoMap[v.drillId] = v.videoUrl;
+      });
+      setDrillVideos(videoMap);
+      setIsLoading(false);
+    }
+  }, [videosData]);
 
   // Get unique categories
   const categories = useMemo(() => {
@@ -37,10 +49,23 @@ export function ManageDrillVideos() {
     });
   }, [searchTerm, selectedCategory]);
 
+  const saveVideoMutation = trpc.videos.saveVideo.useMutation();
+  
   const handleSaveVideo = (drillId: string, videoUrl: string) => {
-    const updated = { ...drillVideos, [drillId]: videoUrl };
-    setDrillVideos(updated);
-    localStorage.setItem('drillVideos', JSON.stringify(updated));
+    console.log('Saving video:', { drillId, videoUrl });
+    saveVideoMutation.mutate(
+      { drillId, videoUrl },
+      {
+        onSuccess: () => {
+          console.log('Video saved successfully');
+          const updated = { ...drillVideos, [drillId]: videoUrl };
+          setDrillVideos(updated);
+        },
+        onError: (error) => {
+          console.error('Failed to save video:', error);
+        },
+      }
+    );
   };
 
   if (!user || (user.role !== "coach" && user.role !== "admin")) {

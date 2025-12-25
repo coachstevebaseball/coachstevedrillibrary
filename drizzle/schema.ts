@@ -68,3 +68,15 @@ export const invites = mysqlTable("invites", {
 
 export type Invite = typeof invites.$inferSelect;
 export type InsertInvite = typeof invites.$inferInsert;
+
+export const drillVideos = mysqlTable("drillVideos", {
+  id: int("id").autoincrement().primaryKey(),
+  drillId: varchar("drillId", { length: 255 }).notNull().unique(),
+  videoUrl: text("videoUrl").notNull(),
+  uploadedBy: int("uploadedBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type DrillVideo = typeof drillVideos.$inferSelect;
+export type InsertDrillVideo = typeof drillVideos.$inferInsert;

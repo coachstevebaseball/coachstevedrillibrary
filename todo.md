@@ -184,3 +184,12 @@
 - [x] Display video player on drill detail page
 - [x] Test with YouTube and Vimeo links
 - [x] Add video thumbnail preview
+
+## Database-Backed Video Persistence
+- [x] Create drillVideos table in database schema
+- [x] Create database helper functions for video CRUD operations
+- [x] Create tRPC routes for video management (save, get, delete)
+- [x] Update ManageDrillVideos to use database API instead of localStorage
+- [x] Update DrillDetail to load videos from database
+- [x] Test video persistence across browsers and sessions
+- [x] Verify videos display correctly on drill detail pages

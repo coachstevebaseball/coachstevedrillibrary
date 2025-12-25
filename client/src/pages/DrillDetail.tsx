@@ -1,14 +1,15 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";;
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink, Lock, LogIn, ChevronDown, AlertCircle, TrendingUp, Lightbulb } from "lucide-react";
 import { getCategoryConfig } from "@/lib/categoryColors";
 import { getLoginUrl, PREVIEW_MODE } from "@/const";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { Link, useRoute } from "wouter";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import drillsData from "@/data/drills.json";
 import { VideoPlayer } from "@/components/VideoPlayer";
+import { trpc } from "@/lib/trpc";
 
 // Collapsible section component
 function CollapsibleSection({ title, icon: Icon, children, defaultOpen = false }: { title: string; icon: any; children: React.ReactNode; defaultOpen?: boolean }) {
@@ -835,6 +836,24 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/Hdw8h4y4eS0"
   },
+  "30-second-backhand": {
+    skillSet: "Infield",
+    difficulty: "Easy",
+    athletes: "1 athlete and 1 coach",
+    time: "5 minutes",
+    equipment: "Baseballs, glove",
+    goal: "Develop quick reflexes and hand-eye coordination with rapid backhand ground balls",
+    description: [
+      "Player stands in ready position at shortstop or second base",
+      "Coach or partner rolls ground balls to the backhand side",
+      "Player fields the ball with proper backhand technique",
+      "Focus on quick footwork and smooth fielding motion",
+      "Complete as many ground balls as possible in 30 seconds",
+      "Rest and repeat for multiple sets",
+      "Emphasize proper glove positioning and body alignment"
+    ],
+    videoUrl: null
+  },
 }
 
 export default function DrillDetail() {
@@ -844,10 +863,19 @@ export default function DrillDetail() {
   const drill = drillsData.find(d => d.id.toString() === id);
   const details = id && drillDetails[id as keyof typeof drillDetails];
   
-  const savedVideos = useMemo(() => {
-    const saved = localStorage.getItem('drillVideos');
-    return saved ? JSON.parse(saved) : {};
-  }, []);
+  const [savedVideos, setSavedVideos] = useState<Record<string, string>>({});
+  
+  // Load video from database
+  const { data: videoData } = trpc.videos.getVideo.useQuery(
+    { drillId: id || '' },
+    { enabled: !!id }
+  );
+  
+  useEffect(() => {
+    if (videoData) {
+      setSavedVideos({ [videoData.drillId]: videoData.videoUrl });
+    }
+  }, [videoData]);
 
   // Check if user has access (or if preview mode is enabled)
   const hasAccess = PREVIEW_MODE || (user && (user.role === 'admin' || user.isActiveClient === 1));
@@ -955,7 +983,7 @@ export default function DrillDetail() {
           <div className="grid gap-8">
             {/* Video Section - Moved to Top */}
             {(savedVideos[drill.id] || details.videoUrl) ? (
-              <VideoPlayer videoUrl={savedVideos[drill.id] || details.videoUrl} title={`${drill.name} Video`} />
+              <VideoPlayer videoUrl={(savedVideos[drill.id] || details.videoUrl) as string} title={`${drill.name} Video`} />
             ) : (
               <div className="bg-muted rounded-xl aspect-video flex items-center justify-center border-2 border-dashed border-muted-foreground/20 w-full">
                 <div className="text-center p-4">
