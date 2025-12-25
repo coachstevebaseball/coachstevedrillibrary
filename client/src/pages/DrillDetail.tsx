@@ -945,7 +945,7 @@ export default function DrillDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-12">
+    <div className="min-h-screen bg-background pb-8 md:pb-12">
       {/* Access Control Check */}
       {!hasAccess && (
         <div className="container py-12">
@@ -985,37 +985,40 @@ export default function DrillDetail() {
       {/* Header */}
       {hasAccess && (
       <>
-      <header className="bg-primary text-primary-foreground py-6 md:py-10 mb-8">
+      <header className="bg-primary text-primary-foreground py-4 md:py-10 mb-6 md:mb-8">
         <div className="container">
           <Link href="/">
-            <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 mb-4 pl-0">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Directory
+            <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 mb-3 md:mb-4 pl-0 text-sm md:text-base">
+              <ArrowLeft className="mr-2 h-3 md:h-4 w-3 md:w-4" />
+              <span className="hidden sm:inline">Back to Directory</span>
+              <span className="sm:hidden">Back</span>
             </Button>
           </Link>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div className="flex-1">
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                <Badge variant="secondary" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-bold">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
+            <div className="flex-1 w-full">
+              <div className="flex flex-wrap items-center gap-1.5 md:gap-2 mb-2 md:mb-3">
+                <Badge variant="secondary" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-bold text-xs md:text-sm">
                   {drill.difficulty}
                 </Badge>
                 {drill.categories.map(cat => {
                   const config = getCategoryConfig(cat);
                   return (
-                    <Badge key={cat} className={`${config.bgColor} ${config.color} font-semibold border`}>
+                    <Badge key={cat} className={`${config.bgColor} ${config.color} font-semibold border text-xs md:text-sm`}>
                       {cat}
                     </Badge>
                   );
                 })}
               </div>
-              <h1 className="text-4xl md:text-5xl font-heading font-black leading-tight">{drill.name}</h1>
+              <h1 className="text-2xl md:text-5xl font-heading font-black leading-tight">{drill.name}</h1>
             </div>
             
             {/* Fallback to external link if we don't have internal details */}
             {!details && (
-              <a href={drill.url} target="_blank" rel="noopener noreferrer">
-                <Button variant="secondary">
-                  View on USA Baseball <ExternalLink className="ml-2 h-4 w-4" />
+              <a href={drill.url} target="_blank" rel="noopener noreferrer" className="w-full md:w-auto mt-3 md:mt-0">
+                <Button variant="secondary" className="w-full md:w-auto text-sm md:text-base">
+                  <span className="hidden sm:inline">View on USA Baseball</span>
+                  <span className="sm:hidden">View</span>
+                  <ExternalLink className="ml-2 h-3 md:h-4 w-3 md:w-4" />
                 </Button>
               </a>
             )}
@@ -1023,16 +1026,16 @@ export default function DrillDetail() {
         </div>
       </header>
 
-      <div className="container max-w-4xl">
+      <div className="container max-w-4xl px-3 md:px-4">
         {details ? (
-          <div className="grid gap-8">
+          <div className="grid gap-6 md:gap-8">
             {/* Video Section - Moved to Top */}
             {(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) ? (
               <VideoPlayer videoUrl={(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) as string} title={`${drill.name} Video`} />
             ) : (
-              <div className="bg-muted rounded-xl aspect-video flex items-center justify-center border-2 border-dashed border-muted-foreground/20 w-full">
-                <div className="text-center p-4">
-                  <p className="text-muted-foreground font-medium">Video / Diagram Placeholder</p>
+              <div className="bg-muted rounded-lg md:rounded-xl aspect-video flex items-center justify-center border-2 border-dashed border-muted-foreground/20 w-full">
+                <div className="text-center p-3 md:p-4">
+                  <p className="text-muted-foreground font-medium text-sm md:text-base">Video / Diagram Placeholder</p>
                   <p className="text-xs text-muted-foreground/60 mt-1">Media content would appear here</p>
                 </div>
               </div>
@@ -1041,9 +1044,9 @@ export default function DrillDetail() {
             {/* Coaching Cues - Above the Fold */}
             <Card className="border-l-4 border-l-secondary bg-gradient-to-br from-secondary/5 to-background">
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-2xl font-black">
-                    <Lightbulb className="h-6 w-6 text-secondary" />
+                <div className="flex items-center justify-between gap-2">
+                  <CardTitle className="flex items-center gap-2 text-xl md:text-2xl font-black">
+                    <Lightbulb className="h-5 md:h-6 w-5 md:w-6 text-secondary" />
                     Coaching Focus
                   </CardTitle>
                   {user && (user.role === 'admin' || user.role === 'coach') && (
@@ -1067,42 +1070,42 @@ export default function DrillDetail() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-lg font-semibold text-foreground leading-relaxed">{details.goal}</p>
+                <p className="text-base md:text-lg font-semibold text-foreground leading-relaxed">{details.goal}</p>
               </CardContent>
             </Card>
 
             {/* Quick Info Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="bg-muted rounded-lg p-3 border">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
+              <div className="bg-muted rounded-lg p-2.5 md:p-3 border">
                 <div className="text-xs font-bold text-muted-foreground uppercase mb-1">Time</div>
-                <div className="font-bold text-foreground">{details.time}</div>
+                <div className="font-bold text-foreground text-sm md:text-base">{details.time}</div>
               </div>
-              <div className="bg-muted rounded-lg p-3 border">
+              <div className="bg-muted rounded-lg p-2.5 md:p-3 border">
                 <div className="text-xs font-bold text-muted-foreground uppercase mb-1">Athletes</div>
-                <div className="font-bold text-foreground text-sm">{details.athletes.split(',')[0]}</div>
+                <div className="font-bold text-foreground text-xs md:text-sm">{details.athletes.split(',')[0]}</div>
               </div>
-              <div className="bg-muted rounded-lg p-3 border">
+              <div className="bg-muted rounded-lg p-2.5 md:p-3 border">
                 <div className="text-xs font-bold text-muted-foreground uppercase mb-1">Equipment</div>
-                <div className="font-bold text-foreground text-sm">{details.equipment.split(',')[0]}</div>
+                <div className="font-bold text-foreground text-xs md:text-sm">{details.equipment.split(',')[0]}</div>
               </div>
-              <div className="bg-muted rounded-lg p-3 border">
+              <div className="bg-muted rounded-lg p-2.5 md:p-3 border">
                 <div className="text-xs font-bold text-muted-foreground uppercase mb-1">Skill Set</div>
-                <div className="font-bold text-foreground text-sm">{details.skillSet}</div>
+                <div className="font-bold text-foreground text-xs md:text-sm">{details.skillSet}</div>
               </div>
             </div>
 
             {/* Instructions */}
             <section>
-              <h2 className="text-3xl font-heading font-black mb-4 flex items-center gap-2">
-                <span className="bg-primary text-primary-foreground h-10 w-10 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+              <h2 className="text-2xl md:text-3xl font-heading font-black mb-3 md:mb-4 flex items-center gap-2">
+                <span className="bg-primary text-primary-foreground h-8 md:h-10 w-8 md:w-10 rounded-full flex items-center justify-center text-xs md:text-sm font-bold">1</span>
                 Step-by-Step Instructions
               </h2>
-              <div className="bg-card rounded-xl border p-6 shadow-sm space-y-4">
-                <ul className="space-y-4">
+              <div className="bg-card rounded-lg md:rounded-xl border p-4 md:p-6 shadow-sm space-y-3 md:space-y-4">
+                <ul className="space-y-3 md:space-y-4">
                   {details.description.map((step: string, i: number) => (
-                    <li key={i} className="flex gap-3">
-                      <div className="h-3 w-3 bg-secondary rounded-full mt-1.5 shrink-0" />
-                      <span className="leading-relaxed text-base">{step}</span>
+                    <li key={i} className="flex gap-2 md:gap-3">
+                      <div className="h-2.5 md:h-3 w-2.5 md:w-3 bg-secondary rounded-full mt-1.5 md:mt-2 shrink-0" />
+                      <span className="leading-relaxed text-sm md:text-base">{step}</span>
                     </li>
                   ))}
                 </ul>
@@ -1110,7 +1113,7 @@ export default function DrillDetail() {
             </section>
 
             {/* Collapsible Sections */}
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               <CollapsibleSection title="Common Mistakes" icon={AlertCircle}>
                 <ul className="space-y-2 text-sm">
                   <li className="flex gap-2">

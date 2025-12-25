@@ -112,36 +112,40 @@ export default function CoachDashboard() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-primary text-primary-foreground py-8 mb-8">
-        <div className="container">
+      <header className="bg-primary text-primary-foreground py-4 md:py-8 mb-6 md:mb-8">
+        <div className="container px-3 md:px-4">
           <Link href="/">
-            <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 mb-4 pl-0">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Directory
+            <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 mb-3 md:mb-4 pl-0 text-sm md:text-base">
+              <ArrowLeft className="mr-2 h-3 md:h-4 w-3 md:w-4" />
+              <span className="hidden sm:inline">Back to Directory</span>
+              <span className="sm:hidden">Back</span>
             </Button>
           </Link>
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-4">
             <div>
-              <h1 className="text-4xl md:text-5xl font-heading font-black">Coach Dashboard</h1>
-              <p className="text-primary-foreground/90 mt-2">Assign drills to athletes and track progress</p>
+              <h1 className="text-2xl md:text-5xl font-heading font-black">Coach Dashboard</h1>
+              <p className="text-primary-foreground/90 mt-1 md:mt-2 text-sm md:text-base">Assign drills to athletes and track progress</p>
             </div>
-            <div className="flex gap-2 flex-wrap">
-              <Link href="/manage-drill-videos">
-                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap">
-                  <Video className="mr-2 h-4 w-4" />
-                  Manage Videos
+            <div className="flex gap-2 flex-wrap w-full md:w-auto">
+              <Link href="/manage-drill-videos" className="flex-1 md:flex-none">
+                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
+                  <Video className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
+                  <span className="hidden sm:inline">Manage Videos</span>
+                  <span className="sm:hidden">Videos</span>
                 </Button>
               </Link>
-              <Link href="/create-drill-details">
-                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap">
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Create Drill Details
+              <Link href="/create-drill-details" className="flex-1 md:flex-none">
+                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
+                  <Sparkles className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
+                  <span className="hidden sm:inline">Create Details</span>
+                  <span className="sm:hidden">Create</span>
                 </Button>
               </Link>
-              <Link href="/drill-generator">
-                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap">
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  AI Generator
+              <Link href="/drill-generator" className="flex-1 md:flex-none">
+                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
+                  <Sparkles className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
+                  <span className="hidden sm:inline">AI Generator</span>
+                  <span className="sm:hidden">AI</span>
                 </Button>
               </Link>
             </div>
@@ -149,21 +153,21 @@ export default function CoachDashboard() {
         </div>
       </header>
 
-      <main className="container max-w-6xl pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="container max-w-6xl pb-8 md:pb-12 px-3 md:px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
           {/* Left: User Selection & Drill Assignment */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 space-y-4 md:space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Plus className="h-5 w-5 text-secondary" />
+                <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
+                  <Plus className="h-4 md:h-5 w-4 md:w-5 text-secondary" />
                   Assign Drill
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 md:space-y-4">
                 {/* User Selection */}
                 <div>
-                  <label className="text-sm font-semibold text-muted-foreground mb-2 block">Select Athlete</label>
+                  <label className="text-xs md:text-sm font-semibold text-muted-foreground mb-1.5 md:mb-2 block">Select Athlete</label>
                   <Select value={selectedUser?.toString() || ""} onValueChange={(val) => setSelectedUser(parseInt(val))}>
                     <SelectTrigger>
                       <SelectValue placeholder="Choose athlete..." />
@@ -181,29 +185,29 @@ export default function CoachDashboard() {
                 {/* Drill Search */}
                 {selectedUser && (
                   <div>
-                    <label className="text-sm font-semibold text-muted-foreground mb-2 block">Search Drill</label>
+                    <label className="text-xs md:text-sm font-semibold text-muted-foreground mb-1.5 md:mb-2 block">Search Drill</label>
                     <div className="relative">
-                      <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Search className="absolute left-3 top-2.5 h-3 md:h-4 w-3 md:w-4 text-muted-foreground" />
                       <Input
                         placeholder="Type drill name..."
                         value={searchDrill}
                         onChange={(e) => setSearchDrill(e.target.value)}
-                        className="pl-9"
+                        className="pl-9 text-sm"
                       />
                     </div>
 
                     {/* Drill Results */}
                     {searchDrill && filteredDrills.length > 0 && (
-                      <div className="mt-2 border rounded-lg max-h-48 overflow-y-auto">
+                      <div className="mt-2 border rounded-lg max-h-40 md:max-h-48 overflow-y-auto">
                         {filteredDrills.map(drill => (
                           <button
                             key={drill.id}
                             onClick={() => setSelectedDrill(drill)}
-                            className={`w-full text-left p-2 hover:bg-muted transition-colors border-b last:border-b-0 ${
+                            className={`w-full text-left p-1.5 md:p-2 hover:bg-muted transition-colors border-b last:border-b-0 ${
                               selectedDrill?.id === drill.id ? "bg-secondary/20" : ""
                             }`}
                           >
-                            <div className="font-medium text-sm">{drill.name}</div>
+                            <div className="font-medium text-xs md:text-sm">{drill.name}</div>
                             <div className="text-xs text-muted-foreground">{drill.difficulty}</div>
                           </button>
                         ))}
@@ -214,10 +218,10 @@ export default function CoachDashboard() {
 
                 {/* Selected Drill */}
                 {selectedDrill && (
-                  <div className="bg-muted p-3 rounded-lg">
-                    <div className="font-semibold text-sm mb-2">{selectedDrill.name}</div>
-                    <div className="flex gap-2 flex-wrap mb-3">
-                      <Badge variant="outline">{selectedDrill.difficulty}</Badge>
+                  <div className="bg-muted p-2.5 md:p-3 rounded-lg">
+                    <div className="font-semibold text-xs md:text-sm mb-2">{selectedDrill.name}</div>
+                    <div className="flex gap-1.5 md:gap-2 flex-wrap mb-2.5 md:mb-3">
+                      <Badge variant="outline" className="text-xs">{selectedDrill.difficulty}</Badge>
                       {selectedDrill.categories.map(cat => (
                         <Badge key={cat} variant="secondary" className="text-xs">{cat}</Badge>
                       ))}
@@ -225,7 +229,8 @@ export default function CoachDashboard() {
                     <Button
                       onClick={handleAssignDrill}
                       disabled={assignDrillMutation.isPending}
-                      className="w-full"
+                      className="w-full text-sm"
+                      size="sm"
                     >
                       {assignDrillMutation.isPending ? "Assigning..." : "Assign Drill"}
                     </Button>
@@ -239,7 +244,7 @@ export default function CoachDashboard() {
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>
+                <CardTitle className="text-lg md:text-xl">
                   {selectedUser
                     ? `${allUsers.find((u: any) => u.id === selectedUser)?.name || `User ${selectedUser}`}'s Assignments`
                     : "Select an athlete to view assignments"}

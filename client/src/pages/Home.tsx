@@ -89,43 +89,46 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-primary/80 to-primary/95" />
         </div>
         
-        <div className="container relative z-10 py-12 md:py-20">
+        <div className="container relative z-10 py-8 md:py-20">
           {/* Auth & Admin Controls */}
-          <div className="flex justify-end gap-3 mb-8">
+          <div className="flex justify-end gap-2 mb-6 flex-wrap">
             {user ? (
               <>
                 {user.role === 'admin' && (
                   <>
                     <Link href="/coach-dashboard">
-                      <Button variant="secondary" size="sm" className="gap-2">
+                      <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
                         <Users className="h-4 w-4" />
                         Coach Dashboard
                       </Button>
                     </Link>
                     <Link href="/admin">
-                      <Button variant="secondary" size="sm" className="gap-2">
+                      <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
                         <Shield className="h-4 w-4" />
-                        Admin Dashboard
+                        <span className="hidden sm:inline">Admin Dashboard</span>
+                        <span className="sm:hidden">Admin</span>
                       </Button>
                     </Link>
                   </>
                 )}
                 {user.role === 'athlete' && (
                   <Link href="/athlete-portal">
-                    <Button variant="secondary" size="sm" className="gap-2">
+                    <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
                       <Activity className="h-4 w-4" />
-                      My Drills
+                      <span className="hidden sm:inline">My Drills</span>
+                      <span className="sm:hidden">Drills</span>
                     </Button>
                   </Link>
                 )}
-                <Button variant="outline" size="sm" onClick={logout} className="gap-2 bg-background/20 hover:bg-background/30">
+                <Button variant="outline" size="sm" onClick={logout} className="gap-2 bg-background/20 hover:bg-background/30 text-xs md:text-sm">
                   <LogOut className="h-4 w-4" />
-                  Logout
+                  <span className="hidden sm:inline">Logout</span>
+                  <span className="sm:hidden">Exit</span>
                 </Button>
               </>
             ) : (
               <a href={getLoginUrl()}>
-                <Button variant="secondary" size="sm" className="gap-2">
+                <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
                   <LogIn className="h-4 w-4" />
                   Login
                 </Button>
@@ -138,22 +141,22 @@ export default function Home() {
               <div className="h-1 w-12 bg-secondary rounded-full" />
               <span className="text-secondary font-bold tracking-wider uppercase text-xs">Coach Steve's Mobile Coach</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-heading font-black mb-4 leading-tight">
+            <h1 className="text-4xl md:text-7xl font-heading font-black mb-3 md:mb-4 leading-tight">
               Drills Directory
             </h1>
-            <p className="text-lg text-primary-foreground/90 mb-10 max-w-3xl leading-relaxed font-medium">
+            <p className="text-base md:text-lg text-primary-foreground/90 mb-6 md:mb-10 max-w-3xl leading-relaxed font-medium">
               {drillsData.length} professional baseball drills. Filter by skill set, difficulty, and duration to build the perfect practice plan.
             </p>
             
             {/* Search Bar in Hero */}
-            <div className="relative max-w-2xl">
+            <div className="relative w-full md:max-w-2xl">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-muted-foreground" />
               </div>
               <Input
                 type="text"
-                placeholder="Search drills... (e.g., '1-2-3 Drill', 'Bunting', 'Throwing')"
-                className="pl-11 py-7 text-base bg-background/95 text-foreground border-0 shadow-2xl rounded-2xl focus-visible:ring-2 focus-visible:ring-secondary font-medium"
+                placeholder="Search drills..."
+                className="pl-11 py-5 md:py-7 text-sm md:text-base bg-background/95 text-foreground border-0 shadow-2xl rounded-xl md:rounded-2xl focus-visible:ring-2 focus-visible:ring-secondary font-medium"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -163,14 +166,14 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 container py-8 md:py-12">
+      <main className="flex-1 container py-6 md:py-12">
         {/* Enhanced Filters */}
-        <div className="bg-card border rounded-2xl p-5 md:p-6 shadow-sm mb-10">
+        <div className="bg-card border rounded-xl md:rounded-2xl p-4 md:p-6 shadow-sm mb-8 md:mb-10">
           <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-foreground font-bold text-lg">
-                <Filter className="h-5 w-5 text-secondary" />
-                <span>Filter Drills</span>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 text-foreground font-bold text-base md:text-lg">
+                <Filter className="h-4 md:h-5 w-4 md:w-5 text-secondary" />
+                <span>Filter</span>
               </div>
               {hasActiveFilters && (
                 <Button 
@@ -181,19 +184,19 @@ export default function Home() {
                     setDifficultyFilter("All");
                     setCategoryFilter("All");
                   }}
-                  className="text-muted-foreground hover:text-foreground gap-1"
+                  className="text-muted-foreground hover:text-foreground gap-1 text-xs md:text-sm"
                 >
-                  <X className="h-4 w-4" />
-                  Clear All
+                  <X className="h-3 md:h-4 w-3 md:w-4" />
+                  <span className="hidden sm:inline">Clear All</span>
                 </Button>
               )}
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
               <div>
-                <label className="text-sm font-semibold text-muted-foreground mb-2 block">Difficulty</label>
+                <label className="text-xs md:text-sm font-semibold text-muted-foreground mb-1.5 md:mb-2 block">Difficulty</label>
                 <Select value={difficultyFilter} onValueChange={(value) => handleFilterChange(setDifficultyFilter, value)}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full text-sm">
                     <SelectValue placeholder="All Difficulties" />
                   </SelectTrigger>
                   <SelectContent>
@@ -206,9 +209,9 @@ export default function Home() {
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-muted-foreground mb-2 block">Skill Set</label>
+                <label className="text-xs md:text-sm font-semibold text-muted-foreground mb-1.5 md:mb-2 block">Skill Set</label>
                 <Select value={categoryFilter} onValueChange={(value) => handleFilterChange(setCategoryFilter, value)}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full text-sm">
                     <SelectValue placeholder="All Skill Sets" />
                   </SelectTrigger>
                   <SelectContent>
@@ -220,8 +223,8 @@ export default function Home() {
               </div>
 
               <div className="flex items-end">
-                <div className="text-sm text-muted-foreground font-medium">
-                  <span className="text-foreground font-bold text-lg">{filteredDrills.length}</span> drills found
+                <div className="text-xs md:text-sm text-muted-foreground font-medium">
+                  <span className="text-foreground font-bold text-base md:text-lg">{filteredDrills.length}</span> <span className="hidden sm:inline">drills found</span>
                 </div>
               </div>
             </div>
@@ -231,12 +234,12 @@ export default function Home() {
         {/* Results Section */}
         {filteredDrills.length > 0 ? (
           <div>
-            <h2 className="text-3xl font-heading font-bold text-foreground mb-8">
+            <h2 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-6 md:mb-8">
               {categoryFilter !== "All" ? `${categoryFilter} Drills` : "All Drills"}
             </h2>
             
             {/* Drills Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {paginatedDrills.map((drill) => {
                 const primaryCategory = drill.categories[0];
                 const categoryConfig = getCategoryConfig(primaryCategory);
@@ -247,26 +250,26 @@ export default function Home() {
                     href={`/drill/${drill.id}`}
                     className="group block h-full"
                   >
-                    <Card className="h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border-l-4 border-l-transparent overflow-hidden flex flex-col">
-                      <CardHeader className="pb-3 bg-gradient-to-br from-background to-muted/30">
-                        <div className="flex justify-between items-start gap-2 mb-3">
+                    <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 md:hover:shadow-xl md:hover:-translate-y-2 border-l-4 border-l-transparent overflow-hidden flex flex-col">
+                      <CardHeader className="pb-2 md:pb-3 bg-gradient-to-br from-background to-muted/30">
+                        <div className="flex justify-between items-start gap-2 mb-2 md:mb-3">
                           <Badge variant="outline" className={`${getDifficultyColor(drill.difficulty)} font-bold border text-xs`}>
                             {drill.difficulty}
                           </Badge>
                           {drill.duration !== "Unknown" && (
-                            <div className="flex items-center text-xs font-medium text-muted-foreground bg-background px-2.5 py-1.5 rounded-lg border">
-                              <Clock className="h-3 w-3 mr-1.5" />
-                              {drill.duration}
+                            <div className="flex items-center text-xs font-medium text-muted-foreground bg-background px-2 md:px-2.5 py-1 md:py-1.5 rounded-lg border">
+                              <Clock className="h-3 w-3 mr-1" />
+                              <span className="hidden sm:inline">{drill.duration}</span>
                             </div>
                           )}
                         </div>
-                        <CardTitle className="text-2xl font-heading font-black leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                        <CardTitle className="text-lg md:text-2xl font-heading font-black leading-tight group-hover:text-primary transition-colors line-clamp-2">
                           {drill.name}
                         </CardTitle>
                       </CardHeader>
                       
-                      <CardContent className="flex-1 pt-4">
-                        <div className="flex flex-wrap gap-2">
+                      <CardContent className="flex-1 pt-3 md:pt-4">
+                        <div className="flex flex-wrap gap-1.5 md:gap-2">
                           {drill.categories.map((cat, idx) => {
                             const config = getCategoryConfig(cat);
                             return (
@@ -281,11 +284,12 @@ export default function Home() {
                         </div>
                       </CardContent>
                       
-                      <CardFooter className="pt-3 pb-4 text-sm text-muted-foreground flex items-center justify-between border-t bg-muted/20 mt-auto p-4">
-                        <span className="flex items-center gap-1.5 group-hover:text-secondary transition-colors font-bold text-foreground">
-                          View Details
+                      <CardFooter className="pt-2 md:pt-3 pb-3 md:pb-4 text-sm text-muted-foreground flex items-center justify-between border-t bg-muted/20 mt-auto p-3 md:p-4">
+                        <span className="flex items-center gap-1 md:gap-1.5 group-hover:text-secondary transition-colors font-bold text-foreground text-sm md:text-base">
+                          <span className="hidden sm:inline">View Details</span>
+                          <span className="sm:hidden">View</span>
                         </span>
-                        <ChevronRight className="h-5 w-5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 text-secondary" />
+                        <ChevronRight className="h-4 md:h-5 w-4 md:w-5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 text-secondary" />
                       </CardFooter>
                     </Card>
                   </Link>
@@ -295,52 +299,101 @@ export default function Home() {
             
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between mt-12 pt-8 border-t">
-                <div className="text-sm text-muted-foreground font-medium">
-                  Page <span className="font-bold text-foreground">{currentPage}</span> of <span className="font-bold text-foreground">{totalPages}</span>
-                  <span className="ml-4">Showing {startIndex + 1}-{Math.min(endIndex, filteredDrills.length)} of {filteredDrills.length} drills</span>
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0 mt-8 md:mt-12 pt-6 md:pt-8 border-t">
+                <div className="text-xs md:text-sm text-muted-foreground font-medium text-center md:text-left">
+                  <div className="md:hidden mb-2">Page <span className="font-bold text-foreground">{currentPage}</span>/<span className="font-bold text-foreground">{totalPages}</span></div>
+                  <div className="hidden md:block">Page <span className="font-bold text-foreground">{currentPage}</span> of <span className="font-bold text-foreground">{totalPages}</span></div>
+                  <div className="text-xs mt-1 md:ml-4 md:mt-0 md:inline">Showing {startIndex + 1}-{Math.min(endIndex, filteredDrills.length)} of {filteredDrills.length}</div>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full md:w-auto">
                   <Button
                     variant="outline"
                     onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
-                    className="gap-2"
+                    className="gap-2 text-sm flex-1 sm:flex-none"
+                    size="sm"
                   >
-                    ← Previous
+                    <span className="hidden sm:inline">← Previous</span>
+                    <span className="sm:hidden">← Prev</span>
                   </Button>
-                  <div className="flex items-center gap-2">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                      <Button
-                        key={page}
-                        variant={page === currentPage ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setCurrentPage(page)}
-                        className="min-w-10"
-                      >
-                        {page}
-                      </Button>
-                    ))}
+                  <div className="flex items-center gap-1 overflow-x-auto justify-center">
+                    {totalPages <= 5 ? (
+                      Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                        <Button
+                          key={page}
+                          variant={page === currentPage ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setCurrentPage(page)}
+                          className="min-w-9 text-xs md:text-sm"
+                        >
+                          {page}
+                        </Button>
+                      ))
+                    ) : (
+                      <>
+                        {currentPage > 2 && (
+                          <>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setCurrentPage(1)}
+                              className="min-w-9 text-xs md:text-sm"
+                            >
+                              1
+                            </Button>
+                            {currentPage > 3 && <span className="text-muted-foreground px-1">...</span>}
+                          </>
+                        )}
+                        {Array.from({ length: Math.min(3, totalPages) }, (_, i) => Math.max(1, currentPage - 1 + i)).map(page => (
+                          page <= totalPages && (
+                            <Button
+                              key={page}
+                              variant={page === currentPage ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setCurrentPage(page)}
+                              className="min-w-9 text-xs md:text-sm"
+                            >
+                              {page}
+                            </Button>
+                          )
+                        ))}
+                        {currentPage < totalPages - 1 && (
+                          <>
+                            {currentPage < totalPages - 2 && <span className="text-muted-foreground px-1">...</span>}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setCurrentPage(totalPages)}
+                              className="min-w-9 text-xs md:text-sm"
+                            >
+                              {totalPages}
+                            </Button>
+                          </>
+                        )}
+                      </>
+                    )}
                   </div>
                   <Button
                     variant="outline"
                     onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
-                    className="gap-2"
+                    className="gap-2 text-sm flex-1 sm:flex-none"
+                    size="sm"
                   >
-                    Next →
+                    <span className="hidden sm:inline">Next →</span>
+                    <span className="sm:hidden">Next →</span>
                   </Button>
                 </div>
               </div>
             )}
           </div>
         ) : (
-          <div className="text-center py-24 bg-muted/30 rounded-2xl border-2 border-dashed">
-            <div className="bg-muted h-20 w-20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Search className="h-10 w-10 text-muted-foreground" />
+          <div className="text-center py-16 md:py-24 bg-muted/30 rounded-xl md:rounded-2xl border-2 border-dashed">
+            <div className="bg-muted h-16 md:h-20 w-16 md:w-20 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+              <Search className="h-8 md:h-10 w-8 md:w-10 text-muted-foreground" />
             </div>
-            <h3 className="text-2xl font-heading font-bold mb-3">No drills found</h3>
-            <p className="text-muted-foreground max-w-md mx-auto mb-8 text-lg">
+            <h3 className="text-xl md:text-2xl font-heading font-bold mb-2 md:mb-3">No drills found</h3>
+            <p className="text-muted-foreground max-w-md mx-auto mb-6 md:mb-8 text-sm md:text-lg">
               We couldn't find any drills matching your search criteria. Try adjusting your filters or search term.
             </p>
             <Button 
@@ -349,10 +402,10 @@ export default function Home() {
                 setDifficultyFilter("All");
                 setCategoryFilter("All");
               }}
-              className="gap-2"
+              size="sm"
+              className="text-sm"
             >
-              <X className="h-4 w-4" />
-              Clear Filters
+              Clear All Filters
             </Button>
           </div>
         )}
