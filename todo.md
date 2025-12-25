@@ -120,3 +120,10 @@
 - [x] Add loading state during auth check
 - [ ] Test access control for each role
 - [ ] Test redirect behavior
+
+
+## Athlete Portal Fixes
+- [x] Fix redirect after account creation (should go to /athlete-portal)
+- [x] Fix AthletePortal to display assigned drills
+- [x] Verify drills load correctly
+- [x] Test athlete can see their assigned drills

@@ -85,6 +85,15 @@ export async function acceptInvite(
     throw new Error("Invalid or expired invite");
   }
 
+  // Import users table for role update
+  const { users } = await import("../drizzle/schema");
+
+  // Update user role based on invite role
+  await db
+    .update(users)
+    .set({ role: invite.role })
+    .where(eq(users.id, userId));
+
   // Update invite status
   await db
     .update(invites)
