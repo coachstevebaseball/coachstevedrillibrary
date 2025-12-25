@@ -1,4 +1,3 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,11 +6,17 @@ import { Link } from "wouter";
 import { useState, useMemo } from "react";
 import drillsData from "@/data/drills.json";
 import { VideoUrlManager } from "@/components/VideoUrlManager";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 export function ManageDrillVideos() {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [drillVideos, setDrillVideos] = useState<Record<string, string>>(() => {
+    // Load saved videos from localStorage
+    const saved = localStorage.getItem('drillVideos');
+    return saved ? JSON.parse(saved) : {};
+  });
 
   // Get unique categories
   const categories = useMemo(() => {
@@ -32,7 +37,13 @@ export function ManageDrillVideos() {
     });
   }, [searchTerm, selectedCategory]);
 
-  if (!user || user.role !== "coach" && user.role !== "admin") {
+  const handleSaveVideo = (drillId: string, videoUrl: string) => {
+    const updated = { ...drillVideos, [drillId]: videoUrl };
+    setDrillVideos(updated);
+    localStorage.setItem('drillVideos', JSON.stringify(updated));
+  };
+
+  if (!user || (user.role !== "coach" && user.role !== "admin")) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="w-full max-w-md">
@@ -97,27 +108,16 @@ export function ManageDrillVideos() {
         </div>
 
         {/* Drills Grid */}
-        <div className="grid gap-6">
-          {filteredDrills.length > 0 ? (
-            filteredDrills.map(drill => (
-              <VideoUrlManager
-                key={drill.id}
-                drillId={drill.id}
-                drillName={drill.name}
-                onSave={(videoUrl) => {
-                  console.log(`Saved video for ${drill.name}:`, videoUrl);
-                  // In a real app, this would save to the database
-                }}
-              />
-            ))
-          ) : (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <Video className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-                <p className="text-muted-foreground">No drills found matching your search.</p>
-              </CardContent>
-            </Card>
-          )}
+        <div className="grid gap-6 pb-12">
+          {filteredDrills.map(drill => (
+            <VideoUrlManager
+              key={drill.id}
+              drillId={drill.id}
+              drillName={drill.name}
+              currentVideoUrl={drillVideos[drill.id]}
+              onSave={(videoUrl) => handleSaveVideo(drill.id, videoUrl)}
+            />
+          ))}
         </div>
       </div>
     </div>

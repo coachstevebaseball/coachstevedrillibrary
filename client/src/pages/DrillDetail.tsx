@@ -6,7 +6,7 @@ import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink, Lock, LogIn, C
 import { getCategoryConfig } from "@/lib/categoryColors";
 import { getLoginUrl, PREVIEW_MODE } from "@/const";
 import { Link, useRoute } from "wouter";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import drillsData from "@/data/drills.json";
 import { VideoPlayer } from "@/components/VideoPlayer";
 
@@ -843,6 +843,11 @@ export default function DrillDetail() {
   const id = params?.id;
   const drill = drillsData.find(d => d.id.toString() === id);
   const details = id && drillDetails[id as keyof typeof drillDetails];
+  
+  const savedVideos = useMemo(() => {
+    const saved = localStorage.getItem('drillVideos');
+    return saved ? JSON.parse(saved) : {};
+  }, []);
 
   // Check if user has access (or if preview mode is enabled)
   const hasAccess = PREVIEW_MODE || (user && (user.role === 'admin' || user.isActiveClient === 1));
@@ -949,8 +954,8 @@ export default function DrillDetail() {
         {details ? (
           <div className="grid gap-8">
             {/* Video Section - Moved to Top */}
-            {details.videoUrl ? (
-              <VideoPlayer videoUrl={details.videoUrl} title={`${drill.name} Video`} />
+            {(savedVideos[drill.id] || details.videoUrl) ? (
+              <VideoPlayer videoUrl={savedVideos[drill.id] || details.videoUrl} title={`${drill.name} Video`} />
             ) : (
               <div className="bg-muted rounded-xl aspect-video flex items-center justify-center border-2 border-dashed border-muted-foreground/20 w-full">
                 <div className="text-center p-4">
