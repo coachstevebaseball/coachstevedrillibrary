@@ -4,7 +4,6 @@
     "name": "1-2-3 Drill",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "10m",
@@ -16,7 +15,6 @@
     "name": "1-2-3 Rhythm Tee",
     "difficulty": "Medium",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -250,7 +248,6 @@
     "name": "90/45/Even Progression Tee",
     "difficulty": "Hard",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -306,7 +303,6 @@
     "name": "Angled Force Plate Tee - Back Foot",
     "difficulty": "Medium",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -340,7 +336,6 @@
     "name": "Back Foot Cone Tee",
     "difficulty": "Medium",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -352,7 +347,6 @@
     "name": "Back Hip Load Tee",
     "difficulty": "Hard",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -364,7 +358,6 @@
     "name": "Back Net Constraint Tee",
     "difficulty": "Hard",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "10m",
@@ -643,7 +636,6 @@
     "name": "Belly Button Tee",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -699,7 +691,6 @@
     "name": "Bottom Hand Tee",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -799,7 +790,6 @@
     "name": "Change-Up Tee",
     "difficulty": "Hard",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -1058,7 +1048,6 @@
     "name": "Double Tee",
     "difficulty": "Medium",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -1070,7 +1059,6 @@
     "name": "Double Tee Decision Making",
     "difficulty": "Medium",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -1137,7 +1125,6 @@
     "name": "Extended Tee",
     "difficulty": "Medium",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -1468,7 +1455,6 @@
     "name": "High Tee",
     "difficulty": "Medium",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -1480,7 +1466,6 @@
     "name": "Hip Loading Balance Disc Tee",
     "difficulty": "Hard",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -1548,7 +1533,6 @@
     "name": "Inside/Outside Tee",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -1604,7 +1588,6 @@
     "name": "Knee to Knee Tee",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -1683,7 +1666,6 @@
     "name": "Location Tee",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -1695,7 +1677,6 @@
     "name": "Long Tee",
     "difficulty": "Hard",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -1718,7 +1699,6 @@
     "name": "Low Tee",
     "difficulty": "Medium",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -1730,7 +1710,6 @@
     "name": "Low Tee Mini Bat",
     "difficulty": "Medium",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -1764,7 +1743,6 @@
     "name": "No Stride Tee",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -1798,7 +1776,6 @@
     "name": "Offensive Stations - Tee and Live Hitting",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "30m",
@@ -1910,7 +1887,6 @@
     "name": "Outside Tee",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -2249,7 +2225,6 @@
     "name": "Rhythm Tee",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -2338,7 +2313,6 @@
     "name": "Scissor Tee and Soft Toss",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -2350,7 +2324,6 @@
     "name": "Separation Progression Tee",
     "difficulty": "Medium",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -2384,7 +2357,6 @@
     "name": "Short Bat Bottom Hand Tee",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -2407,7 +2379,6 @@
     "name": "Short Bat Top Hand Tee",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -2673,7 +2644,6 @@
     "name": "Target Tee",
     "difficulty": "Hard",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "10m",
@@ -2718,7 +2688,6 @@
     "name": "Tees with Timing",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -2807,7 +2776,6 @@
     "name": "Tight Tee",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -2830,7 +2798,6 @@
     "name": "Top Hand Tee",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",
@@ -2930,7 +2897,6 @@
     "name": "Wrist Strength Tee",
     "difficulty": "Easy",
     "categories": [
-      "Tee",
       "Hitting"
     ],
     "duration": "5m",

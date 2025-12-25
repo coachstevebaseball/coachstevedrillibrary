@@ -171,3 +171,8 @@
 - [x] Test AI drill generation with various issues
 - [x] Display generated drills with proper formatting
 - [x] Fix cache issues and verify OpenAI integration works
+
+## Drill Categorization Fix
+- [x] Move all "tee" skill set drills to "hitting" skill set
+- [x] Verify drills appear under hitting filter
+- [x] Test filtering works correctly
