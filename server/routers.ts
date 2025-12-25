@@ -6,6 +6,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import * as db from "./db";
 import * as drillAssignmentDb from "./drillAssignments";
+import * as inviteDb from "./invites";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -92,6 +93,64 @@ export const appRouter = router({
       .input(z.object({ assignmentId: z.number() }))
       .query(async ({ input }) => {
         return await drillAssignmentDb.getAssignmentProgress(input.assignmentId);
+      }),
+  }),
+
+  // Invite management router
+  invites: router({
+    createInvite: protectedProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await inviteDb.createInvite(input.email, ctx.user.id);
+      }),
+    
+    getAllInvites: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== 'admin') {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+      }
+      return await inviteDb.getAllInvites();
+    }),
+    
+    getInviteByToken: publicProcedure
+      .input(z.object({ token: z.string() }))
+      .query(async ({ input }) => {
+        const invite = await inviteDb.getInviteByToken(input.token);
+        if (!invite) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Invite not found' });
+        }
+        return {
+          valid: inviteDb.isInviteValid(invite),
+          email: invite.email,
+          expiresAt: invite.expiresAt,
+        };
+      }),
+    
+    acceptInvite: publicProcedure
+      .input(z.object({ token: z.string(), userId: z.number() }))
+      .mutation(async ({ input }) => {
+        return await inviteDb.acceptInvite(input.token, input.userId);
+      }),
+    
+    resendInvite: protectedProcedure
+      .input(z.object({ inviteId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await inviteDb.resendInvite(input.inviteId);
+      }),
+    
+    revokeInvite: protectedProcedure
+      .input(z.object({ inviteId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        await inviteDb.revokeInvite(input.inviteId);
+        return { success: true };
       }),
   }),
 });

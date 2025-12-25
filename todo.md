@@ -77,3 +77,16 @@
 - [x] Add filter by status
 - [x] Mobile-optimized athlete portal
 - [ ] Test athlete access and permissions
+
+
+## Invite-Only Access System
+- [x] Add invites table to database schema
+- [x] Create invite generation API routes
+- [x] Build invite management in Admin Dashboard
+- [ ] Create invite acceptance page
+- [ ] Implement account setup flow
+- [ ] Add route protection middleware
+- [ ] Protect all pages with authentication
+- [ ] Test invite expiration (7 days)
+- [ ] Test invite resend functionality
+- [ ] Test role-based access (admin vs athlete)

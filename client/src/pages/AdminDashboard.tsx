@@ -18,10 +18,11 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Loader2, Users, Shield, CheckCircle2, XCircle } from "lucide-react";
+import { Loader2, Users, Shield, CheckCircle2, XCircle, Mail, Copy, Trash2, RotateCcw } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { toast } from "sonner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import * as React from "react";
 
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
@@ -48,6 +49,58 @@ export default function AdminDashboard() {
       toast.error(error.message || "Failed to update client access");
     },
   });
+
+  // Invite management
+  const { data: allInvites = [], isLoading: invitesLoading } = trpc.invites.getAllInvites.useQuery(undefined, {
+    enabled: user?.role === "admin",
+  });
+
+  const createInviteMutation = trpc.invites.createInvite.useMutation({
+    onSuccess: () => {
+      utils.invites.getAllInvites.invalidate();
+      toast.success("Invite created successfully!");
+      setNewInviteEmail("");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to create invite");
+    },
+  });
+
+  const resendInviteMutation = trpc.invites.resendInvite.useMutation({
+    onSuccess: () => {
+      utils.invites.getAllInvites.invalidate();
+      toast.success("Invite resent successfully!");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to resend invite");
+    },
+  });
+
+  const revokeInviteMutation = trpc.invites.revokeInvite.useMutation({
+    onSuccess: () => {
+      utils.invites.getAllInvites.invalidate();
+      toast.success("Invite revoked successfully");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to revoke invite");
+    },
+  });
+
+  const [newInviteEmail, setNewInviteEmail] = React.useState("");
+
+  const handleCreateInvite = () => {
+    if (!newInviteEmail) {
+      toast.error("Please enter an email address");
+      return;
+    }
+    createInviteMutation.mutate({ email: newInviteEmail });
+  };
+
+  const copyInviteLink = (token: string) => {
+    const inviteUrl = `${window.location.origin}/accept-invite/${token}`;
+    navigator.clipboard.writeText(inviteUrl);
+    toast.success("Invite link copied to clipboard!");
+  };
 
   if (authLoading || isLoading) {
     return (
@@ -207,6 +260,133 @@ export default function AdminDashboard() {
             </Table>
           </CardContent>
         </Card>
+
+      {/* Invite Management Section */}
+      <Card className="mt-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Mail className="h-5 w-5" />
+            Invite Athletes
+          </CardTitle>
+          <CardDescription>Generate and manage athlete invitations</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Create Invite Form */}
+          <div className="space-y-3">
+            <label className="text-sm font-semibold">Create New Invite</label>
+            <div className="flex gap-2">
+              <input
+                type="email"
+                placeholder="athlete@example.com"
+                value={newInviteEmail}
+                onChange={(e) => setNewInviteEmail(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleCreateInvite()}
+                className="flex-1 px-3 py-2 border rounded-md border-input bg-background text-sm"
+              />
+              <Button
+                onClick={handleCreateInvite}
+                disabled={createInviteMutation.isPending || !newInviteEmail}
+              >
+                {createInviteMutation.isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Mail className="h-4 w-4 mr-2" />
+                    Create Invite
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+
+          {/* Invites List */}
+          <div className="space-y-3">
+            <label className="text-sm font-semibold">Pending & Accepted Invites</label>
+            {invitesLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              </div>
+            ) : allInvites.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No invites created yet</p>
+              </div>
+            ) : (
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {allInvites.map((invite: any) => (
+                  <div
+                    key={invite.id}
+                    className="flex items-center justify-between gap-4 p-3 border rounded-lg bg-muted/30"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{invite.email}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge
+                          variant={
+                            invite.status === "accepted"
+                              ? "default"
+                              : invite.status === "expired"
+                              ? "destructive"
+                              : "secondary"
+                          }
+                        >
+                          {invite.status === "accepted" && <CheckCircle2 className="h-3 w-3 mr-1" />}
+                          {invite.status === "expired" && <XCircle className="h-3 w-3 mr-1" />}
+                          {invite.status.charAt(0).toUpperCase() + invite.status.slice(1)}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(invite.expiresAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {invite.status === "pending" && (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => copyInviteLink(invite.inviteToken)}
+                            title="Copy invite link"
+                          >
+                            <Copy className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => resendInviteMutation.mutate({ inviteId: invite.id })}
+                            disabled={resendInviteMutation.isPending}
+                            title="Resend invite"
+                          >
+                            <RotateCcw className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => revokeInviteMutation.mutate({ inviteId: invite.id })}
+                            disabled={revokeInviteMutation.isPending}
+                            className="text-destructive hover:text-destructive"
+                            title="Revoke invite"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </>
+                      )}
+                      {invite.status === "accepted" && (
+                        <span className="text-xs text-muted-foreground">
+                          Accepted {new Date(invite.acceptedAt).toLocaleDateString()}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
       </main>
     </div>
   );
