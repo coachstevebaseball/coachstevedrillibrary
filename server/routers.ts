@@ -53,12 +53,26 @@ export const appRouter = router({
   // Drill assignment router for coach dashboard
   drillAssignments: router({
     assignDrill: protectedProcedure
-      .input(z.object({ userId: z.number(), drillId: z.string(), drillName: z.string(), notes: z.string().optional() }))
+      .input(z.object({
+        userId: z.number(),
+        drillId: z.string(),
+        drillName: z.string(),
+        notes: z.string().optional(),
+        difficulty: z.string().optional(),
+        duration: z.string().optional()
+      }))
       .mutation(async ({ ctx, input }) => {
         if (ctx.user.role !== 'admin') {
           throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
         }
-        await drillAssignmentDb.assignDrill(input.userId, input.drillId, input.drillName, input.notes);
+        await drillAssignmentDb.assignDrill(
+          input.userId,
+          input.drillId,
+          input.drillName,
+          input.notes,
+          ctx.user.name || 'Coach',
+          { difficulty: input.difficulty || 'Unknown', duration: input.duration || 'Unknown' }
+        );
         return { success: true };
       }),
     

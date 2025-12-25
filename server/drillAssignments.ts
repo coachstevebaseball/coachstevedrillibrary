@@ -1,12 +1,17 @@
 import { eq, and } from "drizzle-orm";
-import { drillAssignments, assignmentProgress, InsertDrillAssignment, InsertAssignmentProgress } from "../drizzle/schema";
+import { drillAssignments, assignmentProgress, InsertDrillAssignment, InsertAssignmentProgress, users } from "../drizzle/schema";
 import { getDb } from "./db";
+import { sendDrillAssignmentEmail } from "./email";
 
-export async function assignDrill(userId: number, drillId: string, drillName: string, notes?: string) {
+export async function assignDrill(userId: number, drillId: string, drillName: string, notes?: string, coachName?: string, drillDetails?: { difficulty: string; duration: string }) {
   const db = await getDb();
   if (!db) {
     throw new Error("Database not available");
   }
+
+  // Get user email and name
+  const userResult = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+  const user = userResult.length > 0 ? userResult[0] : null;
 
   const assignment: InsertDrillAssignment = {
     userId,
@@ -16,7 +21,24 @@ export async function assignDrill(userId: number, drillId: string, drillName: st
     notes: notes || null,
   };
 
-  return await db.insert(drillAssignments).values(assignment);
+  const result = await db.insert(drillAssignments).values(assignment);
+
+  // Send email notification if user email exists
+  if (user?.email) {
+    const portalUrl = `${process.env.VITE_FRONTEND_FORGE_API_URL || "https://usabdrills-4gdchruk.manus.space"}/athlete-portal`;
+    await sendDrillAssignmentEmail({
+      athleteEmail: user.email,
+      athleteName: user.name || "Athlete",
+      drillName,
+      drillDifficulty: drillDetails?.difficulty || "Unknown",
+      drillDuration: drillDetails?.duration || "Unknown",
+      coachNotes: notes,
+      coachName,
+      portalUrl,
+    });
+  }
+
+  return result;
 }
 
 export async function unassignDrill(assignmentId: number) {

@@ -147,3 +147,17 @@
 - [x] Create convertUserToAthlete database function
 - [ ] Test athlete can see "My Drills" button after role conversion
 - [ ] Test athlete can access athlete portal and see assigned drills
+
+## Athlete Portal Drill Display
+- [ ] Build athlete portal drill cards showing assigned drills
+- [ ] Add status badges (assigned, in-progress, completed)
+- [ ] Display drill details (name, difficulty, duration, coach notes)
+- [ ] Add ability to update drill status from athlete portal
+- [ ] Test athlete can see all assigned drills
+
+## Email Notifications for Drill Assignments
+- [x] Set up email service integration (Resend)
+- [x] Create email template for drill assignment notifications
+- [x] Add email trigger when coach assigns drill to athlete
+- [x] Include drill details and link to athlete portal in email
+- [ ] Test email delivery on drill assignment
