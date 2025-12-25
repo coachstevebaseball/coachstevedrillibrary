@@ -8,6 +8,7 @@ import { getLoginUrl, PREVIEW_MODE } from "@/const";
 import { Link, useRoute } from "wouter";
 import { useState } from "react";
 import drillsData from "@/data/drills.json";
+import { VideoPlayer } from "@/components/VideoPlayer";
 
 // Collapsible section component
 function CollapsibleSection({ title, icon: Icon, children, defaultOpen = false }: { title: string; icon: any; children: React.ReactNode; defaultOpen?: boolean }) {
@@ -949,15 +950,7 @@ export default function DrillDetail() {
           <div className="grid gap-8">
             {/* Video Section - Moved to Top */}
             {details.videoUrl ? (
-              <div className="rounded-xl overflow-hidden shadow-lg aspect-video bg-black w-full">
-                <iframe 
-                  src={details.videoUrl} 
-                  title={`${drill.name} Video`}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                  allowFullScreen
-                />
-              </div>
+              <VideoPlayer videoUrl={details.videoUrl} title={`${drill.name} Video`} />
             ) : (
               <div className="bg-muted rounded-xl aspect-video flex items-center justify-center border-2 border-dashed border-muted-foreground/20 w-full">
                 <div className="text-center p-4">
@@ -966,8 +959,6 @@ export default function DrillDetail() {
                 </div>
               </div>
             )}
-
-
 
             {/* Coaching Cues - Above the Fold */}
             <Card className="border-l-4 border-l-secondary bg-gradient-to-br from-secondary/5 to-background">

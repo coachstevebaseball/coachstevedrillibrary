@@ -1,0 +1,125 @@
+import { useAuth } from "@/_core/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { ArrowLeft, Video, Search } from "lucide-react";
+import { Link } from "wouter";
+import { useState, useMemo } from "react";
+import drillsData from "@/data/drills.json";
+import { VideoUrlManager } from "@/components/VideoUrlManager";
+
+export function ManageDrillVideos() {
+  const { user } = useAuth();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+
+  // Get unique categories
+  const categories = useMemo(() => {
+    const cats = new Set<string>();
+    cats.add("All");
+    drillsData.forEach(drill => {
+      drill.categories.forEach(cat => cats.add(cat));
+    });
+    return Array.from(cats).sort();
+  }, []);
+
+  // Filter drills
+  const filteredDrills = useMemo(() => {
+    return drillsData.filter(drill => {
+      const matchesSearch = drill.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === "All" || drill.categories.includes(selectedCategory);
+      return matchesSearch && matchesCategory;
+    });
+  }, [searchTerm, selectedCategory]);
+
+  if (!user || user.role !== "coach" && user.role !== "admin") {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Access Denied</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground mb-4">Only coaches and admins can manage drill videos.</p>
+            <Link href="/">
+              <Button>Back to Home</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="bg-primary text-primary-foreground py-6 mb-8">
+        <div className="container">
+          <Link href="/coach-dashboard">
+            <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 mb-4 pl-0">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Coach Dashboard
+            </Button>
+          </Link>
+          <div className="flex items-center gap-3">
+            <Video className="h-8 w-8" />
+            <h1 className="text-4xl font-heading font-black">Manage Drill Videos</h1>
+          </div>
+          <p className="text-primary-foreground/80 mt-2">Add instructional videos to your drills</p>
+        </div>
+      </header>
+
+      <div className="container max-w-6xl">
+        {/* Search and Filter */}
+        <div className="grid gap-4 mb-8">
+          <div className="relative">
+            <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+            <Input
+              placeholder="Search drills..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+
+          <div className="flex gap-2 flex-wrap">
+            {categories.map(cat => (
+              <Button
+                key={cat}
+                variant={selectedCategory === cat ? "default" : "outline"}
+                onClick={() => setSelectedCategory(cat)}
+                size="sm"
+              >
+                {cat}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Drills Grid */}
+        <div className="grid gap-6">
+          {filteredDrills.length > 0 ? (
+            filteredDrills.map(drill => (
+              <VideoUrlManager
+                key={drill.id}
+                drillId={drill.id}
+                drillName={drill.name}
+                onSave={(videoUrl) => {
+                  console.log(`Saved video for ${drill.name}:`, videoUrl);
+                  // In a real app, this would save to the database
+                }}
+              />
+            ))
+          ) : (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <Video className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
+                <p className="text-muted-foreground">No drills found matching your search.</p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

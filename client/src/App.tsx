@@ -11,6 +11,7 @@ import AthletePortal from "./pages/AthletePortal";
 import DrillDetail from "./pages/DrillDetail";
 import AcceptInvite from "./pages/AcceptInvite";
 import DrillGeneratorPage from "./pages/DrillGeneratorPage";
+import { ManageDrillVideos } from "./pages/ManageDrillVideos";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function Router() {
@@ -33,10 +34,15 @@ function Router() {
           <CoachDashboard />
         </ProtectedRoute>
       </Route>
-      
-      <Route path={"/drill-generator"}>
+           <Route path={"/drill-generator"}>
         <ProtectedRoute requiredRole="admin">
           <DrillGeneratorPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path={"/manage-drill-videos"}>
+        <ProtectedRoute requiredRole="coach">
+          <ManageDrillVideos />
         </ProtectedRoute>
       </Route>
       

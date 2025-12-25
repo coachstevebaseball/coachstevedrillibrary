@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, Sparkles } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, Sparkles, Video } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
 import drillsData from "@/data/drills.json";
@@ -125,12 +125,20 @@ export default function CoachDashboard() {
               <h1 className="text-4xl md:text-5xl font-heading font-black">Coach Dashboard</h1>
               <p className="text-primary-foreground/90 mt-2">Assign drills to athletes and track progress</p>
             </div>
-            <Link href="/drill-generator">
-              <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap">
-                <Sparkles className="mr-2 h-4 w-4" />
-                AI Generator
-              </Button>
-            </Link>
+            <div className="flex gap-2">
+              <Link href="/manage-drill-videos">
+                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap">
+                  <Video className="mr-2 h-4 w-4" />
+                  Manage Videos
+                </Button>
+              </Link>
+              <Link href="/drill-generator">
+                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap">
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  AI Generator
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>

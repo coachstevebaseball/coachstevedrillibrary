@@ -176,3 +176,11 @@
 - [x] Move all "tee" skill set drills to "hitting" skill set
 - [x] Verify drills appear under hitting filter
 - [x] Test filtering works correctly
+
+## Video Embedding for Drills
+- [x] Update drill data schema to include videoUrl field
+- [x] Create video player component for YouTube/Vimeo
+- [x] Add video URL input field to drill management
+- [x] Display video player on drill detail page
+- [x] Test with YouTube and Vimeo links
+- [x] Add video thumbnail preview
