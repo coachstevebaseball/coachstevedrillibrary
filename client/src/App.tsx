@@ -9,6 +9,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import CoachDashboard from "./pages/CoachDashboard";
 import AthletePortal from "./pages/AthletePortal";
 import DrillDetail from "./pages/DrillDetail";
+import AcceptInvite from "./pages/AcceptInvite";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -19,6 +20,7 @@ function Router() {
       <Route path={"/coach-dashboard"} component={CoachDashboard} />
       <Route path={"/athlete-portal"} component={AthletePortal} />
       <Route path={"/drill/:id"} component={DrillDetail} />
+      <Route path={"/accept-invite/:token"} component={AcceptInvite} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

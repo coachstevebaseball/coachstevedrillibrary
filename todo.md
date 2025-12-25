@@ -90,3 +90,19 @@
 - [ ] Test invite expiration (7 days)
 - [ ] Test invite resend functionality
 - [ ] Test role-based access (admin vs athlete)
+
+
+## Invite Acceptance Page - Account Setup
+- [x] Create AcceptInvite page component
+- [x] Validate invite token on page load
+- [x] Display invite details (email, expiration)
+- [x] Create password setup form
+- [x] Add password validation (strength requirements)
+- [x] Implement account creation flow
+- [x] Set user role to "athlete" on creation
+- [x] Mark invite as accepted
+- [x] Auto-login user after account creation
+- [x] Redirect to athlete portal after setup
+- [x] Handle expired/invalid invite errors
+- [x] Add loading and error states
+- [x] Mobile-responsive design
