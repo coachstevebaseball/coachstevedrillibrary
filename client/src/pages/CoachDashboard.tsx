@@ -125,11 +125,17 @@ export default function CoachDashboard() {
               <h1 className="text-4xl md:text-5xl font-heading font-black">Coach Dashboard</h1>
               <p className="text-primary-foreground/90 mt-2">Assign drills to athletes and track progress</p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <Link href="/manage-drill-videos">
                 <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap">
                   <Video className="mr-2 h-4 w-4" />
                   Manage Videos
+                </Button>
+              </Link>
+              <Link href="/create-drill-details">
+                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap">
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Create Drill Details
                 </Button>
               </Link>
               <Link href="/drill-generator">

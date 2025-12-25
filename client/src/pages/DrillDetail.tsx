@@ -871,6 +871,21 @@ const drillDetails: Record<string, {
     ],
     videoUrl: null
   },
+  "1st-base-inside-receiving": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "Varies",
+    time: "5m",
+    equipment: "Varies",
+    goal: "1st Base Inside Receiving",
+    description: [
+      "Step 1: Set up the drill",
+      "Step 2: Execute the drill",
+      "Step 3: Focus on proper technique",
+      "Step 4: Repeat for multiple sets"
+    ],
+    videoUrl: null
+  },
 }
 
 export default function DrillDetail() {
@@ -878,9 +893,17 @@ export default function DrillDetail() {
   const [match, params] = useRoute("/drill/:id");
   const id = params?.id;
   const drill = drillsData.find(d => d.id.toString() === id);
-  const details = id && drillDetails[id as keyof typeof drillDetails];
+  // Try to load from database first, fallback to hardcoded details
+  const { data: dbDetails } = trpc.drillDetails.getDrillDetail.useQuery(
+    { drillId: id || '' },
+    { enabled: !!id }
+  );
+  
+  const details = dbDetails || (id && drillDetails[id as keyof typeof drillDetails]);
   
   const [savedVideos, setSavedVideos] = useState<Record<string, string>>({});
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState<any>(null);
   
   // Load video from database
   const { data: videoData } = trpc.videos.getVideo.useQuery(
@@ -999,8 +1022,8 @@ export default function DrillDetail() {
         {details ? (
           <div className="grid gap-8">
             {/* Video Section - Moved to Top */}
-            {(savedVideos[drill.id] || details.videoUrl) ? (
-              <VideoPlayer videoUrl={(savedVideos[drill.id] || details.videoUrl) as string} title={`${drill.name} Video`} />
+            {(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) ? (
+              <VideoPlayer videoUrl={(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) as string} title={`${drill.name} Video`} />
             ) : (
               <div className="bg-muted rounded-xl aspect-video flex items-center justify-center border-2 border-dashed border-muted-foreground/20 w-full">
                 <div className="text-center p-4">

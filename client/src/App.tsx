@@ -12,6 +12,7 @@ import DrillDetail from "./pages/DrillDetail";
 import AcceptInvite from "./pages/AcceptInvite";
 import DrillGeneratorPage from "./pages/DrillGeneratorPage";
 import { ManageDrillVideos } from "./pages/ManageDrillVideos";
+import CreateDrillDetails from "./pages/CreateDrillDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function Router() {
@@ -43,6 +44,12 @@ function Router() {
       <Route path={"/manage-drill-videos"}>
         <ProtectedRoute requiredRole="coach">
           <ManageDrillVideos />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path={"/create-drill-details"}>
+        <ProtectedRoute requiredRole="coach">
+          <CreateDrillDetails />
         </ProtectedRoute>
       </Route>
       

@@ -224,3 +224,104 @@ export async function deleteDrillVideo(drillId: string) {
     return false;
   }
 }
+
+
+// Drill Details Management
+export async function saveDrillDetail(drillId: string, detail: {
+  skillSet: string;
+  difficulty: string;
+  athletes: string;
+  time: string;
+  equipment: string;
+  goal: string;
+  description: string[];
+  commonMistakes?: string[];
+  progressions?: string[];
+}, userId: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot save drill detail: database not available");
+    return false;
+  }
+
+  try {
+    const { drillDetails } = await import("../drizzle/schema");
+    const { eq } = await import("drizzle-orm");
+    
+    // Check if detail already exists
+    const existing = await db.select().from(drillDetails).where(eq(drillDetails.drillId, drillId));
+    
+    if (existing.length > 0) {
+      // Update existing
+      await db.update(drillDetails).set({
+        skillSet: detail.skillSet,
+        difficulty: detail.difficulty,
+        athletes: detail.athletes,
+        time: detail.time,
+        equipment: detail.equipment,
+        goal: detail.goal,
+        description: detail.description,
+        commonMistakes: detail.commonMistakes || null,
+        progressions: detail.progressions || null,
+        updatedAt: new Date(),
+      }).where(eq(drillDetails.drillId, drillId));
+    } else {
+      // Insert new
+      await db.insert(drillDetails).values({
+        drillId,
+        skillSet: detail.skillSet,
+        difficulty: detail.difficulty,
+        athletes: detail.athletes,
+        time: detail.time,
+        equipment: detail.equipment,
+        goal: detail.goal,
+        description: detail.description,
+        commonMistakes: detail.commonMistakes || null,
+        progressions: detail.progressions || null,
+        createdBy: userId,
+      });
+    }
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to save drill detail:", error);
+    return false;
+  }
+}
+
+export async function getDrillDetail(drillId: string) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get drill detail: database not available");
+    return null;
+  }
+
+  try {
+    const { drillDetails } = await import("../drizzle/schema");
+    const { eq } = await import("drizzle-orm");
+    
+    const result = await db.select().from(drillDetails).where(eq(drillDetails.drillId, drillId));
+    return result[0] || null;
+  } catch (error) {
+    console.error("[Database] Failed to get drill detail:", error);
+    return null;
+  }
+}
+
+export async function deleteDrillDetail(drillId: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot delete drill detail: database not available");
+    return false;
+  }
+
+  try {
+    const { drillDetails } = await import("../drizzle/schema");
+    const { eq } = await import("drizzle-orm");
+    
+    await db.delete(drillDetails).where(eq(drillDetails.drillId, drillId));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to delete drill detail:", error);
+    return false;
+  }
+}

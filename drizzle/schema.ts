@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, json, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -80,3 +80,23 @@ export const drillVideos = mysqlTable("drillVideos", {
 
 export type DrillVideo = typeof drillVideos.$inferSelect;
 export type InsertDrillVideo = typeof drillVideos.$inferInsert;
+
+export const drillDetails = mysqlTable("drillDetails", {
+  id: int("id").autoincrement().primaryKey(),
+  drillId: varchar("drillId", { length: 255 }).notNull().unique(),
+  skillSet: varchar("skillSet", { length: 255 }).notNull(),
+  difficulty: varchar("difficulty", { length: 50 }).notNull(),
+  athletes: varchar("athletes", { length: 255 }).notNull(),
+  time: varchar("time", { length: 50 }).notNull(),
+  equipment: varchar("equipment", { length: 255 }).notNull(),
+  goal: text("goal").notNull(),
+  description: json("description").$type<string[]>().notNull(), // Array of step descriptions
+  commonMistakes: json("commonMistakes").$type<string[]>(), // Array of common mistakes
+  progressions: json("progressions").$type<string[]>(), // Array of progression steps
+  createdBy: int("createdBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type DrillDetail = typeof drillDetails.$inferSelect;
+export type InsertDrillDetail = typeof drillDetails.$inferInsert;

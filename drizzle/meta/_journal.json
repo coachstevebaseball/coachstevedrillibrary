@@ -43,6 +43,13 @@
       "when": 1766680974447,
       "tag": "0005_greedy_doomsday",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1766683236143,
+      "tag": "0006_careful_whizzer",
+      "breakpoints": true
     }
   ]
 }

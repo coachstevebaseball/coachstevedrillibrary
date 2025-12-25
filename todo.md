@@ -206,3 +206,19 @@
 - [x] Add Ball in the Sun drill details to DrillDetail component
 - [ ] Identify other drills without internal details that need to be added
 - [ ] Add remaining drills to enable video display across all drills
+
+## Auto-Generate Drill Details Script
+- [x] Create script to identify all drills without internal details
+- [x] Generate basic detail templates for missing drills
+- [x] Tested auto-generation - 211 missing drills identified
+- [x] Auto-generation script ready for bulk deployment
+
+## Drill Detail Template System for Coaches (Database-Backed)
+- [x] Create database schema for coach-created drill details
+- [x] Build form UI in Coach Dashboard for creating drill details
+- [x] Implement tRPC routes for drill detail CRUD operations
+- [x] Add ability to edit existing drill details
+- [x] Add ability to delete drill details
+- [x] Integrate coach-created details with drill display
+- [x] Test template system with sample drills
+- [x] Verified: Coach can create drill details through form and they display on drill pages

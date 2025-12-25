@@ -157,6 +157,57 @@ export const appRouter = router({
       }),
   }),
 
+  // Drill Details management router
+  drillDetails: router({
+    saveDrillDetail: protectedProcedure
+      .input(z.object({
+        drillId: z.string(),
+        skillSet: z.string(),
+        difficulty: z.string(),
+        athletes: z.string(),
+        time: z.string(),
+        equipment: z.string(),
+        goal: z.string(),
+        description: z.array(z.string()),
+        commonMistakes: z.array(z.string()).optional(),
+        progressions: z.array(z.string()).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
+        }
+        const success = await db.saveDrillDetail(input.drillId, {
+          skillSet: input.skillSet,
+          difficulty: input.difficulty,
+          athletes: input.athletes,
+          time: input.time,
+          equipment: input.equipment,
+          goal: input.goal,
+          description: input.description,
+          commonMistakes: input.commonMistakes,
+          progressions: input.progressions,
+        }, ctx.user.id);
+        return { success };
+      }),
+    
+    getDrillDetail: publicProcedure
+      .input(z.object({ drillId: z.string() }))
+      .query(async ({ input }) => {
+        const detail = await db.getDrillDetail(input.drillId);
+        return detail || null;
+      }),
+    
+    deleteDrillDetail: protectedProcedure
+      .input(z.object({ drillId: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
+        }
+        const success = await db.deleteDrillDetail(input.drillId);
+        return { success };
+      }),
+  }),
+
   // Invite management router
   invites: router({
     createInvite: protectedProcedure
