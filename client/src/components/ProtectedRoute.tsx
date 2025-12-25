@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Loader2 } from "lucide-react";
@@ -24,6 +24,30 @@ export default function ProtectedRoute({
   const { user, loading } = useAuth();
   const [, setLocation] = useLocation();
 
+  // Use effect to handle redirects - never call setLocation during render
+  useEffect(() => {
+    // Still loading auth state
+    if (loading) {
+      return;
+    }
+
+    // Not authenticated
+    if (!user) {
+      setLocation(fallbackPath);
+      return;
+    }
+
+    // Check role if required
+    if (requiredRole) {
+      const hasAccess = checkRoleAccess(user.role, requiredRole);
+      
+      if (!hasAccess) {
+        setLocation(fallbackPath);
+        return;
+      }
+    }
+  }, [user, loading, requiredRole, fallbackPath, setLocation]);
+
   // Still loading auth state
   if (loading) {
     return (
@@ -36,9 +60,8 @@ export default function ProtectedRoute({
     );
   }
 
-  // Not authenticated
+  // Not authenticated or unauthorized - don't render children
   if (!user) {
-    setLocation(fallbackPath);
     return null;
   }
 
@@ -47,7 +70,6 @@ export default function ProtectedRoute({
     const hasAccess = checkRoleAccess(user.role, requiredRole);
     
     if (!hasAccess) {
-      setLocation(fallbackPath);
       return null;
     }
   }

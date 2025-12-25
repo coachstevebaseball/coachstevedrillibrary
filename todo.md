@@ -135,3 +135,8 @@
 - [x] Update database schema to include athlete and coach roles
 - [x] Test athlete can navigate to portal from home page
 - [x] Test coach buttons still show correctly
+
+## React Hooks Error Fix
+- [x] Fix ProtectedRoute setState during render error
+- [x] Move navigation logic to useEffect hook
+- [x] Verify no TypeScript errors after fix
