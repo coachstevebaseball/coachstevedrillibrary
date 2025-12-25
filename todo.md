@@ -193,3 +193,11 @@
 - [x] Update DrillDetail to load videos from database
 - [x] Test video persistence across browsers and sessions
 - [x] Verify videos display correctly on drill detail pages
+
+## Fix tRPC Query Errors - Undefined Video Data
+- [x] Fix getDrillVideo to return null instead of undefined
+- [x] Update getVideo tRPC route to explicitly return null
+- [x] Test video queries on drills with videos
+- [x] Test video queries on drills without videos
+- [x] Verify no console errors on home page
+- [x] Verify no console errors on drill detail pages

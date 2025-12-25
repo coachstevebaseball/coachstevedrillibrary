@@ -179,16 +179,16 @@ export async function getDrillVideo(drillId: string) {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get drill video: database not available");
-    return undefined;
+    return null;
   }
 
   try {
     const { drillVideos } = await import("../drizzle/schema");
     const result = await db.select().from(drillVideos).where(eq(drillVideos.drillId, drillId)).limit(1);
-    return result.length > 0 ? result[0] : undefined;
+    return result.length > 0 ? result[0] : null;
   } catch (error) {
     console.error("[Database] Failed to get drill video:", error);
-    return undefined;
+    return null;
   }
 }
 

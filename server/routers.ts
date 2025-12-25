@@ -138,7 +138,8 @@ export const appRouter = router({
     getVideo: publicProcedure
       .input(z.object({ drillId: z.string() }))
       .query(async ({ input }) => {
-        return await db.getDrillVideo(input.drillId);
+        const video = await db.getDrillVideo(input.drillId);
+        return video || null;
       }),
     
     getAllVideos: publicProcedure.query(async () => {
