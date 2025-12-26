@@ -320,7 +320,7 @@ export default function Home() {
                     {totalPages <= 5 ? (
                       Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                         <Button
-                          key={page}
+                          key={`page-${page}`}
                           variant={page === currentPage ? "default" : "outline"}
                           size="sm"
                           onClick={() => setCurrentPage(page)}
@@ -334,6 +334,7 @@ export default function Home() {
                         {currentPage > 2 && (
                           <>
                             <Button
+                              key="page-first"
                               variant="outline"
                               size="sm"
                               onClick={() => setCurrentPage(1)}
@@ -341,13 +342,13 @@ export default function Home() {
                             >
                               1
                             </Button>
-                            {currentPage > 3 && <span className="text-muted-foreground px-1">...</span>}
+                            {currentPage > 3 && <span key="ellipsis-start" className="text-muted-foreground px-1">...</span>}
                           </>
                         )}
-                        {Array.from({ length: Math.min(3, totalPages) }, (_, i) => Math.max(1, currentPage - 1 + i)).map(page => (
+                        {Array.from({ length: Math.min(3, totalPages) }, (_, i) => Math.max(1, currentPage - 1 + i)).map((page, idx) => (
                           page <= totalPages && (
                             <Button
-                              key={page}
+                              key={`page-current-${idx}`}
                               variant={page === currentPage ? "default" : "outline"}
                               size="sm"
                               onClick={() => setCurrentPage(page)}
@@ -359,8 +360,9 @@ export default function Home() {
                         ))}
                         {currentPage < totalPages - 1 && (
                           <>
-                            {currentPage < totalPages - 2 && <span className="text-muted-foreground px-1">...</span>}
+                            {currentPage < totalPages - 2 && <span key="ellipsis-end" className="text-muted-foreground px-1">...</span>}
                             <Button
+                              key="page-last"
                               variant="outline"
                               size="sm"
                               onClick={() => setCurrentPage(totalPages)}
