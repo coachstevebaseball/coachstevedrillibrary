@@ -264,3 +264,4 @@
 ## Bug Fixes
 - [x] Fix React duplicate key warnings in pagination buttons
 - [x] Verify pagination renders without console errors
+- [x] Fixed remaining duplicate key warnings using index-based keys with prefixes
