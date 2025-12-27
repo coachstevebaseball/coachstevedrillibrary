@@ -888,6 +888,263 @@ const drillDetails: Record<string, {
     ],
     videoUrl: null
   },
+  "backside-angle-toss": {
+    skillSet: "Hitting",
+    difficulty: "Hard",
+    athletes: "1-2 athletes and 1 coach",
+    time: "10 minutes",
+    equipment: "Bat, helmet, baseballs",
+    goal: "Develop ability to hit pitches from the backside angle with proper timing and mechanics",
+    description: [
+      "Coach sets up at an angle behind the hitter's backside",
+      "Coach tosses the ball from the backside angle",
+      "Hitter focuses on tracking the ball and adjusting swing mechanics",
+      "Work on hitting the ball with proper extension and follow-through",
+      "Practice for multiple sets with focus on consistency"
+    ],
+    videoUrl: "https://www.youtube.com/embed/OmgHRRPompU"
+  },
+  "1st-base-off-bag": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "Varies",
+    time: "5m",
+    equipment: "Varies",
+    goal: "1st Base Off Bag",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "30-second-backhand-cross": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "Varies",
+    time: "5m",
+    equipment: "Varies",
+    goal: "30 Second Backhand Cross",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "30-second-crow-hops": {
+    skillSet: "Outfield",
+    difficulty: "Easy",
+    athletes: "Varies",
+    time: "5m",
+    equipment: "Varies",
+    goal: "30 Second Crow Hops",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "7-ball-front-toss": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "Varies",
+    time: "10m",
+    equipment: "Varies",
+    goal: "7 Ball Front Toss",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "back-hip-load-tee": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "Varies",
+    time: "5m",
+    equipment: "Varies",
+    goal: "Back Hip Load Tee",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "back-net-constraint-tee": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "Varies",
+    time: "5m",
+    equipment: "Varies",
+    goal: "Back Net Constraint Tee",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "backhand-cross-and-throw": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "Varies",
+    time: "5m",
+    equipment: "Varies",
+    goal: "Backhand Cross and Throw",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "ball-hit-front-toss": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "Varies",
+    time: "10m",
+    equipment: "Varies",
+    goal: "Ball-Hit Front Toss",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "box-drill-2nd-baseman-double-play-feeds": {
+    skillSet: "Infield",
+    difficulty: "Hard",
+    athletes: "Varies",
+    time: "15m",
+    equipment: "Varies",
+    goal: "Box Drill- 2nd Baseman Double Play Feeds",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+
+  "flaw-lack-of-separation": {
+    skillSet: "Hitting",
+    difficulty: "Hard",
+    athletes: "Varies",
+    time: "Unknown",
+    equipment: "Varies",
+    goal: "Flaw- Lack of Separation",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "flaw-loop-in-the-barrel": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "Varies",
+    time: "Unknown",
+    equipment: "Varies",
+    goal: "Flaw- Loop in the Barrel",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "flaw-lunging-to-the-ball": {
+    skillSet: "Hitting",
+    difficulty: "Medium",
+    athletes: "Varies",
+    time: "Unknown",
+    equipment: "Varies",
+    goal: "Flaw- Lunging to the Ball",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "flaw-no-lower-half": {
+    skillSet: "Hitting",
+    difficulty: "Easy",
+    athletes: "Varies",
+    time: "Unknown",
+    equipment: "Varies",
+    goal: "Flaw- No Lower Half",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "flaw-soft-front-knee": {
+    skillSet: "Hitting",
+    difficulty: "Hard",
+    athletes: "Varies",
+    time: "Unknown",
+    equipment: "Varies",
+    goal: "Flaw- Soft Front Knee",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "flaw-stepping-in-the-bucket": {
+    skillSet: "Hitting",
+    difficulty: "Easy",
+    athletes: "Varies",
+    time: "Unknown",
+    equipment: "Varies",
+    goal: "Flaw- Stepping in the Bucket",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "fly-balls": {
+    skillSet: "Outfield",
+    difficulty: "Easy",
+    athletes: "Varies",
+    time: "5m",
+    equipment: "Varies",
+    goal: "Fly Balls",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "offensive-stations-tee-and-live-hitting": {
+    skillSet: "Hitting",
+    difficulty: "Easy",
+    athletes: "Varies",
+    time: "30m",
+    equipment: "Varies",
+    goal: "Offensive Stations - Tee and Live Hitting",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "overload-bat-soft-toss": {
+    skillSet: "Hitting",
+    difficulty: "Easy",
+    athletes: "Varies",
+    time: "10m",
+    equipment: "Varies",
+    goal: "Overload Bat Soft Toss",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "rapid-fire-fungo": {
+    skillSet: "Infield",
+    difficulty: "Medium",
+    athletes: "Varies",
+    time: "10m",
+    equipment: "Varies",
+    goal: "Rapid Fire Fungo",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "read-and-react": {
+    skillSet: "Outfield",
+    difficulty: "Easy",
+    athletes: "Varies",
+    time: "5m",
+    equipment: "Varies",
+    goal: "Read and React",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "rhythm-tee": {
+    skillSet: "Hitting",
+    difficulty: "Easy",
+    athletes: "Varies",
+    time: "5m",
+    equipment: "Varies",
+    goal: "Rhythm Tee",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "short-base-team-bunt-drill": {
+    skillSet: "Bunting",
+    difficulty: "Hard",
+    athletes: "Varies",
+    time: "20m",
+    equipment: "Varies",
+    goal: "Short Base Team Bunt Drill",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "stride-to-spot": {
+    skillSet: "Pitching",
+    difficulty: "Easy",
+    athletes: "Varies",
+    time: "3m",
+    equipment: "Varies",
+    goal: "Stride to Spot",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
+  "top-hand-tee": {
+    skillSet: "Hitting",
+    difficulty: "Easy",
+    athletes: "Varies",
+    time: "5m",
+    equipment: "Varies",
+    goal: "Top Hand Tee",
+    description: ["Watch the video for detailed instructions"],
+    videoUrl: null
+  },
 }
 
 export default function DrillDetail() {
