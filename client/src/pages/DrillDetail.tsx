@@ -1166,6 +1166,8 @@ export default function DrillDetail() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [customInstructions, setCustomInstructions] = useState('');
+  const [isSavingInstructions, setIsSavingInstructions] = useState(false);
   
   // Load video from database
   const { data: videoData } = trpc.videos.getVideo.useQuery(
@@ -1178,6 +1180,21 @@ export default function DrillDetail() {
       setSavedVideos({ [videoData.drillId]: videoData.videoUrl });
     }
   }, [videoData]);
+
+  // Save custom instructions
+  const saveInstructionsMutation = trpc.drillDetails.saveDrillInstructions.useMutation();
+  
+  const saveCustomInstructions = async () => {
+    if (!id || !customInstructions.trim()) return;
+    try {
+      await saveInstructionsMutation.mutateAsync({
+        drillId: id,
+        instructions: customInstructions
+      });
+    } catch (error) {
+      console.error('Failed to save instructions:', error);
+    }
+  };
 
   // Check if user has access (or if preview mode is enabled)
   const hasAccess = PREVIEW_MODE || (user && (user.role === 'admin' || user.isActiveClient === 1));
@@ -1351,21 +1368,21 @@ export default function DrillDetail() {
               </div>
             </div>
 
-            {/* Instructions */}
+            {/* Custom Instructions */}
             <section>
               <h2 className="text-2xl md:text-3xl font-heading font-black mb-3 md:mb-4 flex items-center gap-2">
-                <span className="bg-primary text-primary-foreground h-8 md:h-10 w-8 md:w-10 rounded-full flex items-center justify-center text-xs md:text-sm font-bold">1</span>
-                Step-by-Step Instructions
+                <Target className="h-6 md:h-8 w-6 md:w-8 text-secondary" />
+                Instructions
               </h2>
-              <div className="bg-card rounded-lg md:rounded-xl border p-4 md:p-6 shadow-sm space-y-3 md:space-y-4">
-                <ul className="space-y-3 md:space-y-4">
-                  {details.description.map((step: string, i: number) => (
-                    <li key={i} className="flex gap-2 md:gap-3">
-                      <div className="h-2.5 md:h-3 w-2.5 md:w-3 bg-secondary rounded-full mt-1.5 md:mt-2 shrink-0" />
-                      <span className="leading-relaxed text-sm md:text-base">{step}</span>
-                    </li>
-                  ))}
-                </ul>
+              <div className="bg-card rounded-lg md:rounded-xl border p-4 md:p-6 shadow-sm">
+                <textarea
+                  value={customInstructions}
+                  onChange={(e) => setCustomInstructions(e.target.value)}
+                  onBlur={() => saveCustomInstructions()}
+                  placeholder="Enter drill instructions here. You can format the text as you want."
+                  className="w-full min-h-64 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary resize-none font-sans text-sm md:text-base leading-relaxed"
+                />
+                <p className="text-xs text-muted-foreground mt-2">Changes are saved automatically when you click outside the text area.</p>
               </div>
             </section>
 

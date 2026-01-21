@@ -206,6 +206,19 @@ export const appRouter = router({
         const success = await db.deleteDrillDetail(input.drillId);
         return { success };
       }),
+    
+    saveDrillInstructions: protectedProcedure
+      .input(z.object({
+        drillId: z.string(),
+        instructions: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
+        }
+        const success = await db.saveDrillInstructions(input.drillId, input.instructions, ctx.user.id);
+        return { success };
+      }),
   }),
 
   // Invite management router
