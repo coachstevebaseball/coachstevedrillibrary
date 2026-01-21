@@ -1304,7 +1304,7 @@ export default function DrillDetail() {
                 <div className="flex items-center justify-between gap-2">
                   <CardTitle className="flex items-center gap-2 text-xl md:text-2xl font-black">
                     <Lightbulb className="h-5 md:h-6 w-5 md:w-6 text-secondary" />
-                    Coaching Focus
+                    Goal of Drill
                   </CardTitle>
                   {user && (user.role === 'admin' || user.role === 'coach') && (
                     <div className="flex gap-2">
