@@ -1376,12 +1376,24 @@ export default function DrillDetail() {
                 Instructions
               </h2>
               <div className="bg-card rounded-lg md:rounded-xl border p-4 md:p-6 shadow-sm">
-                <InstructionsEditor
-                  value={customInstructions}
-                  onChange={setCustomInstructions}
-                  onSave={saveCustomInstructions}
-                  isSaving={saveInstructionsMutation.isPending}
-                />
+                {user && (user.role === 'admin' || user.role === 'coach') ? (
+                  <InstructionsEditor
+                    value={customInstructions}
+                    onChange={setCustomInstructions}
+                    onSave={saveCustomInstructions}
+                    isSaving={saveInstructionsMutation.isPending}
+                  />
+                ) : (
+                  <div className="prose prose-sm max-w-none">
+                    {customInstructions ? (
+                      <div className="whitespace-pre-wrap text-foreground leading-relaxed">
+                        {customInstructions}
+                      </div>
+                    ) : (
+                      <p className="text-muted-foreground italic">No instructions provided for this drill yet.</p>
+                    )}
+                  </div>
+                )}
               </div>
             </section>
 
