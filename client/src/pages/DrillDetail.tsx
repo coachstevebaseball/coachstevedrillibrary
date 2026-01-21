@@ -10,6 +10,7 @@ import { useState, useMemo, useEffect } from "react";
 import drillsData from "@/data/drills.json";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { EditDrillDetailsModal } from "@/components/EditDrillDetailsModal";
+import { InstructionsEditor } from "@/components/InstructionsEditor";
 import { trpc } from "@/lib/trpc";
 import { Edit, Trash2 } from "lucide-react";
 
@@ -1375,14 +1376,12 @@ export default function DrillDetail() {
                 Instructions
               </h2>
               <div className="bg-card rounded-lg md:rounded-xl border p-4 md:p-6 shadow-sm">
-                <textarea
+                <InstructionsEditor
                   value={customInstructions}
-                  onChange={(e) => setCustomInstructions(e.target.value)}
-                  onBlur={() => saveCustomInstructions()}
-                  placeholder="Enter drill instructions here. You can format the text as you want."
-                  className="w-full min-h-64 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary resize-none font-sans text-sm md:text-base leading-relaxed"
+                  onChange={setCustomInstructions}
+                  onSave={saveCustomInstructions}
+                  isSaving={saveInstructionsMutation.isPending}
                 />
-                <p className="text-xs text-muted-foreground mt-2">Changes are saved automatically when you click outside the text area.</p>
               </div>
             </section>
 
