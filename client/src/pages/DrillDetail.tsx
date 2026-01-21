@@ -1369,42 +1369,7 @@ export default function DrillDetail() {
               </div>
             </section>
 
-            {/* Collapsible Sections */}
-            <div className="space-y-3 md:space-y-4">
-              <CollapsibleSection title="Common Mistakes" icon={AlertCircle}>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex gap-2">
-                    <span className="text-secondary font-bold">•</span>
-                    <span>Rushing through the drill - Focus on quality repetitions over quantity</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-secondary font-bold">•</span>
-                    <span>Improper setup - Ensure athletes understand the starting position before beginning</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-secondary font-bold">•</span>
-                    <span>Lack of coaching emphasis - Provide clear feedback after each repetition</span>
-                  </li>
-                </ul>
-              </CollapsibleSection>
 
-              <CollapsibleSection title="Progressions" icon={TrendingUp}>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex gap-2">
-                    <span className="text-secondary font-bold">→</span>
-                    <span><strong>Beginner:</strong> Focus on proper mechanics with slower pace</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-secondary font-bold">→</span>
-                    <span><strong>Intermediate:</strong> Increase speed and add game-like situations</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-secondary font-bold">→</span>
-                    <span><strong>Advanced:</strong> Add pressure and competitive elements</span>
-                  </li>
-                </ul>
-              </CollapsibleSection>
-            </div>
           </div>
         ) : (
           <div className="text-center py-12 bg-muted/30 rounded-xl border border-dashed">
