@@ -50,6 +50,13 @@
       "when": 1766683236143,
       "tag": "0006_careful_whizzer",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1769013060480,
+      "tag": "0007_medical_cassandra_nova",
+      "breakpoints": true
     }
   ]
 }

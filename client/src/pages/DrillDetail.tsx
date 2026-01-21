@@ -1176,11 +1176,23 @@ export default function DrillDetail() {
     { enabled: !!id }
   );
   
+  // Load instructions from database
+  const { data: drillDetailData } = trpc.drillDetails.getDrillDetail.useQuery(
+    { drillId: id || '' },
+    { enabled: !!id }
+  );
+  
   useEffect(() => {
     if (videoData) {
       setSavedVideos({ [videoData.drillId]: videoData.videoUrl });
     }
   }, [videoData]);
+  
+  useEffect(() => {
+    if (drillDetailData?.instructions) {
+      setCustomInstructions(drillDetailData.instructions);
+    }
+  }, [drillDetailData]);
 
   // Save custom instructions
   const saveInstructionsMutation = trpc.drillDetails.saveDrillInstructions.useMutation();

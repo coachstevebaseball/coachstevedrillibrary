@@ -1,0 +1,8 @@
+{
+  "query": "ALTER TABLE drillDetails ADD COLUMN instructions TEXT NULL;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute ALTER TABLE drillDetails ADD COLUMN instructions TEXT NULL;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1060 (42S21) at line 1: Duplicate column name 'instructions'"
+  ]
+}

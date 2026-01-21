@@ -265,3 +265,25 @@
 - [x] Fix React duplicate key warnings in pagination buttons
 - [x] Verify pagination renders without console errors
 - [x] Fixed remaining duplicate key warnings using index-based keys with prefixes
+
+
+## Instructions Editor with Formatting
+- [x] Remove numbered Step-by-Step Instructions section
+- [x] Add editable text area for custom instructions
+- [x] Add formatting toolbar (Bold, Italic, Underline, Heading, Lists)
+- [x] Add font size selector
+- [x] Add live preview of formatted text
+- [x] Hide editable editor from public users
+- [x] Show read-only instructions to public users
+- [x] Test conditional rendering for different user roles
+
+## Bulk Instruction Import Feature
+- [x] Design bulk import UI and format specification
+- [x] Create bulk import component with paste area
+- [x] Implement parsing logic for bulk instruction format
+- [x] Add backend API endpoint for bulk instruction updates
+- [x] Integrate bulk import into Coach Dashboard
+- [x] Test bulk import functionality
+- [x] Fixed instructions loading bug - changed saveDrillInstructions to save to instructions column instead of description
+- [x] Verified instructions now persist and load correctly after page refresh
+- [x] Tested both manual entry and bulk import - both now save and load properly

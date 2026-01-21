@@ -219,6 +219,35 @@ export const appRouter = router({
         const success = await db.saveDrillInstructions(input.drillId, input.instructions, ctx.user.id);
         return { success };
       }),
+    
+    bulkUpdateInstructions: protectedProcedure
+      .input(z.object({
+        instructions: z.record(z.string(), z.string()),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
+        }
+        
+        const results: Array<{ drillName: string; success: boolean; error?: string }> = [];
+        
+        for (const [drillName, instructions] of Object.entries(input.instructions)) {
+          try {
+            // Find drill ID by name (case-insensitive)
+            const drillId = drillName.toLowerCase().replace(/\s+/g, '-');
+            await db.saveDrillInstructions(drillId, instructions, ctx.user.id);
+            results.push({ drillName, success: true });
+          } catch (error) {
+            results.push({
+              drillName,
+              success: false,
+              error: error instanceof Error ? error.message : 'Unknown error',
+            });
+          }
+        }
+        
+        return { results };
+      }),
   }),
 
   // Invite management router

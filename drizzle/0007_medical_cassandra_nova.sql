@@ -1,0 +1,1 @@
+ALTER TABLE `drillDetails` ADD `instructions` text;

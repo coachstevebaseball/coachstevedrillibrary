@@ -343,14 +343,15 @@ export async function saveDrillInstructions(drillId: string, instructions: strin
     if (existing.length > 0) {
       // Update existing
       await db.update(drillDetails).set({
-        description: [instructions],
+        instructions: instructions,
         updatedAt: new Date(),
       }).where(eq(drillDetails.drillId, drillId));
     } else {
       // Insert new with just instructions
       await db.insert(drillDetails).values({
         drillId,
-        description: [instructions],
+        instructions: instructions,
+        description: [],
         skillSet: "Custom",
         difficulty: "Medium",
         athletes: "Varies",

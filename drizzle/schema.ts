@@ -93,6 +93,7 @@ export const drillDetails = mysqlTable("drillDetails", {
   description: json("description").$type<string[]>().notNull(), // Array of step descriptions
   commonMistakes: json("commonMistakes").$type<string[]>(), // Array of common mistakes
   progressions: json("progressions").$type<string[]>(), // Array of progression steps
+  instructions: text("instructions"), // Custom instructions entered by coach
   createdBy: int("createdBy").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
