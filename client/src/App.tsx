@@ -13,6 +13,7 @@ import AcceptInvite from "./pages/AcceptInvite";
 import DrillGeneratorPage from "./pages/DrillGeneratorPage";
 import { ManageDrillVideos } from "./pages/ManageDrillVideos";
 import CreateDrillDetails from "./pages/CreateDrillDetails";
+import SubmissionsDashboard from "./pages/SubmissionsDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function Router() {
@@ -53,6 +54,11 @@ function Router() {
         </ProtectedRoute>
       </Route>
       
+      <Route path={"/submissions"}>
+        <ProtectedRoute requiredRole="admin">
+          <SubmissionsDashboard />
+        </ProtectedRoute>
+      </Route>      
       {/* Protected Routes - Athlete Only */}
       <Route path={"/athlete-portal"}>
         <ProtectedRoute requiredRole="athlete">

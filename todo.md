@@ -431,3 +431,32 @@
 - [ ] Optimize images for mobile (lazy loading, responsive sizes)
 - [ ] Test performance on 4G connection
 - [ ] Verify fast load times on mobile
+
+
+## S3 Video Storage for Athlete Submissions
+- [x] Create server-side video upload endpoint using storagePut helper
+- [x] Update DrillSubmissionForm to send video file to server endpoint
+- [x] Store S3 URL in drillSubmissions table
+- [x] Update submission queries to return S3 URLs
+- [ ] Test video upload and persistence
+- [ ] Verify videos load correctly in coach feedback panel
+
+## Coach Submission Dashboard
+- [x] Create SubmissionsDashboard page component
+- [x] Add route to Coach Dashboard navigation
+- [x] Display all athlete submissions with pagination
+- [x] Add filters (by athlete, drill, date, status)
+- [x] Show athlete name, drill name, submission date, notes preview
+- [x] Add click to view full submission and provide feedback
+- [x] Display coach feedback history for each submission
+- [x] Optimize for mobile viewing
+- [ ] Test filtering and sorting functionality
+
+## Athlete Progress Badges System
+- [x] Create badge achievement logic (submissions count, consistency, etc.)
+- [x] Add badge display component
+- [x] Integrate badges into athlete portal
+- [x] Create badge unlock triggers (5 submissions, 10 submissions, etc.)
+- [x] Add badge animations and celebrations
+- [ ] Test badge unlocking on submission
+- [x] Display badge progress/next milestone

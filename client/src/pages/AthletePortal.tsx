@@ -14,6 +14,7 @@ import { CompletionModal } from "@/components/CompletionModal";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
 import { DrillNotes } from "@/components/DrillNotes";
 import { DrillSubmissionForm } from "@/components/DrillSubmissionForm";
+import { AthleteBadges } from "@/components/AthleteBadges";
 
 interface Drill {
   id: string;
@@ -165,6 +166,15 @@ export default function AthletePortal() {
         {/* Progress Dashboard */}
         <ProgressDashboard stats={progressStats} />
         <ProgressBar completed={progressStats.completed} total={progressStats.total} />
+
+        {/* Badges Section */}
+        <div className="mb-8">
+          <AthleteBadges
+            submissionCount={userAssignments.filter((a: any) => a.status === 'completed').length}
+            completedDrillCount={progressStats.completed}
+            consecutiveDays={0}
+          />
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left: Assignments List */}

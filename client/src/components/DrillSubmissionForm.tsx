@@ -16,8 +16,10 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const createSubmissionMutation = trpc.drillSubmissions.createSubmission.useMutation();
+  const uploadVideoMutation = trpc.videoUpload.uploadSubmissionVideo.useMutation();
 
   const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -39,6 +41,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setUploadProgress(0);
 
     if (!notes.trim() && !videoFile) {
       setError("Please add notes or upload a video");
@@ -48,19 +51,59 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
     setIsSubmitting(true);
 
     try {
+      let videoUrl: string | undefined;
+
+      // Upload video to S3 if provided
+      if (videoFile) {
+        setUploadProgress(10);
+        
+        // Read file as base64
+        const reader = new FileReader();
+        const fileBase64Promise = new Promise<string>((resolve, reject) => {
+          reader.onload = () => {
+            const base64 = (reader.result as string).split(',')[1];
+            resolve(base64);
+          };
+          reader.onerror = reject;
+        });
+
+        reader.readAsDataURL(videoFile);
+        const fileBase64 = await fileBase64Promise;
+        
+        setUploadProgress(30);
+
+        // Upload to S3 via tRPC
+        const uploadResult = await uploadVideoMutation.mutateAsync({
+          assignmentId,
+          drillId,
+          fileData: fileBase64,
+          fileName: videoFile.name,
+          mimeType: videoFile.type,
+        });
+
+        videoUrl = uploadResult.videoUrl;
+        setUploadProgress(80);
+      }
+
+      // Create submission with S3 URL
       await createSubmissionMutation.mutateAsync({
         assignmentId,
         drillId,
         notes: notes.trim() || undefined,
-        videoUrl: videoPreview || undefined,
+        videoUrl,
       });
 
+      setUploadProgress(100);
+
+      // Reset form
       setNotes("");
       setVideoFile(null);
       setVideoPreview(null);
+      setUploadProgress(0);
       onSubmitSuccess?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to submit drill");
+      setUploadProgress(0);
     } finally {
       setIsSubmitting(false);
     }
@@ -80,6 +123,21 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
             </div>
           )}
 
+          {uploadProgress > 0 && uploadProgress < 100 && (
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Uploading video...</span>
+                <span>{uploadProgress}%</span>
+              </div>
+              <div className="w-full bg-muted rounded-full h-2">
+                <div
+                  className="bg-secondary h-2 rounded-full transition-all"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-semibold mb-2">Notes (Optional)</label>
             <textarea
@@ -88,6 +146,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
               placeholder="Add notes about your performance, what you learned, or any challenges..."
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-sm"
               rows={3}
+              disabled={isSubmitting}
             />
             <p className="text-xs text-muted-foreground mt-1">Share your thoughts and progress</p>
           </div>
@@ -128,7 +187,8 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
                     setVideoFile(null);
                     setVideoPreview(null);
                   }}
-                  className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
+                  disabled={isSubmitting}
+                  className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 disabled:opacity-50"
                 >
                   Remove
                 </button>
@@ -142,7 +202,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
             className="w-full gap-2"
           >
             <Send className="h-4 w-4" />
-            {isSubmitting ? "Submitting..." : "Submit Drill Work"}
+            {isSubmitting ? `Submitting... ${uploadProgress > 0 ? `(${uploadProgress}%)` : ''}` : "Submit Drill Work"}
           </Button>
         </form>
       </CardContent>
