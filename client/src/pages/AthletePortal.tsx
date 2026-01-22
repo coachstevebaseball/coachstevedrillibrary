@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle, Clock, AlertCircle, Play, ArrowRight, Home, LogOut } from "lucide-react";
+import { CheckCircle, Clock, AlertCircle, Play, ArrowRight, Home, LogOut, MessageCircle } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
 import drillsData from "@/data/drills.json";
@@ -149,12 +149,20 @@ export default function AthletePortal() {
       {/* Header */}
       <header className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-8 mb-8">
         <div className="container">
-          <Link href="/">
-            <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 mb-4 pl-0">
-              <Home className="mr-2 h-4 w-4" />
-              Back to Directory
-            </Button>
-          </Link>
+          <div className="flex items-center justify-between mb-4">
+            <Link href="/">
+              <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 pl-0">
+                <Home className="mr-2 h-4 w-4" />
+                Back to Directory
+              </Button>
+            </Link>
+            <Link href="/athlete-messaging">
+              <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">
+                <MessageCircle className="mr-2 h-4 w-4" />
+                My Messages
+              </Button>
+            </Link>
+          </div>
           <div className="space-y-2">
             <h1 className="text-4xl md:text-5xl font-heading font-black">Your Drills</h1>
             <p className="text-primary-foreground/90">Welcome, {user.name}! Here are your assigned drills and progress.</p>

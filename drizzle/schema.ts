@@ -178,3 +178,26 @@ export const notificationPreferences = mysqlTable("notificationPreferences", {
 
 export type NotificationPreference = typeof notificationPreferences.$inferSelect;
 export type InsertNotificationPreference = typeof notificationPreferences.$inferInsert;
+
+
+export const drillQuestions = mysqlTable("drillQuestions", {
+  id: int("id").autoincrement().primaryKey(),
+  athleteId: int("athleteId").notNull(),
+  drillId: varchar("drillId", { length: 255 }).notNull(),
+  question: text("question").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type DrillQuestion = typeof drillQuestions.$inferSelect;
+export type InsertDrillQuestion = typeof drillQuestions.$inferInsert;
+
+export const drillAnswers = mysqlTable("drillAnswers", {
+  id: int("id").autoincrement().primaryKey(),
+  questionId: int("questionId").notNull(),
+  coachId: int("coachId").notNull(),
+  answer: text("answer").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type DrillAnswer = typeof drillAnswers.$inferSelect;
+export type InsertDrillAnswer = typeof drillAnswers.$inferInsert;

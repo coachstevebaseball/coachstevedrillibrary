@@ -14,6 +14,8 @@ import DrillGeneratorPage from "./pages/DrillGeneratorPage";
 import { ManageDrillVideos } from "./pages/ManageDrillVideos";
 import CreateDrillDetails from "./pages/CreateDrillDetails";
 import SubmissionsDashboard from "./pages/SubmissionsDashboard";
+import CoachMessaging from "./pages/CoachMessaging";
+import AthleteMessaging from "./pages/AthleteMessaging";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
@@ -55,12 +57,24 @@ function Router() {
           <CreateDrillDetails />
         </ProtectedRoute>
       </Route>
-      
       <Route path={"/submissions"}>
         <ProtectedRoute requiredRole="admin">
           <SubmissionsDashboard />
         </ProtectedRoute>
-      </Route>      
+      </Route>
+      
+      <Route path={"/coach-messaging"}>
+        <ProtectedRoute requiredRole="admin">
+          <CoachMessaging />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path={"/athlete-messaging"}>
+        <ProtectedRoute requiredRole="athlete">
+          <AthleteMessaging />
+        </ProtectedRoute>
+      </Route>
+      
       {/* Protected Routes - Athlete Only */}
       <Route path={"/athlete-portal"}>
         <ProtectedRoute requiredRole="athlete">

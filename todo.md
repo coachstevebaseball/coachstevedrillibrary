@@ -506,3 +506,25 @@
 - [ ] Test coach can provide feedback on submissions
 - [ ] Test athlete receives feedback notification
 - [ ] Verify feedback appears in athlete's submission history
+
+
+## Drill Q&A Messaging System
+- [x] Create drillQuestions table in database schema (athleteId, drillId, question, createdAt)
+- [x] Create drillAnswers table in database schema (questionId, coachId, answer, createdAt)
+- [x] Add database helper functions for Q&A CRUD operations
+- [x] Create tRPC endpoints for creating questions, getting questions, creating answers
+- [x] Build drill Q&A form component on drill detail page
+- [x] Show "Message sent successfully" after athlete submits question
+- [x] Build coach messaging dashboard page with all athlete questions
+- [x] Add reply interface to coach dashboard for answering questions
+- [x] Build athlete messaging dashboard to view their questions and coach responses
+- [x] Add email notification when athlete asks a question
+- [x] Add in-app notification when athlete asks a question
+- [x] Add email notification when coach replies to question
+- [x] Add in-app notification when coach replies to question
+- [x] Add "Messages" link to coach dashboard navigation
+- [x] Add "Messages" link to athlete portal navigation
+- [ ] Test athlete can ask question on drill detail page
+- [ ] Test coach can see all questions in messaging dashboard
+- [ ] Test coach can reply to questions
+- [ ] Test athlete can see their questions and coach responses

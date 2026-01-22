@@ -138,6 +138,13 @@ export default function CoachDashboard() {
                   <span className="sm:hidden">Subs</span>
                 </Button>
               </Link>
+              <Link href="/coach-messaging" className="flex-1 md:flex-none">
+                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
+                  <MessageSquare className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
+                  <span className="hidden sm:inline">Messages</span>
+                  <span className="sm:hidden">Msgs</span>
+                </Button>
+              </Link>
               <Link href="/manage-drill-videos" className="flex-1 md:flex-none">
                 <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
                   <Video className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />

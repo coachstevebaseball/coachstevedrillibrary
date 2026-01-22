@@ -735,3 +735,129 @@ export async function getUnreadNotificationCount(userId: number) {
     return 0;
   }
 }
+
+
+// ============= DRILL Q&A FUNCTIONS =============
+
+import { drillQuestions, drillAnswers } from "../drizzle/schema";
+
+export async function createDrillQuestion(data: {
+  athleteId: number;
+  drillId: string;
+  question: string;
+}) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create question: database not available");
+    return null;
+  }
+
+  try {
+    const result = await db.insert(drillQuestions).values(data);
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to create drill question:", error);
+    throw error;
+  }
+}
+
+export async function getDrillQuestions(drillId: string) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get questions: database not available");
+    return [];
+  }
+
+  try {
+    return await db.select().from(drillQuestions).where(eq(drillQuestions.drillId, drillId));
+  } catch (error) {
+    console.error("[Database] Failed to get drill questions:", error);
+    return [];
+  }
+}
+
+export async function getAthleteQuestions(athleteId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get questions: database not available");
+    return [];
+  }
+
+  try {
+    return await db.select().from(drillQuestions).where(eq(drillQuestions.athleteId, athleteId));
+  } catch (error) {
+    console.error("[Database] Failed to get athlete questions:", error);
+    return [];
+  }
+}
+
+export async function getAllQuestions() {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get questions: database not available");
+    return [];
+  }
+
+  try {
+    return await db.select().from(drillQuestions);
+  } catch (error) {
+    console.error("[Database] Failed to get all questions:", error);
+    return [];
+  }
+}
+
+export async function getQuestionWithAnswers(questionId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get question: database not available");
+    return null;
+  }
+
+  try {
+    const question = await db.select().from(drillQuestions).where(eq(drillQuestions.id, questionId)).limit(1);
+    
+    if (question.length === 0) return null;
+    
+    const answers = await db.select().from(drillAnswers).where(eq(drillAnswers.questionId, questionId));
+    
+    return { ...question[0], answers };
+  } catch (error) {
+    console.error("[Database] Failed to get question with answers:", error);
+    return null;
+  }
+}
+
+export async function createDrillAnswer(data: {
+  questionId: number;
+  coachId: number;
+  answer: string;
+}) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create answer: database not available");
+    return null;
+  }
+
+  try {
+    const result = await db.insert(drillAnswers).values(data);
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to create drill answer:", error);
+    throw error;
+  }
+}
+
+export async function getAnswersByQuestion(questionId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get answers: database not available");
+    return [];
+  }
+
+  try {
+    return await db.select().from(drillAnswers).where(eq(drillAnswers.questionId, questionId));
+  } catch (error) {
+    console.error("[Database] Failed to get answers by question:", error);
+    return [];
+  }
+}

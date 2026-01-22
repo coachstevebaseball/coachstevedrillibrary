@@ -13,6 +13,7 @@ import { EditDrillDetailsModal } from "@/components/EditDrillDetailsModal";
 import { InstructionsEditor } from "@/components/InstructionsEditor";
 import { trpc } from "@/lib/trpc";
 import { Edit, Trash2 } from "lucide-react";
+import { DrillQAForm } from "@/components/DrillQAForm";
 
 // Collapsible section component
 function CollapsibleSection({ title, icon: Icon, children, defaultOpen = false }: { title: string; icon: any; children: React.ReactNode; defaultOpen?: boolean }) {
@@ -1459,6 +1460,13 @@ export default function DrillDetail() {
               </div>
             </CardContent>
           </Card>
+        </div>
+      )}
+      
+      {/* Q&A Section for Athletes */}
+      {hasAccess && user?.role === 'athlete' && (
+        <div className="container max-w-4xl mx-auto mb-8">
+          <DrillQAForm drillId={id || ''} drillName={drill?.name || ''} />
         </div>
       )}
       
