@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload, Send, AlertCircle } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { useNotification } from "@/contexts/NotificationContext";
 
 interface DrillSubmissionFormProps {
   assignmentId: number;
@@ -11,6 +12,7 @@ interface DrillSubmissionFormProps {
 }
 
 export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: DrillSubmissionFormProps) {
+  const { addToast } = useNotification();
   const [notes, setNotes] = useState("");
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
@@ -95,6 +97,13 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
 
       setUploadProgress(100);
 
+      // Show success toast
+      addToast({
+        type: 'success',
+        title: 'Submission Successful!',
+        message: 'Your drill submission has been recorded. Great work!',
+      });
+
       // Reset form
       setNotes("");
       setVideoFile(null);
@@ -102,8 +111,16 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
       setUploadProgress(0);
       onSubmitSuccess?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to submit drill");
+      const errorMessage = err instanceof Error ? err.message : "Failed to submit drill";
+      setError(errorMessage);
       setUploadProgress(0);
+      
+      // Show error toast
+      addToast({
+        type: 'error',
+        title: 'Submission Failed',
+        message: errorMessage,
+      });
     } finally {
       setIsSubmitting(false);
     }

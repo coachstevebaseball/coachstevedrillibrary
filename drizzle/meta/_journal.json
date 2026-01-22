@@ -71,6 +71,13 @@
       "when": 1769076997532,
       "tag": "0009_exotic_enchantress",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1769083642840,
+      "tag": "0010_futuristic_johnny_storm",
+      "breakpoints": true
     }
   ]
 }

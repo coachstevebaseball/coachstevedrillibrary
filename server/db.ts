@@ -1,7 +1,7 @@
-import { eq, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, notifications, notificationPreferences, InsertNotificationPreference } from "../drizzle/schema";
 import { ENV } from './_core/env';
+import { eq, and, desc, count } from "drizzle-orm";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -578,5 +578,160 @@ export async function deleteCoachFeedback(feedbackId: number) {
   } catch (error) {
     console.error("[Database] Failed to delete feedback:", error);
     return false;
+  }
+}
+
+
+// ============ NOTIFICATIONS ============
+
+export async function createNotification(data: {
+  userId: number;
+  type: "submission" | "feedback" | "badge" | "assignment" | "system";
+  title: string;
+  message: string;
+  relatedId?: number;
+  relatedType?: string;
+  actionUrl?: string;
+}) {
+  const db = await getDb();
+  if (!db) return null;
+
+  try {
+    const result = await db.insert(notifications).values({
+      userId: data.userId,
+      type: data.type,
+      title: data.title,
+      message: data.message,
+      relatedId: data.relatedId || null,
+      relatedType: data.relatedType || null,
+      actionUrl: data.actionUrl || null,
+      isRead: 0,
+    });
+    return result;
+  } catch (error) {
+    console.error("[DB] Error creating notification:", error);
+    return null;
+  }
+}
+
+export async function getNotificationsByUser(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  try {
+    const result = await db
+      .select()
+      .from(notifications)
+      .where(eq(notifications.userId, userId))
+      .orderBy(desc(notifications.createdAt));
+    return result;
+  } catch (error) {
+    console.error("[DB] Error fetching notifications:", error);
+    return [];
+  }
+}
+
+export async function getUnreadNotifications(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  try {
+    const result = await db
+      .select()
+      .from(notifications)
+      .where(and(eq(notifications.userId, userId), eq(notifications.isRead, 0)))
+      .orderBy(desc(notifications.createdAt));
+    return result;
+  } catch (error) {
+    console.error("[DB] Error fetching unread notifications:", error);
+    return [];
+  }
+}
+
+export async function markNotificationAsRead(notificationId: number) {
+  const db = await getDb();
+  if (!db) return false;
+
+  try {
+    await db
+      .update(notifications)
+      .set({ isRead: 1, readAt: new Date() })
+      .where(eq(notifications.id, notificationId));
+    return true;
+  } catch (error) {
+    console.error("[DB] Error marking notification as read:", error);
+    return false;
+  }
+}
+
+export async function deleteNotification(notificationId: number) {
+  const db = await getDb();
+  if (!db) return false;
+
+  try {
+    await db.delete(notifications).where(eq(notifications.id, notificationId));
+    return true;
+  } catch (error) {
+    console.error("[DB] Error deleting notification:", error);
+    return false;
+  }
+}
+
+export async function getNotificationPreferences(userId: number) {
+  const db = await getDb();
+  if (!db) return null;
+
+  try {
+    const result = await db
+      .select()
+      .from(notificationPreferences)
+      .where(eq(notificationPreferences.userId, userId))
+      .limit(1);
+    return result[0] || null;
+  } catch (error) {
+    console.error("[DB] Error fetching notification preferences:", error);
+    return null;
+  }
+}
+
+export async function createOrUpdateNotificationPreferences(userId: number, data: Partial<InsertNotificationPreference>) {
+  const db = await getDb();
+  if (!db) return null;
+
+  try {
+    const existing = await getNotificationPreferences(userId);
+    
+    if (existing) {
+      await db
+        .update(notificationPreferences)
+        .set(data)
+        .where(eq(notificationPreferences.userId, userId));
+      return await getNotificationPreferences(userId);
+    } else {
+      const result = await db.insert(notificationPreferences).values({
+        userId,
+        ...data,
+      });
+      return await getNotificationPreferences(userId);
+    }
+  } catch (error) {
+    console.error("[DB] Error creating/updating notification preferences:", error);
+    return null;
+  }
+}
+
+export async function getUnreadNotificationCount(userId: number) {
+  const db = await getDb();
+  if (!db) return 0;
+
+  try {
+    const result = await db
+      .select({ count: count() })
+      .from(notifications)
+      .where(and(eq(notifications.userId, userId), eq(notifications.isRead, 0)));
+    return result[0]?.count || 0;
+  } catch (error) {
+    console.error("[DB] Error getting unread notification count:", error);
+    return 0;
   }
 }

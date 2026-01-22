@@ -143,3 +143,38 @@ export const coachFeedback = mysqlTable("coachFeedback", {
 
 export type CoachFeedback = typeof coachFeedback.$inferSelect;
 export type InsertCoachFeedback = typeof coachFeedback.$inferInsert;
+
+
+export const notifications = mysqlTable("notifications", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(), // Recipient user ID
+  type: mysqlEnum("type", ["submission", "feedback", "badge", "assignment", "system"]).notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  message: text("message").notNull(),
+  relatedId: int("relatedId"), // ID of related entity (submission, feedback, etc.)
+  relatedType: varchar("relatedType", { length: 50 }), // Type of related entity
+  isRead: int("isRead").default(0).notNull(), // 0 = unread, 1 = read
+  actionUrl: varchar("actionUrl", { length: 500 }), // URL to navigate to when clicked
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  readAt: timestamp("readAt"),
+});
+
+export type Notification = typeof notifications.$inferSelect;
+export type InsertNotification = typeof notifications.$inferInsert;
+
+export const notificationPreferences = mysqlTable("notificationPreferences", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(),
+  submissionNotifications: int("submissionNotifications").default(1).notNull(), // 0 = off, 1 = on
+  feedbackNotifications: int("feedbackNotifications").default(1).notNull(),
+  badgeNotifications: int("badgeNotifications").default(1).notNull(),
+  assignmentNotifications: int("assignmentNotifications").default(1).notNull(),
+  systemNotifications: int("systemNotifications").default(1).notNull(),
+  emailNotifications: int("emailNotifications").default(1).notNull(),
+  inAppNotifications: int("inAppNotifications").default(1).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type NotificationPreference = typeof notificationPreferences.$inferSelect;
+export type InsertNotificationPreference = typeof notificationPreferences.$inferInsert;

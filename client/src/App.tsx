@@ -15,6 +15,8 @@ import { ManageDrillVideos } from "./pages/ManageDrillVideos";
 import CreateDrillDetails from "./pages/CreateDrillDetails";
 import SubmissionsDashboard from "./pages/SubmissionsDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { NotificationProvider } from "./contexts/NotificationContext";
+import { ToastContainer } from "./components/ToastContainer";
 
 function Router() {
   return (
@@ -81,15 +83,18 @@ function Router() {
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="light"
-        // switchable
-      >
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </ThemeProvider>
+      <NotificationProvider>
+        <ThemeProvider
+          defaultTheme="light"
+          // switchable
+        >
+          <TooltipProvider>
+            <Toaster />
+            <ToastContainer />
+            <Router />
+          </TooltipProvider>
+        </ThemeProvider>
+      </NotificationProvider>
     </ErrorBoundary>
   );
 }

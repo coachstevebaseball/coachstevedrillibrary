@@ -474,3 +474,23 @@
 - [x] Test email delivery for submissions
 - [x] Test email delivery for feedback
 - [x] Verify email templates render correctly
+
+
+## In-App Notification System
+- [x] Create notifications table in database schema
+- [x] Create notification preferences table
+- [x] Add tRPC endpoints for notification CRUD operations
+- [x] Build toast notification component
+- [x] Create notification context provider
+- [x] Build notification bell icon with unread count
+- [x] Build notification dropdown panel with history
+- [x] Add mark as read/delete functionality
+- [ ] Create notification preferences UI
+- [x] Integrate notifications into drill submission events
+- [x] Integrate notifications into feedback events
+- [ ] Integrate notifications into badge unlock events
+- [ ] Integrate notifications into drill assignment events
+- [x] Test toast notifications on actions
+- [ ] Test notification bell and history panel
+- [ ] Test real-time notification updates
+- [ ] Test notification preferences persistence

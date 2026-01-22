@@ -180,3 +180,48 @@ export const submissionsRouter = router({
       }),
   }),
 });
+
+
+// Helper function to create notifications for submissions
+export async function createSubmissionNotification(data: {
+  userId: number;
+  athleteName: string;
+  drillName: string;
+  submissionId: number;
+}) {
+  try {
+    await db.createNotification({
+      userId: data.userId,
+      type: 'submission',
+      title: `New Submission from ${data.athleteName}`,
+      message: `${data.athleteName} submitted their work for ${data.drillName}`,
+      relatedId: data.submissionId,
+      relatedType: 'submission',
+      actionUrl: `/submissions`,
+    });
+  } catch (error) {
+    console.error('Error creating submission notification:', error);
+  }
+}
+
+// Helper function to create notifications for feedback
+export async function createFeedbackNotification(data: {
+  userId: number;
+  coachName: string;
+  drillName: string;
+  feedbackId: number;
+}) {
+  try {
+    await db.createNotification({
+      userId: data.userId,
+      type: 'feedback',
+      title: `Feedback from ${data.coachName}`,
+      message: `${data.coachName} provided feedback on your ${data.drillName} submission`,
+      relatedId: data.feedbackId,
+      relatedType: 'feedback',
+      actionUrl: `/athlete-portal`,
+    });
+  } catch (error) {
+    console.error('Error creating feedback notification:', error);
+  }
+}
