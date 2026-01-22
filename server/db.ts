@@ -367,3 +367,44 @@ export async function saveDrillInstructions(drillId: string, instructions: strin
     return false;
   }
 }
+
+export async function saveDrillGoal(drillId: string, goal: string, userId: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot save drill goal: database not available");
+    return false;
+  }
+
+  try {
+    const { drillDetails } = await import("../drizzle/schema");
+    const { eq } = await import("drizzle-orm");
+    
+    // Check if detail already exists
+    const existing = await db.select().from(drillDetails).where(eq(drillDetails.drillId, drillId));
+    
+    if (existing.length > 0) {
+      // Update existing
+      await db.update(drillDetails).set({
+        goal: goal,
+        updatedAt: new Date(),
+      }).where(eq(drillDetails.drillId, drillId));
+    } else {
+      // Insert new with just goal
+      await db.insert(drillDetails).values({
+        drillId,
+        goal: goal,
+        description: [],
+        skillSet: "Custom",
+        difficulty: "Medium",
+        athletes: "Varies",
+        time: "Varies",
+        equipment: "Varies",
+        createdBy: userId,
+      });
+    }
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to save drill goal:", error);
+    return false;
+  }
+}

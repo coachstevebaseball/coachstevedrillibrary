@@ -10,6 +10,7 @@ import { useState, useMemo } from "react";
 import drillsData from "@/data/drills.json";
 import { trpc } from "@/lib/trpc";
 import { BulkInstructionImport } from "@/components/BulkInstructionImport";
+import { BulkGoalUpload } from "@/components/BulkGoalUpload";
 
 interface Drill {
   id: string;
@@ -24,7 +25,8 @@ export default function CoachDashboard() {
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
   const [searchDrill, setSearchDrill] = useState("");
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
-  const [activeTab, setActiveTab] = useState<"assign" | "bulk-import">("assign");
+  const [activeTab, setActiveTab] = useState<"assign" | "bulk-import" | "bulk-goals">("assign");
+  const [isBulkGoalOpen, setIsBulkGoalOpen] = useState(false);
 
   // Fetch all users
   const { data: allUsers = [] } = trpc.admin.getAllUsers.useQuery(undefined, {
@@ -158,12 +160,21 @@ export default function CoachDashboard() {
                 <span className="hidden sm:inline">Bulk Import</span>
                 <span className="sm:hidden">Import</span>
               </Button>
+              <Button
+                onClick={() => setIsBulkGoalOpen(true)}
+                className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm flex-1 md:flex-none"
+              >
+                <Upload className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
+                <span className="hidden sm:inline">Bulk Goals</span>
+                <span className="sm:hidden">Goals</span>
+              </Button>
             </div>
           </div>
         </div>
       </header>
 
       <main className="container max-w-6xl pb-8 md:pb-12 px-3 md:px-4">
+        <BulkGoalUpload isOpen={isBulkGoalOpen} onClose={() => setIsBulkGoalOpen(false)} />
         {activeTab === "bulk-import" ? (
           <div className="max-w-4xl mx-auto">
             <BulkInstructionImport />

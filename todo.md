@@ -287,3 +287,33 @@
 - [x] Fixed instructions loading bug - changed saveDrillInstructions to save to instructions column instead of description
 - [x] Verified instructions now persist and load correctly after page refresh
 - [x] Tested both manual entry and bulk import - both now save and load properly
+
+
+## Client Launch Readiness - Content Gap Analysis
+- [ ] Audit database: count drills with videos vs total (200 drills)
+- [ ] Audit database: count drills with details vs total (200 drills)
+- [ ] Identify top 20 most popular drills (by skill set: Hitting, Infield, Outfield, Pitching, Bunting)
+- [ ] Prioritize filling gaps for top 20 drills first
+- [ ] Create video sourcing strategy (YouTube, USA Baseball Mobile Coach, etc.)
+- [ ] Create drill details template for coaches to bulk-fill missing content
+- [ ] Set up automated script to generate basic drill details for all 200 drills
+- [ ] Test client experience with current data completeness
+- [ ] Identify minimum viable content threshold for launch
+
+## High-Priority Drill Content Completion (Top 20)
+- [ ] Hitting skill set: Fill 5 most popular hitting drills with videos and details
+- [ ] Infield skill set: Fill 5 most popular infield drills with videos and details
+- [ ] Outfield skill set: Fill 5 most popular outfield drills with videos and details
+- [ ] Pitching skill set: Fill 3 most popular pitching drills with videos and details
+- [ ] Bunting skill set: Fill 2 most popular bunting drills with videos and details
+
+
+## Bulk Goal Upload Feature
+- [x] Create backend API endpoint for bulk goal updates
+- [x] Build BulkGoalUpload component with paste area
+- [x] Implement parsing logic for "Drill Name | Goal" format
+- [x] Add validation to match drill names to database
+- [x] Create success/error feedback for bulk upload
+- [x] Integrate bulk goal upload into Coach Dashboard
+- [x] Test bulk goal upload with sample data
+- [x] Document bulk goal upload format for coaches

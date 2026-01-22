@@ -248,6 +248,34 @@ export const appRouter = router({
         
         return { results };
       }),
+    
+    bulkUpdateGoals: protectedProcedure
+      .input(z.object({
+        goals: z.record(z.string(), z.string()),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
+        }
+        
+        const results: Array<{ drillName: string; success: boolean; error?: string }> = [];
+        
+        for (const [drillName, goal] of Object.entries(input.goals)) {
+          try {
+            const drillId = drillName.toLowerCase().replace(/\s+/g, '-');
+            await db.saveDrillGoal(drillId, goal, ctx.user.id);
+            results.push({ drillName, success: true });
+          } catch (error) {
+            results.push({
+              drillName,
+              success: false,
+              error: error instanceof Error ? error.message : 'Unknown error',
+            });
+          }
+        }
+        
+        return { results };
+      }),
   }),
 
   // Invite management router
