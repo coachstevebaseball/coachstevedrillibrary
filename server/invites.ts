@@ -16,7 +16,7 @@ export function generateInviteToken(): string {
 export async function createInvite(
   email: string,
   createdByUserId: number,
-  role: "user" | "admin" = "user",
+  role: "user" | "admin" | "athlete" | "coach" = "athlete",
   expirationDays: number = 7
 ) {
   const db = await getDb();

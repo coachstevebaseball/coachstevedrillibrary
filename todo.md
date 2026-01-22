@@ -334,3 +334,10 @@
 - [x] Verified athlete portal loads assignments correctly
 - [ ] Publish website to make it live (remove preview mode)
 - [ ] Start inviting coaches via admin dashboard
+
+
+## Invite System - Ensure Athlete Role
+- [x] Verify invite creation defaults to "athlete" role
+- [x] Verify account creation from invite sets "athlete" role
+- [x] Fix any issues with role assignment - changed default role from "user" to "athlete"
+- [ ] Test full invite → signup → athlete portal flow
