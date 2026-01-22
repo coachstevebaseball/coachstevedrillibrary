@@ -25,7 +25,7 @@ export async function assignDrill(userId: number, drillId: string, drillName: st
 
   // Send email notification if user email exists
   if (user?.email) {
-    const portalUrl = `${process.env.VITE_FRONTEND_FORGE_API_URL || "https://usabdrills-4gdchruk.manus.space"}/athlete-portal`;
+    const portalUrl = `https://coachstevemobilecoach.com/athlete-portal`;
     await sendDrillAssignmentEmail({
       athleteEmail: user.email,
       athleteName: user.name || "Athlete",

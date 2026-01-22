@@ -103,10 +103,15 @@ export async function acceptInvite(
   // Import users table for role update
   const { users } = await import("../drizzle/schema");
 
-  // Update user role based on invite role
+  // Update user role based on invite role and set as active if athlete
+  const updateData: any = { role: invite.role };
+  if (invite.role === "athlete") {
+    updateData.isActiveClient = 1;
+  }
+  
   await db
     .update(users)
-    .set({ role: invite.role })
+    .set(updateData)
     .where(eq(users.id, userId));
 
   // Update invite status
