@@ -1,5 +1,5 @@
 import { eq, and } from "drizzle-orm";
-import { drillAssignments, assignmentProgress, InsertDrillAssignment, InsertAssignmentProgress, users } from "../drizzle/schema";
+import { drillAssignments, assignmentProgress, InsertDrillAssignment, InsertAssignmentProgress, users, notifications } from "../drizzle/schema";
 import { getDb } from "./db";
 import { sendDrillAssignmentEmail } from "./email";
 
@@ -36,6 +36,19 @@ export async function assignDrill(userId: number, drillId: string, drillName: st
       coachName,
       portalUrl,
     });
+  }
+
+  // Create in-app notification for athlete
+  try {
+    await db.insert(notifications).values({
+      userId,
+      type: "assignment",
+      title: "New Drill Assigned",
+      message: `You have been assigned the drill: ${drillName}`,
+      isRead: 0,
+    });
+  } catch (err) {
+    console.error("[Notification] Failed to create in-app notification:", err);
   }
 
   return result;

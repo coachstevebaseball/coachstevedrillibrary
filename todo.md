@@ -528,3 +528,13 @@
 - [ ] Test coach can see all questions in messaging dashboard
 - [ ] Test coach can reply to questions
 - [ ] Test athlete can see their questions and coach responses
+
+
+## Email Notifications on Drill Assignment
+- [x] Add email trigger to drill assignment endpoint
+- [x] Create email template for drill assignment notification
+- [x] Include drill name, difficulty, and athlete portal link in email
+- [x] Send email to athlete when coach assigns drill
+- [x] Add in-app notification when drill is assigned
+- [ ] Test email delivery on drill assignment
+- [ ] Verify email contains correct drill information
