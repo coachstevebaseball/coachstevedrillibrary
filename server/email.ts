@@ -24,7 +24,7 @@ export async function sendDrillAssignmentEmail(data: DrillAssignmentEmailData): 
     const emailHtml = generateDrillAssignmentEmailHtml(data);
 
     const result = await resend.emails.send({
-      from: "Coach Steve's Mobile Coach <onboarding@resend.dev>",
+      from: "coach@coachstevebaseball.com",
       to: data.athleteEmail,
       subject: `New Drill Assignment: ${data.drillName}`,
       html: emailHtml,
@@ -211,7 +211,7 @@ export async function sendSubmissionNotificationToCoach(data: SubmissionNotifica
     `;
 
     const result = await resend.emails.send({
-      from: "Coach Steve's Mobile Coach <onboarding@resend.dev>",
+      from: "coach@coachstevebaseball.com",
       to: data.coachEmail,
       subject: `New Submission: ${data.athleteName} - ${data.drillName}`,
       html: emailHtml,
@@ -295,7 +295,7 @@ export async function sendFeedbackNotificationToAthlete(data: FeedbackNotificati
     `;
 
     const result = await resend.emails.send({
-      from: "Coach Steve's Mobile Coach <onboarding@resend.dev>",
+      from: "coach@coachstevebaseball.com",
       to: data.athleteEmail,
       subject: `Feedback from ${data.coachName}: ${data.drillName}`,
       html: emailHtml,

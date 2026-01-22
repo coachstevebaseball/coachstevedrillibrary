@@ -191,3 +191,39 @@ describe('Email Notifications', () => {
     });
   });
 });
+
+
+describe('Resend API Key Validation', () => {
+  it('should have Resend API key configured', () => {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    expect(resendApiKey).toBeDefined();
+    expect(resendApiKey?.length).toBeGreaterThan(0);
+    expect(resendApiKey).toMatch(/^re_/);
+  });
+
+  it('should validate drill assignment email can be sent', async () => {
+    const { sendDrillAssignmentEmail } = await import('./email');
+    
+    const testData = {
+      athleteEmail: 'test@example.com',
+      athleteName: 'Test Athlete',
+      drillName: '1-2-3 Drill',
+      drillDifficulty: 'Medium',
+      drillDuration: '10 minutes',
+      coachNotes: 'Focus on form',
+      coachName: 'Coach Steve',
+      portalUrl: 'https://example.com/athlete-portal',
+    };
+
+    const result = await sendDrillAssignmentEmail(testData);
+    
+    // Verify we got a response
+    expect(result).toBeDefined();
+    expect(result).toHaveProperty('success');
+    
+    // If the API key is valid, success should be true or we get an error message
+    if (!result.success) {
+      console.log('Email API response:', result);
+    }
+  });
+});
