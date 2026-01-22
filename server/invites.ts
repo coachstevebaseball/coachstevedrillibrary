@@ -1,6 +1,6 @@
 import { getDb } from "./db";
 import { invites } from "../drizzle/schema";
-import { eq, and, lt } from "drizzle-orm";
+import { eq, and, lt, gt } from "drizzle-orm";
 import crypto from "crypto";
 import { sendInviteEmail } from "./email";
 
@@ -213,4 +213,140 @@ export async function expireOldInvites() {
         lt(invites.expiresAt, now)
       )
     );
+}
+
+
+/**
+ * Generate email verification token and send verification email
+ */
+export async function generateEmailVerificationToken(userId: number, email: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const { users } = await import("../drizzle/schema");
+  const { sendEmailVerificationEmail } = await import("./email");
+
+  const verificationToken = generateInviteToken(); // Reuse token generation
+
+  // Update user with verification token
+  await db
+    .update(users)
+    .set({ emailVerificationToken: verificationToken })
+    .where(eq(users.id, userId));
+
+  // Get user name for email
+  const userResult = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+  const user = userResult[0];
+
+  // Send verification email
+  const verificationLink = `https://coachstevemobilecoach.com/verify-email/${verificationToken}`;
+  await sendEmailVerificationEmail({
+    toEmail: email,
+    verificationLink,
+    athleteName: user?.name || "Athlete",
+  });
+
+  return verificationToken;
+}
+
+/**
+ * Verify email with token
+ */
+export async function verifyEmailWithToken(token: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const { users } = await import("../drizzle/schema");
+
+  // Find user with verification token
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.emailVerificationToken, token))
+    .limit(1);
+
+  if (!userResult[0]) {
+    throw new Error("Invalid verification token");
+  }
+
+  const user = userResult[0];
+
+  // Mark email as verified
+  await db
+    .update(users)
+    .set({ emailVerified: 1, emailVerificationToken: null })
+    .where(eq(users.id, user.id));
+
+  return user;
+}
+
+/**
+ * Get invites expiring in 2 days that haven't had reminders sent
+ */
+export async function getExpiringInvites() {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const now = new Date();
+  const twoDaysFromNow = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);
+
+  return await db
+    .select()
+    .from(invites)
+    .where(
+      and(
+        eq(invites.status, "pending"),
+        lt(invites.expiresAt, twoDaysFromNow),
+        gt(invites.expiresAt, now),
+        eq(invites.reminderSent, 0)
+      )
+    );
+}
+
+/**
+ * Mark invite reminder as sent
+ */
+export async function markReminderAsSent(inviteId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .update(invites)
+    .set({ reminderSent: 1 })
+    .where(eq(invites.id, inviteId));
+}
+
+/**
+ * Send expiration reminder for a specific invite
+ */
+export async function sendExpirationReminder(inviteId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const { sendInviteExpirationReminderEmail } = await import("./email");
+
+  // Get invite
+  const inviteResult = await db
+    .select()
+    .from(invites)
+    .where(eq(invites.id, inviteId))
+    .limit(1);
+
+  if (!inviteResult[0]) {
+    throw new Error("Invite not found");
+  }
+
+  const invite = inviteResult[0];
+  const inviteUrl = `https://coachstevemobilecoach.com/accept-invite/${invite.inviteToken}`;
+
+  // Send reminder email
+  await sendInviteExpirationReminderEmail({
+    toEmail: invite.email,
+    athleteName: invite.email.split("@")[0], // Use email prefix as name if not available
+    inviteLink: inviteUrl,
+    expiresAt: invite.expiresAt,
+  });
+
+  // Mark as sent
+  await markReminderAsSent(inviteId);
 }

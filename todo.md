@@ -538,3 +538,21 @@
 - [x] Add in-app notification when drill is assigned
 - [ ] Test email delivery on drill assignment
 - [ ] Verify email contains correct drill information
+
+## Email Verification for Invited Athletes
+- [x] Add emailVerified field to users table
+- [x] Add emailVerificationToken to users table
+- [x] Create email verification endpoint
+- [x] Create email verification email template
+- [x] Update AcceptInvite page to require email verification
+- [x] Add email verification confirmation page
+- [x] Send verification email after account creation
+- [x] Test email verification flow end-to-end
+
+## Invite Expiration Notifications
+- [x] Create invite expiration notification email template
+- [x] Add scheduled job to check for expiring invites
+- [x] Send reminder emails 2 days before expiration
+- [x] Track which invites have had reminders sent
+- [x] Test expiration notification emails
+- [x] Verify athletes receive notifications at correct time

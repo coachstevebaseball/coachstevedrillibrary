@@ -435,3 +435,196 @@ function generateInviteEmailHtml(data: InviteEmailData): string {
     </html>
   `;
 }
+
+
+export interface EmailVerificationData {
+  toEmail: string;
+  verificationLink: string;
+  athleteName: string;
+}
+
+export async function sendEmailVerificationEmail(data: EmailVerificationData): Promise<{ success: boolean; error?: string }> {
+  if (!ENV.resendApiKey) {
+    console.warn("[Email] Resend API key not configured, skipping email verification");
+    return { success: false, error: "Email service not configured" };
+  }
+
+  try {
+    const emailHtml = generateEmailVerificationHtml(data);
+
+    const result = await resend.emails.send({
+      from: "coach@coachstevebaseball.com",
+      to: data.toEmail,
+      subject: "Verify Your Email - Coach Steve Baseball Drills",
+      html: emailHtml,
+    });
+
+    if (result.error) {
+      console.error("[Email] Failed to send email verification:", result.error);
+      return { success: false, error: result.error.message };
+    }
+
+    console.log("[Email] Email verification sent to", data.toEmail);
+    return { success: true };
+  } catch (error) {
+    console.error("[Email] Error sending email verification:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+function generateEmailVerificationHtml(data: EmailVerificationData): string {
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+          .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
+          .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb; border-top: none; }
+          .cta-button { display: inline-block; background: #dc2626; color: white; padding: 14px 35px; border-radius: 6px; text-decoration: none; font-weight: bold; margin: 25px 0; font-size: 16px; }
+          .info-box { background: #eff6ff; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #1e3a8a; }
+          .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #666; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>⚾ Coach Steve Baseball — Player Drill Library</h1>
+            <p>Verify Your Email</p>
+          </div>
+          
+          <div class="content">
+            <p>Hi ${data.athleteName},</p>
+            <p>Thank you for accepting your invitation! To complete your account setup, please verify your email address by clicking the button below.</p>
+            
+            <div style="text-align: center;">
+              <a href="${data.verificationLink}" class="cta-button">Verify Email Address</a>
+            </div>
+            
+            <div class="info-box">
+              <p><strong>Why verify?</strong> Verifying your email ensures you receive important notifications about drill assignments, coach feedback, and other updates.</p>
+            </div>
+            
+            <p>This verification link will expire in 24 hours. If it expires, you can request a new one from your account settings.</p>
+            
+            <p>If you didn't create this account, please ignore this email.</p>
+            
+            <p>Best regards,<br><strong>Coach Steve</strong></p>
+          </div>
+          
+          <div class="footer">
+            <p>© 2026 Coach Steve Baseball — Player Drill Library. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+}
+
+export interface InviteExpirationReminderData {
+  toEmail: string;
+  athleteName: string;
+  inviteLink: string;
+  expiresAt: Date;
+}
+
+export async function sendInviteExpirationReminderEmail(data: InviteExpirationReminderData): Promise<{ success: boolean; error?: string }> {
+  if (!ENV.resendApiKey) {
+    console.warn("[Email] Resend API key not configured, skipping expiration reminder");
+    return { success: false, error: "Email service not configured" };
+  }
+
+  try {
+    const emailHtml = generateInviteExpirationReminderHtml(data);
+
+    const result = await resend.emails.send({
+      from: "coach@coachstevebaseball.com",
+      to: data.toEmail,
+      subject: "Your Invitation Expires Soon - Coach Steve Baseball Drills",
+      html: emailHtml,
+    });
+
+    if (result.error) {
+      console.error("[Email] Failed to send expiration reminder:", result.error);
+      return { success: false, error: result.error.message };
+    }
+
+    console.log("[Email] Expiration reminder sent to", data.toEmail);
+    return { success: true };
+  } catch (error) {
+    console.error("[Email] Error sending expiration reminder:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+function generateInviteExpirationReminderHtml(data: InviteExpirationReminderData): string {
+  const expiresDate = new Date(data.expiresAt).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+          .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
+          .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb; border-top: none; }
+          .cta-button { display: inline-block; background: #dc2626; color: white; padding: 14px 35px; border-radius: 6px; text-decoration: none; font-weight: bold; margin: 25px 0; font-size: 16px; }
+          .warning-box { background: #fef3c7; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #f59e0b; }
+          .warning-label { font-weight: bold; color: #92400e; font-size: 12px; text-transform: uppercase; }
+          .warning-text { color: #78350f; margin-top: 5px; }
+          .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #666; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>⚾ Coach Steve Baseball — Player Drill Library</h1>
+            <p>Invitation Expiring Soon</p>
+          </div>
+          
+          <div class="content">
+            <p>Hi ${data.athleteName},</p>
+            <p>Your invitation to join Coach Steve's Baseball Drills platform is expiring soon. Don't miss out—accept your invitation now to get started!</p>
+            
+            <div class="warning-box">
+              <div class="warning-label">⏰ Expires On</div>
+              <div class="warning-text">${expiresDate}</div>
+            </div>
+            
+            <div style="text-align: center;">
+              <a href="${data.inviteLink}" class="cta-button">Accept Invitation Now</a>
+            </div>
+            
+            <p>Once you accept, you'll have access to:</p>
+            <ul>
+              <li>200+ professional baseball drills</li>
+              <li>Personalized drill assignments from your coach</li>
+              <li>Progress tracking and achievement badges</li>
+              <li>Coach feedback and guidance</li>
+            </ul>
+            
+            <p>If you have any questions, please reach out to your coach.</p>
+            
+            <p>Best regards,<br><strong>Coach Steve</strong></p>
+          </div>
+          
+          <div class="footer">
+            <p>© 2026 Coach Steve Baseball — Player Drill Library. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+}

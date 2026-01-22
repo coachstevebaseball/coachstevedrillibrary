@@ -174,6 +174,35 @@ export const appRouter = router({
         await inviteDb.revokeInvite(input.inviteId);
         return { success: true };
       }),
+    
+    verifyEmail: publicProcedure
+      .input(z.object({ token: z.string() }))
+      .mutation(async ({ input }) => {
+        try {
+          const user = await inviteDb.verifyEmailWithToken(input.token);
+          return { success: true, userId: user.id };
+        } catch (error) {
+          throw new TRPCError({ code: 'BAD_REQUEST', message: error instanceof Error ? error.message : 'Email verification failed' });
+        }
+      }),
+    
+    sendExpirationReminders: protectedProcedure
+      .mutation(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const expiringInvites = await inviteDb.getExpiringInvites();
+        let sent = 0;
+        for (const invite of expiringInvites) {
+          try {
+            await inviteDb.sendExpirationReminder(invite.id);
+            sent++;
+          } catch (error) {
+            console.error('Error sending expiration reminder:', error);
+          }
+        }
+        return { success: true, remindersSent: sent };
+      }),
   }),
 });
 

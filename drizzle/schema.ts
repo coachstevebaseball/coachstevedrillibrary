@@ -19,6 +19,10 @@ export const users = mysqlTable("users", {
   role: mysqlEnum("role", ["user", "admin", "athlete", "coach"]).default("user").notNull(),
   /** Whether this user is an active client with access to drills */
   isActiveClient: int("isActiveClient").default(0).notNull(), // 0 = inactive, 1 = active
+  /** Email verification status */
+  emailVerified: int("emailVerified").default(0).notNull(), // 0 = not verified, 1 = verified
+  /** Email verification token */
+  emailVerificationToken: varchar("emailVerificationToken", { length: 255 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -62,6 +66,8 @@ export const invites = mysqlTable("invites", {
   expiresAt: timestamp("expiresAt").notNull(),
   acceptedAt: timestamp("acceptedAt"),
   acceptedByUserId: int("acceptedByUserId"),
+  /** Track if expiration reminder has been sent */
+  reminderSent: int("reminderSent").default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   createdByUserId: int("createdByUserId").notNull(),
 });
