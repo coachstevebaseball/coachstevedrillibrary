@@ -18,6 +18,7 @@ import CoachMessaging from "./pages/CoachMessaging";
 import AthleteMessaging from "./pages/AthleteMessaging";
 import VerifyEmail from "./pages/VerifyEmail";
 import UserManagement from "./pages/UserManagement";
+import DrillsDirectory from "./pages/DrillsDirectory";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
@@ -26,6 +27,7 @@ function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/drills"} component={DrillsDirectory} />
       <Route path={"/accept-invite/:token"} component={AcceptInvite} />
       <Route path={"/verify-email/:token"} component={VerifyEmail} />
       <Route path={"/drill/:id"} component={DrillDetail} />
