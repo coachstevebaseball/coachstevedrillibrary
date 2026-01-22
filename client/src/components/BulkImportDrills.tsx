@@ -31,8 +31,8 @@ export function BulkImportDrills() {
     try {
       // Fetch the parsed data from the server
       const [descriptionsRes, goalsRes] = await Promise.all([
-        fetch("/parsed_descriptions.json"),
-        fetch("/parsed_goals.json"),
+        fetch("/drill_descriptions.json"),
+        fetch("/drill_goals.json"),
       ]);
 
       if (!descriptionsRes.ok || !goalsRes.ok) {
