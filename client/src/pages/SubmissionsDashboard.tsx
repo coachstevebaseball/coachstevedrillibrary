@@ -41,19 +41,19 @@ export default function SubmissionsDashboard() {
   });
 
   // Fetch all submissions from all athletes
-  const { data: allSubmissions = [], isLoading: submissionsLoading, refetch } = trpc.drillSubmissions.getSubmissionsByUser.useQuery(
+  const { data: allSubmissions = [], isLoading: submissionsLoading, refetch } = trpc.submissions.drillSubmissions.getSubmissionsByUser.useQuery(
     undefined,
     { enabled: user?.role === 'admin' }
   );
 
   // Fetch feedback for selected submission
-  const { data: feedbackList = [] } = trpc.coachFeedback.getFeedbackBySubmission.useQuery(
+  const { data: feedbackList = [] } = trpc.submissions.coachFeedback.getFeedbackBySubmission.useQuery(
     { submissionId: selectedSubmission?.id || 0 },
     { enabled: !!selectedSubmission }
   );
 
   // Create feedback mutation
-  const createFeedbackMutation = trpc.coachFeedback.createFeedback.useMutation({
+  const createFeedbackMutation = trpc.submissions.coachFeedback.createFeedback.useMutation({
     onSuccess: () => {
       addToast({
         type: 'success',

@@ -101,191 +101,26 @@ export const appRouter = router({
         await drillAssignmentDb.updateAssignmentStatus(input.assignmentId, input.status);
         return { success: true };
       }),
-    
-    getUserAssignments: protectedProcedure
-      .input(z.object({ userId: z.number() }))
-      .query(async ({ ctx, input }) => {
-        if (ctx.user.role !== 'admin' && ctx.user.id !== input.userId) {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Cannot view other users assignments' });
-        }
-        return await drillAssignmentDb.getUserAssignments(input.userId);
-      }),
-    
-    getAllAssignments: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role !== 'admin') {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+
+    getAssignedDrills: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== 'athlete') {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'Athlete access required' });
       }
-      return await drillAssignmentDb.getAllAssignments();
+      return await drillAssignmentDb.getUserAssignments(ctx.user.id);
     }),
-    
-    getAssignmentProgress: protectedProcedure
-      .input(z.object({ assignmentId: z.number() }))
-      .query(async ({ input }) => {
-        return await drillAssignmentDb.getAssignmentProgress(input.assignmentId);
-      }),
   }),
 
-  // Drill Generator router
-  drillGenerator: drillGeneratorRouter,
-  drillSubmissions: submissionsRouter.drillSubmissions,
-  coachFeedback: submissionsRouter.coachFeedback,
-  qa: qaRouter,
+  // Submissions router
+  submissions: submissionsRouter,
+
+  // Video upload router
   videoUpload: videoUploadRouter,
 
-  // Drill videos router
-  videos: router({
-    saveVideo: protectedProcedure
-      .input(z.object({ drillId: z.string(), videoUrl: z.string() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
-        }
-        const success = await db.saveOrUpdateDrillVideo(input.drillId, input.videoUrl, ctx.user.id);
-        return { success };
-      }),
-    
-    getVideo: publicProcedure
-      .input(z.object({ drillId: z.string() }))
-      .query(async ({ input }) => {
-        const video = await db.getDrillVideo(input.drillId);
-        return video || null;
-      }),
-    
-    getAllVideos: publicProcedure.query(async () => {
-      return await db.getAllDrillVideos();
-    }),
-    
-    deleteVideo: protectedProcedure
-      .input(z.object({ drillId: z.string() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
-        }
-        const success = await db.deleteDrillVideo(input.drillId);
-        return { success };
-      }),
-  }),
+  // Q&A router
+  qa: qaRouter,
 
-  // Drill Details management router
-  drillDetails: router({
-    saveDrillDetail: protectedProcedure
-      .input(z.object({
-        drillId: z.string(),
-        skillSet: z.string(),
-        difficulty: z.string(),
-        athletes: z.string(),
-        time: z.string(),
-        equipment: z.string(),
-        goal: z.string(),
-        description: z.array(z.string()),
-        commonMistakes: z.array(z.string()).optional(),
-        progressions: z.array(z.string()).optional(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
-        }
-        const success = await db.saveDrillDetail(input.drillId, {
-          skillSet: input.skillSet,
-          difficulty: input.difficulty,
-          athletes: input.athletes,
-          time: input.time,
-          equipment: input.equipment,
-          goal: input.goal,
-          description: input.description,
-          commonMistakes: input.commonMistakes,
-          progressions: input.progressions,
-        }, ctx.user.id);
-        return { success };
-      }),
-    
-    getDrillDetail: publicProcedure
-      .input(z.object({ drillId: z.string() }))
-      .query(async ({ input }) => {
-        const detail = await db.getDrillDetail(input.drillId);
-        return detail || null;
-      }),
-    
-    deleteDrillDetail: protectedProcedure
-      .input(z.object({ drillId: z.string() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
-        }
-        const success = await db.deleteDrillDetail(input.drillId);
-        return { success };
-      }),
-    
-    saveDrillInstructions: protectedProcedure
-      .input(z.object({
-        drillId: z.string(),
-        instructions: z.string(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
-        }
-        const success = await db.saveDrillInstructions(input.drillId, input.instructions, ctx.user.id);
-        return { success };
-      }),
-    
-    bulkUpdateInstructions: protectedProcedure
-      .input(z.object({
-        instructions: z.record(z.string(), z.string()),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
-        }
-        
-        const results: Array<{ drillName: string; success: boolean; error?: string }> = [];
-        
-        for (const [drillName, instructions] of Object.entries(input.instructions)) {
-          try {
-            // Find drill ID by name (case-insensitive)
-            const drillId = drillName.toLowerCase().replace(/\s+/g, '-');
-            await db.saveDrillInstructions(drillId, instructions, ctx.user.id);
-            results.push({ drillName, success: true });
-          } catch (error) {
-            results.push({
-              drillName,
-              success: false,
-              error: error instanceof Error ? error.message : 'Unknown error',
-            });
-          }
-        }
-        
-        return { results };
-      }),
-    
-    bulkUpdateGoals: protectedProcedure
-      .input(z.object({
-        goals: z.record(z.string(), z.string()),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
-        }
-        
-        const results: Array<{ drillName: string; success: boolean; error?: string }> = [];
-        
-        for (const [drillName, goal] of Object.entries(input.goals)) {
-          try {
-            const drillId = drillName.toLowerCase().replace(/\s+/g, '-');
-            await db.saveDrillGoal(drillId, goal, ctx.user.id);
-            results.push({ drillName, success: true });
-          } catch (error) {
-            results.push({
-              drillName,
-              success: false,
-              error: error instanceof Error ? error.message : 'Unknown error',
-            });
-          }
-        }
-        
-        return { results };
-      }),
-  }),
+  // Drill generator router
+  drillGenerator: drillGeneratorRouter,
 
   // Invite management router
   invites: router({
@@ -310,19 +145,15 @@ export const appRouter = router({
       .query(async ({ input }) => {
         const invite = await inviteDb.getInviteByToken(input.token);
         if (!invite) {
-          throw new TRPCError({ code: 'NOT_FOUND', message: 'Invite not found' });
+          return { valid: false, email: null, expiresAt: null };
         }
-        return {
-          valid: inviteDb.isInviteValid(invite),
-          email: invite.email,
-          expiresAt: invite.expiresAt,
-        };
+        return { valid: inviteDb.isInviteValid(invite), ...invite };
       }),
     
-    acceptInvite: publicProcedure
-      .input(z.object({ token: z.string(), userId: z.number() }))
-      .mutation(async ({ input }) => {
-        return await inviteDb.acceptInvite(input.token, input.userId);
+    acceptInvite: protectedProcedure
+      .input(z.object({ token: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        return await inviteDb.acceptInvite(input.token, ctx.user.id);
       }),
     
     resendInvite: protectedProcedure
