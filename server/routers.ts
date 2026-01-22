@@ -43,6 +43,23 @@ export const appRouter = router({
           throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
         }
         const success = await db.toggleClientAccess(input.userId, input.isActive);
+        
+        // Auto-send welcome email when activating a user
+        if (success && input.isActive) {
+          const user = await db.getUserById(input.userId);
+          if (user && user.email && !user.sentWelcomeEmail) {
+            const { sendWelcomeEmail: sendEmail } = await import('./email');
+            const emailResult = await sendEmail({
+              athleteEmail: user.email,
+              athleteName: user.name || 'Athlete',
+              portalUrl: 'https://localhost:5173/athlete-portal',
+            });
+            if (emailResult.success) {
+              await db.markWelcomeEmailSent(input.userId);
+            }
+          }
+        }
+        
         return { success };
       }),
     convertToAthlete: protectedProcedure

@@ -581,3 +581,15 @@
 - [x] Integrate welcome email into user activation flow
 - [x] Track if welcome email has been sent (add sentWelcomeEmail field to users table)
 - [x] Test welcome email delivery
+
+
+## Add User Management Link to Dashboard
+- [x] Add User Management navigation link to admin dashboard
+- [x] Test navigation link works correctly
+- [x] Verify link only shows for admin users
+
+## Auto-Send Welcome Email on Activation
+- [x] Modify toggleClientAccess endpoint to send welcome email when activating
+- [x] Update UserManagement component to show email sent status
+- [x] Add confirmation before activating user
+- [x] Test auto-send flow end-to-end
