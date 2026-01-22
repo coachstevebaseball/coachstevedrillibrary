@@ -115,3 +115,31 @@ export const badges = mysqlTable("badges", {
 
 export type Badge = typeof badges.$inferSelect;
 export type InsertBadge = typeof badges.$inferInsert;
+
+export const drillSubmissions = mysqlTable("drillSubmissions", {
+  id: int("id").autoincrement().primaryKey(),
+  assignmentId: int("assignmentId").notNull(),
+  userId: int("userId").notNull(),
+  drillId: varchar("drillId", { length: 255 }).notNull(),
+  notes: text("notes"), // Athlete's text notes
+  videoUrl: text("videoUrl"), // S3 URL to uploaded video
+  submittedAt: timestamp("submittedAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type DrillSubmission = typeof drillSubmissions.$inferSelect;
+export type InsertDrillSubmission = typeof drillSubmissions.$inferInsert;
+
+export const coachFeedback = mysqlTable("coachFeedback", {
+  id: int("id").autoincrement().primaryKey(),
+  submissionId: int("submissionId").notNull(),
+  coachId: int("coachId").notNull(),
+  userId: int("userId").notNull(),
+  drillId: varchar("drillId", { length: 255 }).notNull(),
+  feedback: text("feedback").notNull(), // Coach's written feedback
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CoachFeedback = typeof coachFeedback.$inferSelect;
+export type InsertCoachFeedback = typeof coachFeedback.$inferInsert;

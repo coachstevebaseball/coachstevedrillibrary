@@ -64,6 +64,13 @@
       "when": 1769066044669,
       "tag": "0008_rapid_killraven",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1769076997532,
+      "tag": "0009_exotic_enchantress",
+      "breakpoints": true
     }
   ]
 }

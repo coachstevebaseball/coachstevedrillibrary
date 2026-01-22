@@ -403,3 +403,31 @@
 - [ ] Update Home page to require authentication
 - [ ] Hide drill list from non-authenticated users
 - [ ] Test access control with active and inactive athletes
+
+
+## Drill Submissions & Feedback System
+- [x] Add drillSubmissions table to database schema (athlete notes, video URL, submission date)
+- [x] Add coachFeedback table to database schema (coach feedback, created date)
+- [x] Create database helper functions for submission CRUD operations
+- [x] Create tRPC routes for submission management (create, read, update, delete)
+- [x] Create tRPC routes for feedback management (create, read, update, delete)
+- [x] Build athlete submission UI in drill detail page (text notes + video upload)
+- [ ] Implement video upload to S3 storage
+- [x] Build coach feedback interface in drill detail page
+- [ ] Create submission timeline view for athletes
+- [ ] Create submission review dashboard for coaches
+- [ ] Test athlete can submit notes and videos
+- [ ] Test coach can view and provide feedback
+- [ ] Test athletes can only edit/delete their own submissions
+- [ ] Test feedback is private to that athlete
+
+## Mobile Interface Optimization (Phase 2)
+- [x] Audit all pages for mobile responsiveness
+- [x] Optimize touch targets (buttons, inputs) for mobile
+- [x] Optimize video player for mobile (full-width, landscape support)
+- [x] Optimize submission form for mobile (large input areas, easy video upload)
+- [x] Optimize feedback interface for mobile (readable text, easy to scroll)
+- [ ] Test on actual mobile devices (iOS and Android)
+- [ ] Optimize images for mobile (lazy loading, responsive sizes)
+- [ ] Test performance on 4G connection
+- [ ] Verify fast load times on mobile

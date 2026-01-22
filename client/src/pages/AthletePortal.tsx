@@ -13,6 +13,7 @@ import { ProgressDashboard, ProgressBar } from "@/components/ProgressDashboard";
 import { CompletionModal } from "@/components/CompletionModal";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
 import { DrillNotes } from "@/components/DrillNotes";
+import { DrillSubmissionForm } from "@/components/DrillSubmissionForm";
 
 interface Drill {
   id: string;
@@ -295,6 +296,15 @@ export default function AthletePortal() {
                             </>
                           )}
                         </div>
+
+                        {/* Submission Form */}
+                        <DrillSubmissionForm
+                          assignmentId={selectedAssignment.id}
+                          drillId={selectedAssignment.drillId}
+                          onSubmitSuccess={() => {
+                            // Refresh submissions
+                          }}
+                        />
 
                         {/* Drill Notes */}
                         <DrillNotes

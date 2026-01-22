@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { InsertUser, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
@@ -405,6 +405,178 @@ export async function saveDrillGoal(drillId: string, goal: string, userId: numbe
     return true;
   } catch (error) {
     console.error("[Database] Failed to save drill goal:", error);
+    return false;
+  }
+}
+
+
+// ============= DRILL SUBMISSIONS & FEEDBACK =============
+
+import { drillSubmissions, coachFeedback, InsertDrillSubmission, InsertCoachFeedback } from "../drizzle/schema";
+
+export async function createDrillSubmission(submission: InsertDrillSubmission) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create submission: database not available");
+    return null;
+  }
+
+  try {
+    const result = await db.insert(drillSubmissions).values(submission);
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to create drill submission:", error);
+    throw error;
+  }
+}
+
+export async function getSubmissionsByAssignment(assignmentId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get submissions: database not available");
+    return [];
+  }
+
+  try {
+    const result = await db.select().from(drillSubmissions).where(eq(drillSubmissions.assignmentId, assignmentId));
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get submissions:", error);
+    return [];
+  }
+}
+
+export async function getSubmissionsByUser(userId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get submissions: database not available");
+    return [];
+  }
+
+  try {
+    const result = await db.select().from(drillSubmissions).where(eq(drillSubmissions.userId, userId));
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get user submissions:", error);
+    return [];
+  }
+}
+
+export async function updateDrillSubmission(submissionId: number, updates: Partial<InsertDrillSubmission>) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot update submission: database not available");
+    return false;
+  }
+
+  try {
+    await db.update(drillSubmissions).set({
+      ...updates,
+      updatedAt: new Date(),
+    }).where(eq(drillSubmissions.id, submissionId));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to update submission:", error);
+    return false;
+  }
+}
+
+export async function deleteDrillSubmission(submissionId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot delete submission: database not available");
+    return false;
+  }
+
+  try {
+    await db.delete(drillSubmissions).where(eq(drillSubmissions.id, submissionId));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to delete submission:", error);
+    return false;
+  }
+}
+
+export async function createCoachFeedback(feedback: InsertCoachFeedback) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create feedback: database not available");
+    return null;
+  }
+
+  try {
+    const result = await db.insert(coachFeedback).values(feedback);
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to create coach feedback:", error);
+    throw error;
+  }
+}
+
+export async function getFeedbackBySubmission(submissionId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get feedback: database not available");
+    return [];
+  }
+
+  try {
+    const result = await db.select().from(coachFeedback).where(eq(coachFeedback.submissionId, submissionId));
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get feedback:", error);
+    return [];
+  }
+}
+
+export async function getFeedbackByDrill(drillId: string, userId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get feedback: database not available");
+    return [];
+  }
+
+  try {
+    const result = await db.select().from(coachFeedback)
+      .where(and(eq(coachFeedback.drillId, drillId), eq(coachFeedback.userId, userId)));
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get drill feedback:", error);
+    return [];
+  }
+}
+
+export async function updateCoachFeedback(feedbackId: number, feedback: string) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot update feedback: database not available");
+    return false;
+  }
+
+  try {
+    await db.update(coachFeedback).set({
+      feedback,
+      updatedAt: new Date(),
+    }).where(eq(coachFeedback.id, feedbackId));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to update feedback:", error);
+    return false;
+  }
+}
+
+export async function deleteCoachFeedback(feedbackId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot delete feedback: database not available");
+    return false;
+  }
+
+  try {
+    await db.delete(coachFeedback).where(eq(coachFeedback.id, feedbackId));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to delete feedback:", error);
     return false;
   }
 }

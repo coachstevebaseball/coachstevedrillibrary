@@ -1,0 +1,151 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Upload, Send, AlertCircle } from "lucide-react";
+import { trpc } from "@/lib/trpc";
+
+interface DrillSubmissionFormProps {
+  assignmentId: number;
+  drillId: string;
+  onSubmitSuccess?: () => void;
+}
+
+export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: DrillSubmissionFormProps) {
+  const [notes, setNotes] = useState("");
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const createSubmissionMutation = trpc.drillSubmissions.createSubmission.useMutation();
+
+  const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 100 * 1024 * 1024) {
+        setError("Video file must be less than 100MB");
+        return;
+      }
+      if (!file.type.startsWith("video/")) {
+        setError("Please select a valid video file");
+        return;
+      }
+      setVideoFile(file);
+      setVideoPreview(URL.createObjectURL(file));
+      setError(null);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!notes.trim() && !videoFile) {
+      setError("Please add notes or upload a video");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await createSubmissionMutation.mutateAsync({
+        assignmentId,
+        drillId,
+        notes: notes.trim() || undefined,
+        videoUrl: videoPreview || undefined,
+      });
+
+      setNotes("");
+      setVideoFile(null);
+      setVideoPreview(null);
+      onSubmitSuccess?.();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to submit drill");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <Card className="border-l-4 border-l-secondary">
+      <CardHeader>
+        <CardTitle className="text-lg">Submit Your Work</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          )}
+
+          <div>
+            <label className="block text-sm font-semibold mb-2">Notes (Optional)</label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Add notes about your performance, what you learned, or any challenges..."
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-sm"
+              rows={3}
+            />
+            <p className="text-xs text-muted-foreground mt-1">Share your thoughts and progress</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold mb-2">Video Upload (Optional)</label>
+            <div className="relative">
+              <input
+                type="file"
+                accept="video/*"
+                onChange={handleVideoSelect}
+                className="hidden"
+                id="video-input"
+                disabled={isSubmitting}
+              />
+              <label
+                htmlFor="video-input"
+                className="flex items-center justify-center gap-2 w-full px-4 py-3 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+              >
+                <Upload className="h-5 w-5 text-muted-foreground" />
+                <span className="text-sm font-medium">
+                  {videoFile ? videoFile.name : "Click to upload video"}
+                </span>
+              </label>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">MP4, WebM, or other video formats. Max 100MB.</p>
+
+            {videoPreview && (
+              <div className="mt-3 relative">
+                <video
+                  src={videoPreview}
+                  controls
+                  className="w-full rounded-lg bg-black max-h-64"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVideoFile(null);
+                    setVideoPreview(null);
+                  }}
+                  className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
+                >
+                  Remove
+                </button>
+              </div>
+            )}
+          </div>
+
+          <Button
+            type="submit"
+            disabled={isSubmitting || (!notes.trim() && !videoFile)}
+            className="w-full gap-2"
+          >
+            <Send className="h-4 w-4" />
+            {isSubmitting ? "Submitting..." : "Submit Drill Work"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
