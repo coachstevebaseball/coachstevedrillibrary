@@ -1,0 +1,28 @@
+{
+  "query": "SELECT id, email, name, role FROM users ORDER BY id DESC LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT id, email, name, role FROM users ORDER BY id DESC LIMIT 20;",
+  "rows": [
+    {
+      "id": "3240407",
+      "email": "stevengoldstein.pro@gmail.com",
+      "name": "Steven Goldstein",
+      "role": "athlete"
+    },
+    {
+      "id": "3240249",
+      "email": "coachstevengoldstein@gmail.com",
+      "name": "Steven Goldstein",
+      "role": "athlete"
+    },
+    {
+      "id": "1",
+      "email": "coach@coachstevebaseball.com",
+      "name": "Coach Steve",
+      "role": "athlete"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tname\trole\n3240407\tstevengoldstein.pro@gmail.com\tSteven Goldstein\tathlete\n3240249\tcoachstevengoldstein@gmail.com\tSteven Goldstein\tathlete\n1\tcoach@coachstevebaseball.com\tCoach Steve\tathlete\n",
+  "stderr": "",
+  "execution_time_ms": 365
+}

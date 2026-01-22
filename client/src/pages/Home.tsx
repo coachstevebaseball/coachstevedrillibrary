@@ -8,6 +8,7 @@ import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
 import drillsData from "@/data/drills.json";
 import { useState, useMemo } from "react";
+import { useLocation } from "wouter";
 
 // Types
 interface Drill {
@@ -79,6 +80,25 @@ export default function Home() {
   const hasActiveFilters = searchQuery !== "" || difficultyFilter !== "All" || categoryFilter !== "All";
 
   // NOW we can do conditional returns after all hooks are called
+  const [, setLocation] = useLocation();
+
+  // Redirect admins to admin dashboard
+  if (!loading && user && user.role === 'admin') {
+    setLocation('/admin');
+    return null;
+  }
+
+  // Redirect coaches to coach dashboard
+  if (!loading && user && user.role === 'coach') {
+    setLocation('/coach-dashboard');
+    return null;
+  }
+
+  // Redirect athletes to athlete portal
+  if (!loading && user && user.role === 'athlete') {
+    setLocation('/athlete-portal');
+    return null;
+  }
 
   // Redirect unauthenticated users to login
   if (!loading && !isAuthenticated) {
