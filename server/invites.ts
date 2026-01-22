@@ -37,7 +37,7 @@ export async function createInvite(
     createdByUserId,
   });
 
-  const inviteUrl = `${process.env.VITE_FRONTEND_URL || "http://localhost:3000"}/accept-invite/${inviteToken}`;
+  const inviteUrl = `https://coachstevemobilecoach.com/accept-invite/${inviteToken}`;
 
   // Send invite email if enabled
   if (sendEmail) {

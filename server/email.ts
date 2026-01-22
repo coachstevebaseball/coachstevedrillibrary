@@ -334,7 +334,7 @@ export async function sendInviteEmail(data: InviteEmailData): Promise<{ success:
       : "Join Your Team on USA Baseball Drills Directory";
 
     const result = await resend.emails.send({
-      from: "USA Baseball Drills Directory <onboarding@resend.dev>",
+      from: "coach@coachstevebaseball.com",
       to: data.toEmail,
       subject: subject,
       html: emailHtml,
