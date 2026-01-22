@@ -1,0 +1,15 @@
+{
+  "query": "\nSELECT \n  COUNT(*) as total_hitting_drills,\n  SUM(CASE WHEN goal IS NOT NULL AND goal != '' THEN 1 ELSE 0 END) as with_goals,\n  SUM(CASE WHEN description IS NOT NULL AND description != '' THEN 1 ELSE 0 END) as with_descriptions\nFROM drillDetails\nWHERE skillSet = 'Hitting';\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute \nSELECT \n  COUNT(*) as total_hitting_drills,\n  SUM(CASE WHEN goal IS NOT NULL AND goal != '' THEN 1 ELSE 0 END) as with_goals,\n  SUM(CASE WHEN description IS NOT NULL AND description != '' THEN 1 ELSE 0 END) as with_descriptions\nFROM drillDetails\nWHERE skillSet = 'Hitting';\n",
+  "rows": [
+    {
+      "total_hitting_drills": "10",
+      "with_goals": "10",
+      "with_descriptions": "10"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_hitting_drills\twith_goals\twith_descriptions\n10\t10\t10\n",
+  "stderr": "",
+  "execution_time_ms": 371
+}
