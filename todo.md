@@ -556,3 +556,10 @@
 - [x] Track which invites have had reminders sent
 - [x] Test expiration notification emails
 - [x] Verify athletes receive notifications at correct time
+
+
+## Bug Fix: Athlete Activation on Invite Acceptance
+- [x] Fixed upsertUser to properly set athletes as active (isActiveClient=1) on both INSERT and UPDATE
+- [x] Added logging to AcceptInvite page to debug the flow
+- [x] Added logging to acceptInvite endpoint to track mutations
+- [x] Ensured athletes are always activated when they first log in via OAuth

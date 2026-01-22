@@ -39,7 +39,9 @@ export default function AcceptInvite() {
 
   // Auto-accept invite after user logs in
   useEffect(() => {
+    console.log('[AcceptInvite] Checking conditions:', { isAuthenticated, hasUser: !!user, token, autoAccepting, isPending: acceptInviteMutation.isPending });
     if (isAuthenticated && user && token && !autoAccepting && !acceptInviteMutation.isPending) {
+      console.log('[AcceptInvite] Calling acceptInvite mutation');
       setAutoAccepting(true);
       acceptInviteMutation.mutate({ token });
     }

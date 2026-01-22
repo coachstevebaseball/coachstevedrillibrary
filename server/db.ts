@@ -62,7 +62,8 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       // Assign 'athlete' role to new OAuth users by default (this is an athlete platform)
       values.role = 'athlete';
       values.isActiveClient = 1;
-      // Only set role on insert, not on update (don't override existing roles)
+      updateSet.role = 'athlete';
+      updateSet.isActiveClient = 1;
     }
 
     if (!values.lastSignedIn) {

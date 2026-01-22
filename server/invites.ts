@@ -95,6 +95,7 @@ export async function acceptInvite(
   if (!db) throw new Error("Database not available");
 
   const invite = await getInviteByToken(token);
+  console.log('[Invites] acceptInvite called with token:', token, 'userId:', userId);
 
   if (!invite || !isInviteValid(invite)) {
     throw new Error("Invalid or expired invite");
@@ -113,6 +114,8 @@ export async function acceptInvite(
     .update(users)
     .set(updateData)
     .where(eq(users.id, userId));
+  
+  console.log('[Invites] User updated successfully');
 
   // Update invite status
   await db
