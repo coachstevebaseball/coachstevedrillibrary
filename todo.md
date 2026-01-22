@@ -604,3 +604,6 @@
 - [ ] Save all imported data to database
 - [ ] Test bulk import end-to-end
 - [ ] Verify all 72 drills have descriptions and goals restored
+
+## Add New Drill - 3-Plate Adjustment Drill
+- [x] Add "3-Plate Adjustment Drill" with description, goal, and video link

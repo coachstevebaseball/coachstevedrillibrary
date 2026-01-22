@@ -2198,5 +2198,16 @@
     "duration": "5m",
     "url": "https://usabdevelops.com/page/1363/drills?q=wrist-strength-tee",
     "is_direct_link": false
+  },
+  {
+    "id": "3-plate-adjustment-drill",
+    "name": "3-Plate Adjustment Drill",
+    "difficulty": "Medium",
+    "categories": [
+      "Hitting"
+    ],
+    "duration": "15m",
+    "url": "https://youtu.be/LexqSfXL8cY?si=qNEgm2hAwKpggs3K",
+    "is_direct_link": true
   }
 ]
