@@ -1,4 +1,3 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +22,8 @@ import { Link, useLocation } from "wouter";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import * as React from "react";
+import { BulkImportDrills } from "@/components/BulkImportDrills";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
@@ -149,6 +150,7 @@ export default function AdminDashboard() {
               </p>
             </div>
             <div className="flex gap-3">
+              <BulkImportDrills />
               <Link href="/coach">
                 <Button variant="secondary">Coach Dashboard</Button>
               </Link>

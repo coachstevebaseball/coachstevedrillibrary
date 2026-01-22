@@ -911,3 +911,114 @@ export async function getAnswersByQuestion(questionId: number) {
     return [];
   }
 }
+
+
+// Bulk import drill descriptions
+export async function bulkImportDrillDescriptions(
+  drillsData: Array<{ drillName: string; description: string }>
+): Promise<{ success: number; failed: number; errors: string[] }> {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  let success = 0;
+  let failed = 0;
+  const errors: string[] = [];
+
+  for (const drill of drillsData) {
+    try {
+      const { drillDetails } = await import("../drizzle/schema");
+      const { eq } = await import("drizzle-orm");
+
+      // Find drill by name to get drillId
+      const drillId = drill.drillName.toLowerCase().replace(/\s+/g, "-");
+      
+      // Check if detail already exists
+      const existing = await db.select().from(drillDetails).where(eq(drillDetails.drillId, drillId));
+      
+      const descriptionArray = drill.description.split("\n").filter((line: string) => line.trim());
+      
+      if (existing.length > 0) {
+        // Update existing
+        await db.update(drillDetails).set({
+          description: descriptionArray,
+          updatedAt: new Date(),
+        }).where(eq(drillDetails.drillId, drillId));
+      } else {
+        // Insert new
+        await db.insert(drillDetails).values({
+          drillId,
+          skillSet: "Hitting",
+          difficulty: "Intermediate",
+          athletes: "1",
+          time: "10 min",
+          equipment: "Bat, Ball",
+          goal: "",
+          description: descriptionArray,
+          createdBy: 1,
+        });
+      }
+      success++;
+    } catch (error) {
+      failed++;
+      errors.push(`Failed to import "${drill.drillName}": ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
+  return { success, failed, errors };
+}
+
+// Bulk import drill goals
+export async function bulkImportDrillGoals(
+  goalsData: Array<{ drillName: string; goal: string }>
+): Promise<{ success: number; failed: number; errors: string[] }> {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  let success = 0;
+  let failed = 0;
+  const errors: string[] = [];
+
+  for (const drill of goalsData) {
+    try {
+      const { drillDetails } = await import("../drizzle/schema");
+      const { eq } = await import("drizzle-orm");
+
+      // Find drill by name to get drillId
+      const drillId = drill.drillName.toLowerCase().replace(/\s+/g, "-");
+      
+      // Check if detail already exists
+      const existing = await db.select().from(drillDetails).where(eq(drillDetails.drillId, drillId));
+      
+      if (existing.length > 0) {
+        // Update existing
+        await db.update(drillDetails).set({
+          goal: drill.goal,
+          updatedAt: new Date(),
+        }).where(eq(drillDetails.drillId, drillId));
+      } else {
+        // Insert new
+        await db.insert(drillDetails).values({
+          drillId,
+          skillSet: "Hitting",
+          difficulty: "Intermediate",
+          athletes: "1",
+          time: "10 min",
+          equipment: "Bat, Ball",
+          goal: drill.goal,
+          description: [],
+          createdBy: 1,
+        });
+      }
+      success++;
+    } catch (error) {
+      failed++;
+      errors.push(`Failed to import goal for "${drill.drillName}": ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
+  return { success, failed, errors };
+}

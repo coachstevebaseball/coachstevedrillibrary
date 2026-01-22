@@ -593,3 +593,14 @@
 - [x] Update UserManagement component to show email sent status
 - [x] Add confirmation before activating user
 - [x] Test auto-send flow end-to-end
+
+
+## CRITICAL: Rebuild Bulk Import System and Recover Lost Data
+- [ ] Create backend endpoint for bulk importing drill descriptions
+- [ ] Create backend endpoint for bulk importing drill goals
+- [ ] Build bulk import UI component with file upload
+- [ ] Parse drill descriptions from backup file format
+- [ ] Parse drill goals from backup file format
+- [ ] Save all imported data to database
+- [ ] Test bulk import end-to-end
+- [ ] Verify all 72 drills have descriptions and goals restored

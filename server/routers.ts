@@ -104,6 +104,22 @@ export const appRouter = router({
         }
         return result;
       }),
+    bulkImportDescriptions: protectedProcedure
+      .input(z.object({ drillsData: z.array(z.object({ drillName: z.string(), description: z.string() })) }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await db.bulkImportDrillDescriptions(input.drillsData);
+      }),
+    bulkImportGoals: protectedProcedure
+      .input(z.object({ goalsData: z.array(z.object({ drillName: z.string(), goal: z.string() })) }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await db.bulkImportDrillGoals(input.goalsData);
+      }),
   }),
 
   // Drill assignment router for coach dashboard
@@ -171,6 +187,68 @@ export const appRouter = router({
 
   // Drill generator router
   drillGenerator: drillGeneratorRouter,
+
+  // Drill details router
+  drillDetails: router({
+    getDrillDetail: protectedProcedure
+      .input(z.object({ drillId: z.string() }))
+      .query(async ({ input }) => {
+        return await db.getDrillDetail(input.drillId);
+      }),
+    saveDrillInstructions: protectedProcedure
+      .input(z.object({
+        drillId: z.string(),
+        skillSet: z.string().optional(),
+        difficulty: z.string().optional(),
+        athletes: z.string().optional(),
+        time: z.string().optional(),
+        equipment: z.string().optional(),
+        goal: z.string().optional(),
+        description: z.array(z.string()).optional(),
+        commonMistakes: z.array(z.string()).optional(),
+        progressions: z.array(z.string()).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        await db.saveDrillDetail(input.drillId, input as any, ctx.user.id);
+        return { success: true };
+      }),
+  }),
+
+  // Videos router
+  videos: router({
+    getVideo: protectedProcedure
+      .input(z.object({ drillId: z.string() }))
+      .query(async ({ input }) => {
+        return await db.getDrillVideo(input.drillId);
+      }),
+    saveVideo: protectedProcedure
+      .input(z.object({ drillId: z.string(), videoUrl: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        await db.saveOrUpdateDrillVideo(input.drillId, input.videoUrl, ctx.user.id);
+        return { success: true };
+      }),
+    getAllVideos: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== 'admin') {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+      }
+      return await db.getAllDrillVideos();
+    }),
+    deleteVideo: protectedProcedure
+      .input(z.object({ drillId: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        await db.deleteDrillVideo(input.drillId);
+        return { success: true };
+      }),
+  }),
 
   // Invite management router
   invites: router({
