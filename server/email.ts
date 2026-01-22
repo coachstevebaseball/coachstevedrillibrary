@@ -197,13 +197,13 @@ function generateInviteEmailHtml(data: InviteEmailData): string {
       <body>
         <div class="container">
           <div class="header">
-            <h1>⚾ USA Baseball Drills Directory</h1>
+            <h1>⚾ Coach Steve Baseball — Player Drill Library</h1>
             <p>You're Invited!</p>
           </div>
           
           <div class="content">
             <p>Hi there!</p>
-            <p>You've been invited to join the USA Baseball Drills Directory as a <strong>${roleText}</strong>.</p>
+            <p>You've been invited to join Coach Steve's Baseball — Player Drill Library as an <strong>${roleText}</strong>.</p>
             
             <div class="features-list">
               <strong>What you'll get access to:</strong>
@@ -235,11 +235,11 @@ function generateInviteEmailHtml(data: InviteEmailData): string {
             
             <p>If you have any questions or didn't expect this invitation, please contact your coach or team administrator.</p>
             
-            <p>Best regards,<br><strong>USA Baseball Drills Directory Team</strong></p>
+            <p>Best regards,<br><strong>Coach Steve</strong></p>
           </div>
           
           <div class="footer">
-            <p>© 2026 USA Baseball Drills Directory. All rights reserved.</p>
+            <p>© 2026 Coach Steve Baseball — Player Drill Library. All rights reserved.</p>
             <p>If you didn't expect this invitation, you can safely ignore this email.</p>
           </div>
         </div>

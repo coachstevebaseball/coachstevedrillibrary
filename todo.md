@@ -387,3 +387,10 @@
 - [x] Integrate email into invite creation flow
 - [ ] Test email delivery with test invite
 - [ ] Verify emails arrive in inbox
+
+
+## Email Template Customization
+- [x] Update email header to "Coach Steve Baseball — Player Drill Library"
+- [x] Personalize email copy with Coach Steve branding
+- [x] Update footer with "Coach Steve" signature
+- [x] Test updated email template with test invite
