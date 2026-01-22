@@ -1041,3 +1041,83 @@ export async function bulkImportDrillGoals(
 
   return { success, failed, errors };
 }
+
+
+// Update drill goal by drill name
+export async function updateDrillGoal(drillName: string, goal: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const { drillDetails } = await import("../drizzle/schema");
+  const { eq } = await import("drizzle-orm");
+
+  // Convert drill name to drillId format
+  const drillId = drillName.toLowerCase().replace(/\s+/g, "-");
+  
+  // Check if detail already exists
+  const existing = await db.select().from(drillDetails).where(eq(drillDetails.drillId, drillId));
+  
+  if (existing.length > 0) {
+    // Update existing
+    await db.update(drillDetails).set({
+      goal: goal,
+      updatedAt: new Date(),
+    }).where(eq(drillDetails.drillId, drillId));
+  } else {
+    // Insert new
+    await db.insert(drillDetails).values({
+      drillId,
+      skillSet: "Custom",
+      difficulty: "Medium",
+      athletes: "Varies",
+      time: "Varies",
+      equipment: "Varies",
+      goal: goal,
+      description: [],
+      createdBy: 1,
+    });
+  }
+  return true;
+}
+
+// Update drill instructions by drill name
+export async function updateDrillInstructions(drillName: string, instructions: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const { drillDetails } = await import("../drizzle/schema");
+  const { eq } = await import("drizzle-orm");
+
+  // Convert drill name to drillId format
+  const drillId = drillName.toLowerCase().replace(/\s+/g, "-");
+  
+  // Check if detail already exists
+  const existing = await db.select().from(drillDetails).where(eq(drillDetails.drillId, drillId));
+  
+  if (existing.length > 0) {
+    // Update existing
+    await db.update(drillDetails).set({
+      instructions: instructions,
+      updatedAt: new Date(),
+    }).where(eq(drillDetails.drillId, drillId));
+  } else {
+    // Insert new
+    await db.insert(drillDetails).values({
+      drillId,
+      skillSet: "Custom",
+      difficulty: "Medium",
+      athletes: "Varies",
+      time: "Varies",
+      equipment: "Varies",
+      goal: "Custom Drill",
+      description: [],
+      instructions: instructions,
+      createdBy: 1,
+    });
+  }
+  return true;
+}

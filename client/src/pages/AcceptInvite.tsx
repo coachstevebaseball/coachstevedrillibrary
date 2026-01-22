@@ -104,7 +104,7 @@ export default function AcceptInvite() {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Expires</span>
                 <span className="text-sm">
-                  {new Date(inviteData?.expiresAt).toLocaleDateString()}
+                  {inviteData?.expiresAt ? new Date(inviteData.expiresAt).toLocaleDateString() : 'N/A'}
                 </span>
               </div>
               <div className="flex items-center justify-between">

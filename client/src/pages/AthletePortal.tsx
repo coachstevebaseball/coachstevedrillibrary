@@ -47,7 +47,7 @@ export default function AthletePortal() {
 
   // Fetch user's assignments
   const { data: userAssignments = [], isLoading: assignmentsLoading } = trpc.drillAssignments.getUserAssignments.useQuery(
-    { userId: user?.id || 0 },
+    undefined,
     { enabled: !!user?.id }
   );
 

@@ -20,7 +20,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
   const [error, setError] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
 
-  const createSubmissionMutation = trpc.drillSubmissions.createSubmission.useMutation();
+  const createSubmissionMutation = trpc.submissions.drillSubmissions.createSubmission.useMutation();
   const uploadVideoMutation = trpc.videoUpload.uploadSubmissionVideo.useMutation();
 
   const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {

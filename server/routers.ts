@@ -229,6 +229,7 @@ export const appRouter = router({
         description: z.array(z.string()).optional(),
         commonMistakes: z.array(z.string()).optional(),
         progressions: z.array(z.string()).optional(),
+        instructions: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         if (ctx.user.role !== 'admin') {
@@ -236,6 +237,40 @@ export const appRouter = router({
         }
         await db.saveDrillDetail(input.drillId, input as any, ctx.user.id);
         return { success: true };
+      }),
+    bulkUpdateGoals: protectedProcedure
+      .input(z.object({ goals: z.record(z.string(), z.string()) }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const results: Array<{ drillName: string; success: boolean; error?: string }> = [];
+        for (const [drillName, goal] of Object.entries(input.goals)) {
+          try {
+            await db.updateDrillGoal(drillName, goal as string);
+            results.push({ drillName, success: true });
+          } catch (error) {
+            results.push({ drillName, success: false, error: String(error) });
+          }
+        }
+        return { results };
+      }),
+    bulkUpdateInstructions: protectedProcedure
+      .input(z.object({ instructions: z.record(z.string(), z.string()) }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const results: Array<{ drillName: string; success: boolean; error?: string }> = [];
+        for (const [drillName, instruction] of Object.entries(input.instructions)) {
+          try {
+            await db.updateDrillInstructions(drillName, instruction as string);
+            results.push({ drillName, success: true });
+          } catch (error) {
+            results.push({ drillName, success: false, error: String(error) });
+          }
+        }
+        return { results };
       }),
   }),
 

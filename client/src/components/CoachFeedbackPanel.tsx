@@ -24,8 +24,8 @@ export function CoachFeedbackPanel({ submission, athleteName, onFeedbackSent }: 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const createFeedbackMutation = trpc.coachFeedback.createFeedback.useMutation();
-  const { data: existingFeedback = [] } = trpc.coachFeedback.getFeedbackBySubmission.useQuery(
+  const createFeedbackMutation = trpc.submissions.coachFeedback.createFeedback.useMutation();
+  const { data: existingFeedback = [] } = trpc.submissions.coachFeedback.getFeedbackBySubmission.useQuery(
     { submissionId: submission.id }
   );
 

@@ -25,7 +25,7 @@ export default function CreateDrillDetails() {
     progressions: [""],
   });
 
-  const saveMutation = trpc.drillDetails.saveDrillDetail.useMutation({
+  const saveMutation = trpc.drillDetails.saveDrillInstructions.useMutation({
     onSuccess: () => {
       alert("Drill details saved successfully!");
       setSelectedDrill("");
