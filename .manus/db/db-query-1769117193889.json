@@ -1,0 +1,15 @@
+{
+  "query": "SELECT COUNT(*) as total_drills, COUNT(CASE WHEN goal IS NOT NULL AND goal != '' THEN 1 END) as with_goals, COUNT(CASE WHEN JSON_LENGTH(description) > 0 THEN 1 END) as with_descriptions FROM drillDetails;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT COUNT(*) as total_drills, COUNT(CASE WHEN goal IS NOT NULL AND goal != '' THEN 1 END) as with_goals, COUNT(CASE WHEN JSON_LENGTH(description) > 0 THEN 1 END) as with_descriptions FROM drillDetails;",
+  "rows": [
+    {
+      "total_drills": "207",
+      "with_goals": "207",
+      "with_descriptions": "203"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_drills\twith_goals\twith_descriptions\n207\t207\t203\n",
+  "stderr": "",
+  "execution_time_ms": 169
+}
