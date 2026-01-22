@@ -494,3 +494,15 @@
 - [ ] Test notification bell and history panel
 - [ ] Test real-time notification updates
 - [ ] Test notification preferences persistence
+
+
+## Critical UX Fixes (Coach Feedback & Athlete Submissions)
+- [x] Fix athlete submission form UX - clarify that video OR notes required (not optional)
+- [x] Build functional coach submissions dashboard page with list view
+- [x] Add submission filtering (by athlete, drill, date, status)
+- [x] Integrate feedback form into submissions dashboard
+- [x] Add navigation link to Submissions Dashboard in Coach Dashboard
+- [ ] Test coach can view all athlete submissions
+- [ ] Test coach can provide feedback on submissions
+- [ ] Test athlete receives feedback notification
+- [ ] Verify feedback appears in athlete's submission history

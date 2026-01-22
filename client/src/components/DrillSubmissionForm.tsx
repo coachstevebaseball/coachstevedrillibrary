@@ -130,6 +130,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
     <Card className="border-l-4 border-l-secondary">
       <CardHeader>
         <CardTitle className="text-lg">Submit Your Work</CardTitle>
+        <p className="text-sm text-muted-foreground mt-2">Please provide either notes or a video (or both) to complete your submission</p>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -156,7 +157,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
           )}
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Notes (Optional)</label>
+            <label className="block text-sm font-semibold mb-2">Notes <span className="text-amber-600 font-normal">(or video)</span></label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -169,7 +170,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Video Upload (Optional)</label>
+            <label className="block text-sm font-semibold mb-2">Video Upload <span className="text-amber-600 font-normal">(or notes)</span></label>
             <div className="relative">
               <input
                 type="file"

@@ -4,11 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { MessageSquare, Video, FileText, Search, Filter, Home, LogOut, ChevronRight } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { MessageSquare, Video, FileText, Search, Home, LogOut, ChevronRight, Send } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { CoachFeedbackPanel } from "@/components/CoachFeedbackPanel";
+import { useNotification } from "@/contexts/NotificationContext";
 
 interface Submission {
   id: number;
@@ -22,6 +23,7 @@ interface Submission {
 
 export default function SubmissionsDashboard() {
   const { user, loading, logout } = useAuth();
+  const { addToast } = useNotification();
   const [, navigate] = useLocation();
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,6 +31,8 @@ export default function SubmissionsDashboard() {
   const [filterDrill, setFilterDrill] = useState("all");
   const [sortBy, setSortBy] = useState<"recent" | "oldest">("recent");
   const [currentPage, setCurrentPage] = useState(1);
+  const [feedbackText, setFeedbackText] = useState("");
+  const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
   const itemsPerPage = 10;
 
   // Fetch all users for athlete filter
@@ -37,10 +41,36 @@ export default function SubmissionsDashboard() {
   });
 
   // Fetch all submissions from all athletes
-  const { data: allSubmissions = [], isLoading: submissionsLoading } = trpc.drillSubmissions.getSubmissionsByUser.useQuery(
+  const { data: allSubmissions = [], isLoading: submissionsLoading, refetch } = trpc.drillSubmissions.getSubmissionsByUser.useQuery(
     undefined,
     { enabled: user?.role === 'admin' }
   );
+
+  // Fetch feedback for selected submission
+  const { data: feedbackList = [] } = trpc.coachFeedback.getFeedbackBySubmission.useQuery(
+    { submissionId: selectedSubmission?.id || 0 },
+    { enabled: !!selectedSubmission }
+  );
+
+  // Create feedback mutation
+  const createFeedbackMutation = trpc.coachFeedback.createFeedback.useMutation({
+    onSuccess: () => {
+      addToast({
+        type: 'success',
+        title: 'Feedback Sent',
+        message: 'Your feedback has been sent to the athlete',
+      });
+      setFeedbackText("");
+      refetch();
+    },
+    onError: (error: any) => {
+      addToast({
+        type: 'error',
+        title: 'Error',
+        message: error.message || 'Failed to send feedback',
+      });
+    },
+  });
 
   // Filter and sort submissions
   const filteredSubmissions = useMemo(() => {
@@ -91,6 +121,22 @@ export default function SubmissionsDashboard() {
     const drillSet = new Set(allSubmissions.map((s: any) => s.drillId));
     return Array.from(drillSet);
   }, [allSubmissions]);
+
+  const handleSubmitFeedback = async () => {
+    if (!feedbackText.trim() || !selectedSubmission) return;
+    
+    setIsSubmittingFeedback(true);
+    try {
+      await createFeedbackMutation.mutateAsync({
+        submissionId: selectedSubmission.id,
+        userId: selectedSubmission.userId,
+        drillId: selectedSubmission.drillId,
+        feedback: feedbackText.trim(),
+      });
+    } finally {
+      setIsSubmittingFeedback(false);
+    }
+  };
 
   if (loading || submissionsLoading) {
     return <div className="container py-12 text-center">Loading submissions...</div>;
@@ -312,21 +358,95 @@ export default function SubmissionsDashboard() {
             </Card>
           </div>
 
-          {/* Right: Submission Details */}
+          {/* Right: Submission Details & Feedback */}
           <div className="lg:col-span-1">
             {selectedSubmission ? (
-              <CoachFeedbackPanel
-                submission={selectedSubmission}
-                athleteName={selectedSubmission.athleteName || "Unknown Athlete"}
-                onFeedbackSent={() => {
-                  // Refresh submissions
-                }}
-              />
+              <Card className="sticky top-4">
+                <CardHeader>
+                  <CardTitle className="text-lg">Submission Details</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Submission Info */}
+                  <div className="space-y-3 p-3 bg-muted rounded-lg">
+                    <div>
+                      <p className="text-xs font-semibold text-muted-foreground uppercase">Athlete</p>
+                      <p className="text-sm font-medium">{selectedSubmission.athleteName}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-muted-foreground uppercase">Drill</p>
+                      <p className="text-sm font-medium">{selectedSubmission.drillId}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-muted-foreground uppercase">Submitted</p>
+                      <p className="text-sm">{new Date(selectedSubmission.submittedAt).toLocaleString()}</p>
+                    </div>
+                  </div>
+
+                  {/* Notes */}
+                  {selectedSubmission.notes && (
+                    <div>
+                      <p className="text-sm font-semibold mb-2">Athlete Notes</p>
+                      <p className="text-sm text-muted-foreground p-2 bg-muted rounded">{selectedSubmission.notes}</p>
+                    </div>
+                  )}
+
+                  {/* Video */}
+                  {selectedSubmission.videoUrl && (
+                    <div>
+                      <p className="text-sm font-semibold mb-2">Video Submission</p>
+                      <video
+                        src={selectedSubmission.videoUrl}
+                        controls
+                        className="w-full rounded-lg max-h-48 bg-black"
+                      />
+                    </div>
+                  )}
+
+                  {/* Previous Feedback */}
+                  {feedbackList.length > 0 && (
+                    <div>
+                      <p className="text-sm font-semibold mb-2">Previous Feedback</p>
+                      <div className="space-y-2 max-h-32 overflow-y-auto">
+                        {feedbackList.map((feedback: any) => (
+                          <div key={feedback.id} className="p-2 bg-blue-50 rounded border border-blue-200">
+                            <p className="text-xs text-blue-900">{feedback.feedback}</p>
+                            <p className="text-xs text-blue-700 mt-1">
+                              {new Date(feedback.createdAt).toLocaleString()}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Feedback Form */}
+                  <div className="space-y-2 pt-4 border-t">
+                    <p className="text-sm font-semibold">Provide Feedback</p>
+                    <Textarea
+                      value={feedbackText}
+                      onChange={(e) => setFeedbackText(e.target.value)}
+                      placeholder="Share constructive feedback on their performance..."
+                      rows={3}
+                      disabled={isSubmittingFeedback}
+                      className="text-sm"
+                    />
+                    <Button
+                      onClick={handleSubmitFeedback}
+                      disabled={!feedbackText.trim() || isSubmittingFeedback}
+                      className="w-full"
+                      size="sm"
+                    >
+                      <Send className="h-4 w-4 mr-2" />
+                      {isSubmittingFeedback ? "Sending..." : "Send Feedback"}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             ) : (
               <Card>
                 <CardContent className="pt-6 text-center text-muted-foreground">
                   <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>Select a submission to view details and provide feedback</p>
+                  <p className="text-sm">Select a submission to view details and provide feedback</p>
                 </CardContent>
               </Card>
             )}
