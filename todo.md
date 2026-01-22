@@ -341,3 +341,14 @@
 - [x] Verify account creation from invite sets "athlete" role
 - [x] Fix any issues with role assignment - changed default role from "user" to "athlete"
 - [ ] Test full invite → signup → athlete portal flow
+
+
+## Athlete Portal - Progress Dashboard (Tier 1 #1)
+- [x] Design progress dashboard component with stats cards
+- [x] Calculate progress stats (total, completed, in-progress, assigned)
+- [x] Build progress bar component
+- [x] Create stats card components (total drills, completed, in-progress)
+- [x] Add streak counter (consecutive days with activity)
+- [x] Integrate dashboard into athlete portal header
+- [x] Style dashboard to match USA Baseball branding
+- [x] Test dashboard with multiple athlete scenarios

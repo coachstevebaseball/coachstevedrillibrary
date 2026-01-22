@@ -9,6 +9,7 @@ import { useState, useMemo } from "react";
 import drillsData from "@/data/drills.json";
 import { getCategoryConfig } from "@/lib/categoryColors";
 import { trpc } from "@/lib/trpc";
+import { ProgressDashboard, ProgressBar } from "@/components/ProgressDashboard";
 
 interface Drill {
   id: string;
@@ -52,6 +53,15 @@ export default function AthletePortal() {
     if (statusFilter === "all") return userAssignments;
     return userAssignments.filter((a: any) => a.status === statusFilter);
   }, [userAssignments, statusFilter]);
+
+  // Calculate progress stats
+  const progressStats = useMemo(() => {
+    const total = userAssignments.length;
+    const completed = userAssignments.filter((a: any) => a.status === "completed").length;
+    const inProgress = userAssignments.filter((a: any) => a.status === "in-progress").length;
+    const assigned = userAssignments.filter((a: any) => a.status === "assigned").length;
+    return { total, completed, inProgress, assigned };
+  }, [userAssignments]);
 
   // Get drill details
   const getDrill = (drillId: string): Drill | undefined => {
@@ -125,6 +135,10 @@ export default function AthletePortal() {
       </header>
 
       <main className="container max-w-6xl pb-12">
+        {/* Progress Dashboard */}
+        <ProgressDashboard stats={progressStats} />
+        <ProgressBar completed={progressStats.completed} total={progressStats.total} />
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left: Assignments List */}
           <div className="lg:col-span-2">
