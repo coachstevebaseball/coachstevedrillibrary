@@ -2209,5 +2209,16 @@
     "duration": "15m",
     "url": "https://youtu.be/LexqSfXL8cY?si=qNEgm2hAwKpggs3K",
     "is_direct_link": true
+  },
+  {
+    "id": "stride-separation-drill",
+    "name": "Stride & Separation Drill",
+    "difficulty": "Easy",
+    "categories": [
+      "Hitting"
+    ],
+    "duration": "10m",
+    "url": "https://youtu.be/qaEQEpmxOwE?si=1yvPaVlhoIWpHZKY",
+    "is_direct_link": true
   }
 ]

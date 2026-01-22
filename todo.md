@@ -607,3 +607,4 @@
 
 ## Add New Drill - 3-Plate Adjustment Drill
 - [x] Add "3-Plate Adjustment Drill" with description, goal, and video link
+- [x] Add "Stride & Separation Drill" with description, goal, and video link
