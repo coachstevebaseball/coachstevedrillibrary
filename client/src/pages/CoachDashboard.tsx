@@ -22,7 +22,7 @@ interface Drill {
 
 export default function CoachDashboard() {
   const { user, loading } = useAuth();
-  const [selectedUser, setSelectedUser] = useState<number | null>(null);
+  const [selectedUser, setSelectedUser] = useState<string | null>(null); // Can be "user-{id}" or "invite-{id}"
   const [searchDrill, setSearchDrill] = useState("");
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
   const [activeTab, setActiveTab] = useState<"assign" | "bulk-import" | "bulk-goals">("assign");
@@ -32,6 +32,60 @@ export default function CoachDashboard() {
   const { data: allUsers = [] } = trpc.admin.getAllUsers.useQuery(undefined, {
     enabled: user?.role === "admin",
   });
+
+  // Fetch all invites to show pending athletes
+  const { data: allInvites = [] } = trpc.invites.getAllInvites.useQuery(undefined, {
+    enabled: user?.role === "admin",
+  });
+
+  // Combine users and pending invites for athlete selection
+  const athleteOptions = useMemo(() => {
+    const options: { id: string; name: string; email: string; type: 'user' | 'invite'; status?: string }[] = [];
+    
+    // Add existing users (excluding admin)
+    allUsers.forEach((u: any) => {
+      if (u.role !== 'admin') {
+        options.push({
+          id: `user-${u.id}`,
+          name: u.name || `User ${u.id}`,
+          email: u.email || '',
+          type: 'user'
+        });
+      }
+    });
+    
+    // Add pending invites that haven't been accepted yet
+    allInvites.forEach((inv: any) => {
+      if (inv.status === 'pending') {
+        // Check if this email already exists as a user
+        const existingUser = allUsers.find((u: any) => u.email === inv.email);
+        if (!existingUser) {
+          options.push({
+            id: `invite-${inv.id}`,
+            name: inv.email.split('@')[0],
+            email: inv.email,
+            type: 'invite',
+            status: 'pending'
+          });
+        }
+      }
+      // Also add accepted invites that don't have a user yet
+      if (inv.status === 'accepted') {
+        const existingUser = allUsers.find((u: any) => u.email === inv.email);
+        if (!existingUser) {
+          options.push({
+            id: `invite-${inv.id}`,
+            name: inv.email.split('@')[0],
+            email: inv.email,
+            type: 'invite',
+            status: 'accepted'
+          });
+        }
+      }
+    });
+    
+    return options;
+  }, [allUsers, allInvites]);
 
   // Fetch all assignments
   const { data: allAssignments = [] } = trpc.drillAssignments.getAllAssignments.useQuery(undefined, {
@@ -50,10 +104,16 @@ export default function CoachDashboard() {
     ).slice(0, 10); // Show top 10 results
   }, [searchDrill]);
 
-  // Get user assignments
+  // Get user/invite assignments
   const userAssignments = useMemo(() => {
     if (!selectedUser) return [];
-    return allAssignments.filter((a: any) => a.userId === selectedUser);
+    if (selectedUser.startsWith('invite-')) {
+      const inviteId = parseInt(selectedUser.replace('invite-', ''));
+      return allAssignments.filter((a: any) => a.inviteId === inviteId);
+    } else {
+      const userId = parseInt(selectedUser.replace('user-', ''));
+      return allAssignments.filter((a: any) => a.userId === userId);
+    }
   }, [selectedUser, allAssignments]);
 
   // Handle assign drill
@@ -61,11 +121,25 @@ export default function CoachDashboard() {
     if (!selectedUser || !selectedDrill) return;
 
     try {
-      await assignDrillMutation.mutateAsync({
-        userId: selectedUser,
-        drillId: selectedDrill.id,
-        drillName: selectedDrill.name,
-      });
+      if (selectedUser.startsWith('invite-')) {
+        const inviteId = parseInt(selectedUser.replace('invite-', ''));
+        await assignDrillMutation.mutateAsync({
+          inviteId,
+          drillId: selectedDrill.id,
+          drillName: selectedDrill.name,
+          difficulty: selectedDrill.difficulty,
+          duration: selectedDrill.duration,
+        });
+      } else {
+        const userId = parseInt(selectedUser.replace('user-', ''));
+        await assignDrillMutation.mutateAsync({
+          userId,
+          drillId: selectedDrill.id,
+          drillName: selectedDrill.name,
+          difficulty: selectedDrill.difficulty,
+          duration: selectedDrill.duration,
+        });
+      }
       setSelectedDrill(null);
       setSearchDrill("");
     } catch (error) {
@@ -208,16 +282,30 @@ export default function CoachDashboard() {
                 {/* User Selection */}
                 <div>
                   <label className="text-xs md:text-sm font-semibold text-muted-foreground mb-1.5 md:mb-2 block">Select Athlete</label>
-                  <Select value={selectedUser?.toString() || ""} onValueChange={(val) => setSelectedUser(parseInt(val))}>
+                  <Select value={selectedUser || ""} onValueChange={(val) => setSelectedUser(val)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Choose athlete..." />
                     </SelectTrigger>
                     <SelectContent>
-                      {allUsers.map((u: any) => (
-                        <SelectItem key={u.id} value={u.id.toString()}>
-                          {u.name || `User ${u.id}`}
-                        </SelectItem>
-                      ))}
+                      {athleteOptions.length === 0 ? (
+                        <div className="p-2 text-sm text-muted-foreground text-center">
+                          No athletes found. Invite athletes from Admin Dashboard.
+                        </div>
+                      ) : (
+                        athleteOptions.map((athlete) => (
+                          <SelectItem 
+                            key={athlete.id} 
+                            value={athlete.id}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span>{athlete.name}</span>
+                              {athlete.type === 'invite' && (
+                                <Badge variant="outline" className="text-xs">Pending Invite</Badge>
+                              )}
+                            </div>
+                          </SelectItem>
+                        ))
+                      )}
                     </SelectContent>
                   </Select>
                 </div>

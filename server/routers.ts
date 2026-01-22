@@ -131,7 +131,8 @@ export const appRouter = router({
   drillAssignments: router({
     assignDrill: protectedProcedure
       .input(z.object({
-        userId: z.number(),
+        userId: z.number().nullable().optional(),
+        inviteId: z.number().optional(),
         drillId: z.string(),
         drillName: z.string(),
         notes: z.string().optional(),
@@ -142,13 +143,18 @@ export const appRouter = router({
         if (ctx.user.role !== 'admin') {
           throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
         }
+        // Must have either userId or inviteId
+        if (!input.userId && !input.inviteId) {
+          throw new TRPCError({ code: 'BAD_REQUEST', message: 'Must provide either userId or inviteId' });
+        }
         await drillAssignmentDb.assignDrill(
-          input.userId,
+          input.userId || null,
           input.drillId,
           input.drillName,
           input.notes,
           ctx.user.name || 'Coach',
-          { difficulty: input.difficulty || 'Unknown', duration: input.duration || 'Unknown' }
+          { difficulty: input.difficulty || 'Unknown', duration: input.duration || 'Unknown' },
+          input.inviteId
         );
         return { success: true };
       }),

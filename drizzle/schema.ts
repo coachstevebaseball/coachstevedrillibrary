@@ -35,7 +35,8 @@ export type InsertUser = typeof users.$inferInsert;
 
 export const drillAssignments = mysqlTable("drillAssignments", {
   id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull(),
+  userId: int("userId"), // Nullable - set when user accepts invite
+  inviteId: int("inviteId"), // For pre-assigning drills to invited athletes
   drillId: varchar("drillId", { length: 255 }).notNull(),
   drillName: varchar("drillName", { length: 255 }).notNull(),
   status: mysqlEnum("status", ["assigned", "in-progress", "completed"]).default("assigned").notNull(),

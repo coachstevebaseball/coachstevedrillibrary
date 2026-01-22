@@ -104,18 +104,32 @@ export async function acceptInvite(
   // Import users table for role update
   const { users } = await import("../drizzle/schema");
 
+  // First verify the user exists in the database
+  const existingUser = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+  
+  if (!existingUser || existingUser.length === 0) {
+    console.error('[Invites] User not found in database with id:', userId);
+    throw new Error("User account not found. Please try logging in again.");
+  }
+  
+  console.log('[Invites] Found user:', existingUser[0].email, 'current role:', existingUser[0].role);
+
   // Update user role based on invite role and set as active if athlete
   const updateData: any = { role: invite.role };
   if (invite.role === "athlete") {
     updateData.isActiveClient = 1;
   }
   
-  await db
+  const updateResult = await db
     .update(users)
     .set(updateData)
     .where(eq(users.id, userId));
   
-  console.log('[Invites] User updated successfully');
+  console.log('[Invites] User role updated to:', invite.role, 'isActiveClient:', updateData.isActiveClient);
 
   // Update invite status
   await db
@@ -126,6 +140,11 @@ export async function acceptInvite(
       acceptedByUserId: userId,
     })
     .where(eq(invites.inviteToken, token));
+
+  // Link any pre-assigned drills from this invite to the user
+  const { linkInviteAssignmentsToUser } = await import("./drillAssignments");
+  await linkInviteAssignmentsToUser(invite.id, userId);
+  console.log('[Invites] Linked drill assignments from invite', invite.id, 'to user', userId);
 
   return invite;
 }

@@ -1,0 +1,23 @@
+{
+  "query": "SELECT * FROM invites;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT * FROM invites;",
+  "rows": [
+    {
+      "id": "240001",
+      "email": "stevengoldstein.pro@gmail.com",
+      "inviteToken": "cf9847f1b9961063bfdc897ec2e46792f27a8bce121a6dd9d85f9598067c7e33",
+      "role": "athlete",
+      "status": "accepted",
+      "expiresAt": "2026-01-29 22:10:38",
+      "acceptedAt": "2026-01-22 22:10:57",
+      "acceptedByUserId": "1",
+      "createdAt": "2026-01-22 22:10:38",
+      "createdByUserId": "1",
+      "reminderSent": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tinviteToken\trole\tstatus\texpiresAt\tacceptedAt\tacceptedByUserId\tcreatedAt\tcreatedByUserId\treminderSent\n240001\tstevengoldstein.pro@gmail.com\tcf9847f1b9961063bfdc897ec2e46792f27a8bce121a6dd9d85f9598067c7e33\tathlete\taccepted\t2026-01-29 22:10:38\t2026-01-22 22:10:57\t1\t2026-01-22 22:10:38\t1\t0\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

@@ -1,20 +1,46 @@
-import { eq, and } from "drizzle-orm";
-import { drillAssignments, assignmentProgress, InsertDrillAssignment, InsertAssignmentProgress, users, notifications } from "../drizzle/schema";
+import { eq, and, or, isNull } from "drizzle-orm";
+import { drillAssignments, assignmentProgress, InsertDrillAssignment, InsertAssignmentProgress, users, notifications, invites } from "../drizzle/schema";
 import { getDb } from "./db";
 import { sendDrillAssignmentEmail } from "./email";
 
-export async function assignDrill(userId: number, drillId: string, drillName: string, notes?: string, coachName?: string, drillDetails?: { difficulty: string; duration: string }) {
+/**
+ * Assign a drill to a user or an invited athlete (pre-assignment)
+ * @param userId - User ID (for existing users) or null for invite-based assignment
+ * @param inviteId - Invite ID (for pre-assigning to invited athletes)
+ */
+export async function assignDrill(
+  userId: number | null, 
+  drillId: string, 
+  drillName: string, 
+  notes?: string, 
+  coachName?: string, 
+  drillDetails?: { difficulty: string; duration: string },
+  inviteId?: number
+) {
   const db = await getDb();
   if (!db) {
     throw new Error("Database not available");
   }
 
-  // Get user email and name
-  const userResult = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-  const user = userResult.length > 0 ? userResult[0] : null;
+  // Get user or invite email for notification
+  let email: string | null = null;
+  let name: string | null = null;
+  
+  if (userId) {
+    const userResult = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+    const user = userResult.length > 0 ? userResult[0] : null;
+    email = user?.email || null;
+    name = user?.name || null;
+  } else if (inviteId) {
+    const inviteResult = await db.select().from(invites).where(eq(invites.id, inviteId)).limit(1);
+    const invite = inviteResult.length > 0 ? inviteResult[0] : null;
+    email = invite?.email || null;
+    name = invite?.email?.split('@')[0] || null;
+  }
 
   const assignment: InsertDrillAssignment = {
-    userId,
+    userId: userId || undefined,
+    inviteId: inviteId || undefined,
     drillId,
     drillName,
     status: "assigned",
@@ -23,12 +49,12 @@ export async function assignDrill(userId: number, drillId: string, drillName: st
 
   const result = await db.insert(drillAssignments).values(assignment);
 
-  // Send email notification if user email exists
-  if (user?.email) {
+  // Send email notification
+  if (email) {
     const portalUrl = `https://coachstevemobilecoach.com/athlete-portal`;
     await sendDrillAssignmentEmail({
-      athleteEmail: user.email,
-      athleteName: user.name || "Athlete",
+      athleteEmail: email,
+      athleteName: name || "Athlete",
       drillName,
       drillDifficulty: drillDetails?.difficulty || "Unknown",
       drillDuration: drillDetails?.duration || "Unknown",
@@ -38,19 +64,61 @@ export async function assignDrill(userId: number, drillId: string, drillName: st
     });
   }
 
-  // Create in-app notification for athlete
-  try {
-    await db.insert(notifications).values({
-      userId,
-      type: "assignment",
-      title: "New Drill Assigned",
-      message: `You have been assigned the drill: ${drillName}`,
-      isRead: 0,
-    });
-  } catch (err) {
-    console.error("[Notification] Failed to create in-app notification:", err);
+  // Create in-app notification for athlete (only if userId exists)
+  if (userId) {
+    try {
+      await db.insert(notifications).values({
+        userId,
+        type: "assignment",
+        title: "New Drill Assigned",
+        message: `You have been assigned the drill: ${drillName}`,
+        isRead: 0,
+      });
+    } catch (err) {
+      console.error("[Notification] Failed to create in-app notification:", err);
+    }
   }
 
+  return result;
+}
+
+/**
+ * Link all drill assignments from an invite to a user when they accept
+ */
+export async function linkInviteAssignmentsToUser(inviteId: number, userId: number) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  // Update all assignments with this inviteId to use the new userId
+  const result = await db
+    .update(drillAssignments)
+    .set({ userId })
+    .where(eq(drillAssignments.inviteId, inviteId));
+  
+  console.log(`[DrillAssignments] Linked ${result} assignments from invite ${inviteId} to user ${userId}`);
+  
+  // Create notifications for the newly linked assignments
+  const linkedAssignments = await db
+    .select()
+    .from(drillAssignments)
+    .where(eq(drillAssignments.inviteId, inviteId));
+  
+  for (const assignment of linkedAssignments) {
+    try {
+      await db.insert(notifications).values({
+        userId,
+        type: "assignment",
+        title: "Drill Waiting for You",
+        message: `You have a drill assigned: ${assignment.drillName}`,
+        isRead: 0,
+      });
+    } catch (err) {
+      console.error("[Notification] Failed to create notification for linked assignment:", err);
+    }
+  }
+  
   return result;
 }
 
