@@ -54,6 +54,39 @@ export const appRouter = router({
         await db.convertUserToAthlete(input.userId);
         return { success: true };
       }),
+    updateUserRole: protectedProcedure
+      .input(z.object({ userId: z.number(), role: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        await db.updateUserRole(input.userId, input.role as any);
+        return { success: true };
+      }),
+    sendWelcomeEmail: protectedProcedure
+      .input(z.object({ userId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const user = await db.getUserById(input.userId);
+        if (!user) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
+        }
+        if (!user.email) {
+          throw new TRPCError({ code: 'BAD_REQUEST', message: 'User email not found' });
+        }
+        const { sendWelcomeEmail: sendEmail } = await import('./email');
+        const result = await sendEmail({
+          athleteEmail: user.email,
+          athleteName: user.name || 'Athlete',
+          portalUrl: 'https://localhost:5173/athlete-portal',
+        });
+        if (result.success) {
+          await db.markWelcomeEmailSent(input.userId);
+        }
+        return result;
+      }),
   }),
 
   // Drill assignment router for coach dashboard

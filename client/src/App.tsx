@@ -17,6 +17,7 @@ import SubmissionsDashboard from "./pages/SubmissionsDashboard";
 import CoachMessaging from "./pages/CoachMessaging";
 import AthleteMessaging from "./pages/AthleteMessaging";
 import VerifyEmail from "./pages/VerifyEmail";
+import UserManagement from "./pages/UserManagement";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
@@ -62,6 +63,12 @@ function Router() {
       <Route path={"/submissions"}>
         <ProtectedRoute requiredRole="admin">
           <SubmissionsDashboard />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path={"/user-management"}>
+        <ProtectedRoute requiredRole="admin">
+          <UserManagement />
         </ProtectedRoute>
       </Route>
       

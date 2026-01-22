@@ -563,3 +563,21 @@
 - [x] Added logging to AcceptInvite page to debug the flow
 - [x] Added logging to acceptInvite endpoint to track mutations
 - [x] Ensured athletes are always activated when they first log in via OAuth
+
+
+## Admin User Management UI
+- [x] Create backend endpoints for user management (list, update role, toggle active status)
+- [x] Build user management page component with table view
+- [x] Add role selector dropdown (user, athlete, admin)
+- [x] Add active/inactive toggle for each user
+- [x] Add search/filter functionality for users
+- [x] Add confirmation dialogs for role changes
+- [x] Test user management UI end-to-end
+
+## Welcome Email for Newly Activated Athletes
+- [x] Create welcome email template
+- [x] Add sendWelcomeEmail function to email.ts
+- [x] Add backend endpoint to trigger welcome email
+- [x] Integrate welcome email into user activation flow
+- [x] Track if welcome email has been sent (add sentWelcomeEmail field to users table)
+- [x] Test welcome email delivery

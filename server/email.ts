@@ -628,3 +628,138 @@ function generateInviteExpirationReminderHtml(data: InviteExpirationReminderData
     </html>
   `;
 }
+
+
+export interface WelcomeEmailData {
+  athleteEmail: string;
+  athleteName: string;
+  portalUrl: string;
+}
+
+export async function sendWelcomeEmail(data: WelcomeEmailData): Promise<{ success: boolean; error?: string }> {
+  if (!ENV.resendApiKey) {
+    console.warn("[Email] Resend API key not configured, skipping welcome email");
+    return { success: false, error: "Email service not configured" };
+  }
+
+  try {
+    const emailHtml = generateWelcomeEmailHtml(data);
+
+    const result = await resend.emails.send({
+      from: "coach@coachstevebaseball.com",
+      to: data.athleteEmail,
+      subject: "Welcome to Coach Steve's Baseball Drills Directory! 🎉",
+      html: emailHtml,
+    });
+
+    if (result.error) {
+      console.error("[Email] Failed to send welcome email:", result.error);
+      return { success: false, error: result.error.message };
+    }
+
+    console.log("[Email] Welcome email sent successfully to", data.athleteEmail);
+    return { success: true };
+  } catch (error) {
+    console.error("[Email] Error sending welcome email:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+function generateWelcomeEmailHtml(data: WelcomeEmailData): string {
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 40px; border-radius: 8px 8px 0 0; text-align: center; }
+          .header h1 { margin: 0; font-size: 32px; font-weight: bold; }
+          .header p { margin: 10px 0 0 0; font-size: 16px; opacity: 0.95; }
+          .content { background: #f9fafb; padding: 40px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb; border-top: none; }
+          .welcome-section { background: white; padding: 25px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #10b981; }
+          .welcome-section h2 { color: #065f46; margin-top: 0; }
+          .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+          .feature-item { background: #ecfdf5; padding: 15px; border-radius: 6px; text-align: center; }
+          .feature-icon { font-size: 24px; margin-bottom: 8px; }
+          .feature-text { font-size: 14px; color: #047857; font-weight: 500; }
+          .cta-button { display: inline-block; background: #10b981; color: white; padding: 14px 35px; border-radius: 6px; text-decoration: none; font-weight: bold; margin: 25px auto; font-size: 16px; text-align: center; }
+          .button-container { text-align: center; }
+          .next-steps { background: #f0fdf4; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #10b981; }
+          .next-steps h3 { color: #065f46; margin-top: 0; }
+          .next-steps ol { margin: 10px 0; padding-left: 20px; }
+          .next-steps li { margin: 8px 0; color: #047857; }
+          .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #666; }
+          .contact-info { background: #eff6ff; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #3b82f6; }
+          .contact-info p { margin: 5px 0; font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🎉 Welcome to Coach Steve's Baseball Drills!</h1>
+            <p>Your account is now active and ready to go</p>
+          </div>
+          
+          <div class="content">
+            <p>Hi ${data.athleteName},</p>
+            
+            <p>Welcome to Coach Steve's Baseball Drills Directory! Your account has been activated and you now have full access to all the drills and training materials.</p>
+            
+            <div class="welcome-section">
+              <h2>What You Can Do Now</h2>
+              <div class="features-grid">
+                <div class="feature-item">
+                  <div class="feature-icon">📚</div>
+                  <div class="feature-text">View Assigned Drills</div>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon">✅</div>
+                  <div class="feature-text">Track Progress</div>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon">📝</div>
+                  <div class="feature-text">Add Personal Notes</div>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon">💬</div>
+                  <div class="feature-text">Receive Feedback</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="button-container">
+              <a href="${data.portalUrl}" class="cta-button">Go to Your Athlete Portal</a>
+            </div>
+            
+            <div class="next-steps">
+              <h3>🚀 Getting Started</h3>
+              <ol>
+                <li>Log in to your athlete portal using your account credentials</li>
+                <li>Check the "Assigned Drills" section to see what your coach has assigned</li>
+                <li>Review each drill's details, video, and instructions</li>
+                <li>Complete the drills and track your progress</li>
+                <li>Receive feedback from your coach on your submissions</li>
+              </ol>
+            </div>
+            
+            <div class="contact-info">
+              <p><strong>Need Help?</strong></p>
+              <p>If you have any questions or need assistance, please reach out to your coach or contact our support team.</p>
+            </div>
+            
+            <p>We're excited to have you on board! Let's work together to improve your baseball skills.</p>
+            
+            <p>Best regards,<br><strong>Coach Steve</strong></p>
+          </div>
+          
+          <div class="footer">
+            <p>© 2026 Coach Steve Baseball — Drills Directory. All rights reserved.</p>
+            <p>This is an automated welcome message. Please do not reply to this email.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+}

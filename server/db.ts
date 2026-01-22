@@ -95,6 +95,18 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
+export async function getUserById(userId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get user: database not available");
+    return undefined;
+  }
+
+  const result = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+
+  return result.length > 0 ? result[0] : undefined;
+}
+
 // Client access management functions
 export async function getAllUsers() {
   const db = await getDb();
@@ -138,6 +150,42 @@ export async function convertUserToAthlete(userId: number) {
     return true;
   } catch (error) {
     console.error("[Database] Failed to convert user to athlete:", error);
+    return false;
+  }
+}
+
+export async function updateUserRole(userId: number, role: string) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot update user role: database not available");
+    return false;
+  }
+
+  try {
+    await db.update(users)
+      .set({ role: role as any })
+      .where(eq(users.id, userId));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to update user role:", error);
+    return false;
+  }
+}
+
+export async function markWelcomeEmailSent(userId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot mark welcome email sent: database not available");
+    return false;
+  }
+
+  try {
+    await db.update(users)
+      .set({ sentWelcomeEmail: 1 })
+      .where(eq(users.id, userId));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to mark welcome email sent:", error);
     return false;
   }
 }
