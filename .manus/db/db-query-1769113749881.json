@@ -1,0 +1,15 @@
+{
+  "query": "SELECT openId, email, role FROM users WHERE email = 'coach@coachstevebaseball.com';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT openId, email, role FROM users WHERE email = 'coach@coachstevebaseball.com';",
+  "rows": [
+    {
+      "openId": "dvqe5u4nYVKnEABQhmtcWd",
+      "email": "coach@coachstevebaseball.com",
+      "role": "athlete"
+    }
+  ],
+  "messages": [],
+  "stdout": "openId\temail\trole\ndvqe5u4nYVKnEABQhmtcWd\tcoach@coachstevebaseball.com\tathlete\n",
+  "stderr": "",
+  "execution_time_ms": 105
+}

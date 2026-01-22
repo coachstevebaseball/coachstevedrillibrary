@@ -52,14 +52,31 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.lastSignedIn = user.lastSignedIn;
       updateSet.lastSignedIn = user.lastSignedIn;
     }
-    // Always ensure owner has admin role
+    // Debug logging
+    console.log(`[Database] upsertUser called - openId: ${user.openId}, ENV.ownerOpenId: ${ENV.ownerOpenId}, match: ${user.openId === ENV.ownerOpenId}`);
+    
+    // Check if user already exists and has admin role - preserve it
+    const existingUser = await db.select().from(users).where(eq(users.openId, user.openId)).limit(1);
+    const existingRole = existingUser.length > 0 ? existingUser[0].role : null;
+    console.log(`[Database] Existing user role: ${existingRole}`);
+    
+    // Always ensure owner has admin role, or preserve existing admin role
     if (user.openId === ENV.ownerOpenId) {
       values.role = 'admin';
       updateSet.role = 'admin';
       console.log(`[Database] Setting admin role for owner: ${user.openId}`);
+    } else if (existingRole === 'admin') {
+      // Preserve existing admin role
+      values.role = 'admin';
+      updateSet.role = 'admin';
+      console.log(`[Database] Preserving existing admin role for: ${user.openId}`);
     } else if (user.role !== undefined) {
       values.role = user.role;
       updateSet.role = user.role;
+    } else if (existingRole) {
+      // Preserve existing role if user already exists
+      values.role = existingRole;
+      // Don't update role if it already exists
     } else {
       // Assign 'athlete' role to new OAuth users by default (this is an athlete platform)
       values.role = 'athlete';
