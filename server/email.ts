@@ -126,6 +126,194 @@ function generateDrillAssignmentEmailHtml(data: DrillAssignmentEmailData): strin
 }
 
 
+export interface SubmissionNotificationData {
+  coachEmail: string;
+  coachName: string;
+  athleteName: string;
+  drillName: string;
+  submissionNotes?: string;
+  submissionUrl: string;
+}
+
+export interface FeedbackNotificationData {
+  athleteEmail: string;
+  athleteName: string;
+  coachName: string;
+  drillName: string;
+  feedback: string;
+  feedbackUrl: string;
+}
+
+/**
+ * Send email notification to coach when athlete submits drill work
+ */
+export async function sendSubmissionNotificationToCoach(data: SubmissionNotificationData): Promise<{ success: boolean; error?: string }> {
+  if (!ENV.resendApiKey) {
+    console.warn("[Email] Resend API key not configured, skipping submission notification");
+    return { success: false, error: "Email service not configured" };
+  }
+
+  try {
+    const emailHtml = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; line-height: 1.6; color: #333; }
+      .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+      .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb; border-top: none; }
+      .submission-card { background: white; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #dc2626; }
+      .athlete-name { font-size: 18px; font-weight: bold; color: #1e3a8a; }
+      .drill-name { color: #666; font-size: 14px; margin-top: 5px; }
+      .notes-section { background: #fef3c7; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #f59e0b; }
+      .notes-label { font-weight: bold; color: #92400e; font-size: 12px; text-transform: uppercase; margin-bottom: 8px; }
+      .notes-text { color: #78350f; }
+      .cta-button { display: inline-block; background: #dc2626; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: bold; margin: 20px 0; }
+      .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #666; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎯 New Drill Submission</h1>
+      </div>
+      <div class="content">
+        <p>Hi ${data.coachName},</p>
+        
+        <p><strong>${data.athleteName}</strong> just submitted their work for the <strong>${data.drillName}</strong> drill!</p>
+        
+        <div class="submission-card">
+          <div class="athlete-name">${data.athleteName}</div>
+          <div class="drill-name">Drill: ${data.drillName}</div>
+          ${data.submissionNotes ? `
+          <div class="notes-section">
+            <div class="notes-label">Athlete's Notes:</div>
+            <div class="notes-text">${data.submissionNotes}</div>
+          </div>
+          ` : ''}
+        </div>
+        
+        <p>Review the submission and provide feedback to keep your athlete engaged and motivated.</p>
+        
+        <div style="text-align: center;">
+          <a href="${data.submissionUrl}" class="cta-button">View Submission</a>
+        </div>
+        
+        <div class="footer">
+          <p>This is an automated notification from Coach Steve's Mobile Coach.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+    `;
+
+    const result = await resend.emails.send({
+      from: "Coach Steve's Mobile Coach <onboarding@resend.dev>",
+      to: data.coachEmail,
+      subject: `New Submission: ${data.athleteName} - ${data.drillName}`,
+      html: emailHtml,
+    });
+
+    if (result.error) {
+      console.error("[Email] Failed to send submission notification:", result.error);
+      return { success: false, error: result.error.message };
+    }
+
+    console.log("[Email] Submission notification sent to", data.coachEmail);
+    return { success: true };
+  } catch (error) {
+    console.error("[Email] Error sending submission notification:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+/**
+ * Send email notification to athlete when coach provides feedback
+ */
+export async function sendFeedbackNotificationToAthlete(data: FeedbackNotificationData): Promise<{ success: boolean; error?: string }> {
+  if (!ENV.resendApiKey) {
+    console.warn("[Email] Resend API key not configured, skipping feedback notification");
+    return { success: false, error: "Email service not configured" };
+  }
+
+  try {
+    const emailHtml = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; line-height: 1.6; color: #333; }
+      .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+      .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb; border-top: none; }
+      .feedback-card { background: white; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #10b981; }
+      .coach-name { font-size: 16px; font-weight: bold; color: #1e3a8a; }
+      .drill-name { color: #666; font-size: 14px; margin-top: 5px; }
+      .feedback-section { background: #ecfdf5; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #10b981; }
+      .feedback-label { font-weight: bold; color: #065f46; font-size: 12px; text-transform: uppercase; margin-bottom: 8px; }
+      .feedback-text { color: #047857; }
+      .cta-button { display: inline-block; background: #10b981; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: bold; margin: 20px 0; }
+      .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #666; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>💬 Coach Feedback Received</h1>
+      </div>
+      <div class="content">
+        <p>Hi ${data.athleteName},</p>
+        
+        <p><strong>${data.coachName}</strong> provided feedback on your <strong>${data.drillName}</strong> submission!</p>
+        
+        <div class="feedback-card">
+          <div class="coach-name">${data.coachName}</div>
+          <div class="drill-name">Drill: ${data.drillName}</div>
+          <div class="feedback-section">
+            <div class="feedback-label">Feedback:</div>
+            <div class="feedback-text">${data.feedback}</div>
+          </div>
+        </div>
+        
+        <p>Keep up the great work! Review the feedback and continue improving your performance.</p>
+        
+        <div style="text-align: center;">
+          <a href="${data.feedbackUrl}" class="cta-button">View Feedback</a>
+        </div>
+        
+        <div class="footer">
+          <p>This is an automated notification from Coach Steve's Mobile Coach.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+    `;
+
+    const result = await resend.emails.send({
+      from: "Coach Steve's Mobile Coach <onboarding@resend.dev>",
+      to: data.athleteEmail,
+      subject: `Feedback from ${data.coachName}: ${data.drillName}`,
+      html: emailHtml,
+    });
+
+    if (result.error) {
+      console.error("[Email] Failed to send feedback notification:", result.error);
+      return { success: false, error: result.error.message };
+    }
+
+    console.log("[Email] Feedback notification sent to", data.athleteEmail);
+    return { success: true };
+  } catch (error) {
+    console.error("[Email] Error sending feedback notification:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
 export interface InviteEmailData {
   toEmail: string;
   inviteLink: string;

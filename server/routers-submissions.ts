@@ -2,6 +2,7 @@ import { router, protectedProcedure } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import * as db from "./db";
+import { sendSubmissionNotificationToCoach, sendFeedbackNotificationToAthlete } from "./email";
 
 export const submissionsRouter = router({
   // Drill submissions router for athlete feedback
@@ -24,6 +25,25 @@ export const submissionsRouter = router({
           notes: input.notes || null,
           videoUrl: input.videoUrl || null,
         });
+
+        // Send email notification to coach
+        try {
+          const allUsers = await db.getAllUsers();
+          const athlete = allUsers.find(u => u.id === ctx.user.id);
+          if (athlete && athlete.email) {
+            await sendSubmissionNotificationToCoach({
+              coachEmail: process.env.OWNER_EMAIL || 'coach@example.com',
+              coachName: process.env.OWNER_NAME || 'Coach',
+              athleteName: athlete.name || 'Athlete',
+              drillName: input.drillId,
+              submissionNotes: input.notes || undefined,
+              submissionUrl: `${process.env.VITE_FRONTEND_URL || 'https://app.example.com'}/submissions`,
+            });
+          }
+        } catch (error) {
+          console.error('Error sending submission notification:', error);
+        }
+
         return { success: !!result };
       }),
 
@@ -99,6 +119,25 @@ export const submissionsRouter = router({
           drillId: input.drillId,
           feedback: input.feedback,
         });
+
+        // Send email notification to athlete
+        try {
+          const allUsers = await db.getAllUsers();
+          const athlete = allUsers.find(u => u.id === input.userId);
+          if (athlete && athlete.email) {
+            await sendFeedbackNotificationToAthlete({
+              athleteEmail: athlete.email,
+              athleteName: athlete.name || 'Athlete',
+              coachName: ctx.user.name || 'Coach',
+              drillName: input.drillId,
+              feedback: input.feedback,
+              feedbackUrl: `${process.env.VITE_FRONTEND_URL || 'https://app.example.com'}/athlete-portal`,
+            });
+          }
+        } catch (error) {
+          console.error('Error sending feedback notification:', error);
+        }
+
         return { success: !!result };
       }),
 

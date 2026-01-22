@@ -460,3 +460,17 @@
 - [x] Add badge animations and celebrations
 - [ ] Test badge unlocking on submission
 - [x] Display badge progress/next milestone
+
+
+## Email Notifications System
+- [x] Create email notification service using Resend API
+- [x] Create email template for coach submission notifications
+- [x] Create email template for athlete feedback notifications
+- [x] Add email trigger when athlete submits drill work
+- [x] Add email trigger when coach provides feedback
+- [x] Send coach email with athlete name, drill, and submission preview
+- [x] Send athlete email with coach feedback and drill name
+- [x] Add unsubscribe option to emails
+- [x] Test email delivery for submissions
+- [x] Test email delivery for feedback
+- [x] Verify email templates render correctly
