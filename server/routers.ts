@@ -104,6 +104,46 @@ export const appRouter = router({
         }
         return result;
       }),
+    sendBulkEmail: protectedProcedure
+      .input(z.object({
+        subject: z.string().min(1),
+        message: z.string().min(1),
+        recipientType: z.enum(['all', 'active'])
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        
+        // Get users based on recipient type
+        const allUsers = await db.getAllUsers();
+        const recipients = input.recipientType === 'active'
+          ? allUsers.filter(u => u.isActiveClient === 1 && u.email && u.role !== 'admin')
+          : allUsers.filter(u => u.email && u.role !== 'admin');
+        
+        if (recipients.length === 0) {
+          throw new TRPCError({ code: 'BAD_REQUEST', message: 'No recipients found' });
+        }
+        
+        const { sendBulkEmail: sendEmail } = await import('./email');
+        let sentCount = 0;
+        
+        for (const user of recipients) {
+          if (user.email) {
+            const result = await sendEmail({
+              recipientEmail: user.email,
+              recipientName: user.name || 'Athlete',
+              subject: input.subject,
+              message: input.message,
+            });
+            if (result.success) {
+              sentCount++;
+            }
+          }
+        }
+        
+        return { success: true, sentCount, totalRecipients: recipients.length };
+      }),
   }),
 
   // Drill assignment router for coach dashboard

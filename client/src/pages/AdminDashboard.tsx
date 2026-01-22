@@ -18,11 +18,112 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Loader2, Users, Shield, CheckCircle2, XCircle, Mail, Copy, Trash2, RotateCcw } from "lucide-react";
+import { Loader2, Users, Shield, CheckCircle2, XCircle, Mail, Copy, Trash2, RotateCcw, UserPlus, FileText, Send, ArrowRight } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import * as React from "react";
+
+// Bulk Email Form Component
+function BulkEmailForm() {
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const [recipientType, setRecipientType] = useState<"all" | "active">("active");
+
+  const sendBulkEmail = trpc.admin.sendBulkEmail.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Email sent to ${data.sentCount} recipients!`);
+      setSubject("");
+      setMessage("");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to send emails");
+    },
+  });
+
+  const handleSend = () => {
+    if (!subject.trim()) {
+      toast.error("Please enter a subject");
+      return;
+    }
+    if (!message.trim()) {
+      toast.error("Please enter a message");
+      return;
+    }
+    sendBulkEmail.mutate({ subject, message, recipientType });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <label className="text-sm font-semibold">Recipients</label>
+        <div className="flex gap-4">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="recipientType"
+              checked={recipientType === "active"}
+              onChange={() => setRecipientType("active")}
+              className="w-4 h-4"
+            />
+            <span className="text-sm">Active Athletes Only</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="recipientType"
+              checked={recipientType === "all"}
+              onChange={() => setRecipientType("all")}
+              className="w-4 h-4"
+            />
+            <span className="text-sm">All Users</span>
+          </label>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-semibold">Subject</label>
+        <input
+          type="text"
+          placeholder="Email subject line"
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+          className="w-full px-3 py-2 border rounded-md border-input bg-background text-sm"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-semibold">Message</label>
+        <textarea
+          placeholder="Type your message here..."
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          rows={6}
+          className="w-full px-3 py-2 border rounded-md border-input bg-background text-sm resize-none"
+        />
+      </div>
+
+      <Button
+        onClick={handleSend}
+        disabled={sendBulkEmail.isPending || !subject.trim() || !message.trim()}
+        className="w-full md:w-auto"
+      >
+        {sendBulkEmail.isPending ? (
+          <>
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            Sending...
+          </>
+        ) : (
+          <>
+            <Send className="h-4 w-4 mr-2" />
+            Send Email
+          </>
+        )}
+      </Button>
+    </div>
+  );
+}
 
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
@@ -194,6 +295,50 @@ export default function AdminDashboard() {
           </Card>
         </div>
 
+        {/* Quick Action Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-l-4 border-l-transparent hover:border-l-secondary" onClick={() => document.getElementById('invite-section')?.scrollIntoView({ behavior: 'smooth' })}>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div className="h-12 w-12 rounded-lg bg-secondary/10 flex items-center justify-center group-hover:bg-secondary/20 transition-colors">
+                  <UserPlus className="h-6 w-6 text-secondary" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <CardTitle className="text-lg mt-4">Invite Athletes</CardTitle>
+              <CardDescription>Send invitations to new athletes to join the platform</CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Link href="/submissions">
+            <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-l-4 border-l-transparent hover:border-l-blue-500 h-full">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="h-12 w-12 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+                    <FileText className="h-6 w-6 text-blue-500" />
+                  </div>
+                  <ArrowRight className="h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+                <CardTitle className="text-lg mt-4">View Submissions</CardTitle>
+                <CardDescription>Review athlete drill submissions and provide feedback</CardDescription>
+              </CardHeader>
+            </Card>
+          </Link>
+
+          <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-l-4 border-l-transparent hover:border-l-purple-500" onClick={() => document.getElementById('bulk-email-section')?.scrollIntoView({ behavior: 'smooth' })}>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div className="h-12 w-12 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+                  <Send className="h-6 w-6 text-purple-500" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <CardTitle className="text-lg mt-4">Send Bulk Email</CardTitle>
+              <CardDescription>Send announcements or updates to all active athletes</CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+
         {/* Users Table */}
         <Card>
           <CardHeader>
@@ -267,7 +412,7 @@ export default function AdminDashboard() {
         </Card>
 
       {/* Invite Management Section */}
-      <Card className="mt-8">
+      <Card id="invite-section" className="mt-8">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Mail className="h-5 w-5" />
@@ -389,6 +534,20 @@ export default function AdminDashboard() {
               </div>
             )}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Bulk Email Section */}
+      <Card id="bulk-email-section" className="mt-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Send className="h-5 w-5" />
+            Send Bulk Email
+          </CardTitle>
+          <CardDescription>Send announcements or updates to all active athletes</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <BulkEmailForm />
         </CardContent>
       </Card>
 
