@@ -179,6 +179,17 @@ export const appRouter = router({
       }
       return await drillAssignmentDb.getUserAssignments(ctx.user.id);
     }),
+
+    getAllAssignments: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== 'admin') {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+      }
+      return await drillAssignmentDb.getAllAssignments();
+    }),
+
+    getUserAssignments: protectedProcedure.query(async ({ ctx }) => {
+      return await drillAssignmentDb.getUserAssignments(ctx.user.id);
+    }),
   }),
 
   // Submissions router
