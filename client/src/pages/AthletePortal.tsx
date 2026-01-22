@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle, Clock, AlertCircle, Play, ArrowRight, Home } from "lucide-react";
+import { CheckCircle, Clock, AlertCircle, Play, ArrowRight, Home, LogOut } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
 import drillsData from "@/data/drills.json";
@@ -38,7 +38,7 @@ interface Assignment {
 }
 
 export default function AthletePortal() {
-  const { user, loading } = useAuth();
+  const { user, loading, logout } = useAuth();
   const [statusFilter, setStatusFilter] = useState<"all" | "assigned" | "in-progress" | "completed">("all");
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
@@ -114,6 +114,28 @@ export default function AthletePortal() {
             <Link href="/">
               <Button variant="outline">Back to Directory</Button>
             </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Check if user is an active athlete
+  if (user?.role === 'athlete' && !user?.isActiveClient) {
+    return (
+      <div className="container py-12">
+        <Card className="max-w-2xl mx-auto border-2">
+          <CardHeader className="text-center">
+            <CardTitle>Account Inactive</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <p className="text-muted-foreground">
+              Your account has been deactivated. Please contact your coach for more information.
+            </p>
+            <Button onClick={() => logout()} variant="outline" size="lg" className="gap-2">
+              <LogOut className="h-5 w-5" />
+              Log Out
+            </Button>
           </CardContent>
         </Card>
       </div>

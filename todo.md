@@ -394,3 +394,12 @@
 - [x] Personalize email copy with Coach Steve branding
 - [x] Update footer with "Coach Steve" signature
 - [x] Test updated email template with test invite
+
+
+## Exclusive Access Control (Active Athletes Only)
+- [ ] Add isActive status field to users table
+- [ ] Protect drill viewing endpoints with athlete status checks
+- [ ] Implement deactivation logic to immediately revoke access
+- [ ] Update Home page to require authentication
+- [ ] Hide drill list from non-authenticated users
+- [ ] Test access control with active and inactive athletes

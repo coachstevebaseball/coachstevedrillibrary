@@ -36,8 +36,8 @@ const getCategoryColor = (category: string) => {
 };
 
 export default function Home() {
+  // IMPORTANT: All hooks must be called before any conditional returns
   const { user, loading, error, isAuthenticated, logout } = useAuth();
-
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState("All");
   const [categoryFilter, setCategoryFilter] = useState("All");
@@ -77,6 +77,44 @@ export default function Home() {
   };
 
   const hasActiveFilters = searchQuery !== "" || difficultyFilter !== "All" || categoryFilter !== "All";
+
+  // NOW we can do conditional returns after all hooks are called
+
+  // Redirect unauthenticated users to login
+  if (!loading && !isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <h1 className="text-4xl font-bold mb-4">Access Restricted</h1>
+          <p className="text-lg text-muted-foreground mb-8">
+            This content is exclusive to invited athletes. Please log in to access the drill library.
+          </p>
+          <Button onClick={() => window.location.href = getLoginUrl()} size="lg">
+            <LogIn className="h-5 w-5 mr-2" />
+            Log In
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if user is an active athlete
+  if (!loading && isAuthenticated && user?.role === 'athlete' && !user?.isActiveClient) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <h1 className="text-4xl font-bold mb-4">Account Inactive</h1>
+          <p className="text-lg text-muted-foreground mb-8">
+            Your account has been deactivated. Please contact your coach for more information.
+          </p>
+          <Button onClick={() => logout()} variant="outline" size="lg">
+            <LogOut className="h-5 w-5 mr-2" />
+            Log Out
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -227,8 +265,8 @@ export default function Home() {
                     }}
                     className="text-muted-foreground hover:text-foreground gap-1 text-xs md:text-sm"
                   >
-                    <X className="h-3 md:h-4 w-3 md:w-4" />
-                    Clear All
+                    <X className="h-4 w-4" />
+                    Clear Filters
                   </Button>
                 </div>
               )}
@@ -237,112 +275,115 @@ export default function Home() {
         )}
 
         {/* Results Count */}
-        <div className="mb-6 md:mb-8">
-          <p className="text-sm md:text-base text-muted-foreground font-medium">
-            <span className="text-foreground font-bold text-base md:text-lg">{filteredDrills.length}</span> drills found
-          </p>
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-lg md:text-2xl font-heading font-bold text-foreground">
+            Available Drills
+            <span className="ml-3 text-sm md:text-lg font-normal text-muted-foreground bg-muted px-3 py-1 rounded-full">
+              {filteredDrills.length}
+            </span>
+          </h2>
         </div>
 
-        {/* Drills List - Horizontal Rows */}
-        {filteredDrills.length > 0 ? (
-          <div>
-            <div className="space-y-0">
-              {paginatedDrills.map((drill, idx) => (
-                <Link 
-                  key={`${drill.id}-${idx}`}
-                  href={`/drill/${drill.id}`}
-                  className="block"
-                >
-                  <div className="py-4 md:py-6 px-0 border-b border-border hover:bg-muted/30 transition-colors cursor-pointer">
-                    {/* Drill Name */}
-                    <h3 className="text-lg md:text-2xl font-bold text-foreground mb-3 md:mb-4 leading-tight">
-                      {drill.name}
-                    </h3>
-                    
-                    {/* Pill Badges */}
-                    <div className="flex flex-wrap gap-2">
-                      {/* DRILL Badge */}
-                      <Badge className="bg-slate-900 text-white rounded-full px-3 py-1 text-xs md:text-sm font-bold">
-                        DRILL
-                      </Badge>
-                      
-                      {/* Difficulty Badge */}
-                      <Badge className={`${getDifficultyColor(drill.difficulty)} text-white rounded-full px-3 py-1 text-xs md:text-sm font-bold`}>
-                        {drill.difficulty}
-                      </Badge>
-                      
-                      {/* Category Badges */}
-                      {drill.categories.map((category, catIdx) => (
-                        <Badge 
-                          key={`${drill.id}-cat-${catIdx}`}
-                          className={`${getCategoryColor(category)} text-white rounded-full px-3 py-1 text-xs md:text-sm font-bold`}
-                        >
-                          {category}
+        {/* Drills List */}
+        {paginatedDrills.length > 0 ? (
+          <div className="space-y-3">
+            {paginatedDrills.map((drill) => (
+              <Link 
+                key={drill.id} 
+                href={`/drill/${drill.id}`}
+                className="group block"
+              >
+                <div className="border-l-4 border-l-transparent hover:border-l-secondary transition-colors p-4 rounded-lg hover:bg-muted/50 cursor-pointer">
+                  <div className="flex items-start justify-between gap-4 flex-wrap">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-base md:text-lg font-heading font-semibold group-hover:text-secondary transition-colors mb-2">
+                        {drill.name}
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge className="bg-slate-900 text-white text-xs">DRILL</Badge>
+                        <Badge className={`${getDifficultyColor(drill.difficulty)} text-white text-xs`}>
+                          {drill.difficulty}
                         </Badge>
-                      ))}
+                        {drill.categories.map((cat, idx) => (
+                          <Badge key={idx} className={`${getCategoryColor(cat)} text-white text-xs`}>
+                            {cat}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </Link>
-              ))}
-            </div>
-
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 mt-8 md:mt-12">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                >
-                  ← Previous
-                </Button>
-                
-                <div className="flex gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                    <Button
-                      key={`page-${page}`}
-                      variant={currentPage === page ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setCurrentPage(page)}
-                      className="min-w-10"
-                    >
-                      {page}
-                    </Button>
-                  ))}
                 </div>
-                
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                  disabled={currentPage === totalPages}
-                >
-                  Next →
-                </Button>
-              </div>
-            )}
+              </Link>
+            ))}
           </div>
         ) : (
-          <div className="text-center py-12 md:py-20 bg-muted/30 rounded-lg border border-dashed">
-            <Search className="h-12 md:h-16 w-12 md:w-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg md:text-xl font-bold mb-2">No drills found</h3>
-            <p className="text-muted-foreground max-w-md mx-auto mb-6 text-sm md:text-base">
-              We couldn't find any drills matching your search criteria. Try adjusting your filters or search term.
+          <div className="text-center py-20 bg-muted/30 rounded-xl border border-dashed">
+            <div className="bg-muted h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Search className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">No drills found</h3>
+            <p className="text-muted-foreground max-w-md mx-auto mb-6">
+              We could not find any drills matching your search criteria. Try adjusting your filters or search term.
             </p>
             <Button 
               onClick={() => {
                 setSearchQuery("");
                 setDifficultyFilter("All");
                 setCategoryFilter("All");
-                setShowFilters(false);
               }}
             >
               Clear All Filters
             </Button>
           </div>
         )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-8">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </Button>
+          </div>
+        )}
       </main>
+
+      {/* Footer */}
+      <footer className="bg-primary text-primary-foreground py-12 mt-auto border-t border-primary-foreground/10">
+        <div className="container">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-secondary rounded flex items-center justify-center font-heading font-bold text-xl">
+                USAB
+              </div>
+              <div>
+                <h3 className="font-heading font-bold text-lg">USA Baseball Drills Directory</h3>
+                <p className="text-sm text-primary-foreground/60">Coach Steve Baseball — Player Drill Library</p>
+              </div>
+            </div>
+            
+            <div className="text-sm text-primary-foreground/60 text-center md:text-right">
+              <p>Data sourced from USA Baseball Mobile Coach.</p>
+              <p className="mt-1">© {new Date().getFullYear()} All rights reserved.</p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
