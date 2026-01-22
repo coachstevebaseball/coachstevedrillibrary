@@ -7,7 +7,7 @@ import { Search, Filter, LogIn, LogOut, Shield, X, Users, Activity, ChevronDown 
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
 import drillsData from "@/data/drills.json";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useLocation } from "wouter";
 
 // Types
@@ -82,22 +82,29 @@ export default function Home() {
   // NOW we can do conditional returns after all hooks are called
   const [, setLocation] = useLocation();
 
-  // Redirect admins to admin dashboard
-  if (!loading && user && user.role === 'admin') {
-    setLocation('/admin');
-    return null;
-  }
+  // Redirect based on user role using useEffect to avoid render-phase navigation
+  useEffect(() => {
+    if (!loading && user) {
+      if (user.role === 'admin') {
+        setLocation('/admin');
+      } else if (user.role === 'coach') {
+        setLocation('/coach-dashboard');
+      } else if (user.role === 'athlete') {
+        setLocation('/athlete-portal');
+      }
+    }
+  }, [loading, user, setLocation]);
 
-  // Redirect coaches to coach dashboard
-  if (!loading && user && user.role === 'coach') {
-    setLocation('/coach-dashboard');
-    return null;
-  }
-
-  // Redirect athletes to athlete portal
-  if (!loading && user && user.role === 'athlete') {
-    setLocation('/athlete-portal');
-    return null;
+  // Show loading while checking auth or redirecting
+  if (loading || (user && ['admin', 'coach', 'athlete'].includes(user.role))) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Redirecting...</p>
+        </div>
+      </div>
+    );
   }
 
   // Redirect unauthenticated users to login
