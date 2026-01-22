@@ -148,9 +148,14 @@ export default function AdminDashboard() {
                 Manage client access to the drills directory
               </p>
             </div>
-            <Link href="/">
-              <Button variant="secondary">Back to Directory</Button>
-            </Link>
+            <div className="flex gap-2">
+              <Link href="/coach-dashboard">
+                <Button variant="secondary">Coach Dashboard</Button>
+              </Link>
+              <Link href="/drills">
+                <Button variant="secondary">View Drills</Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
