@@ -2,6 +2,7 @@ import { getDb } from "./db";
 import { invites } from "../drizzle/schema";
 import { eq, and, lt } from "drizzle-orm";
 import crypto from "crypto";
+import { sendInviteEmail } from "./email";
 
 /**
  * Generate a unique invite token
@@ -17,7 +18,8 @@ export async function createInvite(
   email: string,
   createdByUserId: number,
   role: "user" | "admin" | "athlete" | "coach" = "athlete",
-  expirationDays: number = 7
+  expirationDays: number = 7,
+  sendEmail: boolean = true
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -35,11 +37,24 @@ export async function createInvite(
     createdByUserId,
   });
 
+  const inviteUrl = `${process.env.VITE_FRONTEND_URL || "http://localhost:3000"}/accept-invite/${inviteToken}`;
+
+  // Send invite email if enabled
+  if (sendEmail) {
+    const inviteType = role === "coach" ? "coach" : "athlete";
+    await sendInviteEmail({
+      toEmail: email,
+      inviteLink: inviteUrl,
+      inviteType,
+      expiresAt,
+    });
+  }
+
   return {
     email,
     inviteToken,
     expiresAt,
-    inviteUrl: `${process.env.VITE_FRONTEND_URL || "http://localhost:3000"}/accept-invite/${inviteToken}`,
+    inviteUrl,
   };
 }
 

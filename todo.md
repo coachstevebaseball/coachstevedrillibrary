@@ -379,3 +379,11 @@
 - [ ] Show notes in coach dashboard for feedback
 - [ ] Add coach ability to reply to athlete notes
 - [ ] Test notes creation and coach feedback flow
+
+
+## Email Invite Delivery (Resend)
+- [x] Verify RESEND_API_KEY is configured
+- [x] Create email sending function for invites
+- [x] Integrate email into invite creation flow
+- [ ] Test email delivery with test invite
+- [ ] Verify emails arrive in inbox
