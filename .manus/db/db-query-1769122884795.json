@@ -1,0 +1,118 @@
+{
+  "query": "SELECT da.id, da.drillId, da.userId, da.inviteId, da.status, i.email as invite_email, u.email as user_email FROM drillAssignments da LEFT JOIN invites i ON da.inviteId = i.id LEFT JOIN users u ON da.userId = u.id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT da.id, da.drillId, da.userId, da.inviteId, da.status, i.email as invite_email, u.email as user_email FROM drillAssignments da LEFT JOIN invites i ON da.inviteId = i.id LEFT JOIN users u ON da.userId = u.id;",
+  "rows": [
+    {
+      "id": "180001",
+      "drillId": "2nd-baseman-underhand-flip",
+      "userId": "1",
+      "inviteId": "NULL",
+      "status": "assigned",
+      "invite_email": "NULL",
+      "user_email": "coach@coachstevebaseball.com"
+    },
+    {
+      "id": "180002",
+      "drillId": "top-hand-tee",
+      "userId": "NULL",
+      "inviteId": "240002",
+      "status": "assigned",
+      "invite_email": "adgold77@yahoo.com",
+      "user_email": "NULL"
+    },
+    {
+      "id": "180003",
+      "drillId": "belly-button-tee",
+      "userId": "NULL",
+      "inviteId": "240002",
+      "status": "assigned",
+      "invite_email": "adgold77@yahoo.com",
+      "user_email": "NULL"
+    },
+    {
+      "id": "180004",
+      "drillId": "1st-base-receiving-short-hops",
+      "userId": "NULL",
+      "inviteId": "240002",
+      "status": "assigned",
+      "invite_email": "adgold77@yahoo.com",
+      "user_email": "NULL"
+    },
+    {
+      "id": "180005",
+      "drillId": "location-tee",
+      "userId": "NULL",
+      "inviteId": "240002",
+      "status": "assigned",
+      "invite_email": "adgold77@yahoo.com",
+      "user_email": "NULL"
+    },
+    {
+      "id": "180006",
+      "drillId": "stance-distance-check",
+      "userId": "NULL",
+      "inviteId": "240003",
+      "status": "assigned",
+      "invite_email": "ellynreilly@gmail.com",
+      "user_email": "NULL"
+    },
+    {
+      "id": "180007",
+      "drillId": "1-2-3-drill",
+      "userId": "NULL",
+      "inviteId": "240003",
+      "status": "assigned",
+      "invite_email": "ellynreilly@gmail.com",
+      "user_email": "NULL"
+    },
+    {
+      "id": "180008",
+      "drillId": "location-tee",
+      "userId": "NULL",
+      "inviteId": "240003",
+      "status": "assigned",
+      "invite_email": "ellynreilly@gmail.com",
+      "user_email": "NULL"
+    },
+    {
+      "id": "180009",
+      "drillId": "short-bat-top-hand-tee",
+      "userId": "NULL",
+      "inviteId": "240004",
+      "status": "assigned",
+      "invite_email": "edingers625@gmail.com",
+      "user_email": "NULL"
+    },
+    {
+      "id": "180010",
+      "drillId": "short-bat-bottom-hand-tee",
+      "userId": "NULL",
+      "inviteId": "240004",
+      "status": "assigned",
+      "invite_email": "edingers625@gmail.com",
+      "user_email": "NULL"
+    },
+    {
+      "id": "180011",
+      "drillId": "high-tee",
+      "userId": "NULL",
+      "inviteId": "240004",
+      "status": "assigned",
+      "invite_email": "edingers625@gmail.com",
+      "user_email": "NULL"
+    },
+    {
+      "id": "180012",
+      "drillId": "double-ball-toss",
+      "userId": "NULL",
+      "inviteId": "240001",
+      "status": "assigned",
+      "invite_email": "stevengoldstein.pro@gmail.com",
+      "user_email": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdrillId\tuserId\tinviteId\tstatus\tinvite_email\tuser_email\n180001\t2nd-baseman-underhand-flip\t1\tNULL\tassigned\tNULL\tcoach@coachstevebaseball.com\n180002\ttop-hand-tee\tNULL\t240002\tassigned\tadgold77@yahoo.com\tNULL\n180003\tbelly-button-tee\tNULL\t240002\tassigned\tadgold77@yahoo.com\tNULL\n180004\t1st-base-receiving-short-hops\tNULL\t240002\tassigned\tadgold77@yahoo.com\tNULL\n180005\tlocation-tee\tNULL\t240002\tassigned\tadgold77@yahoo.com\tNULL\n180006\tstance-distance-check\tNULL\t240003\tassigned\tellynreilly@gmail.com\tNULL\n180007\t1-2-3-drill\tNULL\t240003\tassigned\tellynreilly@gmail.com\tNULL\n180008\tlocation-tee\tNULL\t240003\tassigned\tellynreilly@gmail.com\tNULL\n180009\tshort-bat-top-hand-tee\tNULL\t240004\tassigned\tedingers625@gmail.com\tNULL\n180010\tshort-bat-bottom-hand-tee\tNULL\t240004\tassigned\tedingers625@gmail.com\tNULL\n180011\thigh-tee\tNULL\t240004\tassigned\tedingers625@gmail.com\tNULL\n180012\tdouble-ball-toss\tNULL\t240001\tassigned\tstevengoldstein.pro@gmail.com\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

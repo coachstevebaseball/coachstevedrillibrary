@@ -1,4 +1,4 @@
-import { eq, and, or, isNull } from "drizzle-orm";
+import { eq, and, or, isNull, inArray } from "drizzle-orm";
 import { drillAssignments, assignmentProgress, InsertDrillAssignment, InsertAssignmentProgress, users, notifications, invites } from "../drizzle/schema";
 import { getDb } from "./db";
 import { sendDrillAssignmentEmail } from "./email";
@@ -151,7 +151,33 @@ export async function getUserAssignments(userId: number) {
     throw new Error("Database not available");
   }
 
-  return await db.select().from(drillAssignments).where(eq(drillAssignments.userId, userId));
+  // First, get assignments directly linked to this user
+  const directAssignments = await db.select().from(drillAssignments).where(eq(drillAssignments.userId, userId));
+  
+  // Also check if this user has any accepted invites, and get assignments linked to those invites
+  const userResult = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+  const user = userResult.length > 0 ? userResult[0] : null;
+  
+  if (user?.email) {
+    // Find any invites for this user's email
+    const userInvites = await db.select().from(invites).where(eq(invites.email, user.email));
+    
+    if (userInvites.length > 0) {
+      const inviteIds = userInvites.map(i => i.id);
+      // Get assignments linked to these invites that don't have userId set yet
+      const inviteAssignments = await db.select().from(drillAssignments).where(
+        and(
+          inArray(drillAssignments.inviteId, inviteIds),
+          isNull(drillAssignments.userId)
+        )
+      );
+      
+      // Combine both sets of assignments
+      return [...directAssignments, ...inviteAssignments];
+    }
+  }
+  
+  return directAssignments;
 }
 
 export async function getAllAssignments() {
