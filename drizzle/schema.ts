@@ -101,3 +101,17 @@ export const drillDetails = mysqlTable("drillDetails", {
 
 export type DrillDetail = typeof drillDetails.$inferSelect;
 export type InsertDrillDetail = typeof drillDetails.$inferInsert;
+
+export const badges = mysqlTable("badges", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  badgeType: varchar("badgeType", { length: 100 }).notNull(), // "first_drill", "five_day_streak", "master_hitting", etc.
+  badgeName: varchar("badgeName", { length: 255 }).notNull(), // "First Drill Completed", "5-Day Streak", etc.
+  badgeDescription: text("badgeDescription"),
+  badgeIcon: varchar("badgeIcon", { length: 50 }), // emoji or icon name
+  earnedAt: timestamp("earnedAt").defaultNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type Badge = typeof badges.$inferSelect;
+export type InsertBadge = typeof badges.$inferInsert;

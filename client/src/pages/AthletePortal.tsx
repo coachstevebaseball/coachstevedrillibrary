@@ -10,6 +10,9 @@ import drillsData from "@/data/drills.json";
 import { getCategoryConfig } from "@/lib/categoryColors";
 import { trpc } from "@/lib/trpc";
 import { ProgressDashboard, ProgressBar } from "@/components/ProgressDashboard";
+import { CompletionModal } from "@/components/CompletionModal";
+import { BadgeDisplay } from "@/components/BadgeDisplay";
+import { DrillNotes } from "@/components/DrillNotes";
 
 interface Drill {
   id: string;
@@ -38,6 +41,7 @@ export default function AthletePortal() {
   const { user, loading } = useAuth();
   const [statusFilter, setStatusFilter] = useState<"all" | "assigned" | "in-progress" | "completed">("all");
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
 
   // Fetch user's assignments
   const { data: userAssignments = [], isLoading: assignmentsLoading } = trpc.drillAssignments.getUserAssignments.useQuery(
@@ -270,16 +274,27 @@ export default function AthletePortal() {
                           )}
                         </div>
 
-                        {/* Coach Notes */}
-                        {selectedAssignment.notes && (
-                          <div className="bg-muted p-3 rounded-lg">
-                            <span className="text-xs font-semibold text-muted-foreground uppercase block mb-1">Coach Notes</span>
-                            <p className="text-sm">{selectedAssignment.notes}</p>
-                          </div>
-                        )}
+                        {/* Drill Notes */}
+                        <DrillNotes
+                          athleteNotes={selectedAssignment.notes || ""}
+                          isCoach={false}
+                          isCompleted={selectedAssignment.status === "completed"}
+                          onSaveAthleteNotes={(notes) => {
+                            // TODO: Implement save athlete notes
+                          }}
+                        />
 
                         {/* Status Update */}
                         <div className="border-t pt-4">
+                          {selectedAssignment.status !== "completed" && (
+                            <Button
+                              onClick={() => setShowCompletionModal(true)}
+                              className="w-full bg-green-600 hover:bg-green-700 mb-3"
+                            >
+                              <CheckCircle className="h-4 w-4 mr-2" />
+                              Mark as Complete
+                            </Button>
+                          )}
                           <label className="text-xs font-semibold text-muted-foreground uppercase block mb-2">Update Status</label>
                           <Select
                             value={selectedAssignment.status}
@@ -322,6 +337,19 @@ export default function AthletePortal() {
           </div>
         </div>
       </main>
+
+      {/* Completion Modal */}
+      {selectedAssignment && (
+        <CompletionModal
+          isOpen={showCompletionModal}
+          drillName={selectedAssignment.drillName}
+          onClose={() => setShowCompletionModal(false)}
+          onConfirm={() => {
+            handleStatusUpdate(selectedAssignment.id, "completed");
+            setShowCompletionModal(false);
+          }}
+        />
+      )}
     </div>
   );
 }

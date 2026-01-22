@@ -352,3 +352,30 @@
 - [x] Integrate dashboard into athlete portal header
 - [x] Style dashboard to match USA Baseball branding
 - [x] Test dashboard with multiple athlete scenarios
+
+
+## Athlete Portal - Mark Complete Button (Tier 1 #2)
+- [x] Create CompletionModal component with celebration animation
+- [x] Add "Mark Complete" button to drill details panel
+- [x] Implement confirmation dialog with drill name and completion date
+- [ ] Add success toast notification after completion
+- [x] Update drill status to "completed" in database
+- [ ] Test mark complete flow with multiple drills
+
+## Athlete Portal - Achievement Badges (Tier 2 #5)
+- [x] Create badges table in database schema
+- [x] Design badge icons and metadata (name, description, criteria)
+- [ ] Build badge earning logic (first drill, 5-day streak, etc.)
+- [x] Create BadgeDisplay component to show earned badges
+- [ ] Add badge notifications when athlete earns one
+- [ ] Display badges on athlete profile/portal
+- [ ] Test badge earning with different scenarios
+
+## Athlete Portal - Drill Notes Feature (Tier 2 #6)
+- [x] Add notes column to drillAssignments table
+- [x] Create DrillNotes component for athletes and coaches
+- [ ] Allow athletes to add notes after completing drills
+- [x] Display notes in drill details panel
+- [ ] Show notes in coach dashboard for feedback
+- [ ] Add coach ability to reply to athlete notes
+- [ ] Test notes creation and coach feedback flow

@@ -57,6 +57,13 @@
       "when": 1769013060480,
       "tag": "0007_medical_cassandra_nova",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1769066044669,
+      "tag": "0008_rapid_killraven",
+      "breakpoints": true
     }
   ]
 }
