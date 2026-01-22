@@ -52,12 +52,14 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.lastSignedIn = user.lastSignedIn;
       updateSet.lastSignedIn = user.lastSignedIn;
     }
-    if (user.role !== undefined) {
-      values.role = user.role;
-      updateSet.role = user.role;
-    } else if (user.openId === ENV.ownerOpenId) {
+    // Always ensure owner has admin role
+    if (user.openId === ENV.ownerOpenId) {
       values.role = 'admin';
       updateSet.role = 'admin';
+      console.log(`[Database] Setting admin role for owner: ${user.openId}`);
+    } else if (user.role !== undefined) {
+      values.role = user.role;
+      updateSet.role = user.role;
     } else {
       // Assign 'athlete' role to new OAuth users by default (this is an athlete platform)
       values.role = 'athlete';

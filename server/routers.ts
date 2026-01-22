@@ -18,7 +18,12 @@ export const appRouter = router({
   system: systemRouter,
   notifications: notificationsRouter,
   auth: router({
-    me: publicProcedure.query(opts => opts.ctx.user),
+    me: publicProcedure.query(async (opts) => {
+      if (!opts.ctx.user) return null;
+      // Fetch full user record from database to include role
+      const fullUser = await db.getUserByOpenId(opts.ctx.user.openId);
+      return fullUser || opts.ctx.user;
+    }),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
