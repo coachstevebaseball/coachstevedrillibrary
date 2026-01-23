@@ -624,3 +624,6 @@
 
 ## Fix Custom Drills Display
 - [x] Make custom drills appear in the drills directory
+
+## Fix Custom Drill Detail Page
+- [x] Make custom drills display on drill detail page

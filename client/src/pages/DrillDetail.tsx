@@ -1153,7 +1153,25 @@ export default function DrillDetail() {
   const { user, loading } = useAuth();
   const [match, params] = useRoute("/drill/:id");
   const id = params?.id;
-  const drill = drillsData.find(d => d.id.toString() === id);
+  
+  // Fetch custom drills from database
+  const { data: customDrills = [] } = trpc.drillDetails.getCustomDrills.useQuery();
+  
+  // Look for drill in static data first, then in custom drills
+  const staticDrill = drillsData.find(d => d.id.toString() === id);
+  const customDrill = customDrills.find((cd: any) => cd.drillId === id);
+  
+  // Create a unified drill object
+  const drill = staticDrill || (customDrill ? {
+    id: customDrill.drillId,
+    name: customDrill.name,
+    difficulty: customDrill.difficulty,
+    categories: [customDrill.category],
+    duration: customDrill.duration,
+    url: `/drill/${customDrill.drillId}`,
+    is_direct_link: true,
+  } : null);
+  
   // Try to load from database first, fallback to hardcoded details
   const { data: dbDetails } = trpc.drillDetails.getDrillDetail.useQuery(
     { drillId: id || '' },
