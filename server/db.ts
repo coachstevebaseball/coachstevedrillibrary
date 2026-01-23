@@ -1121,3 +1121,100 @@ export async function updateDrillInstructions(drillName: string, instructions: s
   }
   return true;
 }
+
+
+// Create a completely new drill
+export async function createNewDrill(
+  drillData: {
+    name: string;
+    difficulty: string;
+    category: string;
+    duration: string;
+    goal?: string;
+    instructions?: string;
+    videoUrl?: string;
+  },
+  userId: number
+): Promise<{ success: boolean; drillId: string; error?: string }> {
+  const db = await getDb();
+  if (!db) {
+    return { success: false, drillId: "", error: "Database not available" };
+  }
+
+  try {
+    const { drillDetails, drillVideos } = await import("../drizzle/schema");
+    
+    // Generate drillId from name
+    const drillId = drillData.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    
+    // Check if drill already exists
+    const existing = await db.select().from(drillDetails).where(eq(drillDetails.drillId, drillId));
+    if (existing.length > 0) {
+      return { success: false, drillId, error: "A drill with this name already exists" };
+    }
+    
+    // Insert drill details
+    await db.insert(drillDetails).values({
+      drillId,
+      skillSet: drillData.category,
+      difficulty: drillData.difficulty,
+      athletes: "Varies",
+      time: drillData.duration,
+      equipment: "Varies",
+      goal: drillData.goal || "",
+      description: [],
+      instructions: drillData.instructions || "",
+      createdBy: userId,
+    });
+    
+    // If video URL provided, save it too
+    if (drillData.videoUrl) {
+      const existingVideo = await db.select().from(drillVideos).where(eq(drillVideos.drillId, drillId));
+      if (existingVideo.length > 0) {
+        await db.update(drillVideos).set({
+          videoUrl: drillData.videoUrl,
+          updatedAt: new Date(),
+        }).where(eq(drillVideos.drillId, drillId));
+      } else {
+        await db.insert(drillVideos).values({
+          drillId,
+          videoUrl: drillData.videoUrl,
+          uploadedBy: userId,
+        });
+      }
+    }
+    
+    // Also add to the drills.json file by writing to a custom drills table
+    // For now, we'll store custom drills in the database and merge them at runtime
+    const { customDrills } = await import("../drizzle/schema");
+    await db.insert(customDrills).values({
+      drillId,
+      name: drillData.name,
+      difficulty: drillData.difficulty,
+      category: drillData.category,
+      duration: drillData.duration,
+      createdBy: userId,
+    });
+    
+    return { success: true, drillId };
+  } catch (error) {
+    console.error("[Database] Failed to create new drill:", error);
+    return { success: false, drillId: "", error: String(error) };
+  }
+}
+
+// Get all custom drills
+export async function getCustomDrills() {
+  const db = await getDb();
+  if (!db) {
+    return [];
+  }
+
+  try {
+    const { customDrills } = await import("../drizzle/schema");
+    return await db.select().from(customDrills);
+  } catch (error) {
+    console.error("[Database] Failed to get custom drills:", error);
+    return [];
+  }
+}

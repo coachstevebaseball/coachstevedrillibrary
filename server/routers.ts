@@ -272,6 +272,23 @@ export const appRouter = router({
         }
         return { results };
       }),
+    createNewDrill: protectedProcedure
+      .input(z.object({
+        name: z.string(),
+        difficulty: z.string(),
+        category: z.string(),
+        duration: z.string(),
+        goal: z.string().optional(),
+        instructions: z.string().optional(),
+        videoUrl: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const result = await db.createNewDrill(input, ctx.user.id);
+        return result;
+      }),
   }),
 
   // Videos router

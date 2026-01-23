@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import * as React from "react";
 import { BulkImportDrills } from "@/components/BulkImportDrills";
 import { SingleVideoUpload } from "@/components/SingleVideoUpload";
+import { AddNewDrill } from "@/components/AddNewDrill";
 import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function AdminDashboard() {
@@ -151,6 +152,7 @@ export default function AdminDashboard() {
               </p>
             </div>
             <div className="flex gap-3 flex-wrap">
+              <AddNewDrill />
               <SingleVideoUpload />
               <BulkImportDrills />
               <Link href="/coach">

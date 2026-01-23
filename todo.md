@@ -616,3 +616,8 @@
 
 ## Single Video Upload Feature
 - [x] Add single video upload option to Admin Dashboard
+
+## Add New Drill Feature
+- [x] Create "Add New Drill" form component with name, goal, instructions, video URL
+- [x] Add backend procedure to create new drills in database and drills.json
+- [x] Add button to Admin Dashboard

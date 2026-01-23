@@ -210,3 +210,20 @@ export const drillAnswers = mysqlTable("drillAnswers", {
 
 export type DrillAnswer = typeof drillAnswers.$inferSelect;
 export type InsertDrillAnswer = typeof drillAnswers.$inferInsert;
+
+
+// Custom drills created by admin/coach (not from the original drills.json)
+export const customDrills = mysqlTable("customDrills", {
+  id: int("id").autoincrement().primaryKey(),
+  drillId: varchar("drillId", { length: 255 }).notNull().unique(),
+  name: varchar("name", { length: 255 }).notNull(),
+  difficulty: varchar("difficulty", { length: 50 }).notNull(),
+  category: varchar("category", { length: 100 }).notNull(),
+  duration: varchar("duration", { length: 50 }).notNull(),
+  createdBy: int("createdBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CustomDrill = typeof customDrills.$inferSelect;
+export type InsertCustomDrill = typeof customDrills.$inferInsert;
