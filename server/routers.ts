@@ -289,6 +289,10 @@ export const appRouter = router({
         const result = await db.createNewDrill(input, ctx.user.id);
         return result;
       }),
+    getCustomDrills: publicProcedure
+      .query(async () => {
+        return await db.getCustomDrills();
+      }),
   }),
 
   // Videos router

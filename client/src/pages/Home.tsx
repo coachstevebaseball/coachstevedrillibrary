@@ -8,6 +8,7 @@ import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
 import drillsData from "@/data/drills.json";
 import { useState, useMemo } from "react";
+import { trpc } from "@/lib/trpc";
 
 // Types
 interface Drill {
@@ -45,24 +46,41 @@ export default function Home() {
   const [showFilters, setShowFilters] = useState(false);
   const DRILLS_PER_PAGE = 20;
 
+  // Fetch custom drills from database
+  const { data: customDrills = [] } = trpc.drillDetails.getCustomDrills.useQuery();
+
+  // Merge static drills with custom drills from database
+  const allDrills: Drill[] = useMemo(() => {
+    const customDrillsFormatted: Drill[] = customDrills.map((cd: any) => ({
+      id: cd.drillId,
+      name: cd.name,
+      difficulty: cd.difficulty,
+      categories: [cd.category],
+      duration: cd.duration,
+      url: `/drill/${cd.drillId}`,
+      is_direct_link: true,
+    }));
+    return [...drillsData, ...customDrillsFormatted];
+  }, [customDrills]);
+
   // Extract unique categories
   const allCategories = useMemo(() => {
     const categories = new Set<string>();
-    drillsData.forEach(drill => {
+    allDrills.forEach(drill => {
       drill.categories.forEach(cat => categories.add(cat));
     });
     return ["All", ...Array.from(categories).sort()];
-  }, []);
+  }, [allDrills]);
 
   // Filter drills
   const filteredDrills = useMemo(() => {
-    return drillsData.filter(drill => {
+    return allDrills.filter(drill => {
       const matchesSearch = drill.name.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesDifficulty = difficultyFilter === "All" || drill.difficulty === difficultyFilter;
       const matchesCategory = categoryFilter === "All" || drill.categories.includes(categoryFilter);
       return matchesSearch && matchesDifficulty && matchesCategory;
     });
-  }, [searchQuery, difficultyFilter, categoryFilter]);
+  }, [allDrills, searchQuery, difficultyFilter, categoryFilter]);
 
   // Pagination logic
   const totalPages = Math.ceil(filteredDrills.length / DRILLS_PER_PAGE);
@@ -185,7 +203,7 @@ export default function Home() {
               Drills Directory
             </h1>
             <p className="text-base md:text-lg text-primary-foreground/90 mb-6 md:mb-10 max-w-3xl leading-relaxed font-medium">
-              {drillsData.length} professional baseball drills. Filter by skill set, difficulty, and duration to build the perfect practice plan.
+              {allDrills.length} professional baseball drills. Filter by skill set, difficulty, and duration to build the perfect practice plan.
             </p>
             
             {/* Search Bar in Hero */}

@@ -621,3 +621,6 @@
 - [x] Create "Add New Drill" form component with name, goal, instructions, video URL
 - [x] Add backend procedure to create new drills in database and drills.json
 - [x] Add button to Admin Dashboard
+
+## Fix Custom Drills Display
+- [x] Make custom drills appear in the drills directory
