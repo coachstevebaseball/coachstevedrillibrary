@@ -223,3 +223,117 @@ export async function getAssignmentProgress(assignmentId: number) {
 
   return await db.select().from(assignmentProgress).where(eq(assignmentProgress.assignmentId, assignmentId));
 }
+
+/**
+ * Get comprehensive progress statistics for an athlete
+ */
+export async function getAthleteProgressStats(userId: number) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  // Get all assignments for this user
+  const assignments = await getUserAssignments(userId);
+  
+  // Calculate core metrics
+  const totalAssigned = assignments.length;
+  const completed = assignments.filter(a => a.status === "completed").length;
+  const inProgress = assignments.filter(a => a.status === "in-progress").length;
+  const assigned = assignments.filter(a => a.status === "assigned").length;
+  const completionRate = totalAssigned > 0 ? Math.round((completed / totalAssigned) * 100) : 0;
+
+  // Calculate average time to complete (in days)
+  const completedAssignments = assignments.filter(a => a.status === "completed" && a.completedAt && a.assignedAt);
+  let avgDaysToComplete = 0;
+  if (completedAssignments.length > 0) {
+    const totalDays = completedAssignments.reduce((sum, a) => {
+      const assignedDate = new Date(a.assignedAt!);
+      const completedDate = new Date(a.completedAt!);
+      const days = Math.ceil((completedDate.getTime() - assignedDate.getTime()) / (1000 * 60 * 60 * 24));
+      return sum + days;
+    }, 0);
+    avgDaysToComplete = Math.round(totalDays / completedAssignments.length);
+  }
+
+  // Get last activity date
+  const sortedByUpdate = [...assignments].sort((a, b) => {
+    const dateA = a.updatedAt ? new Date(a.updatedAt).getTime() : 0;
+    const dateB = b.updatedAt ? new Date(b.updatedAt).getTime() : 0;
+    return dateB - dateA;
+  });
+  const lastActivityDate = sortedByUpdate[0]?.updatedAt || null;
+
+  // Get recent completions (last 5)
+  const recentCompletions = assignments
+    .filter(a => a.status === "completed" && a.completedAt)
+    .sort((a, b) => new Date(b.completedAt!).getTime() - new Date(a.completedAt!).getTime())
+    .slice(0, 5)
+    .map(a => ({
+      drillName: a.drillName,
+      completedAt: a.completedAt,
+    }));
+
+  // Calculate weekly progress (last 4 weeks)
+  const now = new Date();
+  const weeklyProgress = [];
+  for (let i = 0; i < 4; i++) {
+    const weekStart = new Date(now);
+    weekStart.setDate(weekStart.getDate() - (i + 1) * 7);
+    const weekEnd = new Date(now);
+    weekEnd.setDate(weekEnd.getDate() - i * 7);
+    
+    const completedThisWeek = assignments.filter(a => {
+      if (a.status !== "completed" || !a.completedAt) return false;
+      const completedDate = new Date(a.completedAt);
+      return completedDate >= weekStart && completedDate < weekEnd;
+    }).length;
+    
+    weeklyProgress.unshift({
+      week: `Week ${4 - i}`,
+      completed: completedThisWeek,
+    });
+  }
+
+  // Drill breakdown by difficulty
+  const byDifficulty = {
+    Easy: { total: 0, completed: 0 },
+    Medium: { total: 0, completed: 0 },
+    Hard: { total: 0, completed: 0 },
+    Unknown: { total: 0, completed: 0 },
+  };
+
+  // We need to get difficulty from the drill data
+  // For now, we'll use a simple approach - this could be enhanced later
+  assignments.forEach(a => {
+    // Default to Unknown if we don't have difficulty info
+    const difficulty = "Unknown";
+    if (!byDifficulty[difficulty as keyof typeof byDifficulty]) {
+      byDifficulty.Unknown.total++;
+      if (a.status === "completed") byDifficulty.Unknown.completed++;
+    } else {
+      byDifficulty[difficulty as keyof typeof byDifficulty].total++;
+      if (a.status === "completed") byDifficulty[difficulty as keyof typeof byDifficulty].completed++;
+    }
+  });
+
+  return {
+    coreMetrics: {
+      totalAssigned,
+      completed,
+      inProgress,
+      assigned,
+      completionRate,
+      avgDaysToComplete,
+    },
+    activity: {
+      lastActivityDate,
+      recentCompletions,
+      weeklyProgress,
+    },
+    drillBreakdown: {
+      byDifficulty,
+    },
+    assignments, // Include raw assignments for detailed view
+  };
+}

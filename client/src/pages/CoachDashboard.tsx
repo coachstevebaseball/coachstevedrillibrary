@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, Sparkles, Video, Upload, MessageSquare } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, Sparkles, Video, Upload, MessageSquare, BarChart3 } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
 import drillsData from "@/data/drills.json";
@@ -26,6 +26,7 @@ function useAllDrills() {
 }
 import { BulkInstructionImport } from "@/components/BulkInstructionImport";
 import { BulkGoalUpload } from "@/components/BulkGoalUpload";
+import { AthleteProgressReport } from "@/components/AthleteProgressReport";
 
 interface Drill {
   id: string;
@@ -42,6 +43,7 @@ export default function CoachDashboard() {
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
   const [activeTab, setActiveTab] = useState<"assign" | "bulk-import" | "bulk-goals">("assign");
   const [isBulkGoalOpen, setIsBulkGoalOpen] = useState(false);
+  const [showProgressReport, setShowProgressReport] = useState(false);
 
   // Fetch all users
   const { data: allUsers = [] } = trpc.admin.getAllUsers.useQuery(undefined, {
@@ -386,18 +388,38 @@ export default function CoachDashboard() {
             </Card>
           </div>
 
-          {/* Right: Assignments List */}
+          {/* Right: Assignments List or Progress Report */}
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg md:text-xl">
-                  {selectedUser
-                    ? `${allUsers.find((u: any) => u.id === selectedUser)?.name || `User ${selectedUser}`}'s Assignments`
-                    : "Select an athlete to view assignments"}
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg md:text-xl">
+                    {selectedUser
+                      ? showProgressReport
+                        ? `${athleteOptions.find(a => a.id === selectedUser)?.name || 'Athlete'}'s Progress Report`
+                        : `${athleteOptions.find(a => a.id === selectedUser)?.name || 'Athlete'}'s Assignments`
+                      : "Select an athlete to view assignments"}
+                  </CardTitle>
+                  {selectedUser && selectedUser.startsWith('user-') && (
+                    <Button
+                      variant={showProgressReport ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setShowProgressReport(!showProgressReport)}
+                      className="gap-2"
+                    >
+                      <BarChart3 className="h-4 w-4" />
+                      {showProgressReport ? "View Assignments" : "Progress Report"}
+                    </Button>
+                  )}
+                </div>
               </CardHeader>
               <CardContent>
-                {selectedUser && userAssignments.length > 0 ? (
+                {selectedUser && showProgressReport && selectedUser.startsWith('user-') ? (
+                  <AthleteProgressReport
+                    userId={parseInt(selectedUser.replace('user-', ''))}
+                    athleteName={athleteOptions.find(a => a.id === selectedUser)?.name || 'Athlete'}
+                  />
+                ) : selectedUser && userAssignments.length > 0 ? (
                   <div className="space-y-3">
                     {userAssignments.map((assignment: any) => (
                       <div key={assignment.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">

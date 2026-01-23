@@ -196,6 +196,15 @@ export const appRouter = router({
     getUserAssignments: protectedProcedure.query(async ({ ctx }) => {
       return await drillAssignmentDb.getUserAssignments(ctx.user.id);
     }),
+
+    getAthleteProgress: protectedProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillAssignmentDb.getAthleteProgressStats(input.userId);
+      }),
   }),
 
   // Submissions router

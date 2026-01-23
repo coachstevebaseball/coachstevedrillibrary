@@ -630,3 +630,10 @@
 
 ## Fix Custom Drill Assignment Integration
 - [x] Make custom drills appear in drill assignment dropdown
+
+## Athlete Progress Report Dashboard
+- [x] Create backend procedure to fetch athlete progress stats
+- [x] Build AthleteProgressReport component with metrics
+- [x] Add progress report view to Coach Dashboard
+- [x] Include drill breakdown by category and difficulty
+- [x] Add activity timeline and completion trends
