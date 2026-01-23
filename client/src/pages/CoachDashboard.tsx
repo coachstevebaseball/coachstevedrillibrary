@@ -9,6 +9,21 @@ import { Link } from "wouter";
 import { useState, useMemo } from "react";
 import drillsData from "@/data/drills.json";
 import { trpc } from "@/lib/trpc";
+
+// Hook to merge static drills with custom drills from database
+function useAllDrills() {
+  const { data: customDrills = [] } = trpc.drillDetails.getCustomDrills.useQuery();
+  return useMemo(() => {
+    const customDrillsFormatted = customDrills.map((cd: any) => ({
+      id: cd.drillId,
+      name: cd.name,
+      difficulty: cd.difficulty,
+      categories: [cd.category],
+      duration: cd.duration,
+    }));
+    return [...drillsData, ...customDrillsFormatted];
+  }, [customDrills]);
+}
 import { BulkInstructionImport } from "@/components/BulkInstructionImport";
 import { BulkGoalUpload } from "@/components/BulkGoalUpload";
 
@@ -97,12 +112,15 @@ export default function CoachDashboard() {
   const unassignDrillMutation = trpc.drillAssignments.unassignDrill.useMutation();
   const updateStatusMutation = trpc.drillAssignments.updateStatus.useMutation();
 
+  // Get all drills including custom drills
+  const allDrills = useAllDrills();
+
   // Filter drills by search
   const filteredDrills = useMemo(() => {
-    return (drillsData as Drill[]).filter(drill =>
+    return (allDrills as Drill[]).filter(drill =>
       drill.name.toLowerCase().includes(searchDrill.toLowerCase())
     ).slice(0, 10); // Show top 10 results
-  }, [searchDrill]);
+  }, [searchDrill, allDrills]);
 
   // Get user/invite assignments
   const userAssignments = useMemo(() => {

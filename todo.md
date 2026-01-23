@@ -627,3 +627,6 @@
 
 ## Fix Custom Drill Detail Page
 - [x] Make custom drills display on drill detail page
+
+## Fix Custom Drill Assignment Integration
+- [x] Make custom drills appear in drill assignment dropdown

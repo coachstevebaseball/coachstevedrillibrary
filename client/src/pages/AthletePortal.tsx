@@ -9,6 +9,21 @@ import { useState, useMemo } from "react";
 import drillsData from "@/data/drills.json";
 import { getCategoryConfig } from "@/lib/categoryColors";
 import { trpc } from "@/lib/trpc";
+
+// Hook to merge static drills with custom drills from database
+function useAllDrills() {
+  const { data: customDrills = [] } = trpc.drillDetails.getCustomDrills.useQuery();
+  return useMemo(() => {
+    const customDrillsFormatted = customDrills.map((cd: any) => ({
+      id: cd.drillId,
+      name: cd.name,
+      difficulty: cd.difficulty,
+      categories: [cd.category],
+      duration: cd.duration,
+    }));
+    return [...drillsData, ...customDrillsFormatted];
+  }, [customDrills]);
+}
 import { ProgressDashboard, ProgressBar } from "@/components/ProgressDashboard";
 import { CompletionModal } from "@/components/CompletionModal";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
@@ -69,9 +84,12 @@ export default function AthletePortal() {
     return { total, completed, inProgress, assigned };
   }, [userAssignments]);
 
+  // Get all drills including custom drills
+  const allDrills = useAllDrills();
+
   // Get drill details
   const getDrill = (drillId: string): Drill | undefined => {
-    return (drillsData as Drill[]).find(d => d.id === drillId);
+    return (allDrills as Drill[]).find(d => d.id === drillId);
   };
 
   // Handle status update
