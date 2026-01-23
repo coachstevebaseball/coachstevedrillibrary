@@ -637,3 +637,9 @@
 - [x] Add progress report view to Coach Dashboard
 - [x] Include drill breakdown by category and difficulty
 - [x] Add activity timeline and completion trends
+
+## Coach Notes Feature
+- [ ] Create coachNotes database table
+- [ ] Add backend procedures for saving and fetching notes
+- [ ] Add notes UI component to Progress Report
+- [ ] Display notes history with timestamps

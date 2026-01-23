@@ -1,4 +1,4 @@
-import { eq, and, or, isNull, inArray } from "drizzle-orm";
+import { eq, and, or, isNull, inArray, desc } from "drizzle-orm";
 import { drillAssignments, assignmentProgress, InsertDrillAssignment, InsertAssignmentProgress, users, notifications, invites } from "../drizzle/schema";
 import { getDb } from "./db";
 import { sendDrillAssignmentEmail } from "./email";
@@ -336,4 +336,78 @@ export async function getAthleteProgressStats(userId: number) {
     },
     assignments, // Include raw assignments for detailed view
   };
+}
+
+
+import { coachNotes, InsertCoachNote } from "../drizzle/schema";
+
+/**
+ * Get all coach notes for an athlete
+ */
+export async function getCoachNotes(athleteId: number) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  return await db
+    .select()
+    .from(coachNotes)
+    .where(eq(coachNotes.athleteId, athleteId))
+    .orderBy(desc(coachNotes.meetingDate));
+}
+
+/**
+ * Add a new coach note for an athlete
+ */
+export async function addCoachNote(data: {
+  athleteId: number;
+  coachId: number;
+  note: string;
+  meetingDate: Date;
+}) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const noteData: InsertCoachNote = {
+    athleteId: data.athleteId,
+    coachId: data.coachId,
+    note: data.note,
+    meetingDate: data.meetingDate,
+  };
+
+  const result = await db.insert(coachNotes).values(noteData);
+  return { success: true, id: result[0].insertId };
+}
+
+/**
+ * Update an existing coach note
+ */
+export async function updateCoachNote(noteId: number, note: string) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  await db
+    .update(coachNotes)
+    .set({ note })
+    .where(eq(coachNotes.id, noteId));
+
+  return { success: true };
+}
+
+/**
+ * Delete a coach note
+ */
+export async function deleteCoachNote(noteId: number) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  await db.delete(coachNotes).where(eq(coachNotes.id, noteId));
+  return { success: true };
 }

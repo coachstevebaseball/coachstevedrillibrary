@@ -205,6 +205,55 @@ export const appRouter = router({
         }
         return await drillAssignmentDb.getAthleteProgressStats(input.userId);
       }),
+
+    // Coach notes for athlete progress tracking
+    getCoachNotes: protectedProcedure
+      .input(z.object({ athleteId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillAssignmentDb.getCoachNotes(input.athleteId);
+      }),
+
+    addCoachNote: protectedProcedure
+      .input(z.object({
+        athleteId: z.number(),
+        note: z.string(),
+        meetingDate: z.date(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillAssignmentDb.addCoachNote({
+          athleteId: input.athleteId,
+          coachId: ctx.user.id,
+          note: input.note,
+          meetingDate: input.meetingDate,
+        });
+      }),
+
+    updateCoachNote: protectedProcedure
+      .input(z.object({
+        noteId: z.number(),
+        note: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillAssignmentDb.updateCoachNote(input.noteId, input.note);
+      }),
+
+    deleteCoachNote: protectedProcedure
+      .input(z.object({ noteId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillAssignmentDb.deleteCoachNote(input.noteId);
+      }),
   }),
 
   // Submissions router

@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { 
   CheckCircle, 
   Clock, 
@@ -9,9 +13,16 @@ import {
   Calendar,
   Target,
   Activity,
-  Award
+  Award,
+  MessageSquare,
+  Plus,
+  Pencil,
+  Trash2,
+  Save,
+  X
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 
 interface AthleteProgressReportProps {
   userId: number;
@@ -19,10 +30,86 @@ interface AthleteProgressReportProps {
 }
 
 export function AthleteProgressReport({ userId, athleteName }: AthleteProgressReportProps) {
+  const [showAddNote, setShowAddNote] = useState(false);
+  const [newNote, setNewNote] = useState("");
+  const [meetingDate, setMeetingDate] = useState(new Date().toISOString().split("T")[0]);
+  const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
+  const [editingNoteText, setEditingNoteText] = useState("");
+
+  const utils = trpc.useUtils();
+
   const { data: progressData, isLoading, error } = trpc.drillAssignments.getAthleteProgress.useQuery(
     { userId },
     { enabled: !!userId }
   );
+
+  const { data: coachNotes, isLoading: notesLoading } = trpc.drillAssignments.getCoachNotes.useQuery(
+    { athleteId: userId },
+    { enabled: !!userId }
+  );
+
+  const addNoteMutation = trpc.drillAssignments.addCoachNote.useMutation({
+    onSuccess: () => {
+      toast.success("Note saved successfully");
+      setNewNote("");
+      setShowAddNote(false);
+      utils.drillAssignments.getCoachNotes.invalidate({ athleteId: userId });
+    },
+    onError: (error) => {
+      toast.error("Failed to save note: " + error.message);
+    },
+  });
+
+  const updateNoteMutation = trpc.drillAssignments.updateCoachNote.useMutation({
+    onSuccess: () => {
+      toast.success("Note updated successfully");
+      setEditingNoteId(null);
+      setEditingNoteText("");
+      utils.drillAssignments.getCoachNotes.invalidate({ athleteId: userId });
+    },
+    onError: (error) => {
+      toast.error("Failed to update note: " + error.message);
+    },
+  });
+
+  const deleteNoteMutation = trpc.drillAssignments.deleteCoachNote.useMutation({
+    onSuccess: () => {
+      toast.success("Note deleted");
+      utils.drillAssignments.getCoachNotes.invalidate({ athleteId: userId });
+    },
+    onError: (error) => {
+      toast.error("Failed to delete note: " + error.message);
+    },
+  });
+
+  const handleAddNote = () => {
+    if (!newNote.trim()) {
+      toast.error("Please enter a note");
+      return;
+    }
+    addNoteMutation.mutate({
+      athleteId: userId,
+      note: newNote.trim(),
+      meetingDate: new Date(meetingDate),
+    });
+  };
+
+  const handleUpdateNote = (noteId: number) => {
+    if (!editingNoteText.trim()) {
+      toast.error("Please enter a note");
+      return;
+    }
+    updateNoteMutation.mutate({
+      noteId,
+      note: editingNoteText.trim(),
+    });
+  };
+
+  const handleDeleteNote = (noteId: number) => {
+    if (confirm("Are you sure you want to delete this note?")) {
+      deleteNoteMutation.mutate({ noteId });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -216,6 +303,167 @@ export function AthleteProgressReport({ userId, athleteName }: AthleteProgressRe
           </CardContent>
         </Card>
       </div>
+
+      {/* Coach Notes Section */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <MessageSquare className="h-5 w-5" />
+              Meeting Notes
+            </CardTitle>
+            {!showAddNote && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setShowAddNote(true)}
+                className="flex items-center gap-1"
+              >
+                <Plus className="h-4 w-4" />
+                Add Note
+              </Button>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          {/* Add Note Form */}
+          {showAddNote && (
+            <div className="mb-6 p-4 border rounded-lg bg-muted/30">
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium mb-1 block">Meeting Date</label>
+                  <Input
+                    type="date"
+                    value={meetingDate}
+                    onChange={(e) => setMeetingDate(e.target.value)}
+                    className="w-48"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1 block">Notes</label>
+                  <Textarea
+                    placeholder="Enter observations from your meeting..."
+                    value={newNote}
+                    onChange={(e) => setNewNote(e.target.value)}
+                    rows={4}
+                    className="resize-none"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={handleAddNote}
+                    disabled={addNoteMutation.isPending}
+                    className="flex items-center gap-1"
+                  >
+                    <Save className="h-4 w-4" />
+                    {addNoteMutation.isPending ? "Saving..." : "Save Note"}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setShowAddNote(false);
+                      setNewNote("");
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Notes List */}
+          {notesLoading ? (
+            <div className="space-y-3">
+              <div className="h-20 bg-muted animate-pulse rounded-lg" />
+              <div className="h-20 bg-muted animate-pulse rounded-lg" />
+            </div>
+          ) : coachNotes && coachNotes.length > 0 ? (
+            <div className="space-y-4">
+              {coachNotes.map((note) => (
+                <div key={note.id} className="border rounded-lg p-4">
+                  {editingNoteId === note.id ? (
+                    <div className="space-y-3">
+                      <Textarea
+                        value={editingNoteText}
+                        onChange={(e) => setEditingNoteText(e.target.value)}
+                        rows={3}
+                        className="resize-none"
+                      />
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm"
+                          onClick={() => handleUpdateNote(note.id)}
+                          disabled={updateNoteMutation.isPending}
+                        >
+                          <Save className="h-4 w-4 mr-1" />
+                          {updateNoteMutation.isPending ? "Saving..." : "Save"}
+                        </Button>
+                        <Button 
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setEditingNoteId(null);
+                            setEditingNoteText("");
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Calendar className="h-4 w-4" />
+                          <span>
+                            {new Date(note.meetingDate).toLocaleDateString("en-US", {
+                              weekday: "long",
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}
+                          </span>
+                        </div>
+                        <div className="flex gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setEditingNoteId(note.id);
+                              setEditingNoteText(note.note);
+                            }}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteNote(note.id)}
+                            disabled={deleteNoteMutation.isPending}
+                            className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      <p className="text-sm whitespace-pre-wrap">{note.note}</p>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
+              <p>No meeting notes yet</p>
+              <p className="text-sm">Click "Add Note" to record observations from your sessions</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Status Breakdown */}
       <Card>

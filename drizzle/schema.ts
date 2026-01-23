@@ -227,3 +227,18 @@ export const customDrills = mysqlTable("customDrills", {
 
 export type CustomDrill = typeof customDrills.$inferSelect;
 export type InsertCustomDrill = typeof customDrills.$inferInsert;
+
+
+// Coach notes for athlete progress tracking during in-person meetings
+export const coachNotes = mysqlTable("coachNotes", {
+  id: int("id").autoincrement().primaryKey(),
+  athleteId: int("athleteId").notNull(),
+  coachId: int("coachId").notNull(),
+  note: text("note").notNull(),
+  meetingDate: timestamp("meetingDate").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CoachNote = typeof coachNotes.$inferSelect;
+export type InsertCoachNote = typeof coachNotes.$inferInsert;
