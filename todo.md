@@ -613,3 +613,6 @@
 - [x] Fix TypeScript errors in CreateDrillDetails.tsx and DrillDetail.tsx
 - [x] Restore drill editing functionality on frontend
 - [x] Test saving drill details, goals, and videos from Admin Dashboard
+
+## Single Video Upload Feature
+- [x] Add single video upload option to Admin Dashboard

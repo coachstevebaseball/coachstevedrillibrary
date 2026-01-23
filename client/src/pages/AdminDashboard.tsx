@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import * as React from "react";
 import { BulkImportDrills } from "@/components/BulkImportDrills";
+import { SingleVideoUpload } from "@/components/SingleVideoUpload";
 import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function AdminDashboard() {
@@ -149,7 +150,8 @@ export default function AdminDashboard() {
                 Manage client access to the drills directory
               </p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 flex-wrap">
+              <SingleVideoUpload />
               <BulkImportDrills />
               <Link href="/coach">
                 <Button variant="secondary">Coach Dashboard</Button>
