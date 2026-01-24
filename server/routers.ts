@@ -197,6 +197,10 @@ export const appRouter = router({
       return await drillAssignmentDb.getUserAssignments(ctx.user.id);
     }),
 
+    getStreak: protectedProcedure.query(async ({ ctx }) => {
+      return await drillAssignmentDb.calculateStreak(ctx.user.id);
+    }),
+
     getAthleteProgress: protectedProcedure
       .input(z.object({ userId: z.number() }))
       .query(async ({ ctx, input }) => {

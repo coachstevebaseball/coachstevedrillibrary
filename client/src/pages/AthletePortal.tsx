@@ -66,6 +66,12 @@ export default function AthletePortal() {
     { enabled: !!user?.id }
   );
 
+  // Fetch user's streak
+  const { data: streak = 0 } = trpc.drillAssignments.getStreak.useQuery(
+    undefined,
+    { enabled: !!user?.id }
+  );
+
   // Update status mutation
   const updateStatusMutation = trpc.drillAssignments.updateStatus.useMutation();
 
@@ -81,8 +87,8 @@ export default function AthletePortal() {
     const completed = userAssignments.filter((a: any) => a.status === "completed").length;
     const inProgress = userAssignments.filter((a: any) => a.status === "in-progress").length;
     const assigned = userAssignments.filter((a: any) => a.status === "assigned").length;
-    return { total, completed, inProgress, assigned };
-  }, [userAssignments]);
+    return { total, completed, inProgress, assigned, streak };
+  }, [userAssignments, streak]);
 
   // Get all drills including custom drills
   const allDrills = useAllDrills();
@@ -198,7 +204,7 @@ export default function AthletePortal() {
           <AthleteBadges
             submissionCount={userAssignments.filter((a: any) => a.status === 'completed').length}
             completedDrillCount={progressStats.completed}
-            consecutiveDays={0}
+            consecutiveDays={streak}
           />
         </div>
 
