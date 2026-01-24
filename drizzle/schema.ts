@@ -242,3 +242,19 @@ export const coachNotes = mysqlTable("coachNotes", {
 
 export type CoachNote = typeof coachNotes.$inferSelect;
 export type InsertCoachNote = typeof coachNotes.$inferInsert;
+
+// Weekly goals for athlete drill targets
+export const weeklyGoals = mysqlTable("weeklyGoals", {
+  id: int("id").autoincrement().primaryKey(),
+  athleteId: int("athleteId").notNull(),
+  coachId: int("coachId").notNull(),
+  weekStartDate: timestamp("weekStartDate").notNull(),
+  weekEndDate: timestamp("weekEndDate").notNull(),
+  targetDrillCount: int("targetDrillCount").notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type WeeklyGoal = typeof weeklyGoals.$inferSelect;
+export type InsertWeeklyGoal = typeof weeklyGoals.$inferInsert;

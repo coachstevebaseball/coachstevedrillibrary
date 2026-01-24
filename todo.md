@@ -643,3 +643,9 @@
 - [ ] Add backend procedures for saving and fetching notes
 - [ ] Add notes UI component to Progress Report
 - [ ] Display notes history with timestamps
+
+
+## Weekly Goals Tracker Feature
+- [x] Add database table for weekly goals
+- [x] Create backend procedures for goals CRUD
+- [x] Add goals tracker UI to Progress Report

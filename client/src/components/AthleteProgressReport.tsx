@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import { WeeklyGoalsTracker } from "@/components/WeeklyGoalsTracker";
 
 interface AthleteProgressReportProps {
   userId: number;
@@ -303,6 +304,12 @@ export function AthleteProgressReport({ userId, athleteName }: AthleteProgressRe
           </CardContent>
         </Card>
       </div>
+
+      {/* Weekly Goals Tracker */}
+      <WeeklyGoalsTracker 
+        athleteId={userId} 
+        completedThisWeek={progressData?.activity?.weeklyProgress?.[0]?.completed || 0}
+      />
 
       {/* Coach Notes Section */}
       <Card>

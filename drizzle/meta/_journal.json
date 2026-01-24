@@ -120,6 +120,13 @@
       "when": 1769150385831,
       "tag": "0016_violet_skaar",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "5",
+      "when": 1769273964218,
+      "tag": "0017_curvy_namor",
+      "breakpoints": true
     }
   ]
 }

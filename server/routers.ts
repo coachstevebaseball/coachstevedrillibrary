@@ -254,6 +254,72 @@ export const appRouter = router({
         }
         return await drillAssignmentDb.deleteCoachNote(input.noteId);
       }),
+
+    // Weekly goals for athlete drill targets
+    getWeeklyGoals: protectedProcedure
+      .input(z.object({ athleteId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillAssignmentDb.getWeeklyGoals(input.athleteId);
+      }),
+
+    getCurrentWeekGoal: protectedProcedure
+      .input(z.object({ athleteId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillAssignmentDb.getCurrentWeekGoal(input.athleteId);
+      }),
+
+    createWeeklyGoal: protectedProcedure
+      .input(z.object({
+        athleteId: z.number(),
+        weekStartDate: z.date(),
+        weekEndDate: z.date(),
+        targetDrillCount: z.number(),
+        notes: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillAssignmentDb.createWeeklyGoal({
+          athleteId: input.athleteId,
+          coachId: ctx.user.id,
+          weekStartDate: input.weekStartDate,
+          weekEndDate: input.weekEndDate,
+          targetDrillCount: input.targetDrillCount,
+          notes: input.notes,
+        });
+      }),
+
+    updateWeeklyGoal: protectedProcedure
+      .input(z.object({
+        goalId: z.number(),
+        targetDrillCount: z.number().optional(),
+        notes: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillAssignmentDb.updateWeeklyGoal(input.goalId, {
+          targetDrillCount: input.targetDrillCount,
+          notes: input.notes,
+        });
+      }),
+
+    deleteWeeklyGoal: protectedProcedure
+      .input(z.object({ goalId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillAssignmentDb.deleteWeeklyGoal(input.goalId);
+      }),
   }),
 
   // Submissions router
