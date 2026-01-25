@@ -129,6 +129,15 @@ export const appRouter = router({
         }
         return await db.bulkImportDrillGoals(input.goalsData);
       }),
+    triggerStreakReminders: protectedProcedure
+      .mutation(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const { runStreakReminderJob } = await import('./streakReminderJob');
+        await runStreakReminderJob();
+        return { success: true };
+      }),
   }),
 
   // Drill assignment router for coach dashboard

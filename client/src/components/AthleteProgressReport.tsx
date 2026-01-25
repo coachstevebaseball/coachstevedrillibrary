@@ -24,6 +24,8 @@ import {
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { WeeklyGoalsTracker } from "@/components/WeeklyGoalsTracker";
+import { exportProgressReportToPDF } from "@/utils/pdfExport";
+import { FileDown } from "lucide-react";
 
 interface AthleteProgressReportProps {
   userId: number;
@@ -48,6 +50,20 @@ export function AthleteProgressReport({ userId, athleteName }: AthleteProgressRe
     { athleteId: userId },
     { enabled: !!userId }
   );
+
+  const { data: weeklyGoals } = trpc.drillAssignments.getWeeklyGoals.useQuery(
+    { athleteId: userId },
+    { enabled: !!userId }
+  );
+
+  const handleExportPDF = () => {
+    if (!progressData) {
+      toast.error("No progress data to export");
+      return;
+    }
+    exportProgressReportToPDF(athleteName, progressData as any, coachNotes || [], weeklyGoals || []);
+    toast.success("Progress report exported successfully");
+  };
 
   const addNoteMutation = trpc.drillAssignments.addCoachNote.useMutation({
     onSuccess: () => {
@@ -158,10 +174,46 @@ export function AthleteProgressReport({ userId, athleteName }: AthleteProgressRe
               : "No activity yet"}
           </p>
         </div>
-        <Badge variant={coreMetrics.completionRate >= 75 ? "default" : coreMetrics.completionRate >= 50 ? "secondary" : "outline"} className="text-lg px-4 py-2">
-          {coreMetrics.completionRate}% Complete
-        </Badge>
+        <div className="flex items-center gap-3">
+          <Button onClick={handleExportPDF} variant="outline" size="sm">
+            <FileDown className="h-4 w-4 mr-2" />
+            Export PDF
+          </Button>
+          <Badge variant={coreMetrics.completionRate >= 75 ? "default" : coreMetrics.completionRate >= 50 ? "secondary" : "outline"} className="text-lg px-4 py-2">
+            {coreMetrics.completionRate}% Complete
+          </Badge>
+        </div>
       </div>
+
+      {/* This Week Summary */}
+      <Card className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            This Week's Activity
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-3xl font-bold text-primary">{activity.weeklyProgress[activity.weeklyProgress.length - 1]?.completed || 0}</p>
+              <p className="text-sm text-muted-foreground">Drills Completed</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-primary">
+                {(() => {
+                  const thisWeekStart = new Date();
+                  thisWeekStart.setDate(thisWeekStart.getDate() - 7);
+                  return activity.recentCompletions.filter(
+                    (drill: any) => new Date(drill.completedAt) >= thisWeekStart
+                  ).length;
+                })()}
+              </p>
+              <p className="text-sm text-muted-foreground">Since Last Meeting</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Core Metrics Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

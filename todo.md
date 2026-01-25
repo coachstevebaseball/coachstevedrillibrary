@@ -675,3 +675,37 @@
 - [x] Implement image upload with S3 storage
 - [ ] Update DrillPageBuilder UI with styling controls
 - [ ] Add template selector to Page Builder
+
+
+## Streak Reminders, This Week Summary, and PDF Export
+- [ ] Implement email reminder system for streak protection
+- [ ] Add "This Week" summary section to Coach Dashboard
+- [ ] Implement PDF export for progress reports
+
+## PDF Export for Progress Reports
+- [x] Install jsPDF and jspdf-autotable packages
+- [x] Create PDF export utility function
+- [x] Add Export PDF button to Athlete Progress Report
+- [x] Include core metrics in PDF
+- [x] Include weekly progress chart in PDF
+- [x] Include recent completions in PDF
+- [x] Include weekly goals in PDF
+- [x] Include coach notes in PDF
+- [x] Test PDF export functionality
+- [x] Verify PDF formatting and layout
+
+## Email Reminders for Streak Protection
+- [ ] Create streak monitoring logic
+- [ ] Set up email service for reminders
+- [ ] Create email template for streak reminders
+- [ ] Implement daily check for athletes at risk
+- [ ] Add notification trigger when streak is at risk
+- [ ] Test email delivery for streak reminders
+
+## "This Week" Summary in Coach Dashboard
+- [ ] Add "This Week" section to Progress Report
+- [ ] Calculate drills assigned this week
+- [ ] Calculate drills completed this week
+- [ ] Show comparison to previous week
+- [ ] Add visual indicators for progress
+- [ ] Test weekly summary calculations
