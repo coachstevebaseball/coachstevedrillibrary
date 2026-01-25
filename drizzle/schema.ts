@@ -272,3 +272,18 @@ export const drillPageLayouts = mysqlTable("drillPageLayouts", {
 
 export type DrillPageLayout = typeof drillPageLayouts.$inferSelect;
 export type InsertDrillPageLayout = typeof drillPageLayouts.$inferInsert;
+
+// Drill page templates - reusable block layouts
+export const drillPageTemplates = mysqlTable("drillPageTemplates", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  // JSON array of content blocks that can be reused
+  blocks: json("blocks").notNull(),
+  createdBy: int("createdBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type DrillPageTemplate = typeof drillPageTemplates.$inferSelect;
+export type InsertDrillPageTemplate = typeof drillPageTemplates.$inferInsert;

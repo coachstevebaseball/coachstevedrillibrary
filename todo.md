@@ -667,3 +667,11 @@
 - [ ] Add instant preview mode
 - [x] Update drill detail page to render custom layouts
 - [ ] Add fallback to legacy fields if no custom layout exists
+
+
+## Page Builder Enhancements
+- [x] Add block styling options (font size, color, alignment)
+- [ ] Create drill templates system (save/reuse layouts)
+- [x] Implement image upload with S3 storage
+- [ ] Update DrillPageBuilder UI with styling controls
+- [ ] Add template selector to Page Builder

@@ -7,17 +7,20 @@ import { z } from "zod";
 import * as db from "./db";
 import * as drillAssignmentDb from "./drillAssignments";
 import * as drillPageLayoutDb from "./drillPageLayouts";
+import * as drillPageTemplateDb from "./drillPageTemplates";
 import * as inviteDb from "./invites";
 import { drillGeneratorRouter } from "./routers-drill-generator";
 import { submissionsRouter } from "./routers-submissions";
 import { videoUploadRouter } from "./routers-video-upload";
 import { notificationsRouter } from "./routers-notifications";
 import { qaRouter } from "./routers-qa";
+import { imageUploadRouter } from "./routers-image-upload";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
   notifications: notificationsRouter,
+  imageUpload: imageUploadRouter,
   auth: router({
     me: publicProcedure.query(async (opts) => {
       if (!opts.ctx.user) return null;
@@ -438,6 +441,34 @@ export const appRouter = router({
       .input(z.object({ drillId: z.string() }))
       .query(async ({ input }) => {
         return await drillPageLayoutDb.getDrillPageLayout(input.drillId);
+      }),
+    // Drill page template procedures
+    createTemplate: protectedProcedure
+      .input(z.object({
+        name: z.string(),
+        description: z.string().optional(),
+        blocks: z.array(z.any()),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
+        }
+        return await drillPageTemplateDb.createTemplate({
+          ...input,
+          createdBy: ctx.user.id,
+        });
+      }),
+    getTemplates: protectedProcedure
+      .query(async ({ ctx }) => {
+        return await drillPageTemplateDb.getTemplates(ctx.user.id);
+      }),
+    deleteTemplate: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
+        }
+        return await drillPageTemplateDb.deleteTemplate(input.id, ctx.user.id);
       }),
     deletePageLayout: protectedProcedure
       .input(z.object({ drillId: z.string() }))

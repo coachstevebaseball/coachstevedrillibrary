@@ -23,8 +23,20 @@ import {
   Trash2,
   GripVertical,
   Plus,
+  FileText,
+  Download,
 } from "lucide-react";
 import { toast } from "sonner";
+import { ImageUploadForPageBuilder } from "./ImageUploadForPageBuilder";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 interface ContentBlock {
   id: string;
@@ -55,6 +67,14 @@ export function DrillPageBuilder({ drillId, drillName, onClose }: DrillPageBuild
   const { data: existingLayout } = trpc.drillDetails.getPageLayout.useQuery({ drillId });
   const saveLayoutMutation = trpc.drillDetails.savePageLayout.useMutation();
   const deleteLayoutMutation = trpc.drillDetails.deletePageLayout.useMutation();
+  
+  // Template functionality
+  const { data: templates } = trpc.drillDetails.getTemplates.useQuery();
+  const createTemplateMutation = trpc.drillDetails.createTemplate.useMutation();
+  const deleteTemplateMutation = trpc.drillDetails.deleteTemplate.useMutation();
+  const [showTemplateDialog, setShowTemplateDialog] = useState(false);
+  const [templateName, setTemplateName] = useState("");
+  const [templateDescription, setTemplateDescription] = useState("");
 
   useEffect(() => {
     if (existingLayout?.blocks) {
@@ -129,6 +149,35 @@ export function DrillPageBuilder({ drillId, drillName, onClose }: DrillPageBuild
     }
   };
 
+  const handleSaveAsTemplate = async () => {
+    if (!templateName.trim()) {
+      toast.error("Please enter a template name");
+      return;
+    }
+    try {
+      await createTemplateMutation.mutateAsync({
+        name: templateName,
+        description: templateDescription,
+        blocks,
+      });
+      toast.success("Template saved successfully!");
+      setShowTemplateDialog(false);
+      setTemplateName("");
+      setTemplateDescription("");
+    } catch (error) {
+      toast.error("Failed to save template");
+      console.error(error);
+    }
+  };
+
+  const handleLoadTemplate = (templateBlocks: any[]) => {
+    setBlocks(templateBlocks.map(block => ({
+      ...block,
+      id: `block-${Date.now()}-${Math.random()}`,
+    })));
+    toast.success("Template loaded");
+  };
+
   const renderBlockEditor = (block: ContentBlock, index: number) => {
     return (
       <Card
@@ -163,15 +212,15 @@ export function DrillPageBuilder({ drillId, drillName, onClose }: DrillPageBuild
                 placeholder="Enter text content..."
                 rows={4}
               />
-              <div className="flex gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <Select
                   value={block.style?.fontSize || "16px"}
                   onValueChange={(value) =>
                     updateBlock(block.id, { style: { ...block.style, fontSize: value } })
                   }
                 >
-                  <SelectTrigger className="w-[120px]">
-                    <SelectValue />
+                  <SelectTrigger>
+                    <SelectValue placeholder="Size" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="14px">Small</SelectItem>
@@ -186,14 +235,37 @@ export function DrillPageBuilder({ drillId, drillName, onClose }: DrillPageBuild
                     updateBlock(block.id, { style: { ...block.style, fontWeight: value } })
                   }
                 >
-                  <SelectTrigger className="w-[120px]">
-                    <SelectValue />
+                  <SelectTrigger>
+                    <SelectValue placeholder="Weight" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="normal">Normal</SelectItem>
                     <SelectItem value="bold">Bold</SelectItem>
                   </SelectContent>
                 </Select>
+                <Select
+                  value={block.style?.textAlign || "left"}
+                  onValueChange={(value) =>
+                    updateBlock(block.id, { style: { ...block.style, textAlign: value } })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Align" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="left">Left</SelectItem>
+                    <SelectItem value="center">Center</SelectItem>
+                    <SelectItem value="right">Right</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Input
+                  type="color"
+                  value={block.style?.color || "#000000"}
+                  onChange={(e) =>
+                    updateBlock(block.id, { style: { ...block.style, color: e.target.value } })
+                  }
+                  className="h-10"
+                />
               </div>
             </div>
           )}
@@ -205,11 +277,16 @@ export function DrillPageBuilder({ drillId, drillName, onClose }: DrillPageBuild
             />
           )}
           {block.type === "image" && (
-            <Input
-              value={block.url || ""}
-              onChange={(e) => updateBlock(block.id, { url: e.target.value })}
-              placeholder="Enter image URL..."
-            />
+            <div className="space-y-2">
+              <Input
+                value={block.url || ""}
+                onChange={(e) => updateBlock(block.id, { url: e.target.value })}
+                placeholder="Enter image URL or upload below..."
+              />
+              <ImageUploadForPageBuilder
+                onImageUploaded={(url) => updateBlock(block.id, { url })}
+              />
+            </div>
           )}
           {block.type === "list" && (
             <div className="space-y-2">
@@ -334,6 +411,27 @@ export function DrillPageBuilder({ drillId, drillName, onClose }: DrillPageBuild
             <p className="text-muted-foreground">{drillName}</p>
           </div>
           <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setShowTemplateDialog(true)} disabled={blocks.length === 0}>
+              <FileText className="h-4 w-4 mr-2" />
+              Save as Template
+            </Button>
+            {templates && templates.length > 0 && (
+              <Select onValueChange={(value) => {
+                const template = templates.find(t => t.id === parseInt(value));
+                if (template) handleLoadTemplate(template.blocks as any[]);
+              }}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Load Template" />
+                </SelectTrigger>
+                <SelectContent>
+                  {templates.map((template) => (
+                    <SelectItem key={template.id} value={template.id.toString()}>
+                      {template.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
             <Button variant="outline" onClick={() => setPreviewMode(!previewMode)}>
               <Eye className="h-4 w-4 mr-2" />
               {previewMode ? "Edit" : "Preview"}
@@ -407,6 +505,47 @@ export function DrillPageBuilder({ drillId, drillName, onClose }: DrillPageBuild
             </CardContent>
           </Card>
         )}
+
+        {/* Template Save Dialog */}
+        <Dialog open={showTemplateDialog} onOpenChange={setShowTemplateDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Save as Template</DialogTitle>
+              <DialogDescription>
+                Save this layout as a reusable template for future drills.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="template-name">Template Name</Label>
+                <Input
+                  id="template-name"
+                  value={templateName}
+                  onChange={(e) => setTemplateName(e.target.value)}
+                  placeholder="e.g., Video + Steps Layout"
+                />
+              </div>
+              <div>
+                <Label htmlFor="template-description">Description (Optional)</Label>
+                <Textarea
+                  id="template-description"
+                  value={templateDescription}
+                  onChange={(e) => setTemplateDescription(e.target.value)}
+                  placeholder="Describe when to use this template..."
+                  rows={3}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowTemplateDialog(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleSaveAsTemplate} disabled={createTemplateMutation.isPending}>
+                Save Template
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

@@ -30,6 +30,7 @@ export function CustomDrillLayout({ blocks }: CustomDrillLayoutProps) {
               fontSize: block.style?.fontSize,
               fontWeight: block.style?.fontWeight,
               textAlign: block.style?.textAlign as any,
+              color: block.style?.color,
             }}
           >
             {block.content}
