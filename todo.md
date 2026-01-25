@@ -709,3 +709,20 @@
 - [ ] Show comparison to previous week
 - [ ] Add visual indicators for progress
 - [ ] Test weekly summary calculations
+
+## Parent Management Mode
+- [x] Add parentId field to users table for parent-child relationships
+- [x] Create database procedure to link parent to child account
+- [x] Create backend procedure to get children managed by parent
+- [x] Create backend procedure for parent to mark drill complete on behalf of child
+- [x] Create backend procedure for parent to upload video on behalf of child
+- [x] Build parent dashboard showing managed children
+- [x] Add "Manage Child's Account" toggle/selector in parent view
+- [x] Show child's assigned drills in parent dashboard
+- [x] Allow parent to mark drills complete for child
+- [ ] Allow parent to upload videos for child's drill submissions
+- [x] Add clear messaging: "You're managing [Child's Name]'s training"
+- [x] Test parent can view child's drills
+- [x] Test parent can mark completions for child
+- [ ] Test parent can upload videos for child
+- [x] Test child's progress updates correctly when parent manages account

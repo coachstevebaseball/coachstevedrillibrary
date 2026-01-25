@@ -1219,3 +1219,90 @@ export async function getCustomDrills() {
   }
 }
 
+// Parent Management Functions
+
+/**
+ * Link a child account to a parent account
+ */
+export async function linkChildToParent(childUserId: number, parentUserId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot link child to parent: database not available");
+    return false;
+  }
+
+  try {
+    await db.update(users)
+      .set({ parentId: parentUserId })
+      .where(eq(users.id, childUserId));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to link child to parent:", error);
+    return false;
+  }
+}
+
+/**
+ * Get all children managed by a parent
+ */
+export async function getChildrenByParent(parentUserId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get children: database not available");
+    return [];
+  }
+
+  try {
+    const children = await db.select().from(users).where(eq(users.parentId, parentUserId));
+    return children;
+  } catch (error) {
+    console.error("[Database] Failed to get children by parent:", error);
+    return [];
+  }
+}
+
+/**
+ * Check if a user is a parent of another user
+ */
+export async function isParentOf(parentUserId: number, childUserId: number) {
+  const db = await getDb();
+  if (!db) {
+    return false;
+  }
+
+  try {
+    const child = await db.select().from(users).where(
+      and(
+        eq(users.id, childUserId),
+        eq(users.parentId, parentUserId)
+      )
+    ).limit(1);
+    return child.length > 0;
+  } catch (error) {
+    console.error("[Database] Failed to check parent relationship:", error);
+    return false;
+  }
+}
+
+/**
+ * Get parent of a child user
+ */
+export async function getParentOfChild(childUserId: number) {
+  const db = await getDb();
+  if (!db) {
+    return null;
+  }
+
+  try {
+    const child = await db.select().from(users).where(eq(users.id, childUserId)).limit(1);
+    if (child.length === 0 || !child[0].parentId) {
+      return null;
+    }
+
+    const parent = await db.select().from(users).where(eq(users.id, child[0].parentId)).limit(1);
+    return parent.length > 0 ? parent[0] : null;
+  } catch (error) {
+    console.error("[Database] Failed to get parent of child:", error);
+    return null;
+  }
+}

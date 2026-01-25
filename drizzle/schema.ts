@@ -25,6 +25,8 @@ export const users = mysqlTable("users", {
   emailVerificationToken: varchar("emailVerificationToken", { length: 255 }),
   /** Whether welcome email has been sent */
   sentWelcomeEmail: int("sentWelcomeEmail").default(0).notNull(), // 0 = not sent, 1 = sent
+  /** Parent user ID for child accounts (null for parent/adult accounts) */
+  parentId: int("parentId"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),

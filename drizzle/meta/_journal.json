@@ -141,6 +141,13 @@
       "when": 1769303747016,
       "tag": "0019_freezing_network",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "5",
+      "when": 1769376859832,
+      "tag": "0020_ordinary_pretty_boy",
+      "breakpoints": true
     }
   ]
 }

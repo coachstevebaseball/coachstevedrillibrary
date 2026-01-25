@@ -19,6 +19,7 @@ import AthleteMessaging from "./pages/AthleteMessaging";
 import VerifyEmail from "./pages/VerifyEmail";
 import UserManagement from "./pages/UserManagement";
 import DrillsDirectory from "./pages/DrillsDirectory";
+import ParentDashboard from "./pages/ParentDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
@@ -83,6 +84,13 @@ function Router() {
       <Route path={"/athlete-messaging"}>
         <ProtectedRoute requiredRole="athlete">
           <AthleteMessaging />
+        </ProtectedRoute>
+      </Route>
+      
+      {/* Protected Routes - Parent Dashboard */}
+      <Route path={"/parent-dashboard"}>
+        <ProtectedRoute>
+          <ParentDashboard />
         </ProtectedRoute>
       </Route>
       
