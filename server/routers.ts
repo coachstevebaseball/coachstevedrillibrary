@@ -6,6 +6,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import * as db from "./db";
 import * as drillAssignmentDb from "./drillAssignments";
+import * as drillPageLayoutDb from "./drillPageLayouts";
 import * as inviteDb from "./invites";
 import { drillGeneratorRouter } from "./routers-drill-generator";
 import { submissionsRouter } from "./routers-submissions";
@@ -420,6 +421,31 @@ export const appRouter = router({
     getCustomDrills: publicProcedure
       .query(async () => {
         return await db.getCustomDrills();
+      }),
+    // Drill page layout procedures
+    savePageLayout: protectedProcedure
+      .input(z.object({
+        drillId: z.string(),
+        blocks: z.array(z.any()),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillPageLayoutDb.saveDrillPageLayout(input.drillId, input.blocks, ctx.user.id);
+      }),
+    getPageLayout: publicProcedure
+      .input(z.object({ drillId: z.string() }))
+      .query(async ({ input }) => {
+        return await drillPageLayoutDb.getDrillPageLayout(input.drillId);
+      }),
+    deletePageLayout: protectedProcedure
+      .input(z.object({ drillId: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillPageLayoutDb.deleteDrillPageLayout(input.drillId);
       }),
   }),
 

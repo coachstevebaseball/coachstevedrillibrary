@@ -258,3 +258,17 @@ export const weeklyGoals = mysqlTable("weeklyGoals", {
 
 export type WeeklyGoal = typeof weeklyGoals.$inferSelect;
 export type InsertWeeklyGoal = typeof weeklyGoals.$inferInsert;
+
+// Drill page layouts - modular block-based drill pages
+export const drillPageLayouts = mysqlTable("drillPageLayouts", {
+  id: int("id").autoincrement().primaryKey(),
+  drillId: varchar("drillId", { length: 255 }).notNull().unique(),
+  // JSON array of content blocks: [{ type: "text", content: "...", style: {...} }, { type: "video", url: "...", ...}, ...]
+  blocks: json("blocks").notNull(),
+  createdBy: int("createdBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type DrillPageLayout = typeof drillPageLayouts.$inferSelect;
+export type InsertDrillPageLayout = typeof drillPageLayouts.$inferInsert;

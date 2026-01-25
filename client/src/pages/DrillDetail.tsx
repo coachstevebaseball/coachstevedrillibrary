@@ -14,6 +14,9 @@ import { InstructionsEditor } from "@/components/InstructionsEditor";
 import { trpc } from "@/lib/trpc";
 import { Edit, Trash2 } from "lucide-react";
 import { DrillQAForm } from "@/components/DrillQAForm";
+import { DrillPageBuilder } from "@/components/DrillPageBuilder";
+import { CustomDrillLayout } from "@/components/CustomDrillLayout";
+import { Layout } from "lucide-react";
 
 // Collapsible section component
 function CollapsibleSection({ title, icon: Icon, children, defaultOpen = false }: { title: string; icon: any; children: React.ReactNode; defaultOpen?: boolean }) {
@@ -1188,6 +1191,7 @@ export default function DrillDetail() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [customInstructions, setCustomInstructions] = useState('');
   const [isSavingInstructions, setIsSavingInstructions] = useState(false);
+  const [showPageBuilder, setShowPageBuilder] = useState(false);
   
   // Load video from database
   const { data: videoData } = trpc.videos.getVideo.useQuery(
@@ -1197,6 +1201,12 @@ export default function DrillDetail() {
   
   // Load instructions from database
   const { data: drillDetailData } = trpc.drillDetails.getDrillDetail.useQuery(
+    { drillId: id || '' },
+    { enabled: !!id }
+  );
+  
+  // Load custom page layout
+  const { data: pageLayout } = trpc.drillDetails.getPageLayout.useQuery(
     { drillId: id || '' },
     { enabled: !!id }
   );
@@ -1335,6 +1345,11 @@ export default function DrillDetail() {
       <div className="container max-w-4xl px-3 md:px-4">
         {details ? (
           <div className="grid gap-6 md:gap-8">
+            {/* Render custom page layout if exists */}
+            {pageLayout?.blocks && Array.isArray(pageLayout.blocks) && pageLayout.blocks.length > 0 ? (
+              <CustomDrillLayout blocks={pageLayout.blocks as any[]} />
+            ) : null}
+            
             {/* Video Section - Moved to Top */}
             {(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) ? (
               <VideoPlayer videoUrl={(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) as string} title={`${drill.name} Video`} />
@@ -1357,6 +1372,13 @@ export default function DrillDetail() {
                   </CardTitle>
                   {user && (user.role === 'admin' || user.role === 'coach') && (
                     <div className="flex gap-2">
+                      <button
+                        onClick={() => setShowPageBuilder(true)}
+                        className="flex items-center gap-1 px-3 py-2 rounded-md bg-secondary/10 hover:bg-secondary/20 text-secondary transition-colors text-sm font-medium"
+                      >
+                        <Layout className="h-4 w-4" />
+                        Page Builder
+                      </button>
                       <button
                         onClick={() => setEditModalOpen(true)}
                         className="flex items-center gap-1 px-3 py-2 rounded-md bg-primary/10 hover:bg-primary/20 text-primary transition-colors text-sm font-medium"
@@ -1499,6 +1521,15 @@ export default function DrillDetail() {
           // Refetch drill details
         }}
       />
+      
+      {/* Drill Page Builder */}
+      {showPageBuilder && (
+        <DrillPageBuilder
+          drillId={id || ''}
+          drillName={drill?.name || ''}
+          onClose={() => setShowPageBuilder(false)}
+        />
+      )}
     </div>
   );
 }

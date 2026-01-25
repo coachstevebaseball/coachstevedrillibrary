@@ -655,3 +655,15 @@
 - [x] Create visual stats component for Athlete Portal top section
 - [x] Add streak tracking to backend (consecutive days with activity)
 - [x] Integrate progress dashboard at top of Athlete Portal with stats cards and progress bars
+
+
+## Drill Page Builder System
+- [ ] Design block schema (text, video, image, list, callout, etc.)
+- [x] Add database table for drill page layouts
+- [ ] Create backend procedures for saving/retrieving layouts
+- [ ] Build Drill Page Builder UI with drag-and-drop
+- [ ] Add block library (text, video, image, list, callout, divider)
+- [ ] Implement block reordering and deletion
+- [ ] Add instant preview mode
+- [x] Update drill detail page to render custom layouts
+- [ ] Add fallback to legacy fields if no custom layout exists
