@@ -763,3 +763,153 @@ function generateWelcomeEmailHtml(data: WelcomeEmailData): string {
     </html>
   `;
 }
+
+
+// ============================================
+// Instant Activity Email Alerts for Coach
+// ============================================
+
+export interface ActivityAlertEmailData {
+  coachEmail: string;
+  coachName: string;
+  athleteName: string;
+  activityType: string;
+  activityMessage: string;
+  actionUrl: string;
+  timestamp: Date;
+  metadata?: Record<string, any>;
+}
+
+/**
+ * Send instant email alert to coach when athlete performs an activity
+ */
+export async function sendActivityAlertEmail(data: ActivityAlertEmailData): Promise<{ success: boolean; error?: string }> {
+  if (!ENV.resendApiKey) {
+    console.warn("[Email] Resend API key not configured, skipping activity alert");
+    return { success: false, error: "Email service not configured" };
+  }
+
+  try {
+    const activityIcon = getActivityIcon(data.activityType);
+    const activityColor = getActivityColor(data.activityType);
+    const formattedTime = data.timestamp.toLocaleString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+
+    const emailHtml = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+      .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background: ${activityColor}; color: white; padding: 25px; border-radius: 8px 8px 0 0; text-align: center; }
+      .header h1 { margin: 0; font-size: 24px; font-weight: bold; }
+      .header .icon { font-size: 32px; margin-bottom: 10px; }
+      .content { background: #f9fafb; padding: 25px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb; border-top: none; }
+      .activity-card { background: white; padding: 20px; border-radius: 6px; margin: 15px 0; border-left: 4px solid ${activityColor}; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+      .athlete-name { font-size: 18px; font-weight: bold; color: #1e3a8a; margin-bottom: 5px; }
+      .activity-message { color: #4b5563; font-size: 16px; margin: 10px 0; }
+      .timestamp { color: #9ca3af; font-size: 13px; margin-top: 10px; }
+      .cta-button { display: inline-block; background: ${activityColor}; color: white; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: bold; margin: 15px 0; }
+      .footer { text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #9ca3af; }
+      .footer a { color: #6b7280; text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="icon">${activityIcon}</div>
+        <h1>Athlete Activity Alert</h1>
+      </div>
+      <div class="content">
+        <p>Hi ${data.coachName},</p>
+        
+        <div class="activity-card">
+          <div class="athlete-name">${data.athleteName}</div>
+          <div class="activity-message">${data.activityMessage}</div>
+          <div class="timestamp">📅 ${formattedTime}</div>
+        </div>
+        
+        <div style="text-align: center;">
+          <a href="${data.actionUrl}" class="cta-button">View Details</a>
+        </div>
+        
+        <div class="footer">
+          <p>You're receiving this because you have instant email alerts enabled.</p>
+          <p><a href="${data.actionUrl.split('/').slice(0, 3).join('/')}/activity-feed">Manage Alert Preferences</a></p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+    `;
+
+    const result = await resend.emails.send({
+      from: "coach@coachstevebaseball.com",
+      to: data.coachEmail,
+      subject: `🔔 ${data.athleteName} ${getActivitySubject(data.activityType)}`,
+      html: emailHtml,
+    });
+
+    if (result.error) {
+      console.error("[Email] Failed to send activity alert:", result.error);
+      return { success: false, error: result.error.message };
+    }
+
+    console.log("[Email] Activity alert sent to", data.coachEmail);
+    return { success: true };
+  } catch (error) {
+    console.error("[Email] Error sending activity alert:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+function getActivityIcon(activityType: string): string {
+  const icons: Record<string, string> = {
+    portal_login: "👋",
+    drill_view: "👁️",
+    assignment_view: "📋",
+    drill_start: "▶️",
+    drill_complete: "✅",
+    video_submit: "🎥",
+    message_sent: "💬",
+    profile_update: "👤",
+  };
+  return icons[activityType] || "📢";
+}
+
+function getActivityColor(activityType: string): string {
+  const colors: Record<string, string> = {
+    portal_login: "#3b82f6", // blue
+    drill_view: "#8b5cf6", // purple
+    assignment_view: "#6366f1", // indigo
+    drill_start: "#f59e0b", // amber
+    drill_complete: "#10b981", // green
+    video_submit: "#dc2626", // red
+    message_sent: "#0891b2", // cyan
+    profile_update: "#6b7280", // gray
+  };
+  return colors[activityType] || "#1e3a8a";
+}
+
+function getActivitySubject(activityType: string): string {
+  const subjects: Record<string, string> = {
+    portal_login: "just logged in",
+    drill_view: "viewed a drill",
+    assignment_view: "checked their assignments",
+    drill_start: "started a drill",
+    drill_complete: "completed a drill",
+    video_submit: "submitted a video",
+    message_sent: "sent you a message",
+    profile_update: "updated their profile",
+  };
+  return subjects[activityType] || "performed an activity";
+}

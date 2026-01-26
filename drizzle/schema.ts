@@ -335,6 +335,7 @@ export const coachAlertPreferences = mysqlTable("coachAlertPreferences", {
   inactivityDays: int("inactivityDays").default(3).notNull(), // Days before inactivity alert
   // Delivery preferences
   inAppAlerts: int("inAppAlerts").default(1).notNull(),
+  emailAlerts: int("emailAlerts").default(1).notNull(), // 0 = off, 1 = on (instant email alerts)
   emailDigest: int("emailDigest").default(0).notNull(), // 0 = off, 1 = daily, 2 = weekly
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),

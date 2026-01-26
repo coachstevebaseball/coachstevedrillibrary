@@ -18,7 +18,8 @@ import {
   TrendingUp,
   Clock,
   Settings,
-  RefreshCw
+  RefreshCw,
+  Mail
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -428,6 +429,21 @@ export default function ActivityFeed() {
                     id="in_app"
                     checked={!!alertPrefs?.inAppAlerts}
                     onCheckedChange={(checked) => handlePrefChange("inAppAlerts", checked)}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Mail className="h-5 w-5 text-blue-500" />
+                    <div>
+                      <Label htmlFor="email_alerts">Instant Email Alerts</Label>
+                      <p className="text-xs text-muted-foreground">Get an email every time an athlete performs an activity</p>
+                    </div>
+                  </div>
+                  <Switch
+                    id="email_alerts"
+                    checked={!!alertPrefs?.emailAlerts}
+                    onCheckedChange={(checked) => handlePrefChange("emailAlerts", checked)}
                   />
                 </div>
 

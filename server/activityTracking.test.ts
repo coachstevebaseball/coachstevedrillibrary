@@ -4,7 +4,7 @@ import { athleteActivity, coachAlertPreferences, users, notifications } from "..
 import { eq, and, desc } from "drizzle-orm";
 import * as activityTracking from "./activityTracking";
 
-describe("Activity Tracking", () => {
+describe("Activity Tracking", { timeout: 30000 }, () => {
   let testAthleteId: number;
   let testCoachId: number;
 

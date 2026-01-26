@@ -740,3 +740,11 @@
 - [x] Test activity logging for all event types
 - [x] Test coach notification delivery
 - [x] Test activity feed display and filtering
+
+## Instant Email Alerts for Athlete Activity
+- [x] Update activity tracking to trigger email alerts
+- [x] Create email templates for each activity type (portal login, drill view, drill complete, video submit)
+- [x] Add email alert toggle to coach alert preferences
+- [ ] Implement rate limiting to prevent email spam (batch similar activities) - future enhancement
+- [x] Test email delivery for all activity types
+- [x] Verify email preferences are respected

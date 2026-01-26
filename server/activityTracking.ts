@@ -1,6 +1,7 @@
 import { eq, desc, and, gte, sql } from "drizzle-orm";
 import { athleteActivity, coachAlertPreferences, notifications, users, InsertAthleteActivity } from "../drizzle/schema";
 import { getDb } from "./db";
+import { sendActivityAlertEmail } from "./email";
 
 // Activity types that can be tracked
 export type ActivityType = 
@@ -85,10 +86,12 @@ export async function logActivity(
 
     // Create notifications for each coach based on their preferences
     for (const coach of coaches) {
-      const shouldNotify = await shouldNotifyCoach(coach.id, activityType);
-      if (shouldNotify) {
-        const message = `${athleteName} ${activityMessages[activityType](options?.metadata)}`;
-        
+      const { shouldNotifyInApp, shouldNotifyEmail } = await shouldNotifyCoach(coach.id, activityType);
+      const message = `${athleteName} ${activityMessages[activityType](options?.metadata)}`;
+      const actionUrl = getActionUrl(activityType, options?.relatedId);
+      
+      // Send in-app notification
+      if (shouldNotifyInApp) {
         await db.insert(notifications).values({
           userId: coach.id,
           type: "system",
@@ -97,7 +100,22 @@ export async function logActivity(
           relatedId: athleteId,
           relatedType: "athlete_activity",
           isRead: 0,
-          actionUrl: getActionUrl(activityType, options?.relatedId),
+          actionUrl,
+        });
+      }
+      
+      // Send instant email alert
+      if (shouldNotifyEmail && coach.email) {
+        const baseUrl = process.env.VITE_APP_URL || "https://coachstevebaseball.com";
+        await sendActivityAlertEmail({
+          coachEmail: coach.email,
+          coachName: coach.name || "Coach",
+          athleteName,
+          activityType,
+          activityMessage: message,
+          actionUrl: `${baseUrl}${actionUrl}`,
+          timestamp: new Date(),
+          metadata: options?.metadata,
         });
       }
     }
@@ -111,38 +129,42 @@ export async function logActivity(
 
 /**
  * Check if coach should be notified for this activity type
+ * Returns both in-app and email notification preferences
  */
-async function shouldNotifyCoach(coachId: number, activityType: ActivityType): Promise<boolean> {
+async function shouldNotifyCoach(coachId: number, activityType: ActivityType): Promise<{ shouldNotifyInApp: boolean; shouldNotifyEmail: boolean }> {
   const db = await getDb();
-  if (!db) return false;
+  if (!db) return { shouldNotifyInApp: false, shouldNotifyEmail: false };
 
   try {
     const prefs = await db.select().from(coachAlertPreferences).where(eq(coachAlertPreferences.coachId, coachId)).limit(1);
     
-    // If no preferences set, default to notifying for all activities
+    // If no preferences set, default to notifying for all activities (in-app and email)
     if (prefs.length === 0) {
-      return true;
+      return { shouldNotifyInApp: true, shouldNotifyEmail: true };
     }
 
     const pref = prefs[0];
     
-    // Check if in-app alerts are enabled
-    if (!pref.inAppAlerts) return false;
-
     // Check specific activity type preference
+    let activityEnabled = false;
     switch (activityType) {
-      case "portal_login": return !!pref.alertOnPortalLogin;
-      case "drill_view": return !!pref.alertOnDrillView;
-      case "assignment_view": return !!pref.alertOnAssignmentView;
-      case "drill_start": return !!pref.alertOnDrillStart;
-      case "drill_complete": return !!pref.alertOnDrillComplete;
-      case "video_submit": return !!pref.alertOnVideoSubmit;
-      case "message_sent": return !!pref.alertOnMessageSent;
-      default: return true;
+      case "portal_login": activityEnabled = !!pref.alertOnPortalLogin; break;
+      case "drill_view": activityEnabled = !!pref.alertOnDrillView; break;
+      case "assignment_view": activityEnabled = !!pref.alertOnAssignmentView; break;
+      case "drill_start": activityEnabled = !!pref.alertOnDrillStart; break;
+      case "drill_complete": activityEnabled = !!pref.alertOnDrillComplete; break;
+      case "video_submit": activityEnabled = !!pref.alertOnVideoSubmit; break;
+      case "message_sent": activityEnabled = !!pref.alertOnMessageSent; break;
+      default: activityEnabled = true;
     }
+
+    return {
+      shouldNotifyInApp: activityEnabled && !!pref.inAppAlerts,
+      shouldNotifyEmail: activityEnabled && !!pref.emailAlerts,
+    };
   } catch (error) {
     console.error("[Activity] Failed to check coach preferences:", error);
-    return true; // Default to notifying if error
+    return { shouldNotifyInApp: true, shouldNotifyEmail: true }; // Default to notifying if error
   }
 }
 
@@ -384,6 +406,7 @@ export async function updateCoachAlertPreferences(
     alertOnInactivity: number;
     inactivityDays: number;
     inAppAlerts: number;
+    emailAlerts: number;
     emailDigest: number;
   }>
 ) {
