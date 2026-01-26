@@ -761,3 +761,16 @@
 - [x] Design batched email template showing multiple activities
 - [x] Test batching with multiple rapid activities
 - [x] Test single activity still sends after 5-minute window
+
+## Drill Favorites System
+- [x] Create drillFavorites table in database schema
+- [x] Create backend procedures for adding/removing favorites
+- [x] Create backend procedure to get user's favorite drills
+- [x] Add star/favorite button to drill cards in library
+- [ ] Add star/favorite button to drill detail page (future enhancement)
+- [x] Show visual indicator when drill is favorited
+- [x] Create "My Favorites" section in athlete portal
+- [x] Display favorited drills with quick access to details
+- [x] Allow unfavoriting from athlete portal
+- [x] Test favorite/unfavorite functionality
+- [x] Test favorites display in athlete portal

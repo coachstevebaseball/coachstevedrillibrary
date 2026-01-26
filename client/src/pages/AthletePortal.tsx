@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle, Clock, AlertCircle, Play, ArrowRight, Home, LogOut, MessageCircle } from "lucide-react";
+import { CheckCircle, Clock, AlertCircle, Play, ArrowRight, Home, LogOut, MessageCircle, Star } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo, useEffect } from "react";
 import drillsData from "@/data/drills.json";
@@ -71,6 +71,21 @@ export default function AthletePortal() {
     undefined,
     { enabled: !!user?.id }
   );
+
+  // Fetch user's favorite drills
+  const { data: favoritesData } = trpc.favorites.getAll.useQuery(
+    undefined,
+    { enabled: !!user?.id }
+  );
+  const favoriteIds = favoritesData?.drillIds || [];
+
+  // Toggle favorite mutation
+  const utils = trpc.useUtils();
+  const toggleFavorite = trpc.favorites.toggle.useMutation({
+    onSuccess: () => {
+      utils.favorites.getAll.invalidate();
+    },
+  });
 
   // Update status mutation
   const updateStatusMutation = trpc.drillAssignments.updateStatus.useMutation();
@@ -217,6 +232,73 @@ export default function AthletePortal() {
             consecutiveDays={streak}
           />
         </div>
+
+        {/* My Favorites Section */}
+        {favoriteIds.length > 0 && (
+          <Card className="mb-8">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  My Favorites
+                </CardTitle>
+                <Badge variant="secondary">{favoriteIds.length}</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">Drills you've saved for quick access</p>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {favoriteIds.map((drillId: number) => {
+                  const drill = getDrill(String(drillId));
+                  if (!drill) return null;
+                  return (
+                    <div
+                      key={drillId}
+                      className="border rounded-lg p-4 hover:shadow-md transition-all hover:bg-muted/50"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <Link href={`/drill/${drillId}`}>
+                            <h3 className="font-semibold text-base mb-2 hover:text-secondary cursor-pointer truncate">
+                              {drill.name}
+                            </h3>
+                          </Link>
+                          <div className="flex flex-wrap gap-1 mb-3">
+                            <Badge variant="outline" className="text-xs">{drill.difficulty}</Badge>
+                            {drill.categories.slice(0, 1).map(cat => {
+                              const config = getCategoryConfig(cat);
+                              return (
+                                <Badge
+                                  key={cat}
+                                  className={`text-xs ${config.color} ${config.bgColor}`}
+                                >
+                                  {cat}
+                                </Badge>
+                              );
+                            })}
+                          </div>
+                          <Link href={`/drill/${drillId}`}>
+                            <Button size="sm" variant="outline" className="w-full gap-2">
+                              <Play className="h-3 w-3" />
+                              View Drill
+                            </Button>
+                          </Link>
+                        </div>
+                        <button
+                          onClick={() => toggleFavorite.mutate({ drillId })}
+                          className="p-1 rounded-full hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-colors flex-shrink-0"
+                          title="Remove from favorites"
+                        >
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left: Assignments List */}

@@ -364,3 +364,15 @@ export const pendingEmailAlerts = mysqlTable("pendingEmailAlerts", {
 
 export type PendingEmailAlert = typeof pendingEmailAlerts.$inferSelect;
 export type InsertPendingEmailAlert = typeof pendingEmailAlerts.$inferInsert;
+
+
+// Drill favorites - athletes can star drills for quick access
+export const drillFavorites = mysqlTable("drillFavorites", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  drillId: int("drillId").notNull(), // References the drill ID from drills.json
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type DrillFavorite = typeof drillFavorites.$inferSelect;
+export type InsertDrillFavorite = typeof drillFavorites.$inferInsert;
