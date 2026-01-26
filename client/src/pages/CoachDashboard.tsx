@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, Sparkles, Video, Upload, MessageSquare, BarChart3 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, Sparkles, Video, Upload, MessageSquare, BarChart3, Activity } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
 import drillsData from "@/data/drills.json";
@@ -237,6 +237,13 @@ export default function CoachDashboard() {
                   <MessageSquare className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
                   <span className="hidden sm:inline">Messages</span>
                   <span className="sm:hidden">Msgs</span>
+                </Button>
+              </Link>
+              <Link href="/activity-feed" className="flex-1 md:flex-none">
+                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
+                  <Activity className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
+                  <span className="hidden sm:inline">Activity Feed</span>
+                  <span className="sm:hidden">Activity</span>
                 </Button>
               </Link>
               <Link href="/manage-drill-videos" className="flex-1 md:flex-none">

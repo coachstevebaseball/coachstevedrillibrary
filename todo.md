@@ -726,3 +726,17 @@
 - [x] Test parent can mark completions for child
 - [ ] Test parent can upload videos for child
 - [x] Test child's progress updates correctly when parent manages account
+
+## Athlete Activity Tracking & Coach Alerts
+- [x] Create athleteActivity table in database schema
+- [x] Add activity types: drill_view, portal_login, assignment_view, drill_start, drill_complete, video_submit, message_sent
+- [x] Implement backend procedure to log athlete activities
+- [x] Create coach alerts notification system
+- [x] Build Coach Activity Feed dashboard showing real-time athlete engagement
+- [x] Add activity summary cards (daily active athletes, drills viewed today, etc.)
+- [x] Implement "Last Seen" indicator for each athlete
+- [x] Add streak break alerts (athlete hasn't logged in for X days)
+- [ ] Create activity digest email option for coach (future enhancement)
+- [x] Test activity logging for all event types
+- [x] Test coach notification delivery
+- [x] Test activity feed display and filtering

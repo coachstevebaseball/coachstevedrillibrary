@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle, Clock, AlertCircle, Play, ArrowRight, Home, LogOut, MessageCircle } from "lucide-react";
 import { Link } from "wouter";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import drillsData from "@/data/drills.json";
 import { getCategoryConfig } from "@/lib/categoryColors";
 import { trpc } from "@/lib/trpc";
@@ -74,6 +74,16 @@ export default function AthletePortal() {
 
   // Update status mutation
   const updateStatusMutation = trpc.drillAssignments.updateStatus.useMutation();
+
+  // Activity logging mutation
+  const logActivityMutation = trpc.activity.logActivity.useMutation();
+
+  // Log portal login on mount
+  useEffect(() => {
+    if (user?.id) {
+      logActivityMutation.mutate({ activityType: "portal_login" });
+    }
+  }, [user?.id]);
 
   // Filter assignments by status
   const filteredAssignments = useMemo(() => {

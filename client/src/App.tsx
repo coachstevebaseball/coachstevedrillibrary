@@ -20,6 +20,7 @@ import VerifyEmail from "./pages/VerifyEmail";
 import UserManagement from "./pages/UserManagement";
 import DrillsDirectory from "./pages/DrillsDirectory";
 import ParentDashboard from "./pages/ParentDashboard";
+import ActivityFeed from "./pages/ActivityFeed";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
@@ -78,6 +79,12 @@ function Router() {
       <Route path={"/coach-messaging"}>
         <ProtectedRoute requiredRole="admin">
           <CoachMessaging />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path={"/activity-feed"}>
+        <ProtectedRoute requiredRole="admin">
+          <ActivityFeed />
         </ProtectedRoute>
       </Route>
       

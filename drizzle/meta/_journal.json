@@ -148,6 +148,13 @@
       "when": 1769376859832,
       "tag": "0020_ordinary_pretty_boy",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "5",
+      "when": 1769387389625,
+      "tag": "0021_safe_deathbird",
+      "breakpoints": true
     }
   ]
 }

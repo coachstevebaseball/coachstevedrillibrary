@@ -289,3 +289,56 @@ export const drillPageTemplates = mysqlTable("drillPageTemplates", {
 
 export type DrillPageTemplate = typeof drillPageTemplates.$inferSelect;
 export type InsertDrillPageTemplate = typeof drillPageTemplates.$inferInsert;
+
+// Athlete activity tracking for coach alerts
+export const athleteActivity = mysqlTable("athleteActivity", {
+  id: int("id").autoincrement().primaryKey(),
+  athleteId: int("athleteId").notNull(),
+  activityType: mysqlEnum("activityType", [
+    "portal_login",      // Athlete logged into their portal
+    "drill_view",        // Athlete viewed a drill detail page
+    "assignment_view",   // Athlete viewed their assignments list
+    "drill_start",       // Athlete started working on a drill (marked in-progress)
+    "drill_complete",    // Athlete completed a drill
+    "video_submit",      // Athlete submitted a video for a drill
+    "message_sent",      // Athlete sent a message to coach
+    "profile_update",    // Athlete updated their profile
+  ]).notNull(),
+  // Optional reference to related entity (drillId, assignmentId, submissionId, etc.)
+  relatedId: varchar("relatedId", { length: 255 }),
+  relatedType: varchar("relatedType", { length: 50 }), // "drill", "assignment", "submission", "message"
+  // Additional metadata as JSON (drill name, message preview, etc.)
+  metadata: json("metadata"),
+  // IP address and user agent for security/analytics
+  ipAddress: varchar("ipAddress", { length: 45 }),
+  userAgent: text("userAgent"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AthleteActivity = typeof athleteActivity.$inferSelect;
+export type InsertAthleteActivity = typeof athleteActivity.$inferInsert;
+
+// Coach alert preferences - which activities trigger notifications
+export const coachAlertPreferences = mysqlTable("coachAlertPreferences", {
+  id: int("id").autoincrement().primaryKey(),
+  coachId: int("coachId").notNull().unique(),
+  // Toggle for each activity type
+  alertOnPortalLogin: int("alertOnPortalLogin").default(1).notNull(), // 0 = off, 1 = on
+  alertOnDrillView: int("alertOnDrillView").default(1).notNull(),
+  alertOnAssignmentView: int("alertOnAssignmentView").default(1).notNull(),
+  alertOnDrillStart: int("alertOnDrillStart").default(1).notNull(),
+  alertOnDrillComplete: int("alertOnDrillComplete").default(1).notNull(),
+  alertOnVideoSubmit: int("alertOnVideoSubmit").default(1).notNull(),
+  alertOnMessageSent: int("alertOnMessageSent").default(1).notNull(),
+  // Inactivity alerts
+  alertOnInactivity: int("alertOnInactivity").default(1).notNull(),
+  inactivityDays: int("inactivityDays").default(3).notNull(), // Days before inactivity alert
+  // Delivery preferences
+  inAppAlerts: int("inAppAlerts").default(1).notNull(),
+  emailDigest: int("emailDigest").default(0).notNull(), // 0 = off, 1 = daily, 2 = weekly
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CoachAlertPreference = typeof coachAlertPreferences.$inferSelect;
+export type InsertCoachAlertPreference = typeof coachAlertPreferences.$inferInsert;

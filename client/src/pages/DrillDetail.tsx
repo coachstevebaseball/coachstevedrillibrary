@@ -1223,6 +1223,21 @@ export default function DrillDetail() {
     }
   }, [drillDetailData]);
 
+  // Activity logging mutation
+  const logActivityMutation = trpc.activity.logActivity.useMutation();
+
+  // Log drill view when athlete views the page
+  useEffect(() => {
+    if (user?.id && user?.role === 'athlete' && drill && id) {
+      logActivityMutation.mutate({
+        activityType: "drill_view",
+        relatedId: id,
+        relatedType: "drill",
+        metadata: { drillName: drill.name }
+      });
+    }
+  }, [user?.id, user?.role, id, drill?.name]);
+
   // Save custom instructions
   const saveInstructionsMutation = trpc.drillDetails.saveDrillInstructions.useMutation();
   
