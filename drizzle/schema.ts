@@ -343,3 +343,24 @@ export const coachAlertPreferences = mysqlTable("coachAlertPreferences", {
 
 export type CoachAlertPreference = typeof coachAlertPreferences.$inferSelect;
 export type InsertCoachAlertPreference = typeof coachAlertPreferences.$inferInsert;
+
+
+// Pending email alerts for batching/rate limiting
+export const pendingEmailAlerts = mysqlTable("pendingEmailAlerts", {
+  id: int("id").autoincrement().primaryKey(),
+  coachId: int("coachId").notNull(),
+  athleteId: int("athleteId").notNull(),
+  athleteName: varchar("athleteName", { length: 255 }),
+  activityType: varchar("activityType", { length: 50 }).notNull(),
+  activityMessage: text("activityMessage").notNull(),
+  actionUrl: varchar("actionUrl", { length: 500 }),
+  metadata: json("metadata"),
+  // Batch window tracking
+  batchKey: varchar("batchKey", { length: 100 }).notNull(), // e.g., "coach_1_athlete_5" for grouping
+  scheduledSendAt: timestamp("scheduledSendAt").notNull(), // When this batch should be sent
+  isSent: int("isSent").default(0).notNull(), // 0 = pending, 1 = sent
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type PendingEmailAlert = typeof pendingEmailAlerts.$inferSelect;
+export type InsertPendingEmailAlert = typeof pendingEmailAlerts.$inferInsert;

@@ -752,3 +752,12 @@
 ## Timezone Fix for Email Alerts
 - [x] Update email alert timestamps to display in Eastern Standard Time (EST)
 - [x] Test email shows correct EST time
+
+## Email Rate Limiting / Activity Batching
+- [x] Create pendingEmailAlerts table to store queued alerts
+- [x] Implement batching logic to group activities within 5-minute window
+- [x] Update logActivity to queue alerts instead of sending immediately
+- [x] Create scheduled job to process and send batched email digests
+- [x] Design batched email template showing multiple activities
+- [x] Test batching with multiple rapid activities
+- [x] Test single activity still sends after 5-minute window

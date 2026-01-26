@@ -2,6 +2,7 @@ import { eq, desc, and, gte, sql } from "drizzle-orm";
 import { athleteActivity, coachAlertPreferences, notifications, users, InsertAthleteActivity } from "../drizzle/schema";
 import { getDb } from "./db";
 import { sendActivityAlertEmail } from "./email";
+import { queueActivityAlert } from "./emailBatching";
 
 // Activity types that can be tracked
 export type ActivityType = 
@@ -104,19 +105,18 @@ export async function logActivity(
         });
       }
       
-      // Send instant email alert
+      // Queue email alert for batched sending (prevents inbox overload)
       if (shouldNotifyEmail && coach.email) {
         const baseUrl = process.env.VITE_APP_URL || "https://coachstevebaseball.com";
-        await sendActivityAlertEmail({
-          coachEmail: coach.email,
-          coachName: coach.name || "Coach",
+        await queueActivityAlert(
+          coach.id,
+          athleteId,
           athleteName,
           activityType,
-          activityMessage: message,
-          actionUrl: `${baseUrl}${actionUrl}`,
-          timestamp: new Date(),
-          metadata: options?.metadata,
-        });
+          message,
+          `${baseUrl}${actionUrl}`,
+          options?.metadata
+        );
       }
     }
 
