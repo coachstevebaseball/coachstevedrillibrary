@@ -748,3 +748,7 @@
 - [ ] Implement rate limiting to prevent email spam (batch similar activities) - future enhancement
 - [x] Test email delivery for all activity types
 - [x] Verify email preferences are respected
+
+## Timezone Fix for Email Alerts
+- [x] Update email alert timestamps to display in Eastern Standard Time (EST)
+- [x] Test email shows correct EST time

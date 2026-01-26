@@ -798,8 +798,9 @@ export async function sendActivityAlertEmail(data: ActivityAlertEmailData): Prom
       day: 'numeric',
       hour: 'numeric',
       minute: '2-digit',
-      hour12: true
-    });
+      hour12: true,
+      timeZone: 'America/New_York'
+    }) + ' EST';
 
     const emailHtml = `
 <!DOCTYPE html>
