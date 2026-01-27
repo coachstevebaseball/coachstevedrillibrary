@@ -426,35 +426,46 @@ export default function AthletePortal() {
               </Badge>
             </div>
             
-            <div className="grid grid-cols-2 gap-3">
-              {favoriteIds.slice(0, 4).map((drillId: number) => {
-                const drill = getDrill(String(drillId));
-                if (!drill) return null;
+            <div className="space-y-2">
+              {favoriteIds.map((drillId: number) => {
+                // Try to find drill by numeric ID first, then by string ID
+                let drill = allDrills.find((d: any) => d.id === drillId || d.id === String(drillId));
+                if (!drill) {
+                  // Also try matching by converting drill.id to number
+                  drill = allDrills.find((d: any) => parseInt(d.id) === drillId);
+                }
+                
+                // If still not found, create a placeholder
+                const drillName = drill?.name || `Drill #${drillId}`;
+                const drillDifficulty = drill?.difficulty || "Medium";
+                const drillCategory = drill?.categories?.[0] || "General";
                 
                 return (
-                  <Link key={drillId} href={`/drill/${drillId}`}>
-                    <div className="bg-white rounded-xl p-3 shadow-sm hover:shadow-md transition-all">
-                      <div className="flex items-start justify-between mb-2">
-                        <h4 className="font-medium text-sm text-gray-900 line-clamp-2">{drill.name}</h4>
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 flex-shrink-0" />
+                  <Link key={drillId} href={`/drill/${drill?.id || drillId}`}>
+                    <div className="w-full bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all flex items-center gap-4">
+                      {/* Skill Icon */}
+                      <SkillIcon category={drillCategory} />
+                      
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-gray-900 truncate">{drillName}</h4>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge className={`text-xs ${getDifficultyColor(drillDifficulty)}`}>
+                            {drillDifficulty}
+                          </Badge>
+                          <Badge className="bg-gray-100 text-gray-600 text-xs">
+                            {drillCategory}
+                          </Badge>
+                        </div>
                       </div>
-                      <Badge className={`text-xs ${getDifficultyColor(drill.difficulty)}`}>
-                        {drill.difficulty}
-                      </Badge>
+                      
+                      {/* Star Icon */}
+                      <Star className="w-5 h-5 fill-yellow-400 text-yellow-400 flex-shrink-0" />
                     </div>
                   </Link>
                 );
               })}
             </div>
-            
-            {favoriteIds.length > 4 && (
-              <Link href="/">
-                <Button variant="ghost" className="w-full mt-2 text-gray-600">
-                  View all {favoriteIds.length} favorites
-                  <ChevronRight className="w-4 h-4 ml-1" />
-                </Button>
-              </Link>
-            )}
           </div>
         )}
 

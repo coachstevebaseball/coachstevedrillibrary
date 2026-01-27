@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";;
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink, Lock, LogIn, ChevronDown, AlertCircle, TrendingUp, Lightbulb } from "lucide-react";
+import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink, Lock, LogIn, ChevronDown, AlertCircle, TrendingUp, Lightbulb, Star } from "lucide-react";
 import { getCategoryConfig } from "@/lib/categoryColors";
 import { getLoginUrl, PREVIEW_MODE } from "@/const";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -1223,6 +1223,30 @@ export default function DrillDetail() {
     }
   }, [drillDetailData]);
 
+  // Favorites functionality
+  const { data: favoritesData } = trpc.favorites.getAll.useQuery(undefined, {
+    enabled: !!user?.id
+  });
+  const toggleFavoriteMutation = trpc.favorites.toggle.useMutation({
+    onSuccess: () => {
+      trpcUtils.favorites.getAll.invalidate();
+    }
+  });
+  const trpcUtils = trpc.useUtils();
+  
+  // Check if current drill is favorited
+  const isFavorited = useMemo(() => {
+    if (!favoritesData?.drillIds || !id) return false;
+    const numericId = parseInt(id);
+    return favoritesData.drillIds.includes(numericId) || favoritesData.drillIds.includes(id as any);
+  }, [favoritesData?.drillIds, id]);
+  
+  const handleToggleFavorite = () => {
+    if (!id) return;
+    const numericId = parseInt(id) || 0;
+    toggleFavoriteMutation.mutate({ drillId: numericId });
+  };
+
   // Activity logging mutation
   const logActivityMutation = trpc.activity.logActivity.useMutation();
 
@@ -1342,6 +1366,23 @@ export default function DrillDetail() {
               </div>
               <h1 className="text-2xl md:text-5xl font-heading font-black leading-tight">{drill.name}</h1>
             </div>
+            
+            {/* Add to Favorites Button */}
+            {user && (
+              <Button
+                onClick={handleToggleFavorite}
+                disabled={toggleFavoriteMutation.isPending}
+                variant={isFavorited ? "secondary" : "outline"}
+                className={`w-full md:w-auto mt-3 md:mt-0 gap-2 ${
+                  isFavorited 
+                    ? "bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500" 
+                    : "bg-white/10 hover:bg-white/20 text-white border-white/30"
+                }`}
+              >
+                <Star className={`h-4 w-4 ${isFavorited ? "fill-current" : ""}`} />
+                {isFavorited ? "Favorited" : "Add to Favorites"}
+              </Button>
+            )}
             
             {/* Fallback to external link if we don't have internal details */}
             {!details && (

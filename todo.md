@@ -795,3 +795,9 @@
 - [x] Bold headings for drill names, clean sans-serif for metadata
 - [x] Test mobile responsiveness
 - [x] Test drill modal flow
+
+## Favorites Display Fixes
+- [x] Fix My Favorites section in Athlete Portal to show actual drill cards (not just count)
+- [x] Add "Add to Favorites" button inside drill detail page
+- [x] Test favorites display shows drill name, difficulty, category
+- [x] Test Add to Favorites button toggles correctly on drill detail page
