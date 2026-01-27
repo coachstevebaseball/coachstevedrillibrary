@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, LogIn, LogOut, Shield, X, Users, Activity, ChevronDown, Star } from "lucide-react";
+import { Search, Filter, LogIn, LogOut, Shield, X, Users, Activity, ChevronDown } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
 import drillsData from "@/data/drills.json";
@@ -49,19 +49,7 @@ export default function Home() {
   // Fetch custom drills from database
   const { data: customDrills = [] } = trpc.drillDetails.getCustomDrills.useQuery();
 
-  // Fetch user's favorite drills
-  const { data: favoritesData } = trpc.favorites.getAll.useQuery(undefined, {
-    enabled: isAuthenticated,
-  });
-  const favoriteIds = new Set(favoritesData?.drillIds || []);
 
-  // Toggle favorite mutation
-  const utils = trpc.useUtils();
-  const toggleFavorite = trpc.favorites.toggle.useMutation({
-    onSuccess: () => {
-      utils.favorites.getAll.invalidate();
-    },
-  });
 
   // Merge static drills with custom drills from database
   const allDrills: Drill[] = useMemo(() => {
@@ -343,26 +331,7 @@ export default function Home() {
                         ))}
                       </div>
                     </div>
-                    {/* Favorite Star Button */}
-                    {isAuthenticated && (
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          toggleFavorite.mutate({ drillId: parseInt(drill.id) });
-                        }}
-                        className="p-2 rounded-full hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-colors"
-                        title={favoriteIds.has(parseInt(drill.id)) ? "Remove from favorites" : "Add to favorites"}
-                      >
-                        <Star
-                          className={`h-5 w-5 transition-colors ${
-                            favoriteIds.has(parseInt(drill.id))
-                              ? "fill-yellow-400 text-yellow-400"
-                              : "text-gray-400 hover:text-yellow-400"
-                          }`}
-                        />
-                      </button>
-                    )}
+
                   </div>
                 </div>
               </Link>

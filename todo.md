@@ -801,3 +801,9 @@
 - [x] Add "Add to Favorites" button inside drill detail page
 - [x] Test favorites display shows drill name, difficulty, category
 - [x] Test Add to Favorites button toggles correctly on drill detail page
+
+## Remove Star Buttons from Drill Library List
+- [x] Remove star/favorite buttons from drill rows in Home.tsx (drill library)
+- [x] Keep favorite button only inside drill detail page
+- [x] Test drill library no longer shows stars
+- [x] Test favorites still work from drill detail page
