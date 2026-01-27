@@ -2,13 +2,18 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle, Clock, AlertCircle, Play, ArrowRight, Home, LogOut, MessageCircle, Star } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { 
+  CheckCircle, Clock, AlertCircle, Play, ArrowRight, Home, LogOut, 
+  MessageCircle, Star, Flame, Target, ChevronRight, X, Trophy
+} from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo, useEffect } from "react";
 import drillsData from "@/data/drills.json";
 import { getCategoryConfig } from "@/lib/categoryColors";
 import { trpc } from "@/lib/trpc";
+import { CompletionModal } from "@/components/CompletionModal";
+import { DrillSubmissionForm } from "@/components/DrillSubmissionForm";
 
 // Hook to merge static drills with custom drills from database
 function useAllDrills() {
@@ -24,12 +29,6 @@ function useAllDrills() {
     return [...drillsData, ...customDrillsFormatted];
   }, [customDrills]);
 }
-import { ProgressDashboard, ProgressBar } from "@/components/ProgressDashboard";
-import { CompletionModal } from "@/components/CompletionModal";
-import { BadgeDisplay } from "@/components/BadgeDisplay";
-import { DrillNotes } from "@/components/DrillNotes";
-import { DrillSubmissionForm } from "@/components/DrillSubmissionForm";
-import { AthleteBadges } from "@/components/AthleteBadges";
 
 interface Drill {
   id: string;
@@ -44,7 +43,8 @@ interface Drill {
 
 interface Assignment {
   id: number;
-  userId: number;
+  userId: number | null;
+  inviteId?: number | null;
   drillId: string;
   drillName: string;
   status: "assigned" | "in-progress" | "completed";
@@ -54,10 +54,59 @@ interface Assignment {
   updatedAt: Date;
 }
 
+// Circular Progress Component
+function CircularProgress({ percentage, size = 80 }: { percentage: number; size?: number }) {
+  const strokeWidth = 8;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const offset = circumference - (percentage / 100) * circumference;
+
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <svg className="transform -rotate-90" width={size} height={size}>
+        <circle
+          className="text-gray-200"
+          strokeWidth={strokeWidth}
+          stroke="currentColor"
+          fill="transparent"
+          r={radius}
+          cx={size / 2}
+          cy={size / 2}
+        />
+        <circle
+          className="text-orange-500 transition-all duration-500"
+          strokeWidth={strokeWidth}
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          stroke="currentColor"
+          fill="transparent"
+          r={radius}
+          cx={size / 2}
+          cy={size / 2}
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-lg font-bold text-gray-900">{percentage}%</span>
+      </div>
+    </div>
+  );
+}
+
+// Skill Icon Component
+function SkillIcon({ category }: { category: string }) {
+  const config = getCategoryConfig(category);
+  return (
+    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${config.bgColor}`}>
+      <Target className={`w-6 h-6 ${config.color}`} />
+    </div>
+  );
+}
+
 export default function AthletePortal() {
   const { user, loading, logout } = useAuth();
-  const [statusFilter, setStatusFilter] = useState<"all" | "assigned" | "in-progress" | "completed">("all");
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
+  const [showDrillModal, setShowDrillModal] = useState(false);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
 
   // Fetch user's assignments
@@ -88,7 +137,11 @@ export default function AthletePortal() {
   });
 
   // Update status mutation
-  const updateStatusMutation = trpc.drillAssignments.updateStatus.useMutation();
+  const updateStatusMutation = trpc.drillAssignments.updateStatus.useMutation({
+    onSuccess: () => {
+      utils.drillAssignments.getUserAssignments.invalidate();
+    },
+  });
 
   // Activity logging mutation
   const logActivityMutation = trpc.activity.logActivity.useMutation();
@@ -100,20 +153,32 @@ export default function AthletePortal() {
     }
   }, [user?.id]);
 
-  // Filter assignments by status
-  const filteredAssignments = useMemo(() => {
-    if (statusFilter === "all") return userAssignments;
-    return userAssignments.filter((a: any) => a.status === statusFilter);
-  }, [userAssignments, statusFilter]);
-
   // Calculate progress stats
   const progressStats = useMemo(() => {
     const total = userAssignments.length;
     const completed = userAssignments.filter((a: any) => a.status === "completed").length;
     const inProgress = userAssignments.filter((a: any) => a.status === "in-progress").length;
     const assigned = userAssignments.filter((a: any) => a.status === "assigned").length;
-    return { total, completed, inProgress, assigned, streak };
+    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+    return { total, completed, inProgress, assigned, streak, percentage };
   }, [userAssignments, streak]);
+
+  // Get the most urgent drill (first assigned, then in-progress)
+  const upNextDrill = useMemo(() => {
+    const assignedDrills = userAssignments.filter((a: any) => a.status === "assigned");
+    const inProgressDrills = userAssignments.filter((a: any) => a.status === "in-progress");
+    return inProgressDrills[0] || assignedDrills[0] || null;
+  }, [userAssignments]);
+
+  // Get pending assignments (not completed)
+  const pendingAssignments = useMemo(() => {
+    return userAssignments.filter((a: any) => a.status !== "completed");
+  }, [userAssignments]);
+
+  // Get completed assignments
+  const completedAssignments = useMemo(() => {
+    return userAssignments.filter((a: any) => a.status === "completed");
+  }, [userAssignments]);
 
   // Get all drills including custom drills
   const allDrills = useAllDrills();
@@ -135,35 +200,45 @@ export default function AthletePortal() {
     }
   };
 
-  // Get status badge config
-  const getStatusConfig = (status: string) => {
-    switch (status) {
-      case "completed":
-        return { icon: CheckCircle, label: "Completed", variant: "default" as const };
-      case "in-progress":
-        return { icon: Clock, label: "In Progress", variant: "secondary" as const };
-      case "assigned":
-        return { icon: AlertCircle, label: "Assigned", variant: "outline" as const };
-      default:
-        return { icon: AlertCircle, label: "Unknown", variant: "outline" as const };
+  // Open drill modal
+  const openDrillModal = (assignment: Assignment) => {
+    setSelectedAssignment(assignment);
+    setShowDrillModal(true);
+  };
+
+  // Get difficulty color
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty?.toLowerCase()) {
+      case "easy": return "bg-green-100 text-green-700";
+      case "medium": return "bg-yellow-100 text-yellow-700";
+      case "hard": return "bg-red-100 text-red-700";
+      default: return "bg-gray-100 text-gray-700";
     }
   };
 
   if (loading || assignmentsLoading) {
-    return <div className="container py-12 text-center">Loading your drills...</div>;
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Loading your training...</p>
+        </div>
+      </div>
+    );
   }
 
   if (!user) {
     return (
-      <div className="container py-12">
-        <Card className="max-w-2xl mx-auto border-2">
-          <CardHeader className="text-center">
-            <CardTitle>Please Log In</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center space-y-4">
-            <p className="text-muted-foreground">You need to be logged in to view your assigned drills.</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <Card className="max-w-md w-full">
+          <CardContent className="pt-6 text-center space-y-4">
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+              <AlertCircle className="w-8 h-8 text-primary" />
+            </div>
+            <h2 className="text-xl font-bold">Please Log In</h2>
+            <p className="text-gray-600">You need to be logged in to view your training.</p>
             <Link href="/">
-              <Button variant="outline">Back to Directory</Button>
+              <Button variant="outline" className="w-full">Back to Directory</Button>
             </Link>
           </CardContent>
         </Card>
@@ -174,17 +249,16 @@ export default function AthletePortal() {
   // Check if user is an active athlete
   if (user?.role === 'athlete' && !user?.isActiveClient) {
     return (
-      <div className="container py-12">
-        <Card className="max-w-2xl mx-auto border-2">
-          <CardHeader className="text-center">
-            <CardTitle>Account Inactive</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center space-y-4">
-            <p className="text-muted-foreground">
-              Your account has been deactivated. Please contact your coach for more information.
-            </p>
-            <Button onClick={() => logout()} variant="outline" size="lg" className="gap-2">
-              <LogOut className="h-5 w-5" />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <Card className="max-w-md w-full">
+          <CardContent className="pt-6 text-center space-y-4">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+              <AlertCircle className="w-8 h-8 text-red-600" />
+            </div>
+            <h2 className="text-xl font-bold">Account Inactive</h2>
+            <p className="text-gray-600">Your account has been deactivated. Please contact your coach.</p>
+            <Button onClick={() => logout()} variant="outline" className="w-full gap-2">
+              <LogOut className="h-4 w-4" />
               Log Out
             </Button>
           </CardContent>
@@ -194,315 +268,348 @@ export default function AthletePortal() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-8 mb-8">
-        <div className="container">
-          <div className="flex items-center justify-between mb-4">
-            <Link href="/">
-              <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 pl-0">
-                <Home className="mr-2 h-4 w-4" />
-                Back to Directory
-              </Button>
-            </Link>
-            <Link href="/athlete-messaging">
-              <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">
-                <MessageCircle className="mr-2 h-4 w-4" />
-                My Messages
-              </Button>
-            </Link>
-          </div>
-          <div className="space-y-2">
-            <h1 className="text-4xl md:text-5xl font-heading font-black">Your Drills</h1>
-            <p className="text-primary-foreground/90">Welcome, {user.name}! Here are your assigned drills and progress.</p>
-          </div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Compact Header */}
+      <header className="bg-primary text-white px-4 py-3 sticky top-0 z-40">
+        <div className="flex items-center justify-between max-w-lg mx-auto">
+          <Link href="/">
+            <button className="flex items-center gap-1 text-white/80 hover:text-white text-sm">
+              <Home className="w-4 h-4" />
+              <span className="hidden sm:inline">Directory</span>
+            </button>
+          </Link>
+          <h1 className="font-bold text-lg">My Training</h1>
+          <Link href="/athlete-messaging">
+            <button className="flex items-center gap-1 text-white/80 hover:text-white text-sm">
+              <MessageCircle className="w-4 h-4" />
+              <span className="hidden sm:inline">Messages</span>
+            </button>
+          </Link>
         </div>
       </header>
 
-      <main className="container max-w-6xl pb-12">
-        {/* Progress Dashboard */}
-        <ProgressDashboard stats={progressStats} />
-        <ProgressBar completed={progressStats.completed} total={progressStats.total} />
-
-        {/* Badges Section */}
-        <div className="mb-8">
-          <AthleteBadges
-            submissionCount={userAssignments.filter((a: any) => a.status === 'completed').length}
-            completedDrillCount={progressStats.completed}
-            consecutiveDays={streak}
-          />
-        </div>
-
-        {/* My Favorites Section */}
-        {favoriteIds.length > 0 && (
-          <Card className="mb-8">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                  My Favorites
-                </CardTitle>
-                <Badge variant="secondary">{favoriteIds.length}</Badge>
+      <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
+        {/* Up Next Hero Card */}
+        {upNextDrill ? (
+          <Card className="bg-gradient-to-br from-primary to-primary/80 text-white border-0 shadow-lg overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse" />
+                <span className="text-sm font-medium text-white/80 uppercase tracking-wide">Up Next</span>
               </div>
-              <p className="text-sm text-muted-foreground">Drills you've saved for quick access</p>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {favoriteIds.map((drillId: number) => {
-                  const drill = getDrill(String(drillId));
-                  if (!drill) return null;
-                  return (
-                    <div
-                      key={drillId}
-                      className="border rounded-lg p-4 hover:shadow-md transition-all hover:bg-muted/50"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <Link href={`/drill/${drillId}`}>
-                            <h3 className="font-semibold text-base mb-2 hover:text-secondary cursor-pointer truncate">
-                              {drill.name}
-                            </h3>
-                          </Link>
-                          <div className="flex flex-wrap gap-1 mb-3">
-                            <Badge variant="outline" className="text-xs">{drill.difficulty}</Badge>
-                            {drill.categories.slice(0, 1).map(cat => {
-                              const config = getCategoryConfig(cat);
-                              return (
-                                <Badge
-                                  key={cat}
-                                  className={`text-xs ${config.color} ${config.bgColor}`}
-                                >
-                                  {cat}
-                                </Badge>
-                              );
-                            })}
-                          </div>
-                          <Link href={`/drill/${drillId}`}>
-                            <Button size="sm" variant="outline" className="w-full gap-2">
-                              <Play className="h-3 w-3" />
-                              View Drill
-                            </Button>
-                          </Link>
-                        </div>
-                        <button
-                          onClick={() => toggleFavorite.mutate({ drillId })}
-                          className="p-1 rounded-full hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-colors flex-shrink-0"
-                          title="Remove from favorites"
-                        >
-                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
+              
+              <h2 className="text-2xl font-bold mb-3">{upNextDrill.drillName}</h2>
+              
+              {(() => {
+                const drill = getDrill(upNextDrill.drillId);
+                return drill && (
+                  <div className="flex items-center gap-3 mb-5">
+                    <Badge className="bg-white/20 text-white border-0 hover:bg-white/30">
+                      <Clock className="w-3 h-3 mr-1" />
+                      {drill.duration || "10 min"}
+                    </Badge>
+                    <Badge className={`border-0 ${getDifficultyColor(drill.difficulty)}`}>
+                      {drill.difficulty}
+                    </Badge>
+                    {drill.categories[0] && (
+                      <Badge className="bg-white/20 text-white border-0">
+                        {drill.categories[0]}
+                      </Badge>
+                    )}
+                  </div>
+                );
+              })()}
+
+              <Button 
+                onClick={() => openDrillModal(upNextDrill)}
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-6 text-lg shadow-lg"
+              >
+                <Play className="w-5 h-5 mr-2" />
+                Let's Go!
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-lg">
+            <CardContent className="p-6 text-center">
+              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Trophy className="w-8 h-8" />
               </div>
+              <h2 className="text-2xl font-bold mb-2">All Caught Up!</h2>
+              <p className="text-white/80">No pending drills. Check back soon for new assignments!</p>
             </CardContent>
           </Card>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left: Assignments List */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>Your Assignments</CardTitle>
-                  <Badge variant="secondary">{filteredAssignments.length}</Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {/* Status Filter */}
-                <div className="mb-6">
-                  <label className="text-sm font-semibold text-muted-foreground mb-2 block">Filter by Status</label>
-                  <Select value={statusFilter} onValueChange={(val: any) => setStatusFilter(val)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Drills</SelectItem>
-                      <SelectItem value="assigned">Assigned</SelectItem>
-                      <SelectItem value="in-progress">In Progress</SelectItem>
-                      <SelectItem value="completed">Completed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Assignments Grid */}
-                {filteredAssignments.length > 0 ? (
-                  <div className="space-y-3">
-                    {filteredAssignments.map((assignment: any) => {
-                      const drill = getDrill(assignment.drillId);
-                      const statusConfig = getStatusConfig(assignment.status);
-                      const StatusIcon = statusConfig.icon;
-
-                      return (
-                        <div
-                          key={assignment.id}
-                          onClick={() => setSelectedAssignment(assignment)}
-                          className={`border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${
-                            selectedAssignment?.id === assignment.id ? "border-secondary bg-secondary/5" : "hover:bg-muted/50"
-                          }`}
-                        >
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="flex-1">
-                              <h3 className="font-semibold text-lg mb-2">{assignment.drillName}</h3>
-                              {drill && (
-                                <div className="flex flex-wrap gap-2 mb-2">
-                                  <Badge variant="outline" className="text-xs">{drill.difficulty}</Badge>
-                                  {drill.categories.slice(0, 2).map(cat => {
-                                    const config = getCategoryConfig(cat);
-                                    return (
-                                      <Badge
-                                        key={cat}
-                                        className={`text-xs ${config.color} ${config.bgColor}`}
-                                      >
-                                        {cat}
-                                      </Badge>
-                                    );
-                                  })}
-                                </div>
-                              )}
-                              <div className="flex items-center gap-2">
-                                <Badge variant={statusConfig.variant as any}>
-                                  <StatusIcon className="h-3 w-3 mr-1" />
-                                  {statusConfig.label}
-                                </Badge>
-                                <span className="text-xs text-muted-foreground">
-                                  Assigned {new Date(assignment.assignedAt).toLocaleDateString()}
-                                </span>
-                              </div>
-                            </div>
-                            <ArrowRight className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-1" />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <AlertCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p className="text-lg font-medium mb-2">No drills assigned yet</p>
-                    <p className="text-sm">Check back soon for new drills from your coach!</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Right: Drill Details */}
-          <div className="lg:col-span-1">
-            {selectedAssignment ? (
-              <Card className="sticky top-4">
-                <CardHeader>
-                  <CardTitle className="text-lg">Drill Details</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {(() => {
-                    const drill = getDrill(selectedAssignment.drillId);
-                    return (
-                      <>
-                        <div>
-                          <h3 className="font-semibold text-lg mb-2">{selectedAssignment.drillName}</h3>
-                          {drill && (
-                            <>
-                              <div className="space-y-2 mb-4">
-                                <div>
-                                  <span className="text-xs font-semibold text-muted-foreground uppercase">Duration</span>
-                                  <p className="text-sm">{drill.duration}</p>
-                                </div>
-                                <div>
-                                  <span className="text-xs font-semibold text-muted-foreground uppercase">Difficulty</span>
-                                  <p className="text-sm">{drill.difficulty}</p>
-                                </div>
-                                <div>
-                                  <span className="text-xs font-semibold text-muted-foreground uppercase">Skill Set</span>
-                                  <p className="text-sm">{drill.skillSet}</p>
-                                </div>
-                              </div>
-
-                              {/* Drill Video Link */}
-                              <Link href={`/drill/${drill.id}`}>
-                                <Button className="w-full mb-4" variant="secondary">
-                                  <Play className="h-4 w-4 mr-2" />
-                                  View Full Drill
-                                </Button>
-                              </Link>
-                            </>
-                          )}
-                        </div>
-
-                        {/* Submission Form */}
-                        <DrillSubmissionForm
-                          assignmentId={selectedAssignment.id}
-                          drillId={selectedAssignment.drillId}
-                          onSubmitSuccess={() => {
-                            // Refresh submissions
-                          }}
-                        />
-
-                        {/* Drill Notes */}
-                        <DrillNotes
-                          athleteNotes={selectedAssignment.notes || ""}
-                          isCoach={false}
-                          isCompleted={selectedAssignment.status === "completed"}
-                          onSaveAthleteNotes={(notes) => {
-                            // TODO: Implement save athlete notes
-                          }}
-                        />
-
-                        {/* Status Update */}
-                        <div className="border-t pt-4">
-                          {selectedAssignment.status !== "completed" && (
-                            <Button
-                              onClick={() => setShowCompletionModal(true)}
-                              className="w-full bg-green-600 hover:bg-green-700 mb-3"
-                            >
-                              <CheckCircle className="h-4 w-4 mr-2" />
-                              Mark as Complete
-                            </Button>
-                          )}
-                          <label className="text-xs font-semibold text-muted-foreground uppercase block mb-2">Update Status</label>
-                          <Select
-                            value={selectedAssignment.status}
-                            onValueChange={(status: any) => handleStatusUpdate(selectedAssignment.id, status)}
-                          >
-                            <SelectTrigger className="w-full">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="assigned">Assigned</SelectItem>
-                              <SelectItem value="in-progress">In Progress</SelectItem>
-                              <SelectItem value="completed">Completed</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        {/* Completion Date */}
-                        {selectedAssignment.status === "completed" && selectedAssignment.completedAt && (
-                          <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg border border-green-200 dark:border-green-800">
-                            <div className="flex items-center gap-2 text-green-700 dark:text-green-400">
-                              <CheckCircle className="h-4 w-4" />
-                              <span className="text-sm font-medium">
-                                Completed {new Date(selectedAssignment.completedAt).toLocaleDateString()}
-                              </span>
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    );
-                  })()}
-                </CardContent>
-              </Card>
-            ) : (
-              <Card>
-                <CardContent className="pt-6 text-center text-muted-foreground">
-                  <p>Select a drill to view details</p>
-                </CardContent>
-              </Card>
-            )}
+        {/* Compact Progress Row */}
+        <div className="flex items-center gap-4 bg-white rounded-2xl p-4 shadow-sm">
+          {/* Circular Progress */}
+          <CircularProgress percentage={progressStats.percentage} />
+          
+          {/* Stats */}
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-gray-600">Progress</span>
+              <span className="text-sm font-medium">{progressStats.completed}/{progressStats.total} done</span>
+            </div>
+            
+            {/* Streak */}
+            <div className="flex items-center gap-2 bg-orange-50 rounded-lg px-3 py-2">
+              <Flame className="w-5 h-5 text-orange-500" />
+              <span className="font-bold text-orange-600">{progressStats.streak}</span>
+              <span className="text-sm text-orange-600">Day Streak</span>
+              {progressStats.streak > 0 && <span className="text-lg">🔥</span>}
+            </div>
           </div>
         </div>
+
+        {/* Pending Drills Playlist */}
+        {pendingAssignments.length > 0 && (
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-bold text-gray-900">Your Playlist</h3>
+              <Badge variant="secondary" className="bg-gray-100">
+                {pendingAssignments.length} remaining
+              </Badge>
+            </div>
+            
+            <div className="space-y-2">
+              {pendingAssignments.map((assignment: any) => {
+                const drill = getDrill(assignment.drillId);
+                const isInProgress = assignment.status === "in-progress";
+                
+                return (
+                  <button
+                    key={assignment.id}
+                    onClick={() => openDrillModal(assignment)}
+                    className="w-full bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all flex items-center gap-4 text-left"
+                  >
+                    {/* Skill Icon */}
+                    <SkillIcon category={drill?.categories[0] || "General"} />
+                    
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-gray-900 truncate">{assignment.drillName}</h4>
+                      <div className="flex items-center gap-2 mt-1">
+                        {isInProgress && (
+                          <Badge className="bg-blue-100 text-blue-700 border-0 text-xs">
+                            In Progress
+                          </Badge>
+                        )}
+                        <span className="text-xs text-gray-500">
+                          {new Date(assignment.assignedAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {/* Play Arrow */}
+                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Play className="w-5 h-5 text-orange-600 ml-0.5" />
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* My Favorites Section */}
+        {favoriteIds.length > 0 && (
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-bold text-gray-900 flex items-center gap-2">
+                <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                My Favorites
+              </h3>
+              <Badge variant="secondary" className="bg-yellow-100 text-yellow-700">
+                {favoriteIds.length}
+              </Badge>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-3">
+              {favoriteIds.slice(0, 4).map((drillId: number) => {
+                const drill = getDrill(String(drillId));
+                if (!drill) return null;
+                
+                return (
+                  <Link key={drillId} href={`/drill/${drillId}`}>
+                    <div className="bg-white rounded-xl p-3 shadow-sm hover:shadow-md transition-all">
+                      <div className="flex items-start justify-between mb-2">
+                        <h4 className="font-medium text-sm text-gray-900 line-clamp-2">{drill.name}</h4>
+                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 flex-shrink-0" />
+                      </div>
+                      <Badge className={`text-xs ${getDifficultyColor(drill.difficulty)}`}>
+                        {drill.difficulty}
+                      </Badge>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+            
+            {favoriteIds.length > 4 && (
+              <Link href="/">
+                <Button variant="ghost" className="w-full mt-2 text-gray-600">
+                  View all {favoriteIds.length} favorites
+                  <ChevronRight className="w-4 h-4 ml-1" />
+                </Button>
+              </Link>
+            )}
+          </div>
+        )}
+
+        {/* Completed Drills */}
+        {completedAssignments.length > 0 && (
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-bold text-gray-900 flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-green-500" />
+                Completed
+              </h3>
+              <Badge variant="secondary" className="bg-green-100 text-green-700">
+                {completedAssignments.length}
+              </Badge>
+            </div>
+            
+            <div className="space-y-2">
+              {completedAssignments.slice(0, 3).map((assignment: any) => {
+                const drill = getDrill(assignment.drillId);
+                
+                return (
+                  <div
+                    key={assignment.id}
+                    className="bg-white/60 rounded-xl p-4 flex items-center gap-4"
+                  >
+                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-gray-700 truncate">{assignment.drillName}</h4>
+                      <span className="text-xs text-gray-500">
+                        Completed {assignment.completedAt ? new Date(assignment.completedAt).toLocaleDateString() : ""}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Next Badge Progress */}
+        <Card className="bg-gradient-to-r from-purple-50 to-indigo-50 border-0">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Trophy className="w-5 h-5 text-purple-600" />
+                <span className="font-semibold text-gray-900">Next Badge</span>
+              </div>
+              <Badge className="bg-purple-100 text-purple-700 border-0">
+                {Math.max(0, 5 - progressStats.completed)} more
+              </Badge>
+            </div>
+            <div className="w-full bg-purple-200 rounded-full h-2">
+              <div 
+                className="bg-purple-600 h-2 rounded-full transition-all duration-500"
+                style={{ width: `${Math.min(100, (progressStats.completed / 5) * 100)}%` }}
+              />
+            </div>
+            <p className="text-xs text-gray-600 mt-2">Complete 5 drills to earn "Dedicated Athlete" badge</p>
+          </CardContent>
+        </Card>
       </main>
+
+      {/* Drill Focus Modal */}
+      <Dialog open={showDrillModal} onOpenChange={setShowDrillModal}>
+        <DialogContent className="max-w-lg mx-auto h-[90vh] flex flex-col p-0 gap-0">
+          <DialogHeader className="p-4 border-b bg-primary text-white flex-shrink-0">
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-lg font-bold pr-8">
+                {selectedAssignment?.drillName}
+              </DialogTitle>
+              <button 
+                onClick={() => setShowDrillModal(false)}
+                className="absolute right-4 top-4 text-white/80 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </DialogHeader>
+          
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {selectedAssignment && (() => {
+              const drill = getDrill(selectedAssignment.drillId);
+              return (
+                <>
+                  {/* Drill Info */}
+                  <div className="flex items-center gap-3 flex-wrap">
+                    {drill && (
+                      <>
+                        <Badge className="bg-gray-100 text-gray-700 border-0">
+                          <Clock className="w-3 h-3 mr-1" />
+                          {drill.duration || "10 min"}
+                        </Badge>
+                        <Badge className={`border-0 ${getDifficultyColor(drill.difficulty)}`}>
+                          {drill.difficulty}
+                        </Badge>
+                        {drill.categories[0] && (
+                          <Badge className="bg-blue-100 text-blue-700 border-0">
+                            {drill.categories[0]}
+                          </Badge>
+                        )}
+                      </>
+                    )}
+                  </div>
+
+                  {/* Video Link */}
+                  <Link href={`/drill/${selectedAssignment.drillId}`}>
+                    <Button className="w-full bg-primary hover:bg-primary/90 gap-2">
+                      <Play className="w-4 h-4" />
+                      Watch Video Instructions
+                    </Button>
+                  </Link>
+
+                  {/* Submission Form */}
+                  <div className="border-t pt-4">
+                    <h3 className="font-bold text-gray-900 mb-3">Submit Your Work</h3>
+                    <DrillSubmissionForm
+                      assignmentId={selectedAssignment.id}
+                      drillId={selectedAssignment.drillId}
+                      onSubmitSuccess={() => {
+                        utils.drillAssignments.getUserAssignments.invalidate();
+                      }}
+                    />
+                  </div>
+
+                  {/* Mark Complete Button */}
+                  {selectedAssignment.status !== "completed" && (
+                    <Button
+                      onClick={() => setShowCompletionModal(true)}
+                      className="w-full bg-green-600 hover:bg-green-700 gap-2"
+                    >
+                      <CheckCircle className="w-4 h-4" />
+                      Mark as Complete
+                    </Button>
+                  )}
+
+                  {/* Already Completed */}
+                  {selectedAssignment.status === "completed" && (
+                    <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+                      <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                      <p className="font-medium text-green-700">Drill Completed!</p>
+                      {selectedAssignment.completedAt && (
+                        <p className="text-sm text-green-600">
+                          {new Date(selectedAssignment.completedAt).toLocaleDateString()}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </>
+              );
+            })()}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Completion Modal */}
       {selectedAssignment && (
@@ -513,6 +620,7 @@ export default function AthletePortal() {
           onConfirm={() => {
             handleStatusUpdate(selectedAssignment.id, "completed");
             setShowCompletionModal(false);
+            setShowDrillModal(false);
           }}
         />
       )}

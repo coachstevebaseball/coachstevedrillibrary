@@ -774,3 +774,24 @@
 - [x] Allow unfavoriting from athlete portal
 - [x] Test favorite/unfavorite functionality
 - [x] Test favorites display in athlete portal
+
+## Athlete Portal Redesign - Action-First Mobile Interface
+- [x] Remove generic "Your Drills" header and large stat cards
+- [x] Create "Up Next" Hero Card showing most urgent assigned drill
+- [x] Add drill title, duration, difficulty to Hero Card
+- [x] Add prominent full-width "Let's Go" button on Hero Card
+- [x] Create compact horizontal progress row below Hero Card
+- [x] Add circular progress bar showing % completed
+- [x] Add streak indicator with fire emoji (e.g., "🔥 3 Day Streak")
+- [x] Redesign assignment list as playlist-style compact cards
+- [x] Add skill icons/thumbnails to assignment cards (Hitting/Pitching)
+- [x] Show drill title and due date tag on cards
+- [x] Add play/arrow icon on right side of cards
+- [x] Move badge progress to bottom or integrate as subtle header
+- [x] Create modal/full-page view for drill focus mode
+- [x] Modal shows only video instruction and submit work box
+- [x] Apply modern athletic visual style (whitespace, soft grays)
+- [x] Use red/orange for primary action buttons
+- [x] Bold headings for drill names, clean sans-serif for metadata
+- [x] Test mobile responsiveness
+- [x] Test drill modal flow
