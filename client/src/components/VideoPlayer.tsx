@@ -16,8 +16,12 @@ export function VideoPlayer({ videoUrl, title = 'Drill Video' }: VideoPlayerProp
   // Extract video ID from various URL formats
   const getEmbedUrl = (url: string): string | null => {
     try {
-      // YouTube formats
-      const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/;
+      // YouTube formats - support multiple URL patterns:
+      // - youtube.com/watch?v=VIDEO_ID (standard)
+      // - youtube.com/watch/VIDEO_ID (non-standard but sometimes used)
+      // - youtu.be/VIDEO_ID (short URL)
+      // - youtube.com/embed/VIDEO_ID (embed URL)
+      const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtube\.com\/watch\/|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/;
       const youtubeMatch = url.match(youtubeRegex);
       if (youtubeMatch) {
         return `https://www.youtube.com/embed/${youtubeMatch[1]}`;

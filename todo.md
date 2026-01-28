@@ -853,3 +853,13 @@
 - [x] Replace Home page spinner with drill card skeletons (HomePageSkeleton)
 - [x] Replace Athlete Portal spinner with assignment skeletons (AthletePortalSkeleton)
 - [x] Add skeleton variants: DrillCardSkeleton, UpNextSkeleton, ProgressStatsSkeleton, PlaylistItemSkeleton, BadgeProgressSkeleton
+
+## Bug Fix: Video URL Validation Rejecting Valid YouTube URLs
+- [x] Investigate URL validation in Admin Dashboard Add New Drill
+- [x] Fix validation to accept standard YouTube URL formats:
+  - youtube.com/watch?v=VIDEO_ID (standard)
+  - youtube.com/watch/VIDEO_ID (non-standard but now supported)
+  - youtu.be/VIDEO_ID (short URL)
+  - youtube.com/embed/VIDEO_ID (embed URL)
+- [x] Updated VideoPlayer.tsx, DrillPageBuilder.tsx, CustomDrillLayout.tsx
+- [x] Test with various YouTube URL formats
