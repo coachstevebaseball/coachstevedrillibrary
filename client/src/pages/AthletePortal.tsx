@@ -14,6 +14,7 @@ import { getCategoryConfig } from "@/lib/categoryColors";
 import { trpc } from "@/lib/trpc";
 import { CompletionModal } from "@/components/CompletionModal";
 import { DrillSubmissionForm } from "@/components/DrillSubmissionForm";
+import { AthletePortalSkeleton } from "@/components/Skeleton";
 
 // Hook to merge static drills with custom drills from database
 function useAllDrills() {
@@ -218,14 +219,7 @@ export default function AthletePortal() {
   };
 
   if (loading || assignmentsLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center animate-fade-in-up">
-          <div className="w-12 h-12 border-4 border-electric border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading your training...</p>
-        </div>
-      </div>
-    );
+    return <AthletePortalSkeleton />;
   }
 
   if (!user) {

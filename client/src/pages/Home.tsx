@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Filter, LogIn, LogOut, Shield, X, Users, Activity, ChevronDown, ChevronRight, Sparkles } from "lucide-react";
+import { HomePageSkeleton } from "@/components/Skeleton";
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
 import drillsData from "@/data/drills.json";
@@ -105,6 +106,11 @@ export default function Home() {
   };
 
   const hasActiveFilters = searchQuery !== "" || difficultyFilter !== "All" || categoryFilter !== "All";
+
+  // Loading state with skeleton
+  if (loading) {
+    return <HomePageSkeleton />;
+  }
 
   // Unauthenticated view
   if (!loading && !isAuthenticated) {

@@ -846,3 +846,10 @@
 - [x] Add card hover states with lift and glow effects - border-glow, btn-glow
 - [x] Add micro-interactions throughout the UI - animate-float, animate-pulse-glow
 - [x] Applied theme to Home page and Athlete Portal
+
+## Skeleton Loading Placeholders
+- [x] Create reusable Skeleton component with glassmorphism style
+- [x] Add shimmer animation effect (uses existing animate-shimmer)
+- [x] Replace Home page spinner with drill card skeletons (HomePageSkeleton)
+- [x] Replace Athlete Portal spinner with assignment skeletons (AthletePortalSkeleton)
+- [x] Add skeleton variants: DrillCardSkeleton, UpNextSkeleton, ProgressStatsSkeleton, PlaylistItemSkeleton, BadgeProgressSkeleton
