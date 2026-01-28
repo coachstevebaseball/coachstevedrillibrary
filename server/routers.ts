@@ -189,9 +189,21 @@ export const appRouter = router({
     updateStatus: protectedProcedure
       .input(z.object({ assignmentId: z.number(), status: z.enum(["assigned", "in-progress", "completed"]) }))
       .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== 'admin') {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        // Allow admins to update any assignment
+        if (ctx.user.role === 'admin') {
+          await drillAssignmentDb.updateAssignmentStatus(input.assignmentId, input.status);
+          return { success: true };
         }
+        
+        // Allow athletes to update their own assignments
+        const assignment = await drillAssignmentDb.getAssignmentById(input.assignmentId);
+        if (!assignment) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Assignment not found' });
+        }
+        if (assignment.userId !== ctx.user.id) {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'You can only update your own assignments' });
+        }
+        
         await drillAssignmentDb.updateAssignmentStatus(input.assignmentId, input.status);
         return { success: true };
       }),

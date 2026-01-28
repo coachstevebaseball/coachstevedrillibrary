@@ -818,3 +818,10 @@
 - [x] Add meta tags for iOS PWA support (apple-mobile-web-app-capable, etc.)
 - [x] Test PWA installation on mobile devices (manifest and service worker verified)
 - [x] Verify offline functionality works for drill viewing (service worker caching implemented)
+
+## Bug Fix: Drill Completion Not Updating
+- [x] Investigate drill completion flow in athlete portal
+- [x] Check backend procedure for marking drills complete
+- [x] Verify database is being updated correctly
+- [x] Fix the completion status update issue (updateStatus was admin-only, now allows athletes to update their own)
+- [x] Test drill completion from athlete portal (unit tests pass)
