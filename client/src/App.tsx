@@ -24,6 +24,24 @@ import ActivityFeed from "./pages/ActivityFeed";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
+import { PWAInstallBanner } from "./components/PWAInstallBanner";
+import { useEffect } from "react";
+
+// Register service worker
+function registerServiceWorker() {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker
+        .register('/sw.js')
+        .then((registration) => {
+          console.log('[PWA] Service Worker registered:', registration.scope);
+        })
+        .catch((error) => {
+          console.log('[PWA] Service Worker registration failed:', error);
+        });
+    });
+  }
+}
 
 function Router() {
   return (
@@ -121,6 +139,11 @@ function Router() {
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
 function App() {
+  // Register service worker on mount
+  useEffect(() => {
+    registerServiceWorker();
+  }, []);
+
   return (
     <ErrorBoundary>
       <NotificationProvider>
@@ -132,6 +155,7 @@ function App() {
             <Toaster />
             <ToastContainer />
             <Router />
+            <PWAInstallBanner />
           </TooltipProvider>
         </ThemeProvider>
       </NotificationProvider>

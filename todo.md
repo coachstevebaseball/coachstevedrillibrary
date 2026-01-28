@@ -807,3 +807,14 @@
 - [x] Keep favorite button only inside drill detail page
 - [x] Test drill library no longer shows stars
 - [x] Test favorites still work from drill detail page
+
+## Progressive Web App (PWA) Support
+- [x] Create web app manifest (manifest.json) with app name, icons, theme colors
+- [x] Generate app icons in multiple sizes (192x192, 512x512, etc.)
+- [x] Create splash screen images for iOS (apple-touch-icon)
+- [x] Implement service worker for offline caching
+- [x] Add install prompt banner for "Add to Home Screen"
+- [x] Configure full-screen standalone display mode
+- [x] Add meta tags for iOS PWA support (apple-mobile-web-app-capable, etc.)
+- [x] Test PWA installation on mobile devices (manifest and service worker verified)
+- [x] Verify offline functionality works for drill viewing (service worker caching implemented)
