@@ -1399,13 +1399,31 @@ export default function DrillDetail() {
       </header>
 
       <div className="container max-w-4xl px-3 md:px-4">
-        {details ? (
+        {/* Check if custom page layout exists - if so, render ONLY that */}
+        {pageLayout?.blocks && Array.isArray(pageLayout.blocks) && pageLayout.blocks.length > 0 ? (
           <div className="grid gap-6 md:gap-8">
-            {/* Render custom page layout if exists */}
-            {pageLayout?.blocks && Array.isArray(pageLayout.blocks) && pageLayout.blocks.length > 0 ? (
-              <CustomDrillLayout blocks={pageLayout.blocks as any[]} />
-            ) : null}
+            {/* Admin/Coach edit buttons */}
+            {user && (user.role === 'admin' || user.role === 'coach') && (
+              <div className="flex gap-2 justify-end">
+                <button
+                  onClick={() => setShowPageBuilder(true)}
+                  className="flex items-center gap-1 px-3 py-2 rounded-md bg-secondary/10 hover:bg-secondary/20 text-secondary transition-colors text-sm font-medium"
+                >
+                  <Layout className="h-4 w-4" />
+                  Edit Page
+                </button>
+              </div>
+            )}
+            {/* Render the custom page layout */}
+            <CustomDrillLayout blocks={pageLayout.blocks as any[]} />
             
+            {/* Q&A Section for Athletes - also show on custom layouts */}
+            {user?.role === 'athlete' && (
+              <DrillQAForm drillId={id || ''} drillName={drill?.name || ''} />
+            )}
+          </div>
+        ) : details ? (
+          <div className="grid gap-6 md:gap-8">
             {/* Video Section - Moved to Top */}
             {(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) ? (
               <VideoPlayer videoUrl={(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) as string} title={`${drill.name} Video`} />

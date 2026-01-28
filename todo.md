@@ -863,3 +863,9 @@
   - youtube.com/embed/VIDEO_ID (embed URL)
 - [x] Updated VideoPlayer.tsx, DrillPageBuilder.tsx, CustomDrillLayout.tsx
 - [x] Test with various YouTube URL formats
+
+## Bug Fix: Drill Details Page Showing Mixed/Duplicate Content
+- [x] Investigate drill detail page rendering logic
+- [x] Fix content duplication - now shows ONLY page builder content when it exists (not both)
+- [x] Fix invalid video URL error - page builder content now takes full precedence
+- [x] Ensure page builder content renders in correct order with Edit Page button
