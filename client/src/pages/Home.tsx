@@ -3,11 +3,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, LogIn, LogOut, Shield, X, Users, Activity, ChevronDown } from "lucide-react";
+import { Search, Filter, LogIn, LogOut, Shield, X, Users, Activity, ChevronDown, ChevronRight, Sparkles } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
 import drillsData from "@/data/drills.json";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { trpc } from "@/lib/trpc";
 
 // Types
@@ -21,35 +21,43 @@ interface Drill {
   is_direct_link: boolean;
 }
 
-// Get difficulty color pill
-const getDifficultyColor = (difficulty: string) => {
+// Get difficulty color with glow effect
+const getDifficultyStyles = (difficulty: string) => {
   switch (difficulty) {
-    case "Easy": return "bg-green-500";
-    case "Medium": return "bg-orange-500";
-    case "Hard": return "bg-red-500";
-    default: return "bg-gray-500";
+    case "Easy": return "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+    case "Medium": return "bg-amber-500/20 text-amber-400 border border-amber-500/30";
+    case "Hard": return "bg-rose-500/20 text-rose-400 border border-rose-500/30";
+    default: return "bg-slate-500/20 text-slate-400 border border-slate-500/30";
   }
 };
 
-// Get category color pill
-const getCategoryColor = (category: string) => {
-  return "bg-teal-500";
+// Get category color with glow
+const getCategoryStyles = () => {
+  return "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30";
 };
 
 export default function Home() {
-  // IMPORTANT: All hooks must be called before any conditional returns
-  const { user, loading, error, isAuthenticated, logout } = useAuth();
+  const { user, loading, isAuthenticated, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState("All");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const heroRef = useRef<HTMLDivElement>(null);
   const DRILLS_PER_PAGE = 20;
+
+  // Parallax scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Fetch custom drills from database
   const { data: customDrills = [] } = trpc.drillDetails.getCustomDrills.useQuery();
-
-
 
   // Merge static drills with custom drills from database
   const allDrills: Drill[] = useMemo(() => {
@@ -98,39 +106,52 @@ export default function Home() {
 
   const hasActiveFilters = searchQuery !== "" || difficultyFilter !== "All" || categoryFilter !== "All";
 
-  // NOW we can do conditional returns after all hooks are called
-
-  // Redirect unauthenticated users to login
+  // Unauthenticated view
   if (!loading && !isAuthenticated) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
-        <div className="text-center max-w-md">
-          <h1 className="text-4xl font-bold mb-4">Access Restricted</h1>
-          <p className="text-lg text-muted-foreground mb-8">
-            This content is exclusive to invited athletes. Please log in to access the drill library.
-          </p>
-          <Button onClick={() => window.location.href = getLoginUrl()} size="lg">
-            <LogIn className="h-5 w-5 mr-2" />
-            Log In
-          </Button>
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 relative overflow-hidden">
+        {/* Background glow effects */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse-glow" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-electric/10 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1s' }} />
+        
+        <div className="text-center max-w-md relative z-10 animate-fade-in-up">
+          <div className="glass-card p-8 rounded-2xl">
+            <Sparkles className="h-12 w-12 mx-auto mb-4 text-electric animate-float" />
+            <h1 className="text-4xl font-bold mb-4 text-gradient">Access Restricted</h1>
+            <p className="text-lg text-muted-foreground mb-8">
+              This content is exclusive to invited athletes. Please log in to access the drill library.
+            </p>
+            <Button 
+              onClick={() => window.location.href = getLoginUrl()} 
+              size="lg"
+              className="btn-glow bg-secondary hover:bg-secondary/90 text-white"
+            >
+              <LogIn className="h-5 w-5 mr-2" />
+              Log In
+            </Button>
+          </div>
         </div>
       </div>
     );
   }
 
-  // Check if user is an active athlete
+  // Inactive athlete view
   if (!loading && isAuthenticated && user?.role === 'athlete' && !user?.isActiveClient) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
-        <div className="text-center max-w-md">
-          <h1 className="text-4xl font-bold mb-4">Account Inactive</h1>
-          <p className="text-lg text-muted-foreground mb-8">
-            Your account has been deactivated. Please contact your coach for more information.
-          </p>
-          <Button onClick={() => logout()} variant="outline" size="lg">
-            <LogOut className="h-5 w-5 mr-2" />
-            Log Out
-          </Button>
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 relative overflow-hidden">
+        <div className="absolute top-1/3 left-1/3 w-80 h-80 bg-destructive/10 rounded-full blur-3xl" />
+        
+        <div className="text-center max-w-md relative z-10 animate-fade-in-up">
+          <div className="glass-card p-8 rounded-2xl">
+            <h1 className="text-4xl font-bold mb-4">Account Inactive</h1>
+            <p className="text-lg text-muted-foreground mb-8">
+              Your account has been deactivated. Please contact your coach for more information.
+            </p>
+            <Button onClick={() => logout()} variant="outline" size="lg" className="hover-lift">
+              <LogOut className="h-5 w-5 mr-2" />
+              Log Out
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -138,32 +159,47 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Hero Section */}
-      <header className="relative bg-primary text-primary-foreground overflow-hidden">
+      {/* Hero Section with Parallax */}
+      <header ref={heroRef} className="relative overflow-hidden gradient-hero">
+        {/* Animated background elements */}
         <div className="absolute inset-0 z-0">
+          {/* Parallax background image */}
           <img 
             src="/images/hero-bg.jpg" 
             alt="Baseball Field" 
-            className="w-full h-full object-cover opacity-40 mix-blend-overlay"
+            className="w-full h-full object-cover opacity-20"
+            style={{ transform: `translateY(${scrollY * 0.3}px)` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/80 to-primary/95" />
+          {/* Gradient overlays */}
+          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
+          <div className="absolute inset-0 gradient-glow" />
         </div>
+        
+        {/* Floating orbs for depth */}
+        <div 
+          className="absolute top-20 right-20 w-64 h-64 bg-electric/10 rounded-full blur-3xl animate-float"
+          style={{ transform: `translateY(${scrollY * -0.1}px)` }}
+        />
+        <div 
+          className="absolute bottom-10 left-10 w-48 h-48 bg-secondary/10 rounded-full blur-3xl animate-float"
+          style={{ animationDelay: '1.5s', transform: `translateY(${scrollY * -0.15}px)` }}
+        />
         
         <div className="container relative z-10 py-8 md:py-20">
           {/* Auth & Admin Controls */}
-          <div className="flex justify-end gap-2 mb-6 flex-wrap">
+          <div className="flex justify-end gap-2 mb-6 flex-wrap animate-fade-in-down">
             {user ? (
               <>
                 {user.role === 'admin' && (
                   <>
                     <Link href="/coach-dashboard">
-                      <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
+                      <Button variant="outline" size="sm" className="gap-2 text-xs md:text-sm glass hover:bg-white/10 border-white/20 hover-lift">
                         <Users className="h-4 w-4" />
                         Coach Dashboard
                       </Button>
                     </Link>
                     <Link href="/admin">
-                      <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
+                      <Button variant="outline" size="sm" className="gap-2 text-xs md:text-sm glass hover:bg-white/10 border-white/20 hover-lift">
                         <Shield className="h-4 w-4" />
                         <span className="hidden sm:inline">Admin Dashboard</span>
                         <span className="sm:hidden">Admin</span>
@@ -173,14 +209,19 @@ export default function Home() {
                 )}
                 {user.role === 'athlete' && (
                   <Link href="/athlete-portal">
-                    <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
+                    <Button size="sm" className="gap-2 text-xs md:text-sm btn-glow bg-secondary hover:bg-secondary/90">
                       <Activity className="h-4 w-4" />
                       <span className="hidden sm:inline">My Drills</span>
                       <span className="sm:hidden">Drills</span>
                     </Button>
                   </Link>
                 )}
-                <Button variant="outline" size="sm" onClick={logout} className="gap-2 bg-background/20 hover:bg-background/30 text-xs md:text-sm">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={logout} 
+                  className="gap-2 glass hover:bg-white/10 border-white/20 text-xs md:text-sm hover-lift"
+                >
                   <LogOut className="h-4 w-4" />
                   <span className="hidden sm:inline">Logout</span>
                   <span className="sm:hidden">Exit</span>
@@ -188,7 +229,7 @@ export default function Home() {
               </>
             ) : (
               <a href={getLoginUrl()}>
-                <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
+                <Button size="sm" className="gap-2 text-xs md:text-sm btn-glow bg-secondary hover:bg-secondary/90">
                   <LogIn className="h-4 w-4" />
                   Login
                 </Button>
@@ -197,26 +238,31 @@ export default function Home() {
           </div>
           
           <div className="max-w-4xl">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="h-1 w-12 bg-secondary rounded-full" />
+            {/* Animated accent line */}
+            <div className="flex items-center gap-3 mb-3 animate-fade-in-left stagger-1">
+              <div className="h-1 w-12 bg-gradient-to-r from-secondary to-electric rounded-full" />
               <span className="text-secondary font-bold tracking-wider uppercase text-xs">Coach Steve's Mobile Coach</span>
             </div>
-            <h1 className="text-4xl md:text-7xl font-heading font-black mb-3 md:mb-4 leading-tight">
-              Drills Directory
+            
+            {/* Main heading with text gradient */}
+            <h1 className="text-4xl md:text-7xl font-heading font-black mb-3 md:mb-4 leading-tight animate-fade-in-up stagger-2">
+              <span className="text-gradient">Drills</span>{" "}
+              <span className="text-foreground">Directory</span>
             </h1>
-            <p className="text-base md:text-lg text-primary-foreground/90 mb-6 md:mb-10 max-w-3xl leading-relaxed font-medium">
-              {allDrills.length} professional baseball drills. Filter by skill set, difficulty, and duration to build the perfect practice plan.
+            
+            <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-10 max-w-3xl leading-relaxed font-medium animate-fade-in-up stagger-3">
+              <span className="text-electric font-bold">{allDrills.length}</span> professional baseball drills. Filter by skill set, difficulty, and duration to build the perfect practice plan.
             </p>
             
-            {/* Search Bar in Hero */}
-            <div className="relative w-full md:max-w-2xl">
+            {/* Search Bar with glassmorphism */}
+            <div className="relative w-full md:max-w-2xl animate-fade-in-up stagger-4">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-muted-foreground" />
               </div>
               <Input
                 type="text"
                 placeholder="Search drills..."
-                className="pl-11 py-5 md:py-7 text-sm md:text-base bg-background/95 text-foreground border-0 shadow-2xl rounded-xl md:rounded-2xl focus-visible:ring-2 focus-visible:ring-secondary font-medium"
+                className="pl-11 py-5 md:py-7 text-sm md:text-base glass-card text-foreground border-white/10 shadow-2xl rounded-xl md:rounded-2xl focus-visible:ring-2 focus-visible:ring-electric font-medium transition-all duration-300 hover:border-electric/30"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -228,29 +274,29 @@ export default function Home() {
       {/* Main Content */}
       <main className="flex-1 container py-6 md:py-12">
         {/* Add Filter Button */}
-        <div className="mb-8">
+        <div className="mb-8 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
           <Button 
             variant="outline" 
             onClick={() => setShowFilters(!showFilters)}
-            className="gap-2 font-semibold"
+            className="gap-2 font-semibold glass hover:bg-white/5 border-border/50 hover-lift transition-all duration-300"
           >
             <Filter className="h-4 w-4" />
             Add Filter
-            <ChevronDown className={`h-4 w-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${showFilters ? 'rotate-180' : ''}`} />
           </Button>
         </div>
 
-        {/* Filters Section - Collapsible */}
-        {showFilters && (
-          <div className="bg-card border rounded-lg p-4 md:p-6 shadow-sm mb-8 md:mb-10">
+        {/* Filters Section - Collapsible with animation */}
+        <div className={`overflow-hidden transition-all duration-500 ease-out ${showFilters ? 'max-h-96 opacity-100 mb-8 md:mb-10' : 'max-h-0 opacity-0'}`}>
+          <div className="glass-card rounded-xl p-4 md:p-6 border-glow">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
               <div>
                 <label className="text-xs md:text-sm font-semibold text-muted-foreground mb-1.5 md:mb-2 block">Difficulty</label>
                 <Select value={difficultyFilter} onValueChange={(value) => handleFilterChange(setDifficultyFilter, value)}>
-                  <SelectTrigger className="w-full text-sm">
+                  <SelectTrigger className="w-full text-sm glass border-white/10 hover:border-electric/30 transition-colors">
                     <SelectValue placeholder="All Difficulties" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="glass-card border-white/10">
                     <SelectItem value="All">All Difficulties</SelectItem>
                     <SelectItem value="Easy">Easy</SelectItem>
                     <SelectItem value="Medium">Medium</SelectItem>
@@ -262,10 +308,10 @@ export default function Home() {
               <div>
                 <label className="text-xs md:text-sm font-semibold text-muted-foreground mb-1.5 md:mb-2 block">Skill Set</label>
                 <Select value={categoryFilter} onValueChange={(value) => handleFilterChange(setCategoryFilter, value)}>
-                  <SelectTrigger className="w-full text-sm">
+                  <SelectTrigger className="w-full text-sm glass border-white/10 hover:border-electric/30 transition-colors">
                     <SelectValue placeholder="All Skill Sets" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="glass-card border-white/10">
                     {allCategories.map(cat => (
                       <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                     ))}
@@ -283,7 +329,7 @@ export default function Home() {
                       setDifficultyFilter("All");
                       setCategoryFilter("All");
                     }}
-                    className="text-muted-foreground hover:text-foreground gap-1 text-xs md:text-sm"
+                    className="text-muted-foreground hover:text-electric gap-1 text-xs md:text-sm hover-lift"
                   >
                     <X className="h-4 w-4" />
                     Clear Filters
@@ -292,54 +338,55 @@ export default function Home() {
               )}
             </div>
           </div>
-        )}
+        </div>
 
         {/* Results Count */}
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg md:text-2xl font-heading font-bold text-foreground">
             Available Drills
-            <span className="ml-3 text-sm md:text-lg font-normal text-muted-foreground bg-muted px-3 py-1 rounded-full">
+            <span className="ml-3 text-sm md:text-lg font-normal text-electric bg-electric/10 px-3 py-1 rounded-full border border-electric/20">
               {filteredDrills.length}
             </span>
           </h2>
         </div>
 
-        {/* Drills List */}
+        {/* Drills List with staggered animations */}
         {paginatedDrills.length > 0 ? (
           <div className="space-y-3">
-            {paginatedDrills.map((drill) => (
+            {paginatedDrills.map((drill, index) => (
               <Link 
                 key={drill.id} 
                 href={`/drill/${drill.id}`}
-                className="group block"
+                className="group block animate-fade-in-up"
+                style={{ animationDelay: `${Math.min(index * 0.05, 0.5)}s` }}
               >
-                <div className="border-l-4 border-l-transparent hover:border-l-secondary transition-colors p-4 rounded-lg hover:bg-muted/50 cursor-pointer">
-                  <div className="flex items-start justify-between gap-4 flex-wrap">
+                <div className="glass-card rounded-xl p-4 border-l-4 border-l-transparent hover:border-l-electric transition-all duration-300 card-hover cursor-pointer group-hover:border-electric/30">
+                  <div className="flex items-center justify-between gap-4">
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-base md:text-lg font-heading font-semibold group-hover:text-secondary transition-colors mb-2">
+                      <h3 className="text-base md:text-lg font-heading font-semibold text-foreground group-hover:text-electric transition-colors duration-300 mb-2">
                         {drill.name}
                       </h3>
                       <div className="flex flex-wrap gap-2">
-                        <Badge className="bg-slate-900 text-white text-xs">DRILL</Badge>
-                        <Badge className={`${getDifficultyColor(drill.difficulty)} text-white text-xs`}>
+                        <Badge className="bg-slate-800/50 text-slate-300 text-xs border border-slate-700/50">DRILL</Badge>
+                        <Badge className={`${getDifficultyStyles(drill.difficulty)} text-xs`}>
                           {drill.difficulty}
                         </Badge>
                         {drill.categories.map((cat, idx) => (
-                          <Badge key={idx} className={`${getCategoryColor(cat)} text-white text-xs`}>
+                          <Badge key={idx} className={`${getCategoryStyles()} text-xs`}>
                             {cat}
                           </Badge>
                         ))}
                       </div>
                     </div>
-
+                    <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-electric group-hover:translate-x-1 transition-all duration-300 opacity-0 group-hover:opacity-100" />
                   </div>
                 </div>
               </Link>
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-muted/30 rounded-xl border border-dashed">
-            <div className="bg-muted h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="text-center py-20 glass-card rounded-2xl border-dashed border-2 border-border/50">
+            <div className="bg-muted/30 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4 animate-float">
               <Search className="h-8 w-8 text-muted-foreground" />
             </div>
             <h3 className="text-xl font-bold mb-2">No drills found</h3>
@@ -352,13 +399,14 @@ export default function Home() {
                 setDifficultyFilter("All");
                 setCategoryFilter("All");
               }}
+              className="btn-glow bg-secondary hover:bg-secondary/90"
             >
               Clear All Filters
             </Button>
           </div>
         )}
 
-        {/* Pagination */}
+        {/* Pagination with hover effects */}
         {totalPages > 1 && (
           <div className="flex justify-center items-center gap-2 mt-8">
             <Button
@@ -366,17 +414,19 @@ export default function Home() {
               size="sm"
               onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
+              className="glass border-white/10 hover:border-electric/30 hover-lift disabled:opacity-50"
             >
               Previous
             </Button>
-            <span className="text-sm text-muted-foreground">
-              Page {currentPage} of {totalPages}
+            <span className="text-sm text-muted-foreground px-4">
+              Page <span className="text-electric font-semibold">{currentPage}</span> of {totalPages}
             </span>
             <Button
               variant="outline"
               size="sm"
               onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage === totalPages}
+              className="glass border-white/10 hover:border-electric/30 hover-lift disabled:opacity-50"
             >
               Next
             </Button>
@@ -384,21 +434,24 @@ export default function Home() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-primary text-primary-foreground py-12 mt-auto border-t border-primary-foreground/10">
-        <div className="container">
+      {/* Footer with gradient */}
+      <footer className="relative py-12 mt-auto border-t border-border/30 overflow-hidden">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-card/50 to-transparent" />
+        
+        <div className="container relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 bg-secondary rounded flex items-center justify-center font-heading font-bold text-xl">
-                USAB
+              <div className="h-10 w-10 bg-gradient-to-br from-secondary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-xl text-white shadow-lg">
+                CS
               </div>
               <div>
-                <h3 className="font-heading font-bold text-lg">USA Baseball Drills Directory</h3>
-                <p className="text-sm text-primary-foreground/60">Coach Steve Baseball — Player Drill Library</p>
+                <h3 className="font-heading font-bold text-lg text-foreground">USA Baseball Drills Directory</h3>
+                <p className="text-sm text-muted-foreground">Coach Steve Baseball — Player Drill Library</p>
               </div>
             </div>
             
-            <div className="text-sm text-primary-foreground/60 text-center md:text-right">
+            <div className="text-sm text-muted-foreground text-center md:text-right">
               <p>Data sourced from USA Baseball Mobile Coach.</p>
               <p className="mt-1">© {new Date().getFullYear()} All rights reserved.</p>
             </div>
