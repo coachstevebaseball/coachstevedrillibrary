@@ -825,3 +825,11 @@
 - [x] Verify database is being updated correctly
 - [x] Fix the completion status update issue (updateStatus was admin-only, now allows athletes to update their own)
 - [x] Test drill completion from athlete portal (unit tests pass)
+
+## Bug Fix: Email Notification URLs Incorrect
+- [x] Search for incorrect URLs (coachstevebaseball.com)
+- [x] Update all URLs to correct domain (coachstevemobilecoach.com)
+- [x] Fixed email.ts (8 from addresses)
+- [x] Fixed emailBatching.ts (2 baseUrls + 1 from address)
+- [x] Fixed activityTracking.ts (1 baseUrl)
+- [x] Fixed routers.ts (2 localhost URLs)
