@@ -919,3 +919,10 @@
 - [x] Update copy to focus on elite mechanics, explosive power, game-ready confidence
 - [x] Add "NEXT GEN TRAINING" badge/pill above headline
 - [x] Maintain dark sophisticated background
+
+
+## Hero Heading Spacing Update
+- [x] Change layout to "UNLEASH YOUR" on first line, "POTENTIAL" on second line
+- [x] Remove italics from POTENTIAL
+- [x] Center the heading text
+- [x] Improve spacing between lines

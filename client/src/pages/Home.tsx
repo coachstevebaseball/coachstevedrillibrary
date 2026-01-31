@@ -243,32 +243,35 @@ export default function Home() {
             )}
           </div>
           
-          <div className="max-w-4xl">
+          <div className="max-w-4xl mx-auto text-center">
             {/* Next Gen Training Badge */}
-            <div className="flex justify-center md:justify-start mb-6 animate-fade-in-down stagger-1">
-              <div className="inline-flex items-center px-5 py-2.5 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm">
+            <div className="flex justify-center mb-8 animate-fade-in-down stagger-1">
+              <div className="inline-flex items-center px-6 py-3 rounded-full border border-electric/30 bg-electric/10 backdrop-blur-sm">
                 <span className="text-electric font-bold tracking-widest uppercase text-xs md:text-sm">Next Gen Training</span>
               </div>
             </div>
             
-            {/* Main heading - Stacked "UNLEASH YOUR POTENTIAL" style */}
-            <div className="text-center md:text-left animate-fade-in-up stagger-2">
-              <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-heading font-black leading-[0.85] tracking-tight">
-                <span className="block text-white">UNLEASH</span>
-                <span className="block text-white">YOUR</span>
-                <span className="block text-electric italic">POTENTIAL</span>
+            {/* Main heading - "UNLEASH YOUR" on line 1, "POTENTIAL" on line 2 */}
+            <div className="animate-fade-in-up stagger-2">
+              <h1 className="font-heading font-black tracking-tight">
+                <span className="block text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight">
+                  UNLEASH YOUR
+                </span>
+                <span className="block text-electric text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-tight mt-2">
+                  POTENTIAL
+                </span>
               </h1>
             </div>
             
-            <p className="text-base md:text-xl text-muted-foreground mt-8 mb-8 md:mb-10 max-w-2xl leading-relaxed text-center md:text-left animate-fade-in-up stagger-3">
-              The ultimate library of <span className="text-electric font-bold">{allDrills.length}</span> professional hitting drills designed to build{" "}
+            <p className="text-base md:text-xl text-muted-foreground mt-8 mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-up stagger-3">
+              The ultimate library of professional hitting drills designed to build{" "}
               <span className="text-white font-bold">elite mechanics</span>,{" "}
               <span className="text-white font-bold">explosive power</span>, and{" "}
               <span className="text-white font-bold">game-ready confidence</span>.
             </p>
             
             {/* Search Bar with glassmorphism */}
-            <div className="relative w-full md:max-w-2xl animate-fade-in-up stagger-4">
+            <div className="relative w-full md:max-w-2xl mx-auto animate-fade-in-up stagger-4">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-muted-foreground" />
               </div>
