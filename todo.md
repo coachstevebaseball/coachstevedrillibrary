@@ -898,3 +898,9 @@
 - [x] Improve text input handling in block editor (now uses standard React controlled inputs)
 - [x] Make editor functionality easier and more intuitive
 - [x] Test text input in all block types (paragraph, headings, lists, quote, callout)
+
+
+## UI Fix: Alert Toggle Visibility in Activity Feed
+- [x] Find alert toggle components in Activity Feed page
+- [x] Improve toggle visibility with better contrast/colors (bright blue when on, visible gray when off)
+- [x] Test toggle visibility on dark background
