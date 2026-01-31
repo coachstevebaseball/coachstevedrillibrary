@@ -89,6 +89,16 @@ export default function AdminDashboard() {
     },
   });
 
+  const deleteInviteMutation = trpc.invites.deleteInvite.useMutation({
+    onSuccess: () => {
+      utils.invites.getAllInvites.invalidate();
+      toast.success("Invite deleted successfully");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to delete invite");
+    },
+  });
+
   const [newInviteEmail, setNewInviteEmail] = React.useState("");
 
   const handleCreateInvite = () => {
@@ -377,18 +387,33 @@ export default function AdminDashboard() {
                             variant="ghost"
                             onClick={() => revokeInviteMutation.mutate({ inviteId: invite.id })}
                             disabled={revokeInviteMutation.isPending}
-                            className="text-destructive hover:text-destructive"
+                            className="text-yellow-500 hover:text-yellow-600"
                             title="Revoke invite"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <XCircle className="h-4 w-4" />
                           </Button>
                         </>
                       )}
                       {invite.status === "accepted" && (
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-muted-foreground mr-2">
                           Accepted {new Date(invite.acceptedAt).toLocaleDateString()}
                         </span>
                       )}
+                      {/* Delete button for all invite statuses */}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          if (confirm(`Are you sure you want to permanently delete the invite for ${invite.email}? This action cannot be undone.`)) {
+                            deleteInviteMutation.mutate({ inviteId: invite.id });
+                          }
+                        }}
+                        disabled={deleteInviteMutation.isPending}
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        title="Delete invite permanently"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
                 ))}

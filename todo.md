@@ -904,3 +904,10 @@
 - [x] Find alert toggle components in Activity Feed page
 - [x] Improve toggle visibility with better contrast/colors (bright blue when on, visible gray when off)
 - [x] Test toggle visibility on dark background
+
+
+## Admin Dashboard: Delete Invite Button
+- [x] Add delete button to each invite in Pending & Accepted Invites section
+- [x] Create backend API endpoint to delete invites (deleteInvite in invites.ts and routers.ts)
+- [x] Add confirmation dialog before deleting
+- [x] Test delete functionality

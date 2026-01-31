@@ -591,6 +591,16 @@ export const appRouter = router({
         return { success: true };
       }),
     
+    deleteInvite: protectedProcedure
+      .input(z.object({ inviteId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        await inviteDb.deleteInvite(input.inviteId);
+        return { success: true };
+      }),
+    
     verifyEmail: publicProcedure
       .input(z.object({ token: z.string() }))
       .mutation(async ({ input }) => {

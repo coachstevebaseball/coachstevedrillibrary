@@ -219,6 +219,18 @@ export async function revokeInvite(inviteId: number) {
 }
 
 /**
+ * Permanently delete an invite from the database
+ */
+export async function deleteInvite(inviteId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .delete(invites)
+    .where(eq(invites.id, inviteId));
+}
+
+/**
  * Expire old pending invites (called periodically)
  */
 export async function expireOldInvites() {
