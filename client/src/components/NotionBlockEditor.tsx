@@ -1,5 +1,7 @@
-import { useState, useRef, useEffect, useCallback, KeyboardEvent } from "react";
+import { useState, useRef, useEffect, useCallback, KeyboardEvent, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Type,
   Heading1,
@@ -207,7 +209,7 @@ function SlashMenu({
             className={cn(
               "w-full flex items-center gap-3 px-3 py-2 rounded-md text-left transition-colors",
               index === selectedIndex
-                ? "bg-electric-blue/20 text-white"
+                ? "bg-secondary/20 text-white"
                 : "hover:bg-white/5 text-foreground"
             )}
             onClick={() => onSelect(bt.type)}
@@ -233,7 +235,7 @@ function SlashMenu({
   );
 }
 
-// Individual block component
+// Individual block component - using controlled inputs
 function BlockItem({
   block,
   index,
@@ -249,6 +251,7 @@ function BlockItem({
   onDragOver,
   onDragEnd,
   onKeyDown,
+  onOpenSlashMenu,
   readOnly,
 }: {
   block: NotionBlock;
@@ -264,17 +267,36 @@ function BlockItem({
   onDragStart: () => void;
   onDragOver: (e: React.DragEvent) => void;
   onDragEnd: () => void;
-  onKeyDown: (e: KeyboardEvent<HTMLElement>) => void;
+  onKeyDown: (e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>, inputRef: HTMLInputElement | HTMLTextAreaElement | null) => void;
+  onOpenSlashMenu: (rect: DOMRect) => void;
   readOnly?: boolean;
 }) {
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
 
-  const handleContentChange = useCallback(() => {
-    if (contentRef.current) {
-      onUpdate({ content: contentRef.current.innerText });
+  const handleContentChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    
+    // Check for slash command at the start
+    if (value === "/" && block.content === "") {
+      const rect = e.target.getBoundingClientRect();
+      onOpenSlashMenu(rect);
+      return;
     }
-  }, [onUpdate]);
+    
+    onUpdate({ content: value });
+  };
+
+  const handleKeyDownLocal = (e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    // Check for slash command
+    if (e.key === "/" && block.content === "") {
+      e.preventDefault();
+      const rect = (e.target as HTMLElement).getBoundingClientRect();
+      onOpenSlashMenu(rect);
+      return;
+    }
+    
+    onKeyDown(e, inputRef.current);
+  };
 
   const handleListItemChange = (itemIndex: number, value: string) => {
     const newItems = [...(block.items || [])];
@@ -282,13 +304,34 @@ function BlockItem({
     onUpdate({ items: newItems });
   };
 
-  const addListItem = () => {
-    onUpdate({ items: [...(block.items || []), ""] });
+  const addListItem = (afterIndex?: number) => {
+    const newItems = [...(block.items || [])];
+    const insertIndex = afterIndex !== undefined ? afterIndex + 1 : newItems.length;
+    newItems.splice(insertIndex, 0, "");
+    onUpdate({ items: newItems });
   };
 
   const removeListItem = (itemIndex: number) => {
     const newItems = (block.items || []).filter((_, i) => i !== itemIndex);
     onUpdate({ items: newItems.length > 0 ? newItems : [""] });
+  };
+
+  // Get input styles based on block type
+  const getInputStyles = () => {
+    switch (block.type) {
+      case "heading1":
+        return "text-3xl font-bold";
+      case "heading2":
+        return "text-2xl font-bold";
+      case "heading3":
+        return "text-xl font-semibold";
+      case "heading4":
+        return "text-lg font-semibold";
+      case "quote":
+        return "italic text-foreground/80";
+      default:
+        return "text-base";
+    }
   };
 
   // Render different block types
@@ -300,119 +343,73 @@ function BlockItem({
     switch (block.type) {
       case "paragraph":
         return (
-          <div
-            ref={contentRef}
-            contentEditable
-            suppressContentEditableWarning
-            dir="ltr"
-            className="outline-none min-h-[1.5em] text-foreground leading-relaxed"
-            onInput={handleContentChange}
-            onFocus={() => setIsEditing(true)}
-            onBlur={() => setIsEditing(false)}
-            onKeyDown={onKeyDown}
-            data-placeholder="Type '/' for commands..."
-          >
-            {block.content}
-          </div>
+          <Textarea
+            ref={inputRef as React.RefObject<HTMLTextAreaElement>}
+            value={block.content}
+            onChange={handleContentChange}
+            onKeyDown={handleKeyDownLocal}
+            onFocus={onSelect}
+            placeholder="Type '/' for commands, or start writing..."
+            className={cn(
+              "w-full bg-transparent border-0 p-0 resize-none outline-none focus-visible:ring-0 text-foreground placeholder:text-muted-foreground/50",
+              getInputStyles()
+            )}
+            rows={1}
+            style={{ minHeight: "1.5em" }}
+          />
         );
 
       case "heading1":
-        return (
-          <div
-            ref={contentRef}
-            contentEditable
-            suppressContentEditableWarning
-            dir="ltr"
-            className="outline-none min-h-[1.5em] text-3xl font-bold text-foreground"
-            onInput={handleContentChange}
-            onKeyDown={onKeyDown}
-            data-placeholder="Heading 1"
-          >
-            {block.content}
-          </div>
-        );
-
       case "heading2":
-        return (
-          <div
-            ref={contentRef}
-            contentEditable
-            suppressContentEditableWarning
-            dir="ltr"
-            className="outline-none min-h-[1.5em] text-2xl font-bold text-foreground"
-            onInput={handleContentChange}
-            onKeyDown={onKeyDown}
-            data-placeholder="Heading 2"
-          >
-            {block.content}
-          </div>
-        );
-
       case "heading3":
-        return (
-          <div
-            ref={contentRef}
-            contentEditable
-            suppressContentEditableWarning
-            dir="ltr"
-            className="outline-none min-h-[1.5em] text-xl font-semibold text-foreground"
-            onInput={handleContentChange}
-            onKeyDown={onKeyDown}
-            data-placeholder="Heading 3"
-          >
-            {block.content}
-          </div>
-        );
-
       case "heading4":
         return (
-          <div
-            ref={contentRef}
-            contentEditable
-            suppressContentEditableWarning
-            dir="ltr"
-            className="outline-none min-h-[1.5em] text-lg font-semibold text-foreground"
-            onInput={handleContentChange}
-            onKeyDown={onKeyDown}
-            data-placeholder="Heading 4"
-          >
-            {block.content}
-          </div>
+          <Input
+            ref={inputRef as React.RefObject<HTMLInputElement>}
+            value={block.content}
+            onChange={handleContentChange}
+            onKeyDown={handleKeyDownLocal}
+            onFocus={onSelect}
+            placeholder={`${block.type.replace("heading", "Heading ")}...`}
+            className={cn(
+              "w-full bg-transparent border-0 p-0 h-auto outline-none focus-visible:ring-0 text-foreground placeholder:text-muted-foreground/50",
+              getInputStyles()
+            )}
+          />
         );
 
       case "bulletList":
         return (
-          <ul className="space-y-1 list-none">
+          <ul className="space-y-2 list-none w-full">
             {(block.items || [""]).map((item, idx) => (
               <li key={idx} className="flex items-start gap-2 group">
-                <span className="text-electric-blue mt-1.5">•</span>
-                <input
-                  type="text"
+                <span className="text-secondary mt-2.5 text-lg">•</span>
+                <Input
                   value={item}
                   onChange={(e) => handleListItemChange(idx, e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      addListItem();
+                      addListItem(idx);
                     } else if (e.key === "Backspace" && item === "" && (block.items?.length || 0) > 1) {
                       e.preventDefault();
                       removeListItem(idx);
                     }
                   }}
-                  className="flex-1 bg-transparent outline-none text-foreground"
+                  className="flex-1 bg-transparent border-0 p-0 h-auto outline-none focus-visible:ring-0 text-foreground placeholder:text-muted-foreground/50"
                   placeholder="List item..."
                 />
                 <button
                   onClick={() => removeListItem(idx)}
-                  className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-400 transition-opacity"
+                  className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-400 transition-opacity p-1"
                 >
                   <Trash2 className="h-3 w-3" />
                 </button>
               </li>
             ))}
             <button
-              onClick={addListItem}
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors ml-4"
+              onClick={() => addListItem()}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors ml-6"
             >
               <Plus className="h-3 w-3" /> Add item
             </button>
@@ -421,39 +418,38 @@ function BlockItem({
 
       case "numberedList":
         return (
-          <ol className="space-y-1 list-none">
+          <ol className="space-y-2 list-none w-full">
             {(block.items || [""]).map((item, idx) => (
               <li key={idx} className="flex items-start gap-2 group">
-                <span className="text-electric-blue font-medium min-w-[1.5rem]">
+                <span className="text-secondary font-medium min-w-[1.5rem] mt-2">
                   {idx + 1}.
                 </span>
-                <input
-                  type="text"
+                <Input
                   value={item}
                   onChange={(e) => handleListItemChange(idx, e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      addListItem();
+                      addListItem(idx);
                     } else if (e.key === "Backspace" && item === "" && (block.items?.length || 0) > 1) {
                       e.preventDefault();
                       removeListItem(idx);
                     }
                   }}
-                  className="flex-1 bg-transparent outline-none text-foreground"
+                  className="flex-1 bg-transparent border-0 p-0 h-auto outline-none focus-visible:ring-0 text-foreground placeholder:text-muted-foreground/50"
                   placeholder="List item..."
                 />
                 <button
                   onClick={() => removeListItem(idx)}
-                  className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-400 transition-opacity"
+                  className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-400 transition-opacity p-1"
                 >
                   <Trash2 className="h-3 w-3" />
                 </button>
               </li>
             ))}
             <button
-              onClick={addListItem}
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors ml-6"
+              onClick={() => addListItem()}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors ml-8"
             >
               <Plus className="h-3 w-3" /> Add item
             </button>
@@ -462,19 +458,20 @@ function BlockItem({
 
       case "quote":
         return (
-          <div className="border-l-4 border-electric-blue pl-4">
-            <div
-              ref={contentRef}
-              contentEditable
-              suppressContentEditableWarning
-              dir="ltr"
-              className="outline-none min-h-[1.5em] text-foreground/80 italic"
-              onInput={handleContentChange}
-              onKeyDown={onKeyDown}
-              data-placeholder="Enter a quote..."
-            >
-              {block.content}
-            </div>
+          <div className="border-l-4 border-secondary pl-4 w-full">
+            <Textarea
+              ref={inputRef as React.RefObject<HTMLTextAreaElement>}
+              value={block.content}
+              onChange={handleContentChange}
+              onKeyDown={handleKeyDownLocal}
+              onFocus={onSelect}
+              placeholder="Enter a quote..."
+              className={cn(
+                "w-full bg-transparent border-0 p-0 resize-none outline-none focus-visible:ring-0 placeholder:text-muted-foreground/50",
+                getInputStyles()
+              )}
+              rows={1}
+            />
           </div>
         );
 
@@ -487,34 +484,32 @@ function BlockItem({
         };
         const calloutType = block.calloutType || "info";
         return (
-          <div className={cn("rounded-lg border p-4", calloutStyles[calloutType])}>
+          <div className={cn("rounded-lg border p-4 w-full", calloutStyles[calloutType])}>
             <div className="flex items-start gap-3">
               <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
-                <div
-                  ref={contentRef}
-                  contentEditable
-                  suppressContentEditableWarning
-                  dir="ltr"
-                  className="outline-none min-h-[1.5em]"
-                  onInput={handleContentChange}
-                  onKeyDown={onKeyDown}
-                  data-placeholder="Type something..."
-                >
-                  {block.content}
-                </div>
+                <Textarea
+                  ref={inputRef as React.RefObject<HTMLTextAreaElement>}
+                  value={block.content}
+                  onChange={handleContentChange}
+                  onKeyDown={handleKeyDownLocal}
+                  onFocus={onSelect}
+                  placeholder="Type your callout message..."
+                  className="w-full bg-transparent border-0 p-0 resize-none outline-none focus-visible:ring-0 placeholder:text-current/50"
+                  rows={1}
+                />
               </div>
             </div>
-            <div className="flex gap-2 mt-2 ml-8">
+            <div className="flex gap-2 mt-3 ml-8">
               {(["info", "warning", "success", "error"] as const).map((type) => (
                 <button
                   key={type}
                   onClick={() => onUpdate({ calloutType: type })}
                   className={cn(
-                    "text-xs px-2 py-0.5 rounded capitalize",
+                    "px-2 py-1 rounded text-xs capitalize transition-colors",
                     calloutType === type
-                      ? "bg-white/20"
-                      : "bg-white/5 hover:bg-white/10"
+                      ? "bg-white/20 text-white"
+                      : "bg-white/5 text-white/60 hover:bg-white/10"
                   )}
                 >
                   {type}
@@ -525,17 +520,20 @@ function BlockItem({
         );
 
       case "divider":
-        return <hr className="border-white/10 my-2" />;
+        return (
+          <div className="py-4 w-full">
+            <hr className="border-white/20" />
+          </div>
+        );
 
       case "video":
         return (
-          <div className="space-y-2">
-            <input
-              type="text"
+          <div className="w-full space-y-3">
+            <Input
               value={block.url || ""}
               onChange={(e) => onUpdate({ url: e.target.value })}
               placeholder="Paste YouTube URL..."
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-foreground outline-none focus:border-electric-blue transition-colors"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-foreground outline-none focus:border-secondary transition-colors"
             />
             {block.url && renderVideoPreview(block.url)}
           </div>
@@ -543,13 +541,12 @@ function BlockItem({
 
       case "image":
         return (
-          <div className="space-y-2">
-            <input
-              type="text"
+          <div className="w-full space-y-3">
+            <Input
               value={block.url || ""}
               onChange={(e) => onUpdate({ url: e.target.value })}
               placeholder="Paste image URL..."
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-foreground outline-none focus:border-electric-blue transition-colors"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-foreground outline-none focus:border-secondary transition-colors"
             />
             {block.url && (
               <img
@@ -569,7 +566,7 @@ function BlockItem({
   const renderReadOnlyContent = () => {
     switch (block.type) {
       case "paragraph":
-        return <p className="text-foreground leading-relaxed">{block.content}</p>;
+        return <p className="text-foreground leading-relaxed whitespace-pre-wrap">{block.content}</p>;
       case "heading1":
         return <h1 className="text-3xl font-bold text-foreground">{block.content}</h1>;
       case "heading2":
@@ -583,7 +580,7 @@ function BlockItem({
           <ul className="space-y-1">
             {(block.items || []).map((item, idx) => (
               <li key={idx} className="flex items-start gap-2">
-                <span className="text-electric-blue mt-1.5">•</span>
+                <span className="text-secondary mt-1.5">•</span>
                 <span>{item}</span>
               </li>
             ))}
@@ -594,7 +591,7 @@ function BlockItem({
           <ol className="space-y-1">
             {(block.items || []).map((item, idx) => (
               <li key={idx} className="flex items-start gap-2">
-                <span className="text-electric-blue font-medium min-w-[1.5rem]">{idx + 1}.</span>
+                <span className="text-secondary font-medium min-w-[1.5rem]">{idx + 1}.</span>
                 <span>{item}</span>
               </li>
             ))}
@@ -602,19 +599,19 @@ function BlockItem({
         );
       case "quote":
         return (
-          <blockquote className="border-l-4 border-electric-blue pl-4 text-foreground/80 italic">
+          <blockquote className="border-l-4 border-secondary pl-4 text-foreground/80 italic">
             {block.content}
           </blockquote>
         );
       case "callout":
-        const calloutStyles = {
+        const calloutStylesRO = {
           info: "bg-blue-500/10 border-blue-500/30 text-blue-400",
           warning: "bg-yellow-500/10 border-yellow-500/30 text-yellow-400",
           success: "bg-green-500/10 border-green-500/30 text-green-400",
           error: "bg-red-500/10 border-red-500/30 text-red-400",
         };
         return (
-          <div className={cn("rounded-lg border p-4", calloutStyles[block.calloutType || "info"])}>
+          <div className={cn("rounded-lg border p-4", calloutStylesRO[block.calloutType || "info"])}>
             <div className="flex items-start gap-3">
               <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
               <span>{block.content}</span>
@@ -659,31 +656,32 @@ function BlockItem({
   return (
     <div
       className={cn(
-        "group relative flex gap-2 py-1 px-2 -mx-2 rounded-lg transition-colors",
+        "group relative flex items-start gap-2 py-1 px-2 -mx-2 rounded-lg transition-colors",
         isSelected && "bg-white/5"
       )}
-      onClick={onSelect}
       draggable
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
+      onClick={onSelect}
     >
-      {/* Block controls */}
-      <div className="flex items-start gap-1 opacity-0 group-hover:opacity-100 transition-opacity pt-1">
-        <button
-          className="p-1 text-muted-foreground hover:text-foreground hover:bg-white/10 rounded transition-colors cursor-grab active:cursor-grabbing"
-          onMouseDown={(e) => e.stopPropagation()}
-        >
-          <GripVertical className="h-4 w-4" />
-        </button>
+      {/* Drag handle and add button */}
+      <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity pt-1">
         <button
           onClick={(e) => {
             e.stopPropagation();
             onAddBelow();
           }}
           className="p-1 text-muted-foreground hover:text-foreground hover:bg-white/10 rounded transition-colors"
+          title="Add block below"
         >
           <Plus className="h-4 w-4" />
+        </button>
+        <button
+          className="p-1 text-muted-foreground hover:text-foreground hover:bg-white/10 rounded cursor-grab active:cursor-grabbing transition-colors"
+          title="Drag to reorder"
+        >
+          <GripVertical className="h-4 w-4" />
         </button>
       </div>
 
@@ -691,7 +689,7 @@ function BlockItem({
       <div className="flex-1 min-w-0">{renderBlockContent()}</div>
 
       {/* Block menu */}
-      <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="opacity-0 group-hover:opacity-100 transition-opacity pt-1">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="p-1 text-muted-foreground hover:text-foreground hover:bg-white/10 rounded transition-colors">
@@ -801,23 +799,12 @@ export function NotionBlockEditor({
     setSelectedBlockIndex(toIndex);
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLElement>, index: number) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>, index: number, inputRef: HTMLInputElement | HTMLTextAreaElement | null) => {
     const block = blocks[index];
 
-    // Handle slash command
-    if (e.key === "/" && block.content === "") {
-      e.preventDefault();
-      const rect = (e.target as HTMLElement).getBoundingClientRect();
-      setSlashMenuPosition({ top: rect.bottom + 8, left: rect.left });
-      setSlashMenuOpen(true);
-      setSlashSearchQuery("");
-      setSlashMenuSelectedIndex(0);
-      return;
-    }
-
-    // Handle Enter to create new block
+    // Handle Enter to create new block (for non-list blocks)
     if (e.key === "Enter" && !e.shiftKey) {
-      if (block.type === "paragraph" || block.type.startsWith("heading")) {
+      if (block.type === "paragraph" || block.type.startsWith("heading") || block.type === "quote") {
         e.preventDefault();
         addBlock("paragraph", index);
       }
@@ -825,11 +812,13 @@ export function NotionBlockEditor({
 
     // Handle Backspace on empty block
     if (e.key === "Backspace" && block.content === "" && blocks.length > 1) {
-      e.preventDefault();
-      deleteBlock(index);
+      if (block.type !== "bulletList" && block.type !== "numberedList") {
+        e.preventDefault();
+        deleteBlock(index);
+      }
     }
 
-    // Handle markdown shortcuts
+    // Handle markdown shortcuts on space
     if (e.key === " " && block.type === "paragraph") {
       const content = block.content;
       if (content === "#") {
@@ -889,6 +878,14 @@ export function NotionBlockEditor({
     }
   };
 
+  const openSlashMenu = (rect: DOMRect, blockIndex: number) => {
+    setSlashMenuPosition({ top: rect.bottom + 8, left: rect.left });
+    setSlashMenuOpen(true);
+    setSlashSearchQuery("");
+    setSlashMenuSelectedIndex(0);
+    setSelectedBlockIndex(blockIndex);
+  };
+
   // Initialize with empty paragraph if no blocks
   useEffect(() => {
     if (blocks.length === 0) {
@@ -916,6 +913,7 @@ export function NotionBlockEditor({
             onDragOver={() => {}}
             onDragEnd={() => {}}
             onKeyDown={() => {}}
+            onOpenSlashMenu={() => {}}
             readOnly
           />
         ))}
@@ -929,6 +927,12 @@ export function NotionBlockEditor({
       className="min-h-[200px] p-4"
       onKeyDown={handleSlashMenuKeyDown}
     >
+      {/* Help text */}
+      <div className="text-xs text-muted-foreground mb-4 flex items-center gap-2">
+        <span className="bg-white/5 px-2 py-1 rounded">✨</span>
+        <span>Type <code className="bg-white/10 px-1 rounded">/</code> for commands, or use markdown shortcuts like <code className="bg-white/10 px-1 rounded">#</code>, <code className="bg-white/10 px-1 rounded">-</code>, <code className="bg-white/10 px-1 rounded">1.</code></span>
+      </div>
+
       {blocks.map((block, index) => (
         <BlockItem
           key={block.id}
@@ -951,7 +955,8 @@ export function NotionBlockEditor({
             }
           }}
           onDragEnd={() => setDraggedIndex(null)}
-          onKeyDown={(e) => handleKeyDown(e, index)}
+          onKeyDown={(e, inputRef) => handleKeyDown(e, index, inputRef)}
+          onOpenSlashMenu={(rect) => openSlashMenu(rect, index)}
         />
       ))}
 

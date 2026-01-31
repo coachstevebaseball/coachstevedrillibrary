@@ -891,3 +891,10 @@
 - [x] Add template save/load functionality
 - [x] Add preview mode toggle
 - [x] Fix text direction (LTR) for contenteditable elements
+
+
+## Bug Fix: Notion Block Editor Backwards Text Input
+- [x] Fix contenteditable text direction issue (replaced contentEditable with controlled Input/Textarea components)
+- [x] Improve text input handling in block editor (now uses standard React controlled inputs)
+- [x] Make editor functionality easier and more intuitive
+- [x] Test text input in all block types (paragraph, headings, lists, quote, callout)
