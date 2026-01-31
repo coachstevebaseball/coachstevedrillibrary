@@ -14,7 +14,7 @@ import { InstructionsEditor } from "@/components/InstructionsEditor";
 import { trpc } from "@/lib/trpc";
 import { Edit, Trash2 } from "lucide-react";
 import { DrillQAForm } from "@/components/DrillQAForm";
-import { DrillPageBuilder } from "@/components/DrillPageBuilder";
+import { DrillPageBuilderNotion } from "@/components/DrillPageBuilderNotion";
 import { CustomDrillLayout } from "@/components/CustomDrillLayout";
 import { Layout } from "lucide-react";
 
@@ -1596,9 +1596,9 @@ export default function DrillDetail() {
         }}
       />
       
-      {/* Drill Page Builder */}
+      {/* Drill Page Builder - Notion Style */}
       {showPageBuilder && (
-        <DrillPageBuilder
+        <DrillPageBuilderNotion
           drillId={id || ''}
           drillName={drill?.name || ''}
           onClose={() => setShowPageBuilder(false)}

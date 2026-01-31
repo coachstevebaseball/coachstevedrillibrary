@@ -376,3 +376,52 @@ export const drillFavorites = mysqlTable("drillFavorites", {
 
 export type DrillFavorite = typeof drillFavorites.$inferSelect;
 export type InsertDrillFavorite = typeof drillFavorites.$inferInsert;
+
+
+// Smart Baseball Quiz - Questions table
+export const quizQuestions = mysqlTable("quizQuestions", {
+  id: int("id").autoincrement().primaryKey(),
+  scenario: text("scenario").notNull(),
+  answers: json("answers").notNull(), // JSON array of 4 answer strings
+  correctIndex: int("correctIndex").notNull(), // 0-3 index of correct answer
+  explanation: text("explanation").notNull(),
+  category: varchar("category", { length: 100 }).notNull(), // e.g., "count_leverage", "pitch_recognition"
+  subcategory: varchar("subcategory", { length: 100 }), // e.g., "0-2 count", "curveball"
+  difficulty: mysqlEnum("difficulty", ["beginner", "intermediate", "advanced"]).default("intermediate").notNull(),
+  isAiGenerated: int("isAiGenerated").default(0).notNull(), // 0 = manual, 1 = AI generated
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type QuizQuestion = typeof quizQuestions.$inferSelect;
+export type InsertQuizQuestion = typeof quizQuestions.$inferInsert;
+
+// Smart Baseball Quiz - Attempts table (tracks each quiz session)
+export const quizAttempts = mysqlTable("quizAttempts", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  score: int("score").notNull(),
+  totalQuestions: int("totalQuestions").notNull(),
+  percentage: int("percentage").notNull(),
+  quizType: mysqlEnum("quizType", ["standard", "adaptive"]).default("standard").notNull(),
+  targetCategory: varchar("targetCategory", { length: 100 }), // For adaptive quizzes, the weak category targeted
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type QuizAttempt = typeof quizAttempts.$inferSelect;
+export type InsertQuizAttempt = typeof quizAttempts.$inferInsert;
+
+// Smart Baseball Quiz - Individual question results (for tracking weaknesses)
+export const quizQuestionResults = mysqlTable("quizQuestionResults", {
+  id: int("id").autoincrement().primaryKey(),
+  attemptId: int("attemptId").notNull(),
+  userId: int("userId").notNull(),
+  questionId: int("questionId").notNull(),
+  selectedAnswerIndex: int("selectedAnswerIndex").notNull(),
+  isCorrect: int("isCorrect").notNull(), // 0 = wrong, 1 = correct
+  category: varchar("category", { length: 100 }).notNull(),
+  subcategory: varchar("subcategory", { length: 100 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type QuizQuestionResult = typeof quizQuestionResults.$inferSelect;
+export type InsertQuizQuestionResult = typeof quizQuestionResults.$inferInsert;

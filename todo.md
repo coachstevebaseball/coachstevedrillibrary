@@ -869,3 +869,25 @@
 - [x] Fix content duplication - now shows ONLY page builder content when it exists (not both)
 - [x] Fix invalid video URL error - page builder content now takes full precedence
 - [x] Ensure page builder content renders in correct order with Edit Page button
+
+## Notion-Style Block Editor for Drill Pages
+- [x] Create NotionBlockEditor component with block types:
+  - [x] Text blocks (paragraphs)
+  - [x] Headings (H1, H2, H3, H4)
+  - [x] Bulleted lists
+  - [x] Numbered lists
+  - [x] Video embeds (YouTube)
+  - [x] Dividers
+  - [x] Callout/highlight boxes
+  - [x] Quote blocks
+  - [x] Image blocks
+- [x] Implement slash command menu (/) to insert blocks
+- [x] Add drag-and-drop block reordering
+- [x] Add block controls (delete, duplicate, move up/down)
+- [x] Integrate with existing DrillPageBuilder (DrillPageBuilderNotion)
+- [x] Update CustomDrillLayout to render new block types
+- [x] Apply glassmorphism styling to editor
+- [x] Add markdown shortcuts (#, ##, ###, -, 1., >, ---)
+- [x] Add template save/load functionality
+- [x] Add preview mode toggle
+- [x] Fix text direction (LTR) for contenteditable elements

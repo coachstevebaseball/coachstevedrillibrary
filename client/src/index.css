@@ -548,6 +548,34 @@
   .focus-ring {
     @apply focus:outline-none focus:ring-2 focus:ring-electric focus:ring-offset-2 focus:ring-offset-background;
   }
+  
+  /* ===== NOTION EDITOR STYLES ===== */
+  .text-electric-blue {
+    color: oklch(0.65 0.20 250);
+  }
+  
+  .bg-electric-blue {
+    background-color: oklch(0.60 0.18 250);
+  }
+  
+  .bg-electric-blue\/20 {
+    background-color: oklch(0.60 0.18 250 / 0.2);
+  }
+  
+  .border-electric-blue {
+    border-color: oklch(0.60 0.18 250);
+  }
+  
+  /* Contenteditable placeholder */
+  [contenteditable]:empty:before {
+    content: attr(data-placeholder);
+    color: oklch(0.45 0.02 260);
+    pointer-events: none;
+  }
+  
+  [contenteditable]:focus:empty:before {
+    content: attr(data-placeholder);
+  }
 }
 
 /* ===== PAGE TRANSITIONS ===== */

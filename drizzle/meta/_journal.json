@@ -176,6 +176,13 @@
       "when": 1769392245681,
       "tag": "0024_workable_sabra",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "5",
+      "when": 1769636602345,
+      "tag": "0025_sweet_nitro",
+      "breakpoints": true
     }
   ]
 }
