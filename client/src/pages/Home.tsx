@@ -244,20 +244,27 @@ export default function Home() {
           </div>
           
           <div className="max-w-4xl">
-            {/* Animated accent line */}
-            <div className="flex items-center gap-3 mb-3 animate-fade-in-left stagger-1">
-              <div className="h-1 w-12 bg-gradient-to-r from-secondary to-electric rounded-full" />
-              <span className="text-secondary font-bold tracking-wider uppercase text-xs">Coach Steve's Mobile Coach</span>
+            {/* Next Gen Training Badge */}
+            <div className="flex justify-center md:justify-start mb-6 animate-fade-in-down stagger-1">
+              <div className="inline-flex items-center px-5 py-2.5 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm">
+                <span className="text-electric font-bold tracking-widest uppercase text-xs md:text-sm">Next Gen Training</span>
+              </div>
             </div>
             
-            {/* Main heading with text gradient */}
-            <h1 className="text-4xl md:text-7xl font-heading font-black mb-3 md:mb-4 leading-tight animate-fade-in-up stagger-2">
-              <span className="text-gradient">Drills</span>{" "}
-              <span className="text-foreground">Directory</span>
-            </h1>
+            {/* Main heading - Stacked "UNLEASH YOUR POTENTIAL" style */}
+            <div className="text-center md:text-left animate-fade-in-up stagger-2">
+              <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-heading font-black leading-[0.85] tracking-tight">
+                <span className="block text-white">UNLEASH</span>
+                <span className="block text-white">YOUR</span>
+                <span className="block text-electric italic">POTENTIAL</span>
+              </h1>
+            </div>
             
-            <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-10 max-w-3xl leading-relaxed font-medium animate-fade-in-up stagger-3">
-              <span className="text-electric font-bold">{allDrills.length}</span> professional baseball drills. Filter by skill set, difficulty, and duration to build the perfect practice plan.
+            <p className="text-base md:text-xl text-muted-foreground mt-8 mb-8 md:mb-10 max-w-2xl leading-relaxed text-center md:text-left animate-fade-in-up stagger-3">
+              The ultimate library of <span className="text-electric font-bold">{allDrills.length}</span> professional hitting drills designed to build{" "}
+              <span className="text-white font-bold">elite mechanics</span>,{" "}
+              <span className="text-white font-bold">explosive power</span>, and{" "}
+              <span className="text-white font-bold">game-ready confidence</span>.
             </p>
             
             {/* Search Bar with glassmorphism */}

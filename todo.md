@@ -911,3 +911,11 @@
 - [x] Create backend API endpoint to delete invites (deleteInvite in invites.ts and routers.ts)
 - [x] Add confirmation dialog before deleting
 - [x] Test delete functionality
+
+
+## Homepage Hero Redesign - "Unleash Your Potential" Style
+- [x] Update hero headline to stacked "UNLEASH YOUR POTENTIAL" format
+- [x] Add cyan/electric blue accent on "POTENTIAL" word (italic style)
+- [x] Update copy to focus on elite mechanics, explosive power, game-ready confidence
+- [x] Add "NEXT GEN TRAINING" badge/pill above headline
+- [x] Maintain dark sophisticated background
