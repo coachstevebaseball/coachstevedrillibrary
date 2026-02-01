@@ -183,6 +183,13 @@
       "when": 1769636602345,
       "tag": "0025_sweet_nitro",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "5",
+      "when": 1769912080129,
+      "tag": "0026_parched_doorman",
+      "breakpoints": true
     }
   ]
 }

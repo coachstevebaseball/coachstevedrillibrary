@@ -230,6 +230,22 @@ export const customDrills = mysqlTable("customDrills", {
 export type CustomDrill = typeof customDrills.$inferSelect;
 export type InsertCustomDrill = typeof customDrills.$inferInsert;
 
+// Drill card customizations - image, description, difficulty overrides
+export const drillCustomizations = mysqlTable("drillCustomizations", {
+  id: int("id").autoincrement().primaryKey(),
+  drillId: varchar("drillId", { length: 255 }).notNull().unique(),
+  thumbnailUrl: text("thumbnailUrl"), // S3 URL for custom thumbnail image
+  briefDescription: text("briefDescription"), // Custom brief description for card
+  difficulty: varchar("difficulty", { length: 50 }), // Override difficulty: Easy, Medium, Hard
+  category: varchar("category", { length: 100 }), // Override category
+  updatedBy: int("updatedBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type DrillCustomization = typeof drillCustomizations.$inferSelect;
+export type InsertDrillCustomization = typeof drillCustomizations.$inferInsert;
+
 
 // Coach notes for athlete progress tracking during in-person meetings
 export const coachNotes = mysqlTable("coachNotes", {

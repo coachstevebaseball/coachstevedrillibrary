@@ -17,6 +17,8 @@ import { qaRouter } from "./routers-qa";
 import { imageUploadRouter } from "./routers-image-upload";
 import { activityRouter } from "./routers-activity";
 import { favoritesRouter } from "./routers-favorites";
+import * as drillCustomizationsDb from "./drillCustomizations";
+import { storagePut } from "./storage";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -628,6 +630,90 @@ export const appRouter = router({
           }
         }
         return { success: true, remindersSent: sent };
+      }),
+  }),
+
+  // Drill Customizations router (for editing drill cards)
+  drillCustomizations: router({
+    // Get customization for a single drill
+    get: publicProcedure
+      .input(z.object({ drillId: z.string() }))
+      .query(async ({ input }) => {
+        return await drillCustomizationsDb.getDrillCustomization(input.drillId);
+      }),
+
+    // Get all customizations (for bulk loading on homepage)
+    getAll: publicProcedure.query(async () => {
+      return await drillCustomizationsDb.getAllDrillCustomizations();
+    }),
+
+    // Save/update drill customization
+    save: protectedProcedure
+      .input(z.object({
+        drillId: z.string(),
+        thumbnailUrl: z.string().nullable().optional(),
+        briefDescription: z.string().nullable().optional(),
+        difficulty: z.string().nullable().optional(),
+        category: z.string().nullable().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillCustomizationsDb.upsertDrillCustomization(
+          input.drillId,
+          {
+            thumbnailUrl: input.thumbnailUrl,
+            briefDescription: input.briefDescription,
+            difficulty: input.difficulty,
+            category: input.category,
+          },
+          ctx.user.id
+        );
+      }),
+
+    // Upload thumbnail image
+    uploadThumbnail: protectedProcedure
+      .input(z.object({
+        drillId: z.string(),
+        imageBase64: z.string(),
+        mimeType: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        
+        // Convert base64 to buffer
+        const imageBuffer = Buffer.from(input.imageBase64, 'base64');
+        
+        // Generate unique filename
+        const extension = input.mimeType.split('/')[1] || 'jpg';
+        const timestamp = Date.now();
+        const randomSuffix = Math.random().toString(36).substring(2, 8);
+        const fileKey = `drill-thumbnails/${input.drillId}-${timestamp}-${randomSuffix}.${extension}`;
+        
+        // Upload to S3
+        const { url } = await storagePut(fileKey, imageBuffer, input.mimeType);
+        
+        // Save URL to database
+        await drillCustomizationsDb.upsertDrillCustomization(
+          input.drillId,
+          { thumbnailUrl: url },
+          ctx.user.id
+        );
+        
+        return { url };
+      }),
+
+    // Delete customization
+    delete: protectedProcedure
+      .input(z.object({ drillId: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillCustomizationsDb.deleteDrillCustomization(input.drillId);
       }),
   }),
 

@@ -949,3 +949,15 @@
 - [x] Add glow effect on hover (box-shadow with electric blue multi-layer glow)
 - [x] Add smooth transition for all effects (0.4s cubic-bezier)
 - [x] Test hover animations on drill cards
+
+
+## Drill Card Editing System
+- [x] Create database schema for drill customizations (drillCustomizations table)
+- [x] Create backend API endpoints for drill CRUD operations (getAll, upsert, uploadImage)
+- [x] Implement image upload to S3 for drill thumbnails
+- [x] Create drill edit modal component (DrillEditModal.tsx)
+- [x] Add edit button/click handler on drill cards (admin only, visible on hover)
+- [x] Implement description editing (brief description textarea)
+- [x] Implement difficulty badge editing (Easy/Medium/Hard dropdown)
+- [x] Implement category editing (Hitting/Bunting/Pitching/Infield/Outfield/Catching/Base Running)
+- [x] Test persistence of changes (verified - description updates saved to database)

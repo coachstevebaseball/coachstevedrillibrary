@@ -1,13 +1,15 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Filter, LogIn, LogOut, Shield, Users, Activity, ChevronRight, Sparkles } from "lucide-react";
+import { Search, Filter, LogIn, LogOut, Shield, Users, Activity, ChevronRight, Sparkles, Settings } from "lucide-react";
 import { HomePageSkeleton } from "@/components/Skeleton";
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
 import drillsData from "@/data/drills.json";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { trpc } from "@/lib/trpc";
+import { DrillEditModal } from "@/components/DrillEditModal";
+import { Pencil } from "lucide-react";
 
 // Types
 interface Drill {
@@ -32,6 +34,22 @@ export default function Home() {
   const [scrollY, setScrollY] = useState(0);
   const heroRef = useRef<HTMLDivElement>(null);
   const DRILLS_PER_PAGE = 20;
+
+  // Edit modal state
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingDrill, setEditingDrill] = useState<Drill | null>(null);
+
+  // Fetch drill customizations
+  const { data: drillCustomizations = [], refetch: refetchCustomizations } = trpc.drillCustomizations.getAll.useQuery();
+
+  // Create a map for quick lookup of customizations
+  const customizationsMap = useMemo(() => {
+    const map = new Map<string, typeof drillCustomizations[0]>();
+    drillCustomizations.forEach((c) => {
+      map.set(c.drillId, c);
+    });
+    return map;
+  }, [drillCustomizations]);
 
   // Parallax scroll effect
   useEffect(() => {
@@ -350,71 +368,107 @@ export default function Home() {
         {/* Drills Card Grid */}
         {paginatedDrills.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {paginatedDrills.map((drill, index) => (
-              <Link 
-                key={drill.id} 
-                href={`/drill/${drill.id}`}
-                className="group block animate-fade-in-up"
-                style={{ animationDelay: `${Math.min(index * 0.05, 0.5)}s` }}
-              >
-                <div className="glass-card rounded-xl overflow-hidden transition-all duration-300 drill-card-hover cursor-pointer h-full flex flex-col border border-transparent">
-                  {/* Card Image */}
-                  <div className="relative h-48 bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden">
-                    <img 
-                      src={`/images/drills/${drill.id.toLowerCase().replace(/[^a-z0-9]/g, '-')}.jpg`}
-                      alt={drill.name}
-                      className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
+            {paginatedDrills.map((drill, index) => {
+              const customization = customizationsMap.get(drill.id);
+              const displayDifficulty = customization?.difficulty || drill.difficulty;
+              const displayCategory = customization?.category || drill.categories[0] || "General";
+              const displayDescription = customization?.briefDescription || `Master this drill to improve your ${drill.categories[0]?.toLowerCase() || "baseball"} skills.`;
+              const thumbnailUrl = customization?.thumbnailUrl;
+
+              return (
+                <div 
+                  key={drill.id}
+                  className="group block animate-fade-in-up relative"
+                  style={{ animationDelay: `${Math.min(index * 0.05, 0.5)}s` }}
+                >
+                  {/* Edit Button for Admins */}
+                  {user?.role === 'admin' && (
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setEditingDrill(drill);
+                        setEditModalOpen(true);
                       }}
-                    />
-                    {/* Fallback gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
-                    
-                    {/* Difficulty Badge */}
-                    <div className="absolute top-3 right-3">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                        drill.difficulty === "Easy" 
-                          ? "bg-emerald-500 text-white"
-                          : drill.difficulty === "Medium"
-                          ? "bg-amber-500 text-white"
-                          : "bg-rose-500 text-white"
-                      }`}>
-                        {drill.difficulty}
-                      </span>
+                      className="absolute top-3 left-3 z-20 p-2 rounded-full bg-black/60 hover:bg-electric/80 text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
+                      title="Edit drill card"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
+                  )}
+
+                  <Link 
+                    href={`/drill/${drill.id}`}
+                    className="block h-full"
+                  >
+                    <div className="glass-card rounded-xl overflow-hidden transition-all duration-300 drill-card-hover cursor-pointer h-full flex flex-col border border-transparent">
+                      {/* Card Image */}
+                      <div className="relative h-48 bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden">
+                        {thumbnailUrl ? (
+                          <img 
+                            src={thumbnailUrl}
+                            alt={drill.name}
+                            className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <img 
+                            src={`/images/drills/${drill.id.toLowerCase().replace(/[^a-z0-9]/g, '-')}.jpg`}
+                            alt={drill.name}
+                            className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                            }}
+                          />
+                        )}
+                        {/* Fallback gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
+                        
+                        {/* Difficulty Badge */}
+                        <div className="absolute top-3 right-3">
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                            displayDifficulty === "Easy" 
+                              ? "bg-emerald-500 text-white"
+                              : displayDifficulty === "Medium"
+                              ? "bg-amber-500 text-white"
+                              : "bg-rose-500 text-white"
+                          }`}>
+                            {displayDifficulty}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      {/* Card Content */}
+                      <div className="p-5 flex-1 flex flex-col">
+                        {/* Category Tag */}
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="w-2 h-2 rounded-full bg-electric" />
+                          <span className="text-electric text-xs font-bold uppercase tracking-wider">
+                            {displayCategory}
+                          </span>
+                        </div>
+                        
+                        {/* Title */}
+                        <h3 className="text-lg font-heading font-bold text-white mb-2 group-hover:text-electric transition-colors duration-300">
+                          {drill.name}
+                        </h3>
+                        
+                        {/* Description */}
+                        <p className="text-sm text-muted-foreground mb-4 flex-1 line-clamp-2">
+                          {displayDescription}
+                        </p>
+                        
+                        {/* View Details Link */}
+                        <div className="flex items-center text-muted-foreground group-hover:text-electric transition-colors duration-300">
+                          <span className="text-sm font-medium">View Details</span>
+                          <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  
-                  {/* Card Content */}
-                  <div className="p-5 flex-1 flex flex-col">
-                    {/* Category Tag */}
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="w-2 h-2 rounded-full bg-electric" />
-                      <span className="text-electric text-xs font-bold uppercase tracking-wider">
-                        {drill.categories[0] || "General"}
-                      </span>
-                    </div>
-                    
-                    {/* Title */}
-                    <h3 className="text-lg font-heading font-bold text-white mb-2 group-hover:text-electric transition-colors duration-300">
-                      {drill.name}
-                    </h3>
-                    
-                    {/* Description */}
-                    <p className="text-sm text-muted-foreground mb-4 flex-1 line-clamp-2">
-                      Master this drill to improve your {drill.categories[0]?.toLowerCase() || "baseball"} skills.
-                    </p>
-                    
-                    {/* View Details Link */}
-                    <div className="flex items-center text-muted-foreground group-hover:text-electric transition-colors duration-300">
-                      <span className="text-sm font-medium">View Details</span>
-                      <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" />
-                    </div>
-                  </div>
+                  </Link>
                 </div>
-              </Link>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-20 glass-card rounded-2xl border-dashed border-2 border-border/50">
@@ -490,6 +544,20 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Drill Edit Modal */}
+      {editingDrill && (
+        <DrillEditModal
+          isOpen={editModalOpen}
+          onClose={() => {
+            setEditModalOpen(false);
+            setEditingDrill(null);
+          }}
+          drill={editingDrill}
+          customization={customizationsMap.get(editingDrill.id)}
+          onSaved={() => refetchCustomizations()}
+        />
+      )}
     </div>
   );
 }
