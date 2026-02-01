@@ -100,3 +100,54 @@ export async function storageGet(relKey: string): Promise<{ key: string; url: st
     url: await buildDownloadUrl(baseUrl, key, apiKey),
   };
 }
+
+// Fetch file content from storage (for proxying)
+// Gets a fresh signed download URL and fetches the content
+export async function storageDownload(relKey: string): Promise<{ data: Buffer; contentType: string }> {
+  const { baseUrl, apiKey } = getStorageConfig();
+  const key = normalizeKey(relKey);
+  
+  // Get a fresh signed download URL from the API
+  const downloadApiUrl = new URL('v1/storage/downloadUrl', ensureTrailingSlash(baseUrl));
+  downloadApiUrl.searchParams.set('path', key);
+  
+  console.log('[Storage] Getting download URL for:', key);
+  
+  const urlResponse = await fetch(downloadApiUrl, {
+    method: 'GET',
+    headers: buildAuthHeaders(apiKey),
+  });
+  
+  if (!urlResponse.ok) {
+    const errorText = await urlResponse.text().catch(() => '');
+    console.error('[Storage] Failed to get download URL:', urlResponse.status, errorText);
+    throw new Error(`Failed to get download URL: ${urlResponse.status} - ${errorText}`);
+  }
+  
+  const responseData = await urlResponse.json();
+  const downloadUrl = responseData.url;
+  
+  console.log('[Storage] Got download URL:', downloadUrl?.substring(0, 100) + '...');
+  
+  if (!downloadUrl) {
+    throw new Error('No download URL returned from storage API');
+  }
+  
+  // Fetch the actual file content from the signed CloudFront URL
+  const fileResponse = await fetch(downloadUrl);
+  
+  if (!fileResponse.ok) {
+    console.error('[Storage] Failed to download file:', fileResponse.status, fileResponse.statusText);
+    throw new Error(`Failed to download file: ${fileResponse.status}`);
+  }
+  
+  const arrayBuffer = await fileResponse.arrayBuffer();
+  const contentType = fileResponse.headers.get('content-type') || 'application/octet-stream';
+  
+  console.log('[Storage] Downloaded file, size:', arrayBuffer.byteLength, 'contentType:', contentType);
+  
+  return {
+    data: Buffer.from(arrayBuffer),
+    contentType,
+  };
+}

@@ -8,6 +8,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { startBatchProcessor } from "../emailBatching";
+import { storageDownload } from "../storage";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -36,6 +37,26 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+  
+  // Image proxy route to serve storage images
+  app.get("/api/storage/image/*", async (req, res) => {
+    try {
+      const imagePath = (req.params as Record<string, string>)[0];
+      if (!imagePath) {
+        return res.status(400).json({ error: "Image path required" });
+      }
+      
+      // Download the file content directly from storage API
+      const { data, contentType } = await storageDownload(imagePath);
+      
+      res.setHeader("Content-Type", contentType);
+      res.setHeader("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
+      res.send(data);
+    } catch (error) {
+      console.error("Image proxy error:", error);
+      res.status(500).json({ error: "Failed to proxy image" });
+    }
+  });
   // tRPC API
   app.use(
     "/api/trpc",

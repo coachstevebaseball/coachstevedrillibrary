@@ -1,0 +1,19 @@
+{
+  "query": "SELECT drillId, thumbnailUrl, LEFT(imageBase64, 100) as imageBase64Preview, imageMimeType, briefDescription, difficulty, category FROM drillCustomizations LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT drillId, thumbnailUrl, LEFT(imageBase64, 100) as imageBase64Preview, imageMimeType, briefDescription, difficulty, category FROM drillCustomizations LIMIT 5;",
+  "rows": [
+    {
+      "drillId": "1-2-3-drill",
+      "thumbnailUrl": "/api/storage/image/drill-thumbnails/1-2-3-drill-1769913546878-j798h8.png",
+      "imageBase64Preview": "NULL",
+      "imageMimeType": "NULL",
+      "briefDescription": "A foundational hitting drill that teaches proper swing mechanics and timing. Perfect for beginners to develop consistent contact.",
+      "difficulty": "Easy",
+      "category": "Hitting"
+    }
+  ],
+  "messages": [],
+  "stdout": "drillId\tthumbnailUrl\timageBase64Preview\timageMimeType\tbriefDescription\tdifficulty\tcategory\n1-2-3-drill\t/api/storage/image/drill-thumbnails/1-2-3-drill-1769913546878-j798h8.png\tNULL\tNULL\tA foundational hitting drill that teaches proper swing mechanics and timing. Perfect for beginners to develop consistent contact.\tEasy\tHitting\n",
+  "stderr": "",
+  "execution_time_ms": 351
+}

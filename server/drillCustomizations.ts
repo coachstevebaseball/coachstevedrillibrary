@@ -43,6 +43,8 @@ export async function upsertDrillCustomization(
   drillId: string,
   data: {
     thumbnailUrl?: string | null;
+    imageBase64?: string | null;
+    imageMimeType?: string | null;
     briefDescription?: string | null;
     difficulty?: string | null;
     category?: string | null;
@@ -61,6 +63,8 @@ export async function upsertDrillCustomization(
       .update(drillCustomizations)
       .set({
         thumbnailUrl: data.thumbnailUrl ?? existing.thumbnailUrl,
+        imageBase64: data.imageBase64 ?? existing.imageBase64,
+        imageMimeType: data.imageMimeType ?? existing.imageMimeType,
         briefDescription: data.briefDescription ?? existing.briefDescription,
         difficulty: data.difficulty ?? existing.difficulty,
         category: data.category ?? existing.category,
@@ -72,6 +76,8 @@ export async function upsertDrillCustomization(
     await db.insert(drillCustomizations).values({
       drillId,
       thumbnailUrl: data.thumbnailUrl || null,
+      imageBase64: data.imageBase64 || null,
+      imageMimeType: data.imageMimeType || null,
       briefDescription: data.briefDescription || null,
       difficulty: data.difficulty || null,
       category: data.category || null,

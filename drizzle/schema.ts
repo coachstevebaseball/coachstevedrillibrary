@@ -1,4 +1,4 @@
-import { int, json, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, json, longtext, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -234,7 +234,9 @@ export type InsertCustomDrill = typeof customDrills.$inferInsert;
 export const drillCustomizations = mysqlTable("drillCustomizations", {
   id: int("id").autoincrement().primaryKey(),
   drillId: varchar("drillId", { length: 255 }).notNull().unique(),
-  thumbnailUrl: text("thumbnailUrl"), // S3 URL for custom thumbnail image
+  thumbnailUrl: text("thumbnailUrl"), // S3 URL for custom thumbnail image (legacy)
+  imageBase64: longtext("imageBase64"), // Base64 encoded image data for direct storage
+  imageMimeType: varchar("imageMimeType", { length: 50 }), // MIME type of the stored image
   briefDescription: text("briefDescription"), // Custom brief description for card
   difficulty: varchar("difficulty", { length: 50 }), // Override difficulty: Easy, Medium, Hard
   category: varchar("category", { length: 100 }), // Override category

@@ -1,0 +1,18 @@
+{
+  "query": "SHOW COLUMNS FROM drillCustomizations WHERE Field = 'imageBase64';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SHOW COLUMNS FROM drillCustomizations WHERE Field = 'imageBase64';",
+  "rows": [
+    {
+      "Field": "imageBase64",
+      "Type": "longtext",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    }
+  ],
+  "messages": [],
+  "stdout": "Field\tType\tNull\tKey\tDefault\tExtra\nimageBase64\tlongtext\tYES\t\tNULL\t\n",
+  "stderr": "",
+  "execution_time_ms": 344
+}

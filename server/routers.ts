@@ -684,26 +684,33 @@ export const appRouter = router({
           throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
         }
         
-        // Convert base64 to buffer
-        const imageBuffer = Buffer.from(input.imageBase64, 'base64');
+        console.log('[Upload] Starting thumbnail upload for drill:', input.drillId);
+        console.log('[Upload] Image size (base64 chars):', input.imageBase64.length);
+        console.log('[Upload] MIME type:', input.mimeType);
         
-        // Generate unique filename
-        const extension = input.mimeType.split('/')[1] || 'jpg';
-        const timestamp = Date.now();
-        const randomSuffix = Math.random().toString(36).substring(2, 8);
-        const fileKey = `drill-thumbnails/${input.drillId}-${timestamp}-${randomSuffix}.${extension}`;
-        
-        // Upload to S3
-        const { url } = await storagePut(fileKey, imageBuffer, input.mimeType);
-        
-        // Save URL to database
-        await drillCustomizationsDb.upsertDrillCustomization(
-          input.drillId,
-          { thumbnailUrl: url },
-          ctx.user.id
-        );
-        
-        return { url };
+        try {
+          // Store the base64 image directly in the database
+          // This is more reliable than S3 for small images
+          const dataUrl = `data:${input.mimeType};base64,${input.imageBase64}`;
+          
+          console.log('[Upload] Data URL length:', dataUrl.length);
+          
+          await drillCustomizationsDb.upsertDrillCustomization(
+            input.drillId,
+            { 
+              thumbnailUrl: dataUrl,
+              imageBase64: input.imageBase64,
+              imageMimeType: input.mimeType,
+            },
+            ctx.user.id
+          );
+          
+          console.log('[Upload] Successfully saved to database');
+          return { url: dataUrl };
+        } catch (error) {
+          console.error('[Upload] Error saving to database:', error);
+          throw error;
+        }
       }),
 
     // Delete customization

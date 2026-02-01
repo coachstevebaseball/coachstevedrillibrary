@@ -373,7 +373,11 @@ export default function Home() {
               const displayDifficulty = customization?.difficulty || drill.difficulty;
               const displayCategory = customization?.category || drill.categories[0] || "General";
               const displayDescription = customization?.briefDescription || `Master this drill to improve your ${drill.categories[0]?.toLowerCase() || "baseball"} skills.`;
-              const thumbnailUrl = customization?.thumbnailUrl;
+              // Get image source - prefer thumbnailUrl (S3 proxy), fallback to base64 (legacy)
+              const imageSource = customization?.thumbnailUrl 
+                || (customization?.imageBase64 && customization?.imageMimeType
+                  ? `data:${customization.imageMimeType};base64,${customization.imageBase64}`
+                  : null);
 
               return (
                 <div 
@@ -404,9 +408,9 @@ export default function Home() {
                     <div className="glass-card rounded-xl overflow-hidden transition-all duration-300 drill-card-hover cursor-pointer h-full flex flex-col border border-transparent">
                       {/* Card Image */}
                       <div className="relative h-48 bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden">
-                        {thumbnailUrl ? (
+                        {imageSource ? (
                           <img 
-                            src={thumbnailUrl}
+                            src={imageSource}
                             alt={drill.name}
                             className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500"
                             onError={(e) => {
