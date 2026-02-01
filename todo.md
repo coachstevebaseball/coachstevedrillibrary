@@ -984,3 +984,10 @@
 - [x] Only show edit functionality to admin role (verified in code)
 - [x] Test as admin (should see edit button) - confirmed working
 - [x] Test as athlete/client (should NOT see edit button) - confirmed, condition prevents non-admins from seeing button
+
+
+## Bug Fix: Image Upload Not Saving Changes
+- [x] Investigate why uploaded images are not persisting after Save Changes
+- [x] Check DrillEditModal save flow (working correctly)
+- [x] Check server uploadThumbnail mutation (working correctly)
+- [x] Fix the issue and test (database table was missing - created drill_customizations table)

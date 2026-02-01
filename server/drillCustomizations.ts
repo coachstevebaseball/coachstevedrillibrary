@@ -1,20 +1,6 @@
-import { drizzle } from "drizzle-orm/mysql2";
 import { drillCustomizations, DrillCustomization, InsertDrillCustomization } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
-
-let _db: ReturnType<typeof drizzle> | null = null;
-
-async function getDb() {
-  if (!_db && process.env.DATABASE_URL) {
-    try {
-      _db = drizzle(process.env.DATABASE_URL);
-    } catch (error) {
-      console.warn("[Database] Failed to connect:", error);
-      _db = null;
-    }
-  }
-  return _db;
-}
+import { getDb } from "./db";
 
 // Get customization for a specific drill
 export async function getDrillCustomization(drillId: string): Promise<DrillCustomization | null> {
@@ -51,38 +37,61 @@ export async function upsertDrillCustomization(
   },
   updatedBy: number
 ): Promise<DrillCustomization | null> {
+  console.log('[DrillCustomizations] upsertDrillCustomization called for drillId:', drillId);
+  console.log('[DrillCustomizations] Data keys:', Object.keys(data));
+  console.log('[DrillCustomizations] updatedBy:', updatedBy);
+  
   const db = await getDb();
-  if (!db) return null;
+  if (!db) {
+    console.error('[DrillCustomizations] Database not available!');
+    return null;
+  }
+  console.log('[DrillCustomizations] Database connection obtained');
 
   // Check if customization exists
   const existing = await getDrillCustomization(drillId);
-
+  console.log('[DrillCustomizations] Existing record:', existing ? 'FOUND' : 'NOT FOUND');
   if (existing) {
+    console.log('[DrillCustomizations] Existing record id:', existing.id);
     // Update existing
-    await db
-      .update(drillCustomizations)
-      .set({
-        thumbnailUrl: data.thumbnailUrl ?? existing.thumbnailUrl,
-        imageBase64: data.imageBase64 ?? existing.imageBase64,
-        imageMimeType: data.imageMimeType ?? existing.imageMimeType,
-        briefDescription: data.briefDescription ?? existing.briefDescription,
-        difficulty: data.difficulty ?? existing.difficulty,
-        category: data.category ?? existing.category,
-        updatedBy,
-      })
-      .where(eq(drillCustomizations.drillId, drillId));
+    console.log('[DrillCustomizations] Updating existing record');
+    try {
+      await db
+        .update(drillCustomizations)
+        .set({
+          thumbnailUrl: data.thumbnailUrl ?? existing.thumbnailUrl,
+          imageBase64: data.imageBase64 ?? existing.imageBase64,
+          imageMimeType: data.imageMimeType ?? existing.imageMimeType,
+          briefDescription: data.briefDescription ?? existing.briefDescription,
+          difficulty: data.difficulty ?? existing.difficulty,
+          category: data.category ?? existing.category,
+          updatedBy,
+        })
+        .where(eq(drillCustomizations.drillId, drillId));
+      console.log('[DrillCustomizations] Update successful');
+    } catch (error) {
+      console.error('[DrillCustomizations] Update failed:', error);
+      throw error;
+    }
   } else {
     // Insert new
-    await db.insert(drillCustomizations).values({
-      drillId,
-      thumbnailUrl: data.thumbnailUrl || null,
-      imageBase64: data.imageBase64 || null,
-      imageMimeType: data.imageMimeType || null,
-      briefDescription: data.briefDescription || null,
-      difficulty: data.difficulty || null,
-      category: data.category || null,
-      updatedBy,
-    });
+    console.log('[DrillCustomizations] Inserting new record');
+    try {
+      await db.insert(drillCustomizations).values({
+        drillId,
+        thumbnailUrl: data.thumbnailUrl || null,
+        imageBase64: data.imageBase64 || null,
+        imageMimeType: data.imageMimeType || null,
+        briefDescription: data.briefDescription || null,
+        difficulty: data.difficulty || null,
+        category: data.category || null,
+        updatedBy,
+      });
+      console.log('[DrillCustomizations] Insert successful');
+    } catch (error) {
+      console.error('[DrillCustomizations] Insert failed:', error);
+      throw error;
+    }
   }
 
   return await getDrillCustomization(drillId);

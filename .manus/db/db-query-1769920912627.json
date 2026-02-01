@@ -1,0 +1,31 @@
+{
+  "query": "SELECT id, drillId, LEFT(imageBase64, 30) as imageBase64_preview, updatedBy, createdAt FROM drillCustomizations;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT id, drillId, LEFT(imageBase64, 30) as imageBase64_preview, updatedBy, createdAt FROM drillCustomizations;",
+  "rows": [
+    {
+      "id": "2",
+      "drillId": "1-2-3-drill",
+      "imageBase64_preview": "iVBORw0KGgoAAAANSUhEUgAAAAEAAA",
+      "updatedBy": "1",
+      "createdAt": "2026-02-01 03:17:08"
+    },
+    {
+      "id": "3",
+      "drillId": "test-drill-123",
+      "imageBase64_preview": "iVBORw0KGgoAAAANSUhEUgAAAAEAAA",
+      "updatedBy": "1",
+      "createdAt": "2026-02-01 04:40:14"
+    },
+    {
+      "id": "4",
+      "drillId": "sql-test-drill",
+      "imageBase64_preview": "test-base64-data",
+      "updatedBy": "1",
+      "createdAt": "2026-02-01 04:41:34"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdrillId\timageBase64_preview\tupdatedBy\tcreatedAt\n2\t1-2-3-drill\tiVBORw0KGgoAAAANSUhEUgAAAAEAAA\t1\t2026-02-01 03:17:08\n3\ttest-drill-123\tiVBORw0KGgoAAAANSUhEUgAAAAEAAA\t1\t2026-02-01 04:40:14\n4\tsql-test-drill\ttest-base64-data\t1\t2026-02-01 04:41:34\n",
+  "stderr": "",
+  "execution_time_ms": 351
+}
