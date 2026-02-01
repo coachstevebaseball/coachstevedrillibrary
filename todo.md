@@ -926,3 +926,19 @@
 - [x] Remove italics from POTENTIAL
 - [x] Center the heading text
 - [x] Improve spacing between lines
+
+
+## Search & Filter System Redesign
+- [x] Prominent search bar with placeholder text and search icon
+- [x] Pill-shaped difficulty filter buttons (Easy, Medium, Hard)
+- [x] Category filter with cyan-highlighted "All Categories" button
+- [x] Additional category options (All, Hitting, Bunting, Pitching, Infield, Outfield, Catching, Base Running)
+
+## Drill Card Grid Layout
+- [x] Convert drills to card-based grid system (3 columns)
+- [x] Featured image area at top of each card (with gradient fallback)
+- [x] Difficulty badge in top-right corner (Easy=green, Medium=amber, Hard=red)
+- [x] Category tag in cyan with dot indicator
+- [x] Drill title in bold white text
+- [x] Brief description on card
+- [x] "View Details" link with arrow on each card

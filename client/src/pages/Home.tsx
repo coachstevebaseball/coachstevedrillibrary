@@ -1,9 +1,7 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, LogIn, LogOut, Shield, X, Users, Activity, ChevronDown, ChevronRight, Sparkles } from "lucide-react";
+import { Search, Filter, LogIn, LogOut, Shield, Users, Activity, ChevronRight, Sparkles } from "lucide-react";
 import { HomePageSkeleton } from "@/components/Skeleton";
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
@@ -22,20 +20,7 @@ interface Drill {
   is_direct_link: boolean;
 }
 
-// Get difficulty color with glow effect
-const getDifficultyStyles = (difficulty: string) => {
-  switch (difficulty) {
-    case "Easy": return "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
-    case "Medium": return "bg-amber-500/20 text-amber-400 border border-amber-500/30";
-    case "Hard": return "bg-rose-500/20 text-rose-400 border border-rose-500/30";
-    default: return "bg-slate-500/20 text-slate-400 border border-slate-500/30";
-  }
-};
 
-// Get category color with glow
-const getCategoryStyles = () => {
-  return "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30";
-};
 
 export default function Home() {
   const { user, loading, isAuthenticated, logout } = useAuth();
@@ -43,7 +28,7 @@ export default function Home() {
   const [difficultyFilter, setDifficultyFilter] = useState("All");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const [showFilters, setShowFilters] = useState(false);
+
   const [scrollY, setScrollY] = useState(0);
   const heroRef = useRef<HTMLDivElement>(null);
   const DRILLS_PER_PAGE = 20;
@@ -105,7 +90,6 @@ export default function Home() {
     setter(value);
   };
 
-  const hasActiveFilters = searchQuery !== "" || difficultyFilter !== "All" || categoryFilter !== "All";
 
   // Loading state with skeleton
   if (loading) {
@@ -270,105 +254,102 @@ export default function Home() {
               <span className="text-white font-bold">game-ready confidence</span>.
             </p>
             
-            {/* Search Bar with glassmorphism */}
-            <div className="relative w-full md:max-w-2xl mx-auto animate-fade-in-up stagger-4">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-muted-foreground" />
-              </div>
-              <Input
-                type="text"
-                placeholder="Search drills..."
-                className="pl-11 py-5 md:py-7 text-sm md:text-base glass-card text-foreground border-white/10 shadow-2xl rounded-xl md:rounded-2xl focus-visible:ring-2 focus-visible:ring-electric font-medium transition-all duration-300 hover:border-electric/30"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
+
           </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="flex-1 container py-6 md:py-12">
-        {/* Add Filter Button */}
-        <div className="mb-8 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-          <Button 
-            variant="outline" 
-            onClick={() => setShowFilters(!showFilters)}
-            className="gap-2 font-semibold glass hover:bg-white/5 border-border/50 hover-lift transition-all duration-300"
-          >
-            <Filter className="h-4 w-4" />
-            Add Filter
-            <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${showFilters ? 'rotate-180' : ''}`} />
-          </Button>
+        {/* Section Header */}
+        <div className="text-center mb-8 animate-fade-in-up">
+          <h2 className="text-3xl md:text-4xl font-heading font-black italic text-electric mb-3">Training Library</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Browse our curated collection of professional drills designed to elevate every aspect of your game.
+          </p>
         </div>
 
-        {/* Filters Section - Collapsible with animation */}
-        <div className={`overflow-hidden transition-all duration-500 ease-out ${showFilters ? 'max-h-96 opacity-100 mb-8 md:mb-10' : 'max-h-0 opacity-0'}`}>
-          <div className="glass-card rounded-xl p-4 md:p-6 border-glow">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-              <div>
-                <label className="text-xs md:text-sm font-semibold text-muted-foreground mb-1.5 md:mb-2 block">Difficulty</label>
-                <Select value={difficultyFilter} onValueChange={(value) => handleFilterChange(setDifficultyFilter, value)}>
-                  <SelectTrigger className="w-full text-sm glass border-white/10 hover:border-electric/30 transition-colors">
-                    <SelectValue placeholder="All Difficulties" />
-                  </SelectTrigger>
-                  <SelectContent className="glass-card border-white/10">
-                    <SelectItem value="All">All Difficulties</SelectItem>
-                    <SelectItem value="Easy">Easy</SelectItem>
-                    <SelectItem value="Medium">Medium</SelectItem>
-                    <SelectItem value="Hard">Hard</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+        {/* Search Bar */}
+        <div className="max-w-3xl mx-auto mb-8 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <Input
+              type="text"
+              placeholder="Search for drills..."
+              className="pl-12 py-6 text-base glass-card text-foreground border-white/10 shadow-xl rounded-xl focus-visible:ring-2 focus-visible:ring-electric font-medium transition-all duration-300 hover:border-electric/30"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
 
-              <div>
-                <label className="text-xs md:text-sm font-semibold text-muted-foreground mb-1.5 md:mb-2 block">Skill Set</label>
-                <Select value={categoryFilter} onValueChange={(value) => handleFilterChange(setCategoryFilter, value)}>
-                  <SelectTrigger className="w-full text-sm glass border-white/10 hover:border-electric/30 transition-colors">
-                    <SelectValue placeholder="All Skill Sets" />
-                  </SelectTrigger>
-                  <SelectContent className="glass-card border-white/10">
-                    {allCategories.map(cat => (
-                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+        {/* Filter Section */}
+        <div className="glass-card rounded-xl p-6 mb-8 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          {/* Difficulty Filter */}
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <Filter className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-semibold text-muted-foreground">Difficulty</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {["All", "Easy", "Medium", "Hard"].map((level) => (
+                <button
+                  key={level}
+                  onClick={() => handleFilterChange(setDifficultyFilter, level)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                    difficultyFilter === level
+                      ? level === "Easy" 
+                        ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
+                        : level === "Medium"
+                        ? "bg-amber-500 text-white shadow-lg shadow-amber-500/30"
+                        : level === "Hard"
+                        ? "bg-rose-500 text-white shadow-lg shadow-rose-500/30"
+                        : "bg-electric text-white shadow-lg shadow-electric/30"
+                      : "bg-white/5 text-muted-foreground hover:bg-white/10 border border-white/10"
+                  }`}
+                >
+                  {level}
+                </button>
+              ))}
+            </div>
+          </div>
 
-              {hasActiveFilters && (
-                <div className="flex items-end">
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => {
-                      setSearchQuery("");
-                      setDifficultyFilter("All");
-                      setCategoryFilter("All");
-                    }}
-                    className="text-muted-foreground hover:text-electric gap-1 text-xs md:text-sm hover-lift"
-                  >
-                    <X className="h-4 w-4" />
-                    Clear Filters
-                  </Button>
-                </div>
-              )}
+          {/* Category Filter */}
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-semibold text-muted-foreground">Category</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {["All", "Hitting", "Bunting", "Pitching", "Infield", "Outfield", "Catching", "Base Running"].map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => handleFilterChange(setCategoryFilter, cat)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                    categoryFilter === cat
+                      ? "bg-electric text-white shadow-lg shadow-electric/30"
+                      : "bg-white/5 text-muted-foreground hover:bg-white/10 border border-white/10"
+                  }`}
+                >
+                  {cat === "All" ? "All Categories" : cat}
+                </button>
+              ))}
             </div>
           </div>
         </div>
 
         {/* Results Count */}
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-lg md:text-2xl font-heading font-bold text-foreground">
-            Available Drills
-            <span className="ml-3 text-sm md:text-lg font-normal text-electric bg-electric/10 px-3 py-1 rounded-full border border-electric/20">
-              {filteredDrills.length}
-            </span>
-          </h2>
+        <div className="mb-6 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+          <p className="text-muted-foreground">
+            Found <span className="text-electric font-bold">{filteredDrills.length}</span> drills
+          </p>
         </div>
 
-        {/* Drills List with staggered animations */}
+        {/* Drills Card Grid */}
         {paginatedDrills.length > 0 ? (
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {paginatedDrills.map((drill, index) => (
               <Link 
                 key={drill.id} 
@@ -376,25 +357,60 @@ export default function Home() {
                 className="group block animate-fade-in-up"
                 style={{ animationDelay: `${Math.min(index * 0.05, 0.5)}s` }}
               >
-                <div className="glass-card rounded-xl p-4 border-l-4 border-l-transparent hover:border-l-electric transition-all duration-300 card-hover cursor-pointer group-hover:border-electric/30">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-base md:text-lg font-heading font-semibold text-foreground group-hover:text-electric transition-colors duration-300 mb-2">
-                        {drill.name}
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
-                        <Badge className="bg-slate-800/50 text-slate-300 text-xs border border-slate-700/50">DRILL</Badge>
-                        <Badge className={`${getDifficultyStyles(drill.difficulty)} text-xs`}>
-                          {drill.difficulty}
-                        </Badge>
-                        {drill.categories.map((cat, idx) => (
-                          <Badge key={idx} className={`${getCategoryStyles()} text-xs`}>
-                            {cat}
-                          </Badge>
-                        ))}
-                      </div>
+                <div className="glass-card rounded-xl overflow-hidden transition-all duration-300 card-hover cursor-pointer h-full flex flex-col">
+                  {/* Card Image */}
+                  <div className="relative h-48 bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden">
+                    <img 
+                      src={`/images/drills/${drill.id.toLowerCase().replace(/[^a-z0-9]/g, '-')}.jpg`}
+                      alt={drill.name}
+                      className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                      }}
+                    />
+                    {/* Fallback gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
+                    
+                    {/* Difficulty Badge */}
+                    <div className="absolute top-3 right-3">
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        drill.difficulty === "Easy" 
+                          ? "bg-emerald-500 text-white"
+                          : drill.difficulty === "Medium"
+                          ? "bg-amber-500 text-white"
+                          : "bg-rose-500 text-white"
+                      }`}>
+                        {drill.difficulty}
+                      </span>
                     </div>
-                    <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-electric group-hover:translate-x-1 transition-all duration-300 opacity-0 group-hover:opacity-100" />
+                  </div>
+                  
+                  {/* Card Content */}
+                  <div className="p-5 flex-1 flex flex-col">
+                    {/* Category Tag */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="w-2 h-2 rounded-full bg-electric" />
+                      <span className="text-electric text-xs font-bold uppercase tracking-wider">
+                        {drill.categories[0] || "General"}
+                      </span>
+                    </div>
+                    
+                    {/* Title */}
+                    <h3 className="text-lg font-heading font-bold text-white mb-2 group-hover:text-electric transition-colors duration-300">
+                      {drill.name}
+                    </h3>
+                    
+                    {/* Description */}
+                    <p className="text-sm text-muted-foreground mb-4 flex-1 line-clamp-2">
+                      Master this drill to improve your {drill.categories[0]?.toLowerCase() || "baseball"} skills.
+                    </p>
+                    
+                    {/* View Details Link */}
+                    <div className="flex items-center text-muted-foreground group-hover:text-electric transition-colors duration-300">
+                      <span className="text-sm font-medium">View Details</span>
+                      <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" />
+                    </div>
                   </div>
                 </div>
               </Link>
