@@ -390,7 +390,7 @@ export default function Home() {
                         setEditingDrill(drill);
                         setEditModalOpen(true);
                       }}
-                      className="absolute top-3 left-3 z-20 p-2 rounded-full bg-black/60 hover:bg-electric/80 text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
+                      className="absolute top-3 left-3 z-20 p-2 rounded-full bg-black/70 hover:bg-electric/80 text-white opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg"
                       title="Edit drill card"
                     >
                       <Pencil className="h-4 w-4" />
@@ -409,6 +409,10 @@ export default function Home() {
                             src={thumbnailUrl}
                             alt={drill.name}
                             className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                            }}
                           />
                         ) : (
                           <img 

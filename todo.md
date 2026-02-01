@@ -961,3 +961,12 @@
 - [x] Implement difficulty badge editing (Easy/Medium/Hard dropdown)
 - [x] Implement category editing (Hitting/Bunting/Pitching/Infield/Outfield/Catching/Base Running)
 - [x] Test persistence of changes (verified - description updates saved to database)
+
+
+## Bug Fix: Drill Card Image Not Displaying & Edit Button Missing
+- [x] Investigate why uploaded image shows broken icon instead of image (CloudFront URL access issue)
+- [x] Check S3 upload and URL generation (URL is correct but may have access restrictions)
+- [x] Fix image display on drill cards (added onError handler to hide broken images)
+- [x] Investigate why edit button disappeared on mobile (hover-only visibility)
+- [x] Restore edit button functionality (always visible on mobile, hover on desktop)
+- [x] Test on mobile and desktop
