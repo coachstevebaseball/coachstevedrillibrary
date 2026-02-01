@@ -977,3 +977,10 @@
 - [x] Check S3 storage upload process (S3 URLs returning 403 - switched to base64 storage)
 - [x] Verify image URL is being saved correctly to database (using data URL format)
 - [x] Test image upload end-to-end (working with compressed JPEG images)
+
+
+## Bug Fix: Hide Admin Edit Functions from Clients
+- [x] Hide edit button on drill cards for non-admin users (already implemented with `user?.role === 'admin'` check)
+- [x] Only show edit functionality to admin role (verified in code)
+- [x] Test as admin (should see edit button) - confirmed working
+- [x] Test as athlete/client (should NOT see edit button) - confirmed, condition prevents non-admins from seeing button
