@@ -41,6 +41,60 @@ const CATEGORIES = [
 
 const DIFFICULTIES = ["Easy", "Medium", "Hard"];
 
+// Image compression utility
+async function compressImage(file: File, maxWidth: number = 800, maxHeight: number = 600, quality: number = 0.8): Promise<{ base64: string; mimeType: string }> {
+  return new Promise((resolve, reject) => {
+    const img = new window.Image();
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    img.onload = () => {
+      // Calculate new dimensions while maintaining aspect ratio
+      let width = img.width;
+      let height = img.height;
+      
+      if (width > maxWidth) {
+        height = (height * maxWidth) / width;
+        width = maxWidth;
+      }
+      
+      if (height > maxHeight) {
+        width = (width * maxHeight) / height;
+        height = maxHeight;
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
+      
+      // Draw and compress
+      ctx?.drawImage(img, 0, 0, width, height);
+      
+      // Convert to JPEG for better compression
+      const dataUrl = canvas.toDataURL('image/jpeg', quality);
+      const base64 = dataUrl.split(',')[1];
+      
+      resolve({
+        base64,
+        mimeType: 'image/jpeg'
+      });
+    };
+    
+    img.onerror = () => {
+      reject(new Error('Failed to load image'));
+    };
+    
+    // Read the file as data URL
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => {
+      reject(new Error('Failed to read file'));
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 export function DrillEditModal({ isOpen, onClose, drill, customization, onSaved }: DrillEditModalProps) {
   const [thumbnailUrl, setThumbnailUrl] = useState(customization?.thumbnailUrl || "");
   const [briefDescription, setBriefDescription] = useState(
@@ -102,32 +156,51 @@ export function DrillEditModal({ isOpen, onClose, drill, customization, onSaved 
       return;
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image must be less than 5MB");
+    // Validate file size (max 10MB before compression)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Image must be less than 10MB");
       return;
     }
 
     setIsUploading(true);
 
-    // Create preview
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setPreviewUrl(event.target?.result as string);
-    };
-    reader.readAsDataURL(file);
-
-    // Convert to base64 and upload
-    const base64Reader = new FileReader();
-    base64Reader.onload = async (event) => {
-      const base64 = (event.target?.result as string).split(",")[1];
-      uploadMutation.mutate({
-        drillId: drill.id,
-        imageBase64: base64,
-        mimeType: file.type,
-      });
-    };
-    base64Reader.readAsDataURL(file);
+    try {
+      // Compress the image before uploading
+      toast.info("Compressing image...");
+      const { base64, mimeType } = await compressImage(file, 800, 600, 0.7);
+      
+      // Set preview
+      const previewDataUrl = `data:${mimeType};base64,${base64}`;
+      setPreviewUrl(previewDataUrl);
+      
+      // Check compressed size (should be under 500KB for database storage)
+      const compressedSize = base64.length * 0.75; // Approximate byte size from base64
+      console.log(`Compressed image size: ${Math.round(compressedSize / 1024)}KB`);
+      
+      if (compressedSize > 500 * 1024) {
+        // If still too large, compress more aggressively
+        toast.info("Image still large, compressing further...");
+        const { base64: smallerBase64, mimeType: smallerMimeType } = await compressImage(file, 600, 450, 0.5);
+        const smallerPreviewDataUrl = `data:${smallerMimeType};base64,${smallerBase64}`;
+        setPreviewUrl(smallerPreviewDataUrl);
+        
+        uploadMutation.mutate({
+          drillId: drill.id,
+          imageBase64: smallerBase64,
+          mimeType: smallerMimeType,
+        });
+      } else {
+        uploadMutation.mutate({
+          drillId: drill.id,
+          imageBase64: base64,
+          mimeType: mimeType,
+        });
+      }
+    } catch (error) {
+      setIsUploading(false);
+      toast.error("Failed to process image. Please try a different image.");
+      console.error("Image compression error:", error);
+    }
   };
 
   const handleSave = () => {
@@ -217,7 +290,7 @@ export function DrillEditModal({ isOpen, onClose, drill, customization, onSaved 
                   {isUploading ? "Uploading..." : "Upload Image"}
                 </Button>
                 <p className="text-xs text-muted-foreground mt-2">
-                  Recommended: 400x300px, max 5MB
+                  Images are automatically compressed. Max 10MB.
                 </p>
               </div>
             </div>

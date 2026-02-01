@@ -991,3 +991,12 @@
 - [x] Check DrillEditModal save flow (working correctly)
 - [x] Check server uploadThumbnail mutation (working correctly)
 - [x] Fix the issue and test (database table was missing - created drill_customizations table)
+
+
+## Bug Fix: Image Upload "Data Too Long" Error
+- [x] Investigate error: "Data Too Long, field len 65535, data len 72410"
+- [x] Root cause: thumbnailUrl field (text type, 65535 limit) was storing full data URL
+- [x] Fix: Only store image data in imageBase64 field (longtext, unlimited)
+- [x] Add client-side image compression (max 800x600, JPEG format)
+- [x] Test with large images (1200x900 compressed to ~17KB JPEG)
+- [x] Verify database saves correctly (confirmed 1 row saved)

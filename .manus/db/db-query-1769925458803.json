@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, drillId, LENGTH(imageBase64) as imageSize, imageMimeType, updatedAt FROM drillCustomizations ORDER BY updatedAt DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT id, drillId, LENGTH(imageBase64) as imageSize, imageMimeType, updatedAt FROM drillCustomizations ORDER BY updatedAt DESC LIMIT 5;",
+  "rows": [
+    {
+      "id": "2",
+      "drillId": "1-2-3-drill",
+      "imageSize": "18812",
+      "imageMimeType": "image/jpeg",
+      "updatedAt": "2026-02-01 05:57:17"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdrillId\timageSize\timageMimeType\tupdatedAt\n2\t1-2-3-drill\t18812\timage/jpeg\t2026-02-01 05:57:17\n",
+  "stderr": "",
+  "execution_time_ms": 380
+}

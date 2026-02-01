@@ -689,8 +689,8 @@ export const appRouter = router({
         console.log('[Upload] MIME type:', input.mimeType);
         
         try {
-          // Store the base64 image directly in the database
-          // This is more reliable than S3 for small images
+          // Store the base64 image in imageBase64 field (longtext)
+          // Don't store data URL in thumbnailUrl (text field has 65535 byte limit)
           const dataUrl = `data:${input.mimeType};base64,${input.imageBase64}`;
           
           console.log('[Upload] Data URL length:', dataUrl.length);
@@ -698,7 +698,7 @@ export const appRouter = router({
           await drillCustomizationsDb.upsertDrillCustomization(
             input.drillId,
             { 
-              thumbnailUrl: dataUrl,
+              thumbnailUrl: null, // Don't use this field for data URLs - it has size limit
               imageBase64: input.imageBase64,
               imageMimeType: input.mimeType,
             },
