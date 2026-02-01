@@ -357,7 +357,7 @@ export default function Home() {
                 className="group block animate-fade-in-up"
                 style={{ animationDelay: `${Math.min(index * 0.05, 0.5)}s` }}
               >
-                <div className="glass-card rounded-xl overflow-hidden transition-all duration-300 card-hover cursor-pointer h-full flex flex-col">
+                <div className="glass-card rounded-xl overflow-hidden transition-all duration-300 drill-card-hover cursor-pointer h-full flex flex-col border border-transparent">
                   {/* Card Image */}
                   <div className="relative h-48 bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden">
                     <img 

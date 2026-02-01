@@ -942,3 +942,10 @@
 - [x] Drill title in bold white text
 - [x] Brief description on card
 - [x] "View Details" link with arrow on each card
+
+
+## Drill Card Hover Animations
+- [x] Add lift effect on hover (translateY -14px with scale 1.03)
+- [x] Add glow effect on hover (box-shadow with electric blue multi-layer glow)
+- [x] Add smooth transition for all effects (0.4s cubic-bezier)
+- [x] Test hover animations on drill cards

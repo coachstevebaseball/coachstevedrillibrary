@@ -240,15 +240,35 @@
     transform: translateY(0) scale(1);
     box-shadow: 
       0 4px 20px oklch(0 0 0 / 0.2),
-      0 0 0 1px oklch(0.30 0.04 260 / 0.2);
+      0 0 0 1px oklch(0.30 0.04 260 / 0.3);
   }
   
   .card-hover:hover {
-    transform: translateY(-8px) scale(1.02);
+    transform: translateY(-12px) scale(1.02);
     box-shadow: 
-      0 20px 40px oklch(0 0 0 / 0.4),
-      0 0 0 1px oklch(0.60 0.18 250 / 0.3),
-      0 0 60px oklch(0.60 0.18 250 / 0.1);
+      0 25px 50px oklch(0 0 0 / 0.5),
+      0 0 0 2px oklch(0.65 0.20 250 / 0.6),
+      0 0 40px oklch(0.65 0.20 250 / 0.3),
+      0 0 80px oklch(0.65 0.20 250 / 0.15);
+  }
+  
+  /* Drill card specific hover - more dramatic glow */
+  .drill-card-hover {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(0) scale(1);
+    box-shadow: 
+      0 4px 20px oklch(0 0 0 / 0.2),
+      0 0 0 1px oklch(0.30 0.04 260 / 0.3);
+  }
+  
+  .drill-card-hover:hover {
+    transform: translateY(-14px) scale(1.03);
+    box-shadow: 
+      0 30px 60px oklch(0 0 0 / 0.5),
+      0 0 0 2px oklch(0.65 0.20 250 / 0.7),
+      0 0 50px oklch(0.65 0.20 250 / 0.4),
+      0 0 100px oklch(0.65 0.20 250 / 0.2);
+    border-color: oklch(0.65 0.20 250 / 0.5);
   }
   
   .card-glow:hover {
