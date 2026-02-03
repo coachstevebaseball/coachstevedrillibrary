@@ -1028,3 +1028,11 @@
 - [x] Verify backend unassignDrill endpoint works correctly
 - [x] Test delete functionality - confirmed working (Jack Joelson's drill was deleted)
 - [x] Delete button properly removes drill from athlete's assignments
+
+
+## Delete Drill Assignment Fix
+- [x] Identified issue: unassignDrill mutation not invalidating query cache
+- [x] Added trpc.useUtils() to CoachDashboard
+- [x] Added utils.drillAssignments.getAllAssignments.invalidate() after mutation
+- [x] Tested deletion - UI now updates immediately after clicking delete button
+- [x] Verified: Sean Jaeger's drills went from 3 → 2 after deletion

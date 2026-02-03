@@ -45,6 +45,9 @@ export default function CoachDashboard() {
   const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals">("overview");
   const [isBulkGoalOpen, setIsBulkGoalOpen] = useState(false);
   const [showProgressReport, setShowProgressReport] = useState(false);
+  
+  // Get tRPC utils for cache invalidation
+  const utils = trpc.useUtils();
 
   // Fetch all users
   const { data: allUsers = [] } = trpc.admin.getAllUsers.useQuery(undefined, {
@@ -172,6 +175,8 @@ export default function CoachDashboard() {
   const handleUnassignDrill = async (assignmentId: number) => {
     try {
       await unassignDrillMutation.mutateAsync({ assignmentId });
+      // Invalidate the assignments query to refresh the UI
+      await utils.drillAssignments.getAllAssignments.invalidate();
     } catch (error) {
       console.error("Failed to unassign drill:", error);
     }
