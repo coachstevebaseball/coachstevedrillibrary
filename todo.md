@@ -1021,3 +1021,10 @@
 - [x] Integrate into Coach Dashboard with quick-assign action (click athlete to assign drills)
 - [x] Athletes without drills highlighted in amber and shown first
 - [x] Tab navigation added (Athlete Overview, Assign Drills)
+
+
+## Delete Drill Assignment Feature
+- [x] Verify delete button (trash icon) exists on drill assignments
+- [x] Verify backend unassignDrill endpoint works correctly
+- [x] Test delete functionality - confirmed working (Jack Joelson's drill was deleted)
+- [x] Delete button properly removes drill from athlete's assignments
