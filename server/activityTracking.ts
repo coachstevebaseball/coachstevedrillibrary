@@ -60,18 +60,7 @@ export async function logActivity(
   }
 
   try {
-    // Insert activity record
-    await db.insert(athleteActivity).values({
-      athleteId,
-      activityType,
-      relatedId: options?.relatedId || null,
-      relatedType: options?.relatedType || null,
-      metadata: options?.metadata || null,
-      ipAddress: options?.ipAddress || null,
-      userAgent: options?.userAgent || null,
-    });
-
-    // Get athlete info for notification
+    // Get athlete info for notification and activity record
     const athlete = await db.select().from(users).where(eq(users.id, athleteId)).limit(1);
     if (athlete.length === 0) {
       console.warn("[Activity] Athlete not found:", athleteId);
@@ -79,6 +68,18 @@ export async function logActivity(
     }
 
     const athleteName = athlete[0].name || athlete[0].email || `Athlete #${athleteId}`;
+
+    // Insert activity record with athlete name
+    await db.insert(athleteActivity).values({
+      athleteId,
+      athleteName, // Include athlete name for easy identification in database
+      activityType,
+      relatedId: options?.relatedId || null,
+      relatedType: options?.relatedType || null,
+      metadata: options?.metadata || null,
+      ipAddress: options?.ipAddress || null,
+      userAgent: options?.userAgent || null,
+    });
 
     // Find coach(es) to notify - get all users with admin or coach role
     const coaches = await db.select().from(users).where(

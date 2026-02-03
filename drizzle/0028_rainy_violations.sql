@@ -1,0 +1,1 @@
+ALTER TABLE `athleteActivity` ADD `athleteName` varchar(255);

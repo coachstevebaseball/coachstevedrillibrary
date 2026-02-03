@@ -312,6 +312,7 @@ export type InsertDrillPageTemplate = typeof drillPageTemplates.$inferInsert;
 export const athleteActivity = mysqlTable("athleteActivity", {
   id: int("id").autoincrement().primaryKey(),
   athleteId: int("athleteId").notNull(),
+  athleteName: varchar("athleteName", { length: 255 }), // Athlete's name for easy identification
   activityType: mysqlEnum("activityType", [
     "portal_login",      // Athlete logged into their portal
     "drill_view",        // Athlete viewed a drill detail page

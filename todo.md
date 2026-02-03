@@ -1036,3 +1036,10 @@
 - [x] Added utils.drillAssignments.getAllAssignments.invalidate() after mutation
 - [x] Tested deletion - UI now updates immediately after clicking delete button
 - [x] Verified: Sean Jaeger's drills went from 3 → 2 after deletion
+
+
+## Add Athlete Name to Activity Table
+- [x] Add athleteName column to athleteActivity schema
+- [x] Update activity logging functions to include athlete name
+- [x] Run database migration
+- [x] Test that activity records now show athlete names
