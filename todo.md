@@ -1000,3 +1000,24 @@
 - [x] Add client-side image compression (max 800x600, JPEG format)
 - [x] Test with large images (1200x900 compressed to ~17KB JPEG)
 - [x] Verify database saves correctly (confirmed 1 row saved)
+
+
+## Athlete Assignment Overview in Coach Dashboard
+- [ ] Create backend endpoint to fetch all athletes with their assignment status (has drills vs no drills)
+- [ ] Design visual overview component showing athletes grouped by assignment status
+- [ ] Add visual indicators (badges, colors) for assigned vs unassigned athletes
+- [ ] Include quick stats (total athletes, assigned count, unassigned count)
+- [ ] Add quick-assign button to easily navigate to assign drills for unassigned athletes
+- [ ] Integrate into Coach Dashboard prominently
+- [ ] Test the feature end-to-end
+
+
+## Athlete Assignment Overview Feature (Coach Dashboard)
+- [x] Create backend endpoint to fetch athlete assignment status (getAthleteAssignmentOverview)
+- [x] Design visual overview component showing athletes with/without drills
+- [x] Add summary stats (total athletes, with drills, without drills, completion rate)
+- [x] Implement filter tabs (All, With Drills, Need Drills)
+- [x] Add search functionality
+- [x] Integrate into Coach Dashboard with quick-assign action (click athlete to assign drills)
+- [x] Athletes without drills highlighted in amber and shown first
+- [x] Tab navigation added (Athlete Overview, Assign Drills)

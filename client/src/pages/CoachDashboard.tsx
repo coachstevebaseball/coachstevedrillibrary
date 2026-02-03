@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, Sparkles, Video, Upload, MessageSquare, BarChart3, Activity } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, Sparkles, Video, Upload, MessageSquare, BarChart3, Activity, Users } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
 import drillsData from "@/data/drills.json";
@@ -27,6 +27,7 @@ function useAllDrills() {
 import { BulkInstructionImport } from "@/components/BulkInstructionImport";
 import { BulkGoalUpload } from "@/components/BulkGoalUpload";
 import { AthleteProgressReport } from "@/components/AthleteProgressReport";
+import { AthleteAssignmentOverview } from "@/components/AthleteAssignmentOverview";
 
 interface Drill {
   id: string;
@@ -41,7 +42,7 @@ export default function CoachDashboard() {
   const [selectedUser, setSelectedUser] = useState<string | null>(null); // Can be "user-{id}" or "invite-{id}"
   const [searchDrill, setSearchDrill] = useState("");
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
-  const [activeTab, setActiveTab] = useState<"assign" | "bulk-import" | "bulk-goals">("assign");
+  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals">("overview");
   const [isBulkGoalOpen, setIsBulkGoalOpen] = useState(false);
   const [showProgressReport, setShowProgressReport] = useState(false);
 
@@ -288,9 +289,42 @@ export default function CoachDashboard() {
         </div>
       </header>
 
-      <main className="container max-w-6xl pb-8 md:pb-12 px-3 md:px-4">
+      {/* Tab Navigation */}
+      <div className="container max-w-6xl px-3 md:px-4 pt-4">
+        <div className="flex gap-2 border-b border-border pb-3">
+          <Button
+            variant={activeTab === "overview" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setActiveTab("overview")}
+            className="gap-2"
+          >
+            <Users className="h-4 w-4" />
+            <span className="hidden sm:inline">Athlete Overview</span>
+            <span className="sm:hidden">Overview</span>
+          </Button>
+          <Button
+            variant={activeTab === "assign" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setActiveTab("assign")}
+            className="gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            <span className="hidden sm:inline">Assign Drills</span>
+            <span className="sm:hidden">Assign</span>
+          </Button>
+        </div>
+      </div>
+
+      <main className="container max-w-6xl pb-8 md:pb-12 px-3 md:px-4 pt-4">
         <BulkGoalUpload isOpen={isBulkGoalOpen} onClose={() => setIsBulkGoalOpen(false)} />
-        {activeTab === "bulk-import" ? (
+        {activeTab === "overview" ? (
+          <AthleteAssignmentOverview 
+            onSelectAthlete={(athleteId) => {
+              setSelectedUser(athleteId);
+              setActiveTab("assign");
+            }} 
+          />
+        ) : activeTab === "bulk-import" ? (
           <div className="max-w-4xl mx-auto">
             <BulkInstructionImport />
           </div>

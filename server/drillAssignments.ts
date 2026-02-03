@@ -189,6 +189,149 @@ export async function getAllAssignments() {
   return await db.select().from(drillAssignments);
 }
 
+/**
+ * Get athlete assignment overview - shows which athletes have drills vs don't
+ * Returns athletes grouped by assignment status with counts
+ */
+export async function getAthleteAssignmentOverview() {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  // Get all athletes (users with role 'athlete' or active clients)
+  const allAthletes = await db.select().from(users).where(
+    or(
+      eq(users.role, 'athlete'),
+      eq(users.isActiveClient, 1)
+    )
+  );
+
+  // Get all pending/accepted invites that don't have a user yet
+  const pendingInvites = await db.select().from(invites).where(
+    or(
+      eq(invites.status, 'pending'),
+      eq(invites.status, 'accepted')
+    )
+  );
+
+  // Get all assignments
+  const allAssignments = await db.select().from(drillAssignments);
+
+  // Build assignment counts by userId and inviteId
+  const assignmentsByUser: Record<number, { total: number; completed: number; inProgress: number; assigned: number }> = {};
+  const assignmentsByInvite: Record<number, { total: number; completed: number; inProgress: number; assigned: number }> = {};
+
+  allAssignments.forEach(a => {
+    if (a.userId) {
+      if (!assignmentsByUser[a.userId]) {
+        assignmentsByUser[a.userId] = { total: 0, completed: 0, inProgress: 0, assigned: 0 };
+      }
+      assignmentsByUser[a.userId].total++;
+      if (a.status === 'completed') assignmentsByUser[a.userId].completed++;
+      else if (a.status === 'in-progress') assignmentsByUser[a.userId].inProgress++;
+      else assignmentsByUser[a.userId].assigned++;
+    }
+    if (a.inviteId) {
+      if (!assignmentsByInvite[a.inviteId]) {
+        assignmentsByInvite[a.inviteId] = { total: 0, completed: 0, inProgress: 0, assigned: 0 };
+      }
+      assignmentsByInvite[a.inviteId].total++;
+      if (a.status === 'completed') assignmentsByInvite[a.inviteId].completed++;
+      else if (a.status === 'in-progress') assignmentsByInvite[a.inviteId].inProgress++;
+      else assignmentsByInvite[a.inviteId].assigned++;
+    }
+  });
+
+  // Build athlete list with assignment status
+  const athletesWithStatus: Array<{
+    id: string;
+    name: string;
+    email: string;
+    type: 'user' | 'invite';
+    status: 'pending' | 'active';
+    hasDrills: boolean;
+    totalDrills: number;
+    completedDrills: number;
+    inProgressDrills: number;
+    assignedDrills: number;
+    lastActivity: Date | null;
+  }> = [];
+
+  // Process users
+  for (const user of allAthletes) {
+    // Skip admin users
+    if (user.role === 'admin') continue;
+    
+    const stats = assignmentsByUser[user.id] || { total: 0, completed: 0, inProgress: 0, assigned: 0 };
+    
+    // Get last activity from assignments
+    const userAssignments = allAssignments.filter(a => a.userId === user.id);
+    const lastActivity = userAssignments.length > 0 
+      ? userAssignments.reduce((latest, a) => {
+          const aDate = a.updatedAt ? new Date(a.updatedAt) : null;
+          return aDate && (!latest || aDate > latest) ? aDate : latest;
+        }, null as Date | null)
+      : null;
+
+    athletesWithStatus.push({
+      id: `user-${user.id}`,
+      name: user.name || user.email?.split('@')[0] || `User ${user.id}`,
+      email: user.email || '',
+      type: 'user',
+      status: user.isActiveClient === 1 ? 'active' : 'pending',
+      hasDrills: stats.total > 0,
+      totalDrills: stats.total,
+      completedDrills: stats.completed,
+      inProgressDrills: stats.inProgress,
+      assignedDrills: stats.assigned,
+      lastActivity,
+    });
+  }
+
+  // Process invites (only those without matching users)
+  for (const invite of pendingInvites) {
+    // Check if this email already has a user account
+    const existingUser = allAthletes.find(u => u.email === invite.email);
+    if (existingUser) continue;
+
+    const stats = assignmentsByInvite[invite.id] || { total: 0, completed: 0, inProgress: 0, assigned: 0 };
+
+    athletesWithStatus.push({
+      id: `invite-${invite.id}`,
+      name: invite.email.split('@')[0],
+      email: invite.email,
+      type: 'invite',
+      status: 'pending',
+      hasDrills: stats.total > 0,
+      totalDrills: stats.total,
+      completedDrills: stats.completed,
+      inProgressDrills: stats.inProgress,
+      assignedDrills: stats.assigned,
+      lastActivity: null,
+    });
+  }
+
+  // Calculate summary stats
+  const totalAthletes = athletesWithStatus.length;
+  const athletesWithDrills = athletesWithStatus.filter(a => a.hasDrills).length;
+  const athletesWithoutDrills = athletesWithStatus.filter(a => !a.hasDrills).length;
+  const totalDrillsAssigned = allAssignments.length;
+  const totalCompleted = allAssignments.filter(a => a.status === 'completed').length;
+
+  return {
+    summary: {
+      totalAthletes,
+      athletesWithDrills,
+      athletesWithoutDrills,
+      totalDrillsAssigned,
+      totalCompleted,
+      completionRate: totalDrillsAssigned > 0 ? Math.round((totalCompleted / totalDrillsAssigned) * 100) : 0,
+    },
+    athletes: athletesWithStatus,
+  };
+}
+
 export async function getAssignmentById(assignmentId: number) {
   const db = await getDb();
   if (!db) {
