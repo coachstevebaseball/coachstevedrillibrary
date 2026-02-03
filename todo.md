@@ -1043,3 +1043,12 @@
 - [x] Update activity logging functions to include athlete name
 - [x] Run database migration
 - [x] Test that activity records now show athlete names
+
+
+## Backfill Athlete Names Across Database
+- [x] Query athleteActivity to get ID-to-name reference mappings
+- [x] Update athleteActivity table to fill NULL athleteName values (263 records updated)
+- [x] Add athleteName column to coachNotes, drillQuestions, weeklyGoals, drillAssignments, drillSubmissions, badges tables
+- [x] Update all tables with athlete names from users table
+- [x] Set orphaned records (deleted users) to "Unknown Athlete"
+- [x] Verify all updates completed successfully - 0 NULL values remaining across all tables
