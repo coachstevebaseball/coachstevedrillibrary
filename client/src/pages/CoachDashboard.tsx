@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, Sparkles, Video, Upload, MessageSquare, BarChart3, Activity, Users } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, Sparkles, Video, Upload, MessageSquare, BarChart3, Activity, Users, LayoutTemplate, Edit3 } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
 import drillsData from "@/data/drills.json";
@@ -28,6 +28,7 @@ import { BulkInstructionImport } from "@/components/BulkInstructionImport";
 import { BulkGoalUpload } from "@/components/BulkGoalUpload";
 import { AthleteProgressReport } from "@/components/AthleteProgressReport";
 import { AthleteAssignmentOverview } from "@/components/AthleteAssignmentOverview";
+import { DrillPageBuilderNotion } from "@/components/DrillPageBuilderNotion";
 
 interface Drill {
   id: string;
@@ -42,7 +43,9 @@ export default function CoachDashboard() {
   const [selectedUser, setSelectedUser] = useState<string | null>(null); // Can be "user-{id}" or "invite-{id}"
   const [searchDrill, setSearchDrill] = useState("");
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts">("overview");
+  const [editingLayoutDrill, setEditingLayoutDrill] = useState<{ id: string; name: string } | null>(null);
+  const [layoutSearchQuery, setLayoutSearchQuery] = useState("");
   const [isBulkGoalOpen, setIsBulkGoalOpen] = useState(false);
   const [showProgressReport, setShowProgressReport] = useState(false);
   
@@ -317,6 +320,16 @@ export default function CoachDashboard() {
             <span className="hidden sm:inline">Assign Drills</span>
             <span className="sm:hidden">Assign</span>
           </Button>
+          <Button
+            variant={activeTab === "page-layouts" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setActiveTab("page-layouts")}
+            className="gap-2"
+          >
+            <LayoutTemplate className="h-4 w-4" />
+            <span className="hidden sm:inline">Page Layouts</span>
+            <span className="sm:hidden">Layouts</span>
+          </Button>
         </div>
       </div>
 
@@ -329,6 +342,62 @@ export default function CoachDashboard() {
               setActiveTab("assign");
             }} 
           />
+        ) : activeTab === "page-layouts" ? (
+          <div className="space-y-6">
+            {editingLayoutDrill ? (
+              <DrillPageBuilderNotion
+                drillId={editingLayoutDrill.id}
+                drillName={editingLayoutDrill.name}
+                onClose={() => setEditingLayoutDrill(null)}
+              />
+            ) : (
+              <>
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <h2 className="text-2xl font-heading font-bold">Drill Page Layouts</h2>
+                    <p className="text-muted-foreground mt-1">Pick a drill to create or edit its page layout with the block editor.</p>
+                  </div>
+                  <div className="relative max-w-md">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search drills..."
+                      value={layoutSearchQuery}
+                      onChange={(e) => setLayoutSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {allDrills
+                    .filter((d) => d.name.toLowerCase().includes(layoutSearchQuery.toLowerCase()))
+                    .map((drill) => (
+                      <Card
+                        key={drill.id}
+                        className="cursor-pointer transition-all hover:shadow-lg hover:-translate-y-0.5 hover:border-secondary/50"
+                        onClick={() => setEditingLayoutDrill({ id: String(drill.id), name: drill.name })}
+                      >
+                        <CardContent className="p-4 flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-electric-blue/20 to-purple-500/20 flex items-center justify-center flex-shrink-0">
+                            <Edit3 className="h-5 w-5 text-electric-blue" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-medium text-sm truncate">{drill.name}</p>
+                            <p className="text-xs text-muted-foreground">{drill.difficulty} · {drill.categories?.join(", ")}</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                </div>
+                {allDrills.filter((d) => d.name.toLowerCase().includes(layoutSearchQuery.toLowerCase())).length === 0 && (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <LayoutTemplate className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                    <p className="font-medium">No drills found</p>
+                    <p className="text-sm">Try a different search term</p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         ) : activeTab === "bulk-import" ? (
           <div className="max-w-4xl mx-auto">
             <BulkInstructionImport />

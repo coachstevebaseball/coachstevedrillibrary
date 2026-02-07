@@ -22,6 +22,14 @@ import {
   ChevronUp,
   ChevronDown,
   MoreHorizontal,
+  Upload,
+  Loader2,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Maximize2,
+  Minimize2,
+  X,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -31,6 +39,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { trpc } from "@/lib/trpc";
 
 // Block type definitions
 export type BlockType =
@@ -54,6 +63,10 @@ export interface NotionBlock {
   items?: string[];
   url?: string;
   calloutType?: "info" | "warning" | "success" | "error";
+  // Image-specific properties
+  imageSize?: "small" | "medium" | "large" | "full";
+  imageAlign?: "left" | "center" | "right";
+  caption?: string;
 }
 
 interface BlockTypeOption {
@@ -151,6 +164,193 @@ interface NotionBlockEditorProps {
   blocks: NotionBlock[];
   onChange: (blocks: NotionBlock[]) => void;
   readOnly?: boolean;
+}
+
+// Image upload component used inside image blocks
+function ImageBlockUploader({ onImageUploaded }: { onImageUploaded: (url: string) => void }) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const uploadMutation = trpc.imageUpload.uploadImage.useMutation();
+
+  const handleFile = async (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      setError("Please select an image file");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setError("Image must be smaller than 10MB");
+      return;
+    }
+
+    setUploading(true);
+    setError(null);
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = new Uint8Array(arrayBuffer);
+      const timestamp = Date.now();
+      const randomSuffix = Math.random().toString(36).substring(7);
+      const fileKey = `drill-images/${timestamp}-${randomSuffix}-${file.name}`;
+
+      const { url } = await uploadMutation.mutateAsync({
+        fileKey,
+        fileData: Array.from(buffer),
+        mimeType: file.type,
+      });
+      onImageUploaded(url);
+    } catch (err) {
+      console.error("Upload error:", err);
+      setError("Failed to upload image. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) await handleFile(file);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) await handleFile(file);
+  };
+
+  return (
+    <div
+      className={cn(
+        "w-full border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer",
+        dragOver
+          ? "border-secondary bg-secondary/10"
+          : "border-white/15 hover:border-white/30 hover:bg-white/5"
+      )}
+      onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+      onDragLeave={() => setDragOver(false)}
+      onDrop={handleDrop}
+      onClick={() => fileInputRef.current?.click()}
+    >
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileSelect}
+        disabled={uploading}
+        className="hidden"
+      />
+      {uploading ? (
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-secondary" />
+          <span className="text-sm text-muted-foreground">Uploading image...</span>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center">
+            <Upload className="h-6 w-6 text-muted-foreground" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-foreground">
+              Click to upload or drag & drop
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              JPG, PNG, GIF, WebP up to 10MB
+            </p>
+          </div>
+        </div>
+      )}
+      {error && <p className="text-sm text-red-400 mt-2">{error}</p>}
+    </div>
+  );
+}
+
+// Image toolbar for sizing and alignment
+function ImageToolbar({
+  imageSize,
+  imageAlign,
+  onSizeChange,
+  onAlignChange,
+  onRemove,
+}: {
+  imageSize: string;
+  imageAlign: string;
+  onSizeChange: (size: "small" | "medium" | "large" | "full") => void;
+  onAlignChange: (align: "left" | "center" | "right") => void;
+  onRemove: () => void;
+}) {
+  return (
+    <div className="flex items-center gap-1 bg-background/95 backdrop-blur-sm border border-white/15 rounded-lg p-1 shadow-lg">
+      {/* Size controls */}
+      <div className="flex items-center gap-0.5 border-r border-white/10 pr-1 mr-1">
+        {(["small", "medium", "large", "full"] as const).map((size) => (
+          <button
+            key={size}
+            onClick={() => onSizeChange(size)}
+            className={cn(
+              "px-2 py-1 rounded text-xs font-medium transition-colors capitalize",
+              imageSize === size
+                ? "bg-secondary/20 text-secondary"
+                : "text-muted-foreground hover:text-foreground hover:bg-white/10"
+            )}
+            title={`${size} width`}
+          >
+            {size === "small" ? "S" : size === "medium" ? "M" : size === "large" ? "L" : "Full"}
+          </button>
+        ))}
+      </div>
+
+      {/* Alignment controls */}
+      <div className="flex items-center gap-0.5 border-r border-white/10 pr-1 mr-1">
+        <button
+          onClick={() => onAlignChange("left")}
+          className={cn(
+            "p-1.5 rounded transition-colors",
+            imageAlign === "left"
+              ? "bg-secondary/20 text-secondary"
+              : "text-muted-foreground hover:text-foreground hover:bg-white/10"
+          )}
+          title="Align left"
+        >
+          <AlignLeft className="h-3.5 w-3.5" />
+        </button>
+        <button
+          onClick={() => onAlignChange("center")}
+          className={cn(
+            "p-1.5 rounded transition-colors",
+            imageAlign === "center"
+              ? "bg-secondary/20 text-secondary"
+              : "text-muted-foreground hover:text-foreground hover:bg-white/10"
+          )}
+          title="Align center"
+        >
+          <AlignCenter className="h-3.5 w-3.5" />
+        </button>
+        <button
+          onClick={() => onAlignChange("right")}
+          className={cn(
+            "p-1.5 rounded transition-colors",
+            imageAlign === "right"
+              ? "bg-secondary/20 text-secondary"
+              : "text-muted-foreground hover:text-foreground hover:bg-white/10"
+          )}
+          title="Align right"
+        >
+          <AlignRight className="h-3.5 w-3.5" />
+        </button>
+      </div>
+
+      {/* Remove */}
+      <button
+        onClick={onRemove}
+        className="p-1.5 rounded text-red-400 hover:bg-red-500/10 transition-colors"
+        title="Remove image"
+      >
+        <X className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  );
 }
 
 // Slash command menu component
@@ -272,6 +472,8 @@ function BlockItem({
   readOnly?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+  const [showUrlInput, setShowUrlInput] = useState(false);
+  const [urlInputValue, setUrlInputValue] = useState("");
 
   const handleContentChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -331,6 +533,27 @@ function BlockItem({
         return "italic text-foreground/80";
       default:
         return "text-base";
+    }
+  };
+
+  // Get image size class
+  const getImageSizeClass = (size?: string) => {
+    switch (size) {
+      case "small": return "max-w-[300px]";
+      case "medium": return "max-w-[500px]";
+      case "large": return "max-w-[700px]";
+      case "full": return "w-full";
+      default: return "max-w-full";
+    }
+  };
+
+  // Get image alignment class
+  const getImageAlignClass = (align?: string) => {
+    switch (align) {
+      case "left": return "mr-auto";
+      case "center": return "mx-auto";
+      case "right": return "ml-auto";
+      default: return "mx-auto";
     }
   };
 
@@ -542,18 +765,113 @@ function BlockItem({
       case "image":
         return (
           <div className="w-full space-y-3">
-            <Input
-              value={block.url || ""}
-              onChange={(e) => onUpdate({ url: e.target.value })}
-              placeholder="Paste image URL..."
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-foreground outline-none focus:border-secondary transition-colors"
-            />
-            {block.url && (
-              <img
-                src={block.url}
-                alt="Block image"
-                className="max-w-full rounded-lg"
-              />
+            {!block.url ? (
+              /* No image yet - show upload area and URL option */
+              <div className="space-y-3">
+                <ImageBlockUploader
+                  onImageUploaded={(url) => {
+                    onUpdate({ url, imageSize: "large", imageAlign: "center" });
+                  }}
+                />
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-white/10" />
+                  <span className="text-xs text-muted-foreground">or</span>
+                  <div className="flex-1 h-px bg-white/10" />
+                </div>
+                {showUrlInput ? (
+                  <div className="flex gap-2">
+                    <Input
+                      value={urlInputValue}
+                      onChange={(e) => setUrlInputValue(e.target.value)}
+                      placeholder="Paste image URL..."
+                      className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-foreground outline-none focus:border-secondary transition-colors"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && urlInputValue.trim()) {
+                          onUpdate({ url: urlInputValue.trim(), imageSize: "large", imageAlign: "center" });
+                          setUrlInputValue("");
+                          setShowUrlInput(false);
+                        }
+                      }}
+                    />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        if (urlInputValue.trim()) {
+                          onUpdate({ url: urlInputValue.trim(), imageSize: "large", imageAlign: "center" });
+                          setUrlInputValue("");
+                          setShowUrlInput(false);
+                        }
+                      }}
+                      className="bg-white/5 border-white/10"
+                    >
+                      Embed
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => { setShowUrlInput(false); setUrlInputValue(""); }}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setShowUrlInput(true)}
+                    className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-2 flex items-center justify-center gap-2"
+                  >
+                    <ImageIcon className="h-4 w-4" />
+                    Embed from URL
+                  </button>
+                )}
+              </div>
+            ) : (
+              /* Image is loaded - show image with toolbar */
+              <div className="space-y-2">
+                {/* Image toolbar */}
+                <div className="flex justify-center">
+                  <ImageToolbar
+                    imageSize={block.imageSize || "large"}
+                    imageAlign={block.imageAlign || "center"}
+                    onSizeChange={(size) => onUpdate({ imageSize: size })}
+                    onAlignChange={(align) => onUpdate({ imageAlign: align })}
+                    onRemove={() => onUpdate({ url: undefined, caption: undefined })}
+                  />
+                </div>
+
+                {/* Image */}
+                <div className={cn("flex", {
+                  "justify-start": block.imageAlign === "left",
+                  "justify-center": block.imageAlign === "center" || !block.imageAlign,
+                  "justify-end": block.imageAlign === "right",
+                })}>
+                  <img
+                    src={block.url}
+                    alt={block.caption || "Block image"}
+                    className={cn(
+                      "rounded-lg object-cover transition-all",
+                      getImageSizeClass(block.imageSize)
+                    )}
+                  />
+                </div>
+
+                {/* Caption */}
+                <div className={cn("flex", {
+                  "justify-start": block.imageAlign === "left",
+                  "justify-center": block.imageAlign === "center" || !block.imageAlign,
+                  "justify-end": block.imageAlign === "right",
+                })}>
+                  <Input
+                    value={block.caption || ""}
+                    onChange={(e) => onUpdate({ caption: e.target.value })}
+                    placeholder="Add a caption..."
+                    className={cn(
+                      "bg-transparent border-0 p-0 h-auto text-sm text-muted-foreground italic outline-none focus-visible:ring-0 placeholder:text-muted-foreground/40 text-center",
+                      getImageSizeClass(block.imageSize)
+                    )}
+                  />
+                </div>
+              </div>
             )}
           </div>
         );
@@ -623,9 +941,34 @@ function BlockItem({
       case "video":
         return block.url ? renderVideoPreview(block.url) : null;
       case "image":
-        return block.url ? (
-          <img src={block.url} alt="Block image" className="max-w-full rounded-lg" />
-        ) : null;
+        if (!block.url) return null;
+        return (
+          <div className="space-y-1">
+            <div className={cn("flex", {
+              "justify-start": block.imageAlign === "left",
+              "justify-center": block.imageAlign === "center" || !block.imageAlign,
+              "justify-end": block.imageAlign === "right",
+            })}>
+              <img
+                src={block.url}
+                alt={block.caption || "Block image"}
+                className={cn(
+                  "rounded-lg object-cover",
+                  getImageSizeClass(block.imageSize)
+                )}
+              />
+            </div>
+            {block.caption && (
+              <p className={cn("text-sm text-muted-foreground italic", {
+                "text-left": block.imageAlign === "left",
+                "text-center": block.imageAlign === "center" || !block.imageAlign,
+                "text-right": block.imageAlign === "right",
+              })}>
+                {block.caption}
+              </p>
+            )}
+          </div>
+        );
       default:
         return null;
     }
@@ -750,6 +1093,8 @@ export function NotionBlockEditor({
     content: "",
     items: type === "bulletList" || type === "numberedList" ? [""] : undefined,
     calloutType: type === "callout" ? "info" : undefined,
+    imageSize: type === "image" ? "large" : undefined,
+    imageAlign: type === "image" ? "center" : undefined,
   });
 
   const addBlock = (type: BlockType, afterIndex?: number) => {

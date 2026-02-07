@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ContentBlock {
   id: string;
@@ -13,6 +14,9 @@ interface ContentBlock {
     textAlign?: string;
     color?: string;
   };
+  imageSize?: "small" | "medium" | "large" | "full";
+  imageAlign?: "left" | "center" | "right";
+  caption?: string;
 }
 
 interface CustomDrillLayoutProps {
@@ -20,6 +24,16 @@ interface CustomDrillLayoutProps {
 }
 
 export function CustomDrillLayout({ blocks }: CustomDrillLayoutProps) {
+  const getImageSizeClass = (size?: string) => {
+    switch (size) {
+      case "small": return "max-w-[300px]";
+      case "medium": return "max-w-[500px]";
+      case "large": return "max-w-[700px]";
+      case "full": return "w-full";
+      default: return "max-w-full";
+    }
+  };
+
   const renderBlock = (block: ContentBlock) => {
     switch (block.type) {
       case "text":
@@ -52,9 +66,34 @@ export function CustomDrillLayout({ blocks }: CustomDrillLayoutProps) {
           </div>
         ) : null;
       case "image":
-        return block.url ? (
-          <img key={block.id} src={block.url} alt="Content" className="max-w-full h-auto rounded" />
-        ) : null;
+        if (!block.url) return null;
+        return (
+          <div key={block.id} className="space-y-1">
+            <div className={cn("flex", {
+              "justify-start": block.imageAlign === "left",
+              "justify-center": block.imageAlign === "center" || !block.imageAlign,
+              "justify-end": block.imageAlign === "right",
+            })}>
+              <img
+                src={block.url}
+                alt={block.caption || "Content"}
+                className={cn(
+                  "h-auto rounded object-cover",
+                  getImageSizeClass(block.imageSize)
+                )}
+              />
+            </div>
+            {block.caption && (
+              <p className={cn("text-sm text-muted-foreground italic", {
+                "text-left": block.imageAlign === "left",
+                "text-center": block.imageAlign === "center" || !block.imageAlign,
+                "text-right": block.imageAlign === "right",
+              })}>
+                {block.caption}
+              </p>
+            )}
+          </div>
+        );
       case "list":
         return (
           <ul key={block.id} className="list-disc list-inside space-y-1">

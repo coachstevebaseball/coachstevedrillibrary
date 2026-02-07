@@ -1059,3 +1059,15 @@
 - [x] Fix to accept all YouTube URL formats (youtube.com/watch, youtu.be, with tracking params)
 - [x] Fixed regex in VideoPlayer, CustomDrillLayout, DrillPageBuilder, NotionBlockEditor
 - [x] Test drill creation with various YouTube URL formats (11 tests passing)
+
+
+## Notion-Style Block Editor for Drill Pages
+- [x] Examine existing block editor and drill page layout code
+- [x] Add image upload block type with S3 storage (click to upload, drag & drop, 10MB limit)
+- [x] Enhanced block types: text, H1-H4, bulleted list, numbered list, quote, callout, divider, video, image
+- [x] Implement image editing tools (size: small/medium/large/full, alignment: left/center/right, caption)
+- [x] Add Coach Dashboard "Page Layouts" tab to pick a drill and create/edit its layout
+- [x] Updated CustomDrillLayout to render image size/alignment/caption for athletes
+- [x] Updated DrillPageBuilderNotion to preserve image properties through conversion
+- [x] Test full workflow end-to-end - verified in browser
+- [x] Write unit tests - 15 tests passing (block conversion, image properties, round-trip)

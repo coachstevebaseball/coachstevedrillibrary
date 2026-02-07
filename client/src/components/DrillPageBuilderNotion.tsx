@@ -63,6 +63,9 @@ function convertToNotionBlocks(oldBlocks: any[]): NotionBlock[] {
       case "image":
         baseBlock.type = "image";
         baseBlock.url = block.url;
+        baseBlock.imageSize = block.imageSize || "large";
+        baseBlock.imageAlign = block.imageAlign || "center";
+        baseBlock.caption = block.caption || "";
         break;
       case "list":
         baseBlock.type = "bulletList";
@@ -148,6 +151,9 @@ function convertFromNotionBlocks(notionBlocks: NotionBlock[]): any[] {
       case "image":
         baseBlock.type = "image";
         baseBlock.url = block.url;
+        baseBlock.imageSize = block.imageSize;
+        baseBlock.imageAlign = block.imageAlign;
+        baseBlock.caption = block.caption;
         break;
       default:
         baseBlock.content = block.content;
