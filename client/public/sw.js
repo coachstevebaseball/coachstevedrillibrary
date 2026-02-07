@@ -8,7 +8,7 @@ const STATIC_ASSETS = [
   '/',
   '/manifest.json',
   '/icons/icon-192.png',
-  '/icons/icon-512.png',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663238794201/eaXiddVgJjhBBWVm.png',
   '/icons/apple-touch-icon.png'
 ];
 

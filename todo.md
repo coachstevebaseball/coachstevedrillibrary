@@ -1052,3 +1052,10 @@
 - [x] Update all tables with athlete names from users table
 - [x] Set orphaned records (deleted users) to "Unknown Athlete"
 - [x] Verify all updates completed successfully - 0 NULL values remaining across all tables
+
+
+## Fix YouTube URL Validation in Create a Drill
+- [x] Investigate video URL validation logic
+- [x] Fix to accept all YouTube URL formats (youtube.com/watch, youtu.be, with tracking params)
+- [x] Fixed regex in VideoPlayer, CustomDrillLayout, DrillPageBuilder, NotionBlockEditor
+- [x] Test drill creation with various YouTube URL formats (11 tests passing)

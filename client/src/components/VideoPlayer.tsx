@@ -18,10 +18,13 @@ export function VideoPlayer({ videoUrl, title = 'Drill Video' }: VideoPlayerProp
     try {
       // YouTube formats - support multiple URL patterns:
       // - youtube.com/watch?v=VIDEO_ID (standard)
+      // - youtube.com/watch?v=VIDEO_ID&si=... (with tracking params)
       // - youtube.com/watch/VIDEO_ID (non-standard but sometimes used)
       // - youtu.be/VIDEO_ID (short URL)
+      // - youtu.be/VIDEO_ID?si=... (short URL with tracking)
       // - youtube.com/embed/VIDEO_ID (embed URL)
-      const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtube\.com\/watch\/|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/;
+      // - m.youtube.com/watch?v=VIDEO_ID (mobile)
+      const youtubeRegex = /(?:(?:www\.|m\.)?youtube\.com\/watch\?v=|(?:www\.|m\.)?youtube\.com\/watch\/|youtu\.be\/|(?:www\.|m\.)?youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})(?:[&?]|$)/;
       const youtubeMatch = url.match(youtubeRegex);
       if (youtubeMatch) {
         return `https://www.youtube.com/embed/${youtubeMatch[1]}`;

@@ -720,7 +720,7 @@ function BlockItem({
 // Helper function to extract YouTube video ID
 function extractYouTubeId(url: string): string | null {
   const patterns = [
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/watch\/)([^&\s?]+)/,
+    /(?:(?:www\.|m\.)?youtube\.com\/watch\?v=|youtu\.be\/|(?:www\.|m\.)?youtube\.com\/embed\/|(?:www\.|m\.)?youtube\.com\/watch\/)([a-zA-Z0-9_-]{11})(?:[&?\s]|$)/,
     /^([a-zA-Z0-9_-]{11})$/,
   ];
   for (const pattern of patterns) {

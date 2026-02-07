@@ -357,7 +357,7 @@ export function DrillPageBuilder({ drillId, drillName, onClose }: DrillPageBuild
         );
       case "video":
         if (!block.url) return <p className="text-muted-foreground">No video URL provided</p>;
-        const videoId = block.url.match(/(?:youtube\.com\/watch\?v=|youtube\.com\/watch\/|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/)?.[1];
+        const videoId = block.url.match(/(?:(?:www\.|m\.)?youtube\.com\/watch\?v=|(?:www\.|m\.)?youtube\.com\/watch\/|youtu\.be\/|(?:www\.|m\.)?youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})(?:[&?]|$)/)?.[1];
         return videoId ? (
           <div className="aspect-video">
             <iframe

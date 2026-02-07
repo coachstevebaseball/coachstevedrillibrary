@@ -38,7 +38,7 @@ export function CustomDrillLayout({ blocks }: CustomDrillLayoutProps) {
         );
       case "video":
         if (!block.url) return null;
-        const videoId = block.url.match(/(?:youtube\.com\/watch\?v=|youtube\.com\/watch\/|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/)?.[1];
+        const videoId = block.url.match(/(?:(?:www\.|m\.)?youtube\.com\/watch\?v=|(?:www\.|m\.)?youtube\.com\/watch\/|youtu\.be\/|(?:www\.|m\.)?youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})(?:[&?]|$)/)?.[1];
         return videoId ? (
           <div key={block.id} className="aspect-video">
             <iframe
