@@ -1071,3 +1071,25 @@
 - [x] Updated DrillPageBuilderNotion to preserve image properties through conversion
 - [x] Test full workflow end-to-end - verified in browser
 - [x] Write unit tests - 15 tests passing (block conversion, image properties, round-trip)
+
+
+## Drill Comparison View
+- [x] Create DrillComparison page component
+- [x] Build side-by-side drill selector with search and category filter
+- [x] Display drill details comparison (name, difficulty, duration, categories)
+- [x] Show video comparison side-by-side with embedded YouTube players
+- [x] Add comparison highlights for differences
+- [x] Add route and navigation from Coach Dashboard
+- [x] Write unit tests (5 YouTube extraction + 2 data structure tests)
+
+## Athlete Assessment Reports
+- [x] Create AthleteAssessment page component using existing tRPC endpoints
+- [x] Athlete selector dropdown with drill count preview
+- [x] Display per-athlete progress metrics (completion rate, in progress, avg completion time)
+- [x] Show weekly activity chart (last 4 weeks)
+- [x] Recent completions and active assignments lists
+- [x] Auto-generated personalized recommendations
+- [x] Engagement level badge (Highly Engaged / Moderately Engaged / Needs Encouragement / At Risk)
+- [x] Team overview stats (total athletes, with drills, total assigned, completion rate)
+- [x] Add route and navigation from Coach Dashboard
+- [x] Write unit tests (4 engagement level + 7 recommendation tests)

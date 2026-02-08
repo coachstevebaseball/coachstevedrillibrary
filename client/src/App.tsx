@@ -21,6 +21,8 @@ import UserManagement from "./pages/UserManagement";
 import DrillsDirectory from "./pages/DrillsDirectory";
 import ParentDashboard from "./pages/ParentDashboard";
 import ActivityFeed from "./pages/ActivityFeed";
+import DrillComparison from "./pages/DrillComparison";
+import AthleteAssessment from "./pages/AthleteAssessment";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
@@ -103,6 +105,18 @@ function Router() {
       <Route path={"/activity-feed"}>
         <ProtectedRoute requiredRole="admin">
           <ActivityFeed />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path={"/drill-comparison"}>
+        <ProtectedRoute requiredRole="admin">
+          <DrillComparison />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path={"/athlete-assessment"}>
+        <ProtectedRoute requiredRole="admin">
+          <AthleteAssessment />
         </ProtectedRoute>
       </Route>
       

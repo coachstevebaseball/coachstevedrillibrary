@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, Sparkles, Video, Upload, MessageSquare, BarChart3, Activity, Users, LayoutTemplate, Edit3 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, Sparkles, Video, Upload, MessageSquare, BarChart3, Activity, Users, LayoutTemplate, Edit3, ArrowLeftRight, FileText } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
 import drillsData from "@/data/drills.json";
@@ -284,6 +284,20 @@ export default function CoachDashboard() {
                 <span className="hidden sm:inline">Bulk Import</span>
                 <span className="sm:hidden">Import</span>
               </Button>
+              <Link href="/drill-comparison" className="flex-1 md:flex-none">
+                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
+                  <ArrowLeftRight className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
+                  <span className="hidden sm:inline">Compare Drills</span>
+                  <span className="sm:hidden">Compare</span>
+                </Button>
+              </Link>
+              <Link href="/athlete-assessment" className="flex-1 md:flex-none">
+                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
+                  <FileText className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
+                  <span className="hidden sm:inline">Assessment Reports</span>
+                  <span className="sm:hidden">Reports</span>
+                </Button>
+              </Link>
               <Button
                 onClick={() => setIsBulkGoalOpen(true)}
                 className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm flex-1 md:flex-none"
