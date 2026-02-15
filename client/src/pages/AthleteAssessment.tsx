@@ -20,18 +20,16 @@ function StatCard({ icon, label, value, subtitle, color }: {
   color?: string;
 }) {
   return (
-    <Card className="relative overflow-hidden">
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</p>
-            <p className={`text-2xl font-heading font-bold mt-1 ${color || "text-foreground"}`}>{value}</p>
-            {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
-          </div>
-          <div className="p-2 rounded-lg bg-muted/50">{icon}</div>
+    <div className="glass-card rounded-xl p-4">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</p>
+          <p className={`text-2xl font-heading font-bold mt-1 ${color || "text-foreground"}`}>{value}</p>
+          {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
         </div>
-      </CardContent>
-    </Card>
+        <div className="p-2 rounded-lg bg-white/[0.05] border border-white/[0.06]">{icon}</div>
+      </div>
+    </div>
   );
 }
 
@@ -48,7 +46,7 @@ function ProgressBar({ value, max, label, color }: {
         <span className="text-muted-foreground">{label}</span>
         <span className="font-medium">{value}/{max} ({pct}%)</span>
       </div>
-      <div className="h-2.5 bg-muted rounded-full overflow-hidden">
+      <div className="h-2.5 bg-white/[0.06] rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-500 ${color}`}
           style={{ width: `${pct}%` }}
@@ -65,9 +63,9 @@ function WeeklyChart({ data }: { data: Array<{ week: string; completed: number }
       {data.map((d, i) => (
         <div key={i} className="flex-1 flex flex-col items-center gap-1">
           <span className="text-xs font-medium text-foreground">{d.completed}</span>
-          <div className="w-full bg-muted rounded-t-md overflow-hidden" style={{ height: "100%" }}>
+          <div className="w-full bg-white/[0.06] rounded-t-md overflow-hidden" style={{ height: "100%" }}>
             <div
-              className="w-full bg-secondary rounded-t-md transition-all duration-500"
+              className="w-full bg-gradient-to-t from-blue-600 to-blue-400 rounded-t-md transition-all duration-500"
               style={{
                 height: `${(d.completed / maxVal) * 100}%`,
                 marginTop: `${100 - (d.completed / maxVal) * 100}%`,
@@ -160,24 +158,24 @@ function AssessmentReport({ athleteId, athleteName }: { athleteId: number; athle
   return (
     <div ref={reportRef} className="space-y-6">
       {/* Report Header */}
-      <Card className="border-l-4 border-l-secondary">
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-3 mb-1">
-                <User className="h-6 w-6 text-secondary" />
-                <h2 className="text-2xl font-heading font-bold">{athleteName}</h2>
+      <div className="glass-card rounded-xl border-l-4 border-l-blue-500 p-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-3 mb-1">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-white/[0.06] flex items-center justify-center">
+                <User className="h-5 w-5 text-blue-400" />
               </div>
-              <p className="text-sm text-muted-foreground">Assessment Report — {reportDate}</p>
+              <h2 className="text-2xl font-heading font-bold">{athleteName}</h2>
             </div>
-            <div className="flex items-center gap-3">
-              <Badge variant="outline" className={engagement.badge}>
-                {engagement.level}
-              </Badge>
-            </div>
+            <p className="text-sm text-muted-foreground ml-[52px]">Assessment Report — {reportDate}</p>
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex items-center gap-3">
+            <Badge variant="outline" className={engagement.badge}>
+              {engagement.level}
+            </Badge>
+          </div>
+        </div>
+      </div>
 
       {/* Core Metrics Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -210,14 +208,16 @@ function AssessmentReport({ athleteId, athleteName }: { athleteId: number; athle
       </div>
 
       {/* Completion Progress */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-heading flex items-center gap-2">
-            <BarChart3 className="h-5 w-5 text-secondary" />
+      <div className="glass-card rounded-xl">
+        <div className="p-4 md:p-6 pb-3">
+          <h3 className="text-lg font-heading font-bold flex items-center gap-2">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center">
+              <BarChart3 className="h-4 w-4 text-green-400" />
+            </div>
             Overall Progress
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+          </h3>
+        </div>
+        <div className="p-4 md:p-6 pt-0 space-y-4">
           <ProgressBar
             value={coreMetrics.completed}
             max={coreMetrics.totalAssigned}
@@ -236,37 +236,41 @@ function AssessmentReport({ athleteId, athleteName }: { athleteId: number; athle
             label="Not Started"
             color="bg-muted-foreground/50"
           />
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Weekly Activity */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-heading flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-secondary" />
+      <div className="glass-card rounded-xl">
+        <div className="p-4 md:p-6 pb-3">
+          <h3 className="text-lg font-heading font-bold flex items-center gap-2">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
+              <Calendar className="h-4 w-4 text-purple-400" />
+            </div>
             Weekly Activity (Last 4 Weeks)
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div className="p-4 md:p-6 pt-0">
           {activity.weeklyProgress.length > 0 ? (
             <WeeklyChart data={activity.weeklyProgress} />
           ) : (
             <p className="text-sm text-muted-foreground text-center py-8">No weekly activity data available</p>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Recent Completions & Assignments */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Recent Completions */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg font-heading flex items-center gap-2">
-              <Award className="h-5 w-5 text-green-500" />
+        <div className="glass-card rounded-xl">
+          <div className="p-4 md:p-6 pb-3">
+            <h3 className="text-lg font-heading font-bold flex items-center gap-2">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center">
+                <Award className="h-4 w-4 text-green-400" />
+              </div>
               Recent Completions
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div className="p-4 md:p-6 pt-0">
             {activity.recentCompletions.length > 0 ? (
               <div className="space-y-3">
                 {activity.recentCompletions.map((rc: any, i: number) => (
@@ -284,18 +288,20 @@ function AssessmentReport({ athleteId, athleteName }: { athleteId: number; athle
             ) : (
               <p className="text-sm text-muted-foreground text-center py-6">No completions yet</p>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Current Assignments */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg font-heading flex items-center gap-2">
-              <Target className="h-5 w-5 text-secondary" />
+        <div className="glass-card rounded-xl">
+          <div className="p-4 md:p-6 pb-3">
+            <h3 className="text-lg font-heading font-bold flex items-center gap-2">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center">
+                <Target className="h-4 w-4 text-blue-400" />
+              </div>
               Active Assignments
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div className="p-4 md:p-6 pt-0">
             {assignments.filter((a: any) => a.status !== "completed").length > 0 ? (
               <div className="space-y-3">
                 {assignments
@@ -319,23 +325,25 @@ function AssessmentReport({ athleteId, athleteName }: { athleteId: number; athle
             ) : (
               <p className="text-sm text-muted-foreground text-center py-6">All drills completed!</p>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Coach Notes Summary */}
       {coachNotes && coachNotes.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg font-heading flex items-center gap-2">
-              <FileText className="h-5 w-5 text-secondary" />
+        <div className="glass-card rounded-xl">
+          <div className="p-4 md:p-6 pb-3">
+            <h3 className="text-lg font-heading font-bold flex items-center gap-2">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
+                <FileText className="h-4 w-4 text-amber-400" />
+              </div>
               Recent Coach Notes
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div className="p-4 md:p-6 pt-0">
             <div className="space-y-4">
               {coachNotes.slice(0, 3).map((note: any, i: number) => (
-                <div key={i} className="bg-muted/30 rounded-lg p-4 border-l-2 border-l-secondary/50">
+                <div key={i} className="bg-white/[0.03] rounded-lg p-4 border-l-2 border-l-blue-500/50">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs text-muted-foreground">
                       {note.meetingDate ? new Date(note.meetingDate).toLocaleDateString() : "N/A"}
@@ -345,19 +353,21 @@ function AssessmentReport({ athleteId, athleteName }: { athleteId: number; athle
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
       {/* Recommendations */}
-      <Card className="border-secondary/30">
-        <CardHeader>
-          <CardTitle className="text-lg font-heading flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-secondary" />
+      <div className="glass-card rounded-xl border border-blue-500/20">
+        <div className="p-4 md:p-6 pb-3">
+          <h3 className="text-lg font-heading font-bold flex items-center gap-2">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-indigo-500/20 flex items-center justify-center">
+              <TrendingUp className="h-4 w-4 text-blue-400" />
+            </div>
             Recommendations
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div className="p-4 md:p-6 pt-0">
           <div className="space-y-3">
             {recommendations.map((rec, i) => (
               <div key={i} className="flex items-start gap-3 py-2">
@@ -366,8 +376,8 @@ function AssessmentReport({ athleteId, athleteName }: { athleteId: number; athle
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
@@ -397,26 +407,24 @@ export default function AthleteAssessment() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-card border-b border-border">
-        <div className="container py-4">
-          <div className="flex items-center gap-4">
-            <Link href="/coach-dashboard">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="h-4 w-4 mr-2" /> Back to Dashboard
-              </Button>
-            </Link>
-            <div className="flex-1">
-              <h1 className="text-2xl font-heading font-bold text-foreground">Athlete Assessment Reports</h1>
-              <p className="text-sm text-muted-foreground">Auto-generated progress reports for each athlete</p>
-            </div>
-          </div>
+      <header className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.25_0.05_250)] via-[oklch(0.20_0.04_260)] to-[oklch(0.15_0.06_280)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.45_0.15_250/0.15),transparent_60%)]" />
+        <div className="container relative z-10 py-6">
+          <Link href="/coach-dashboard">
+            <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10 mb-3 gap-2">
+              <ArrowLeft className="h-4 w-4" /> Back to Dashboard
+            </Button>
+          </Link>
+          <h1 className="text-3xl md:text-4xl font-heading font-black text-white">Athlete Assessment Reports</h1>
+          <p className="text-white/60 mt-1">Auto-generated progress reports for each athlete</p>
         </div>
       </header>
 
       <main className="container py-8">
         {/* Athlete Selector */}
-        <Card className="mb-8">
-          <CardContent className="p-4">
+        <div className="glass-card rounded-xl mb-8">
+          <div className="p-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground whitespace-nowrap">
                 <User className="h-4 w-4" />
@@ -440,8 +448,8 @@ export default function AthleteAssessment() {
                 </SelectContent>
               </Select>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Report Content */}
         {selectedAthlete ? (
@@ -451,8 +459,8 @@ export default function AthleteAssessment() {
           />
         ) : (
           <div className="text-center py-20">
-            <div className="bg-muted/30 h-20 w-20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <FileText className="h-10 w-10 text-muted-foreground" />
+            <div className="h-20 w-20 rounded-full bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-white/[0.06] flex items-center justify-center mx-auto mb-4">
+              <FileText className="h-10 w-10 text-blue-400/60" />
             </div>
             <h3 className="text-xl font-heading font-bold mb-2">Select an Athlete</h3>
             <p className="text-muted-foreground max-w-md mx-auto">

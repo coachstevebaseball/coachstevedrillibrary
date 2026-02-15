@@ -52,17 +52,17 @@ function DrillSelector({
 
   if (selectedDrill && !isOpen) {
     return (
-      <Card className="border-2 border-secondary/30 bg-card">
-        <CardHeader className="pb-2">
+      <div className="glass-card rounded-xl border-2 border-blue-500/30">
+        <div className="p-4 pb-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</span>
             <Button variant="ghost" size="sm" onClick={() => { onSelect(null as any); setIsOpen(true); }}>
               <X className="h-4 w-4" />
             </Button>
           </div>
-          <CardTitle className="text-xl font-heading">{selectedDrill.name}</CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
+          <h3 className="text-xl font-heading font-bold mt-1">{selectedDrill.name}</h3>
+        </div>
+        <div className="px-4 pb-4">
           <div className="flex flex-wrap gap-2">
             <Badge variant="outline" className={getDifficultyColor(selectedDrill.difficulty)}>
               {selectedDrill.difficulty}
@@ -77,14 +77,14 @@ function DrillSelector({
               </Badge>
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Card className="border-2 border-dashed border-muted-foreground/30 bg-card/50">
-      <CardHeader className="pb-3">
+    <div className="glass-card rounded-xl border-2 border-dashed border-white/10">
+      <div className="p-4 pb-3">
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</span>
         <div className="flex gap-2 mt-2">
           <div className="relative flex-1">
@@ -107,8 +107,8 @@ function DrillSelector({
             </SelectContent>
           </Select>
         </div>
-      </CardHeader>
-      <CardContent className="pt-0 max-h-[300px] overflow-y-auto">
+      </div>
+      <div className="px-4 pb-4 max-h-[300px] overflow-y-auto">
         <div className="space-y-1">
           {filtered.slice(0, 50).map((drill) => (
             <button
@@ -141,17 +141,17 @@ function DrillSelector({
             </p>
           )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
 function getDifficultyColor(difficulty: string) {
   switch (difficulty) {
-    case "Easy": return "bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800";
-    case "Medium": return "bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800";
-    case "Hard": return "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800";
-    default: return "bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700";
+    case "Easy": return "bg-green-500/20 text-green-400 border-green-500/30";
+    case "Medium": return "bg-amber-500/20 text-amber-400 border-amber-500/30";
+    case "Hard": return "bg-red-500/20 text-red-400 border-red-500/30";
+    default: return "bg-gray-500/20 text-gray-400 border-gray-500/30";
   }
 }
 
@@ -269,19 +269,17 @@ export default function DrillComparison() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-card border-b border-border">
-        <div className="container py-4">
-          <div className="flex items-center gap-4">
-            <Link href="/coach-dashboard">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="h-4 w-4 mr-2" /> Back to Dashboard
-              </Button>
-            </Link>
-            <div className="flex-1">
-              <h1 className="text-2xl font-heading font-bold text-foreground">Drill Comparison</h1>
-              <p className="text-sm text-muted-foreground">Compare two drills side-by-side to find the best fit for your athletes</p>
-            </div>
-          </div>
+      <header className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.25_0.05_250)] via-[oklch(0.20_0.04_260)] to-[oklch(0.15_0.06_280)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.45_0.15_250/0.15),transparent_60%)]" />
+        <div className="container relative z-10 py-6">
+          <Link href="/coach-dashboard">
+            <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10 mb-3 gap-2">
+              <ArrowLeft className="h-4 w-4" /> Back to Dashboard
+            </Button>
+          </Link>
+          <h1 className="text-3xl md:text-4xl font-heading font-black text-white">Drill Comparison</h1>
+          <p className="text-white/60 mt-1">Compare two drills side-by-side to find the best fit for your athletes</p>
         </div>
       </header>
 
@@ -330,16 +328,18 @@ export default function DrillComparison() {
         {bothSelected && (
           <div className="space-y-8">
             {/* Quick Stats Comparison */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-heading flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5 text-secondary" />
+            <div className="glass-card rounded-xl overflow-hidden">
+              <div className="p-4 md:p-6 pb-3">
+                <h3 className="text-lg font-heading font-bold flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center">
+                    <BarChart3 className="h-4 w-4 text-blue-400" />
+                  </div>
                   Quick Comparison
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
+                </h3>
+              </div>
+              <div className="px-0">
                 {/* Column Headers */}
-                <div className="grid grid-cols-3 gap-4 py-3 px-4 bg-muted/30 border-b border-border">
+                <div className="grid grid-cols-3 gap-4 py-3 px-4 bg-white/[0.03] border-b border-white/[0.06]">
                   <div className="text-sm font-medium text-muted-foreground">Attribute</div>
                   <div className="text-sm font-bold text-center text-foreground">{drillA.name}</div>
                   <div className="text-sm font-bold text-center text-foreground">{drillB.name}</div>
@@ -399,18 +399,20 @@ export default function DrillComparison() {
                     }
                   />
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Video Comparison */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-heading flex items-center gap-2">
-                  <Video className="h-5 w-5 text-secondary" />
+            <div className="glass-card rounded-xl overflow-hidden">
+              <div className="p-4 md:p-6 pb-3">
+                <h3 className="text-lg font-heading font-bold flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
+                    <Video className="h-4 w-4 text-purple-400" />
+                  </div>
                   Video Comparison
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+                </h3>
+              </div>
+              <div className="p-4 md:p-6 pt-0">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <h3 className="text-sm font-medium text-muted-foreground mb-3">{drillA.name}</h3>
@@ -421,15 +423,15 @@ export default function DrillComparison() {
                     <DrillVideoEmbed drillId={drillB.id} />
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Detailed Info Comparison */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-heading">Drill Details</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <div className="glass-card rounded-xl overflow-hidden">
+              <div className="p-4 md:p-6 pb-3">
+                <h3 className="text-lg font-heading font-bold">Drill Details</h3>
+              </div>
+              <div className="p-4 md:p-6 pt-0">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <h3 className="text-sm font-bold text-foreground mb-3 pb-2 border-b border-border">{drillA.name}</h3>
@@ -440,8 +442,8 @@ export default function DrillComparison() {
                     <DrillDetailInfo drillId={drillB.id} />
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Quick Actions */}
             <div className="flex flex-wrap gap-3 justify-center">
@@ -465,8 +467,8 @@ export default function DrillComparison() {
         {/* Empty State */}
         {!bothSelected && (
           <div className="text-center py-16">
-            <div className="bg-muted/30 h-20 w-20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <ArrowLeftRight className="h-10 w-10 text-muted-foreground" />
+            <div className="h-20 w-20 rounded-full bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-white/[0.06] flex items-center justify-center mx-auto mb-4">
+              <ArrowLeftRight className="h-10 w-10 text-blue-400/60" />
             </div>
             <h3 className="text-xl font-heading font-bold mb-2">Select Two Drills to Compare</h3>
             <p className="text-muted-foreground max-w-md mx-auto">

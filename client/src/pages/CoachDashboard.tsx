@@ -4,7 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, Sparkles, Video, Upload, MessageSquare, BarChart3, Activity, Users, LayoutTemplate, Edit3, ArrowLeftRight, FileText } from "lucide-react";
+import { 
+  ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, 
+  Sparkles, Video, Upload, MessageSquare, BarChart3, Activity, Users, 
+  LayoutTemplate, Edit3, ArrowLeftRight, FileText, ChevronRight,
+  Zap, Target, TrendingUp, Shield
+} from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
 import drillsData from "@/data/drills.json";
@@ -38,9 +43,21 @@ interface Drill {
   duration: string;
 }
 
+// Quick action card data
+const quickActions = [
+  { label: "Submissions", shortLabel: "Subs", href: "/submissions", icon: MessageSquare, color: "from-blue-500/20 to-cyan-500/20", iconColor: "text-blue-400" },
+  { label: "Messages", shortLabel: "Msgs", href: "/coach-messaging", icon: MessageSquare, color: "from-purple-500/20 to-pink-500/20", iconColor: "text-purple-400" },
+  { label: "Activity Feed", shortLabel: "Activity", href: "/activity-feed", icon: Activity, color: "from-green-500/20 to-emerald-500/20", iconColor: "text-green-400" },
+  { label: "Manage Videos", shortLabel: "Videos", href: "/manage-drill-videos", icon: Video, color: "from-orange-500/20 to-amber-500/20", iconColor: "text-orange-400" },
+  { label: "Create Details", shortLabel: "Create", href: "/create-drill-details", icon: Sparkles, color: "from-yellow-500/20 to-orange-500/20", iconColor: "text-yellow-400" },
+  { label: "AI Generator", shortLabel: "AI", href: "/drill-generator", icon: Zap, color: "from-violet-500/20 to-fuchsia-500/20", iconColor: "text-violet-400" },
+  { label: "Compare Drills", shortLabel: "Compare", href: "/drill-comparison", icon: ArrowLeftRight, color: "from-teal-500/20 to-cyan-500/20", iconColor: "text-teal-400" },
+  { label: "Assessment Reports", shortLabel: "Reports", href: "/athlete-assessment", icon: FileText, color: "from-rose-500/20 to-pink-500/20", iconColor: "text-rose-400" },
+];
+
 export default function CoachDashboard() {
   const { user, loading } = useAuth();
-  const [selectedUser, setSelectedUser] = useState<string | null>(null); // Can be "user-{id}" or "invite-{id}"
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [searchDrill, setSearchDrill] = useState("");
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts">("overview");
@@ -48,90 +65,58 @@ export default function CoachDashboard() {
   const [layoutSearchQuery, setLayoutSearchQuery] = useState("");
   const [isBulkGoalOpen, setIsBulkGoalOpen] = useState(false);
   const [showProgressReport, setShowProgressReport] = useState(false);
+  const [showQuickActions, setShowQuickActions] = useState(false);
   
-  // Get tRPC utils for cache invalidation
   const utils = trpc.useUtils();
 
-  // Fetch all users
   const { data: allUsers = [] } = trpc.admin.getAllUsers.useQuery(undefined, {
     enabled: user?.role === "admin",
   });
 
-  // Fetch all invites to show pending athletes
   const { data: allInvites = [] } = trpc.invites.getAllInvites.useQuery(undefined, {
     enabled: user?.role === "admin",
   });
 
-  // Combine users and pending invites for athlete selection
   const athleteOptions = useMemo(() => {
     const options: { id: string; name: string; email: string; type: 'user' | 'invite'; status?: string }[] = [];
-    
-    // Add existing users (excluding admin)
     allUsers.forEach((u: any) => {
       if (u.role !== 'admin') {
-        options.push({
-          id: `user-${u.id}`,
-          name: u.name || `User ${u.id}`,
-          email: u.email || '',
-          type: 'user'
-        });
+        options.push({ id: `user-${u.id}`, name: u.name || `User ${u.id}`, email: u.email || '', type: 'user' });
       }
     });
-    
-    // Add pending invites that haven't been accepted yet
     allInvites.forEach((inv: any) => {
       if (inv.status === 'pending') {
-        // Check if this email already exists as a user
         const existingUser = allUsers.find((u: any) => u.email === inv.email);
         if (!existingUser) {
-          options.push({
-            id: `invite-${inv.id}`,
-            name: inv.email.split('@')[0],
-            email: inv.email,
-            type: 'invite',
-            status: 'pending'
-          });
+          options.push({ id: `invite-${inv.id}`, name: inv.email.split('@')[0], email: inv.email, type: 'invite', status: 'pending' });
         }
       }
-      // Also add accepted invites that don't have a user yet
       if (inv.status === 'accepted') {
         const existingUser = allUsers.find((u: any) => u.email === inv.email);
         if (!existingUser) {
-          options.push({
-            id: `invite-${inv.id}`,
-            name: inv.email.split('@')[0],
-            email: inv.email,
-            type: 'invite',
-            status: 'accepted'
-          });
+          options.push({ id: `invite-${inv.id}`, name: inv.email.split('@')[0], email: inv.email, type: 'invite', status: 'accepted' });
         }
       }
     });
-    
     return options;
   }, [allUsers, allInvites]);
 
-  // Fetch all assignments
   const { data: allAssignments = [] } = trpc.drillAssignments.getAllAssignments.useQuery(undefined, {
     enabled: user?.role === "admin",
   });
 
-  // Mutations
   const assignDrillMutation = trpc.drillAssignments.assignDrill.useMutation();
   const unassignDrillMutation = trpc.drillAssignments.unassignDrill.useMutation();
   const updateStatusMutation = trpc.drillAssignments.updateStatus.useMutation();
 
-  // Get all drills including custom drills
   const allDrills = useAllDrills();
 
-  // Filter drills by search
   const filteredDrills = useMemo(() => {
     return (allDrills as Drill[]).filter(drill =>
       drill.name.toLowerCase().includes(searchDrill.toLowerCase())
-    ).slice(0, 10); // Show top 10 results
+    ).slice(0, 10);
   }, [searchDrill, allDrills]);
 
-  // Get user/invite assignments
   const userAssignments = useMemo(() => {
     if (!selectedUser) return [];
     if (selectedUser.startsWith('invite-')) {
@@ -143,28 +128,26 @@ export default function CoachDashboard() {
     }
   }, [selectedUser, allAssignments]);
 
-  // Handle assign drill
+  // Stats
+  const totalAthletes = athleteOptions.length;
+  const totalAssignments = allAssignments.length;
+  const completedAssignments = allAssignments.filter((a: any) => a.status === "completed").length;
+  const inProgressAssignments = allAssignments.filter((a: any) => a.status === "in-progress").length;
+
   const handleAssignDrill = async () => {
     if (!selectedUser || !selectedDrill) return;
-
     try {
       if (selectedUser.startsWith('invite-')) {
         const inviteId = parseInt(selectedUser.replace('invite-', ''));
         await assignDrillMutation.mutateAsync({
-          inviteId,
-          drillId: selectedDrill.id,
-          drillName: selectedDrill.name,
-          difficulty: selectedDrill.difficulty,
-          duration: selectedDrill.duration,
+          inviteId, drillId: selectedDrill.id, drillName: selectedDrill.name,
+          difficulty: selectedDrill.difficulty, duration: selectedDrill.duration,
         });
       } else {
         const userId = parseInt(selectedUser.replace('user-', ''));
         await assignDrillMutation.mutateAsync({
-          userId,
-          drillId: selectedDrill.id,
-          drillName: selectedDrill.name,
-          difficulty: selectedDrill.difficulty,
-          duration: selectedDrill.duration,
+          userId, drillId: selectedDrill.id, drillName: selectedDrill.name,
+          difficulty: selectedDrill.difficulty, duration: selectedDrill.duration,
         });
       }
       setSelectedDrill(null);
@@ -174,18 +157,15 @@ export default function CoachDashboard() {
     }
   };
 
-  // Handle unassign drill
   const handleUnassignDrill = async (assignmentId: number) => {
     try {
       await unassignDrillMutation.mutateAsync({ assignmentId });
-      // Invalidate the assignments query to refresh the UI
       await utils.drillAssignments.getAllAssignments.invalidate();
     } catch (error) {
       console.error("Failed to unassign drill:", error);
     }
   };
 
-  // Handle status update
   const handleStatusUpdate = async (assignmentId: number, status: "assigned" | "in-progress" | "completed") => {
     try {
       await updateStatusMutation.mutateAsync({ assignmentId, status });
@@ -195,160 +175,165 @@ export default function CoachDashboard() {
   };
 
   if (loading) {
-    return <div className="container py-12 text-center">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-12 w-12 rounded-full border-2 border-electric-blue/30 border-t-electric-blue animate-spin" />
+          <p className="text-muted-foreground animate-pulse">Loading dashboard...</p>
+        </div>
+      </div>
+    );
   }
 
   if (user?.role !== "admin") {
     return (
-      <div className="container py-12">
-        <Card className="max-w-2xl mx-auto border-2">
-          <CardHeader className="text-center">
-            <CardTitle>Access Denied</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center space-y-4">
-            <p className="text-muted-foreground">Only coaches (admins) can access the drill assignment dashboard.</p>
-            <Link href="/">
-              <Button variant="outline">Back to Directory</Button>
-            </Link>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="glass-card rounded-2xl p-8 max-w-md text-center space-y-4">
+          <div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto">
+            <Shield className="h-8 w-8 text-destructive" />
+          </div>
+          <h2 className="text-2xl font-heading font-bold">Access Denied</h2>
+          <p className="text-muted-foreground">Only coaches (admins) can access the drill assignment dashboard.</p>
+          <Link href="/">
+            <Button variant="outline" className="gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Directory
+            </Button>
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-primary text-primary-foreground py-4 md:py-8 mb-6 md:mb-8">
-        <div className="container px-3 md:px-4">
-          <Link href="/">
-            <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 mb-3 md:mb-4 pl-0 text-sm md:text-base">
-              <ArrowLeft className="mr-2 h-3 md:h-4 w-3 md:w-4" />
-              <span className="hidden sm:inline">Back to Directory</span>
-              <span className="sm:hidden">Back</span>
-            </Button>
-          </Link>
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-4">
-            <div>
-              <h1 className="text-2xl md:text-5xl font-heading font-black">Coach Dashboard</h1>
-              <p className="text-primary-foreground/90 mt-1 md:mt-2 text-sm md:text-base">Assign drills to athletes and track progress</p>
-            </div>
-            <div className="flex gap-2 flex-wrap w-full md:w-auto">
-              <Link href="/submissions" className="flex-1 md:flex-none">
-                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
-                  <MessageSquare className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
-                  <span className="hidden sm:inline">Submissions</span>
-                  <span className="sm:hidden">Subs</span>
-                </Button>
-              </Link>
-              <Link href="/coach-messaging" className="flex-1 md:flex-none">
-                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
-                  <MessageSquare className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
-                  <span className="hidden sm:inline">Messages</span>
-                  <span className="sm:hidden">Msgs</span>
-                </Button>
-              </Link>
-              <Link href="/activity-feed" className="flex-1 md:flex-none">
-                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
-                  <Activity className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
-                  <span className="hidden sm:inline">Activity Feed</span>
-                  <span className="sm:hidden">Activity</span>
-                </Button>
-              </Link>
-              <Link href="/manage-drill-videos" className="flex-1 md:flex-none">
-                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
-                  <Video className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
-                  <span className="hidden sm:inline">Manage Videos</span>
-                  <span className="sm:hidden">Videos</span>
-                </Button>
-              </Link>
-              <Link href="/create-drill-details" className="flex-1 md:flex-none">
-                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
-                  <Sparkles className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
-                  <span className="hidden sm:inline">Create Details</span>
-                  <span className="sm:hidden">Create</span>
-                </Button>
-              </Link>
-              <Link href="/drill-generator" className="flex-1 md:flex-none">
-                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
-                  <Sparkles className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
-                  <span className="hidden sm:inline">AI Generator</span>
-                  <span className="sm:hidden">AI</span>
-                </Button>
-              </Link>
-              <Button
-                onClick={() => setActiveTab(activeTab === "assign" ? "bulk-import" : "assign")}
-                className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm flex-1 md:flex-none"
-              >
-                <Upload className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
-                <span className="hidden sm:inline">Bulk Import</span>
-                <span className="sm:hidden">Import</span>
+      {/* Hero Header */}
+      <header className="relative overflow-hidden">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.25_0.05_250)] via-[oklch(0.20_0.04_260)] to-[oklch(0.15_0.06_280)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.45_0.15_250/0.15),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,oklch(0.50_0.18_280/0.1),transparent_60%)]" />
+        
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: `linear-gradient(oklch(0.9_0_0) 1px, transparent 1px), linear-gradient(90deg, oklch(0.9_0_0) 1px, transparent 1px)`,
+          backgroundSize: '40px 40px'
+        }} />
+
+        <div className="container relative z-10 py-6 md:py-10">
+          {/* Top nav */}
+          <div className="flex items-center justify-between mb-6">
+            <Link href="/">
+              <Button variant="ghost" className="text-white/70 hover:text-white hover:bg-white/10 gap-2 text-sm">
+                <ArrowLeft className="h-4 w-4" />
+                <span className="hidden sm:inline">Back to Directory</span>
+                <span className="sm:hidden">Back</span>
               </Button>
-              <Link href="/drill-comparison" className="flex-1 md:flex-none">
-                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
-                  <ArrowLeftRight className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
-                  <span className="hidden sm:inline">Compare Drills</span>
-                  <span className="sm:hidden">Compare</span>
-                </Button>
-              </Link>
-              <Link href="/athlete-assessment" className="flex-1 md:flex-none">
-                <Button className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm">
-                  <FileText className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
-                  <span className="hidden sm:inline">Assessment Reports</span>
-                  <span className="sm:hidden">Reports</span>
-                </Button>
-              </Link>
+            </Link>
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                onClick={() => setShowQuickActions(!showQuickActions)}
+                className="text-white/70 hover:text-white hover:bg-white/10 gap-2 text-sm"
+              >
+                <Zap className="h-4 w-4" />
+                <span className="hidden sm:inline">Quick Actions</span>
+              </Button>
               <Button
                 onClick={() => setIsBulkGoalOpen(true)}
-                className="bg-white text-primary hover:bg-white/90 whitespace-nowrap w-full md:w-auto text-xs md:text-sm flex-1 md:flex-none"
+                variant="ghost"
+                className="text-white/70 hover:text-white hover:bg-white/10 gap-2 text-sm"
               >
-                <Upload className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
+                <Upload className="h-4 w-4" />
                 <span className="hidden sm:inline">Bulk Goals</span>
-                <span className="sm:hidden">Goals</span>
+              </Button>
+              <Button
+                onClick={() => setActiveTab(activeTab === "bulk-import" ? "overview" : "bulk-import")}
+                variant="ghost"
+                className="text-white/70 hover:text-white hover:bg-white/10 gap-2 text-sm"
+              >
+                <Upload className="h-4 w-4" />
+                <span className="hidden sm:inline">Bulk Import</span>
               </Button>
             </div>
+          </div>
+
+          {/* Title */}
+          <div className="mb-8">
+            <h1 className="text-3xl md:text-5xl font-heading font-black text-white tracking-tight">
+              Coach Dashboard
+            </h1>
+            <p className="text-white/60 mt-2 text-sm md:text-base max-w-lg">
+              Manage your athletes, assign drills, and track progress all in one place.
+            </p>
+          </div>
+
+          {/* Stats Row */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
+            {[
+              { label: "Athletes", value: totalAthletes, icon: Users, color: "text-blue-400" },
+              { label: "Assigned", value: totalAssignments, icon: Target, color: "text-amber-400" },
+              { label: "In Progress", value: inProgressAssignments, icon: Clock, color: "text-purple-400" },
+              { label: "Completed", value: completedAssignments, icon: TrendingUp, color: "text-green-400" },
+            ].map((stat) => (
+              <div key={stat.label} className="bg-white/[0.06] backdrop-blur-sm border border-white/[0.08] rounded-xl p-3 md:p-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                  <span className="text-white/50 text-xs font-medium uppercase tracking-wider">{stat.label}</span>
+                </div>
+                <p className="text-2xl md:text-3xl font-heading font-black text-white">{stat.value}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Quick Actions Grid (collapsible) */}
+          {showQuickActions && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 md:gap-3 mb-6 animate-in fade-in slide-in-from-top-2 duration-300">
+              {quickActions.map((action) => (
+                <Link key={action.href} href={action.href}>
+                  <div className="bg-white/[0.06] hover:bg-white/[0.12] backdrop-blur-sm border border-white/[0.08] hover:border-white/[0.15] rounded-xl p-3 transition-all duration-200 cursor-pointer group">
+                    <div className={`h-9 w-9 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center mb-2`}>
+                      <action.icon className={`h-4 w-4 ${action.iconColor}`} />
+                    </div>
+                    <p className="text-white/80 text-xs font-medium group-hover:text-white transition-colors">
+                      <span className="hidden sm:inline">{action.label}</span>
+                      <span className="sm:hidden">{action.shortLabel}</span>
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {/* Tab Navigation */}
+          <div className="flex gap-1 bg-white/[0.06] backdrop-blur-sm rounded-xl p-1 border border-white/[0.08] w-fit">
+            {[
+              { key: "overview" as const, label: "Athlete Overview", shortLabel: "Overview", icon: Users },
+              { key: "assign" as const, label: "Assign Drills", shortLabel: "Assign", icon: Plus },
+              { key: "page-layouts" as const, label: "Page Layouts", shortLabel: "Layouts", icon: LayoutTemplate },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  activeTab === tab.key
+                    ? "bg-white/[0.15] text-white shadow-sm"
+                    : "text-white/50 hover:text-white/80 hover:bg-white/[0.06]"
+                }`}
+              >
+                <tab.icon className="h-4 w-4" />
+                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="sm:hidden">{tab.shortLabel}</span>
+              </button>
+            ))}
           </div>
         </div>
       </header>
 
-      {/* Tab Navigation */}
-      <div className="container max-w-6xl px-3 md:px-4 pt-4">
-        <div className="flex gap-2 border-b border-border pb-3">
-          <Button
-            variant={activeTab === "overview" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setActiveTab("overview")}
-            className="gap-2"
-          >
-            <Users className="h-4 w-4" />
-            <span className="hidden sm:inline">Athlete Overview</span>
-            <span className="sm:hidden">Overview</span>
-          </Button>
-          <Button
-            variant={activeTab === "assign" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setActiveTab("assign")}
-            className="gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">Assign Drills</span>
-            <span className="sm:hidden">Assign</span>
-          </Button>
-          <Button
-            variant={activeTab === "page-layouts" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setActiveTab("page-layouts")}
-            className="gap-2"
-          >
-            <LayoutTemplate className="h-4 w-4" />
-            <span className="hidden sm:inline">Page Layouts</span>
-            <span className="sm:hidden">Layouts</span>
-          </Button>
-        </div>
-      </div>
-
-      <main className="container max-w-6xl pb-8 md:pb-12 px-3 md:px-4 pt-4">
+      {/* Main Content */}
+      <main className="container max-w-7xl pb-8 md:pb-12 px-3 md:px-4 py-6 md:py-8">
         <BulkGoalUpload isOpen={isBulkGoalOpen} onClose={() => setIsBulkGoalOpen(false)} />
+        
         {activeTab === "overview" ? (
           <AthleteAssignmentOverview 
             onSelectAthlete={(athleteId) => {
@@ -366,47 +351,48 @@ export default function CoachDashboard() {
               />
             ) : (
               <>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <h2 className="text-2xl font-heading font-bold">Drill Page Layouts</h2>
-                    <p className="text-muted-foreground mt-1">Pick a drill to create or edit its page layout with the block editor.</p>
+                    <p className="text-muted-foreground mt-1 text-sm">Pick a drill to create or edit its page layout with the block editor.</p>
                   </div>
-                  <div className="relative max-w-md">
+                  <div className="relative w-full sm:w-72">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder="Search drills..."
                       value={layoutSearchQuery}
                       onChange={(e) => setLayoutSearchQuery(e.target.value)}
-                      className="pl-10"
+                      className="pl-10 bg-card/50"
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {allDrills
                     .filter((d) => d.name.toLowerCase().includes(layoutSearchQuery.toLowerCase()))
                     .map((drill) => (
-                      <Card
+                      <div
                         key={drill.id}
-                        className="cursor-pointer transition-all hover:shadow-lg hover:-translate-y-0.5 hover:border-secondary/50"
+                        className="glass-card rounded-xl p-4 cursor-pointer transition-all duration-200 hover:bg-white/[0.08] hover:border-electric-blue/30 group"
                         onClick={() => setEditingLayoutDrill({ id: String(drill.id), name: drill.name })}
                       >
-                        <CardContent className="p-4 flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-electric-blue/20 to-purple-500/20 flex items-center justify-center flex-shrink-0">
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-electric-blue/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 group-hover:from-electric-blue/30 group-hover:to-purple-500/30 transition-all">
                             <Edit3 className="h-5 w-5 text-electric-blue" />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="font-medium text-sm truncate">{drill.name}</p>
+                            <p className="font-medium text-sm truncate group-hover:text-electric-blue transition-colors">{drill.name}</p>
                             <p className="text-xs text-muted-foreground">{drill.difficulty} · {drill.categories?.join(", ")}</p>
                           </div>
-                        </CardContent>
-                      </Card>
+                          <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                      </div>
                     ))}
                 </div>
                 {allDrills.filter((d) => d.name.toLowerCase().includes(layoutSearchQuery.toLowerCase())).length === 0 && (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <LayoutTemplate className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <div className="text-center py-16 text-muted-foreground">
+                    <LayoutTemplate className="h-12 w-12 mx-auto mb-3 opacity-30" />
                     <p className="font-medium">No drills found</p>
-                    <p className="text-sm">Try a different search term</p>
+                    <p className="text-sm mt-1">Try a different search term</p>
                   </div>
                 )}
               </>
@@ -417,210 +403,214 @@ export default function CoachDashboard() {
             <BulkInstructionImport />
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
-          {/* Left: User Selection & Drill Assignment */}
-          <div className="lg:col-span-1 space-y-4 md:space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
-                  <Plus className="h-4 md:h-5 w-4 md:w-5 text-secondary" />
-                  Assign Drill
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 md:space-y-4">
-                {/* User Selection */}
-                <div>
-                  <label className="text-xs md:text-sm font-semibold text-muted-foreground mb-1.5 md:mb-2 block">Select Athlete</label>
-                  <Select value={selectedUser || ""} onValueChange={(val) => setSelectedUser(val)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose athlete..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {athleteOptions.length === 0 ? (
-                        <div className="p-2 text-sm text-muted-foreground text-center">
-                          No athletes found. Invite athletes from Admin Dashboard.
-                        </div>
-                      ) : (
-                        athleteOptions.map((athlete) => (
-                          <SelectItem 
-                            key={athlete.id} 
-                            value={athlete.id}
-                          >
-                            <div className="flex items-center gap-2">
-                              <span>{athlete.name}</span>
-                              {athlete.type === 'invite' && (
-                                <Badge variant="outline" className="text-xs">Pending Invite</Badge>
-                              )}
-                            </div>
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Drill Search */}
-                {selectedUser && (
-                  <div>
-                    <label className="text-xs md:text-sm font-semibold text-muted-foreground mb-1.5 md:mb-2 block">Search Drill</label>
-                    <div className="relative">
-                      <Search className="absolute left-3 top-2.5 h-3 md:h-4 w-3 md:w-4 text-muted-foreground" />
-                      <Input
-                        placeholder="Type drill name..."
-                        value={searchDrill}
-                        onChange={(e) => setSearchDrill(e.target.value)}
-                        className="pl-9 text-sm"
-                      />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+            {/* Left: User Selection & Drill Assignment */}
+            <div className="lg:col-span-1 space-y-4">
+              <div className="glass-card rounded-xl overflow-hidden">
+                <div className="p-4 md:p-5 border-b border-white/[0.06]">
+                  <h3 className="font-heading font-bold text-lg flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-electric-blue/20 to-cyan-500/20 flex items-center justify-center">
+                      <Plus className="h-4 w-4 text-electric-blue" />
                     </div>
+                    Assign Drill
+                  </h3>
+                </div>
+                <div className="p-4 md:p-5 space-y-4">
+                  {/* User Selection */}
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground mb-2 block uppercase tracking-wider">Select Athlete</label>
+                    <Select value={selectedUser || ""} onValueChange={(val) => setSelectedUser(val)}>
+                      <SelectTrigger className="bg-white/[0.04] border-white/[0.08]">
+                        <SelectValue placeholder="Choose athlete..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {athleteOptions.length === 0 ? (
+                          <div className="p-3 text-sm text-muted-foreground text-center">
+                            No athletes found. Invite athletes from Admin Dashboard.
+                          </div>
+                        ) : (
+                          athleteOptions.map((athlete) => (
+                            <SelectItem key={athlete.id} value={athlete.id}>
+                              <div className="flex items-center gap-2">
+                                <span>{athlete.name}</span>
+                                {athlete.type === 'invite' && (
+                                  <Badge variant="outline" className="text-[10px] px-1.5 py-0">Pending</Badge>
+                                )}
+                              </div>
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                    {/* Drill Results */}
-                    {searchDrill && filteredDrills.length > 0 && (
-                      <div className="mt-2 border rounded-lg max-h-40 md:max-h-48 overflow-y-auto">
-                        {filteredDrills.map(drill => (
-                          <button
-                            key={drill.id}
-                            onClick={() => setSelectedDrill(drill)}
-                            className={`w-full text-left p-1.5 md:p-2 hover:bg-muted transition-colors border-b last:border-b-0 ${
-                              selectedDrill?.id === drill.id ? "bg-secondary/20" : ""
-                            }`}
-                          >
-                            <div className="font-medium text-xs md:text-sm">{drill.name}</div>
-                            <div className="text-xs text-muted-foreground">{drill.difficulty}</div>
-                          </button>
+                  {/* Drill Search */}
+                  {selectedUser && (
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground mb-2 block uppercase tracking-wider">Search Drill</label>
+                      <div className="relative">
+                        <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          placeholder="Type drill name..."
+                          value={searchDrill}
+                          onChange={(e) => setSearchDrill(e.target.value)}
+                          className="pl-9 text-sm bg-white/[0.04] border-white/[0.08]"
+                        />
+                      </div>
+
+                      {searchDrill && filteredDrills.length > 0 && (
+                        <div className="mt-2 border border-white/[0.08] rounded-lg max-h-48 overflow-y-auto bg-card/80 backdrop-blur-sm">
+                          {filteredDrills.map(drill => (
+                            <button
+                              key={drill.id}
+                              onClick={() => setSelectedDrill(drill)}
+                              className={`w-full text-left px-3 py-2.5 hover:bg-white/[0.06] transition-colors border-b border-white/[0.04] last:border-0 ${
+                                selectedDrill?.id === drill.id ? "bg-electric-blue/10 border-l-2 border-l-electric-blue" : ""
+                              }`}
+                            >
+                              <div className="font-medium text-sm">{drill.name}</div>
+                              <div className="text-xs text-muted-foreground">{drill.difficulty} · {drill.categories?.join(", ")}</div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Selected Drill */}
+                  {selectedDrill && (
+                    <div className="bg-gradient-to-br from-electric-blue/10 to-purple-500/10 border border-electric-blue/20 p-4 rounded-xl">
+                      <div className="font-semibold text-sm mb-2">{selectedDrill.name}</div>
+                      <div className="flex gap-1.5 flex-wrap mb-3">
+                        <Badge variant="outline" className="text-[10px] border-electric-blue/30 text-electric-blue">{selectedDrill.difficulty}</Badge>
+                        {selectedDrill.categories.map(cat => (
+                          <Badge key={cat} variant="secondary" className="text-[10px]">{cat}</Badge>
                         ))}
                       </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Selected Drill */}
-                {selectedDrill && (
-                  <div className="bg-muted p-2.5 md:p-3 rounded-lg">
-                    <div className="font-semibold text-xs md:text-sm mb-2">{selectedDrill.name}</div>
-                    <div className="flex gap-1.5 md:gap-2 flex-wrap mb-2.5 md:mb-3">
-                      <Badge variant="outline" className="text-xs">{selectedDrill.difficulty}</Badge>
-                      {selectedDrill.categories.map(cat => (
-                        <Badge key={cat} variant="secondary" className="text-xs">{cat}</Badge>
-                      ))}
+                      <Button
+                        onClick={handleAssignDrill}
+                        disabled={assignDrillMutation.isPending}
+                        className="w-full bg-electric-blue hover:bg-electric-blue/90 text-white text-sm"
+                        size="sm"
+                      >
+                        {assignDrillMutation.isPending ? "Assigning..." : "Assign Drill"}
+                      </Button>
                     </div>
-                    <Button
-                      onClick={handleAssignDrill}
-                      disabled={assignDrillMutation.isPending}
-                      className="w-full text-sm"
-                      size="sm"
-                    >
-                      {assignDrillMutation.isPending ? "Assigning..." : "Assign Drill"}
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+                  )}
+                </div>
+              </div>
+            </div>
 
-          {/* Right: Assignments List or Progress Report */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg md:text-xl">
+            {/* Right: Assignments List or Progress Report */}
+            <div className="lg:col-span-2">
+              <div className="glass-card rounded-xl overflow-hidden">
+                <div className="p-4 md:p-5 border-b border-white/[0.06] flex items-center justify-between">
+                  <h3 className="font-heading font-bold text-lg">
                     {selectedUser
                       ? showProgressReport
-                        ? `${athleteOptions.find(a => a.id === selectedUser)?.name || 'Athlete'}'s Progress Report`
+                        ? `${athleteOptions.find(a => a.id === selectedUser)?.name || 'Athlete'}'s Progress`
                         : `${athleteOptions.find(a => a.id === selectedUser)?.name || 'Athlete'}'s Assignments`
-                      : "Select an athlete to view assignments"}
-                  </CardTitle>
+                      : "Select an athlete"}
+                  </h3>
                   {selectedUser && selectedUser.startsWith('user-') && (
                     <Button
                       variant={showProgressReport ? "default" : "outline"}
                       size="sm"
                       onClick={() => setShowProgressReport(!showProgressReport)}
-                      className="gap-2"
+                      className="gap-2 text-xs"
                     >
-                      <BarChart3 className="h-4 w-4" />
-                      {showProgressReport ? "View Assignments" : "Progress Report"}
+                      <BarChart3 className="h-3.5 w-3.5" />
+                      {showProgressReport ? "Assignments" : "Progress"}
                     </Button>
                   )}
                 </div>
-              </CardHeader>
-              <CardContent>
-                {selectedUser && showProgressReport && selectedUser.startsWith('user-') ? (
-                  <AthleteProgressReport
-                    userId={parseInt(selectedUser.replace('user-', ''))}
-                    athleteName={athleteOptions.find(a => a.id === selectedUser)?.name || 'Athlete'}
-                  />
-                ) : selectedUser && userAssignments.length > 0 ? (
-                  <div className="space-y-3">
-                    {userAssignments.map((assignment: any) => (
-                      <div key={assignment.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-lg mb-2">{assignment.drillName}</h3>
-                            <div className="flex items-center gap-2 mb-3">
-                              <Badge
-                                variant={
-                                  assignment.status === "completed"
-                                    ? "default"
-                                    : assignment.status === "in-progress"
-                                    ? "secondary"
-                                    : "outline"
-                                }
-                              >
-                                {assignment.status === "completed" && <CheckCircle className="h-3 w-3 mr-1" />}
-                                {assignment.status === "in-progress" && <Clock className="h-3 w-3 mr-1" />}
-                                {assignment.status === "assigned" && <AlertCircle className="h-3 w-3 mr-1" />}
-                                {assignment.status.charAt(0).toUpperCase() + assignment.status.slice(1)}
-                              </Badge>
-                              <span className="text-xs text-muted-foreground">
-                                Assigned {new Date(assignment.assignedAt).toLocaleDateString()}
-                              </span>
+                <div className="p-4 md:p-5">
+                  {selectedUser && showProgressReport && selectedUser.startsWith('user-') ? (
+                    <AthleteProgressReport
+                      userId={parseInt(selectedUser.replace('user-', ''))}
+                      athleteName={athleteOptions.find(a => a.id === selectedUser)?.name || 'Athlete'}
+                    />
+                  ) : selectedUser && userAssignments.length > 0 ? (
+                    <div className="space-y-3">
+                      {userAssignments.map((assignment: any) => (
+                        <div key={assignment.id} className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 hover:bg-white/[0.06] hover:border-white/[0.1] transition-all duration-200 group">
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-base mb-2 truncate group-hover:text-electric-blue transition-colors">{assignment.drillName}</h4>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <Badge
+                                  className={`text-[10px] ${
+                                    assignment.status === "completed"
+                                      ? "bg-green-500/10 text-green-400 border-green-500/20"
+                                      : assignment.status === "in-progress"
+                                      ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                                      : "bg-white/[0.06] text-muted-foreground border-white/[0.1]"
+                                  }`}
+                                  variant="outline"
+                                >
+                                  {assignment.status === "completed" && <CheckCircle className="h-3 w-3 mr-1" />}
+                                  {assignment.status === "in-progress" && <Clock className="h-3 w-3 mr-1" />}
+                                  {assignment.status === "assigned" && <AlertCircle className="h-3 w-3 mr-1" />}
+                                  {assignment.status.charAt(0).toUpperCase() + assignment.status.slice(1)}
+                                </Badge>
+                                <span className="text-[10px] text-muted-foreground">
+                                  {new Date(assignment.assignedAt).toLocaleDateString()}
+                                </span>
+                              </div>
+                              {assignment.notes && (
+                                <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{assignment.notes}</p>
+                              )}
                             </div>
-                            {assignment.notes && (
-                              <p className="text-sm text-muted-foreground mb-2">Notes: {assignment.notes}</p>
-                            )}
-                          </div>
 
-                          {/* Status Controls */}
-                          <div className="flex flex-col gap-2">
-                            <Select
-                              value={assignment.status}
-                              onValueChange={(status: any) => handleStatusUpdate(assignment.id, status)}
-                            >
-                              <SelectTrigger className="w-32 text-sm">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="assigned">Assigned</SelectItem>
-                                <SelectItem value="in-progress">In Progress</SelectItem>
-                                <SelectItem value="completed">Completed</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleUnassignDrill(assignment.id)}
-                              disabled={unassignDrillMutation.isPending}
-                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                            <div className="flex flex-col gap-2 flex-shrink-0">
+                              <Select
+                                value={assignment.status}
+                                onValueChange={(status: any) => handleStatusUpdate(assignment.id, status)}
+                              >
+                                <SelectTrigger className="w-28 text-xs h-8 bg-white/[0.04] border-white/[0.08]">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="assigned">Assigned</SelectItem>
+                                  <SelectItem value="in-progress">In Progress</SelectItem>
+                                  <SelectItem value="completed">Completed</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleUnassignDrill(assignment.id)}
+                                disabled={unassignDrillMutation.isPending}
+                                className="text-destructive/60 hover:text-destructive hover:bg-destructive/10 h-8"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </Button>
+                            </div>
                           </div>
                         </div>
+                      ))}
+                    </div>
+                  ) : selectedUser ? (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <div className="h-16 w-16 rounded-full bg-white/[0.04] flex items-center justify-center mx-auto mb-4">
+                        <Target className="h-8 w-8 opacity-30" />
                       </div>
-                    ))}
-                  </div>
-                ) : selectedUser ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <p>No drills assigned yet. Select a drill on the left to assign.</p>
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <p>Select an athlete to view their assignments</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                      <p className="font-medium">No drills assigned yet</p>
+                      <p className="text-sm mt-1">Search and select a drill on the left to assign.</p>
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <div className="h-16 w-16 rounded-full bg-white/[0.04] flex items-center justify-center mx-auto mb-4">
+                        <Users className="h-8 w-8 opacity-30" />
+                      </div>
+                      <p className="font-medium">Select an athlete</p>
+                      <p className="text-sm mt-1">Choose an athlete from the dropdown to view their assignments.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
         )}
       </main>
     </div>

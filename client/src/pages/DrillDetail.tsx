@@ -1282,19 +1282,31 @@ export default function DrillDetail() {
 
   if (loading) {
     return (
-      <div className="container py-12 text-center">
-        <p>Loading...</p>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-12 w-12 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin" />
+          <p className="text-muted-foreground animate-pulse">Loading drill...</p>
+        </div>
       </div>
     );
   }
 
   if (!drill) {
     return (
-      <div className="container py-12 text-center">
-        <h2 className="text-2xl font-bold mb-4">Drill not found</h2>
-        <Link href="/">
-          <Button>Back to Directory</Button>
-        </Link>
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="glass-card rounded-2xl p-8 max-w-md text-center space-y-4">
+          <div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto">
+            <AlertCircle className="h-8 w-8 text-destructive" />
+          </div>
+          <h2 className="text-2xl font-heading font-bold">Drill not found</h2>
+          <p className="text-muted-foreground">The drill you're looking for doesn't exist or has been removed.</p>
+          <Link href="/">
+            <Button variant="outline" className="gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Directory
+            </Button>
+          </Link>
+        </div>
       </div>
     );
   }
@@ -1340,60 +1352,65 @@ export default function DrillDetail() {
       {/* Header */}
       {hasAccess && (
       <>
-      <header className="bg-primary text-primary-foreground py-4 md:py-10 mb-6 md:mb-8">
-        <div className="container">
+      <header className="relative overflow-hidden mb-6 md:mb-8">
+        <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.25_0.05_250)] via-[oklch(0.20_0.04_260)] to-[oklch(0.15_0.06_280)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.45_0.15_250/0.15),transparent_60%)]" />
+        <div className="container relative z-10 py-6 md:py-10">
           <Link href="/">
-            <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 mb-3 md:mb-4 pl-0 text-sm md:text-base">
-              <ArrowLeft className="mr-2 h-3 md:h-4 w-3 md:w-4" />
+            <Button variant="ghost" className="text-white/70 hover:text-white hover:bg-white/10 mb-4 pl-0 gap-2 text-sm">
+              <ArrowLeft className="h-4 w-4" />
               <span className="hidden sm:inline">Back to Directory</span>
               <span className="sm:hidden">Back</span>
             </Button>
           </Link>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div className="flex-1 w-full">
-              <div className="flex flex-wrap items-center gap-1.5 md:gap-2 mb-2 md:mb-3">
-                <Badge variant="secondary" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-bold text-xs md:text-sm">
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                <Badge className={`font-bold text-xs px-3 py-1 ${
+                  drill.difficulty === 'Easy' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                  drill.difficulty === 'Medium' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' :
+                  'bg-red-500/20 text-red-400 border-red-500/30'
+                }`} variant="outline">
                   {drill.difficulty}
                 </Badge>
-                {drill.categories.map(cat => {
-                  const config = getCategoryConfig(cat);
-                  return (
-                    <Badge key={cat} className={`${config.bgColor} ${config.color} font-semibold border text-xs md:text-sm`}>
-                      {cat}
-                    </Badge>
-                  );
-                })}
+                {drill.categories.map(cat => (
+                  <Badge key={cat} variant="outline" className="bg-white/[0.06] text-white/80 border-white/[0.12] font-medium text-xs">
+                    {cat}
+                  </Badge>
+                ))}
               </div>
-              <h1 className="text-2xl md:text-5xl font-heading font-black leading-tight">{drill.name}</h1>
+              <h1 className="text-3xl md:text-5xl font-heading font-black text-white leading-tight tracking-tight">{drill.name}</h1>
             </div>
             
-            {/* Add to Favorites Button */}
-            {user && (
-              <Button
-                onClick={handleToggleFavorite}
-                disabled={toggleFavoriteMutation.isPending}
-                variant={isFavorited ? "secondary" : "outline"}
-                className={`w-full md:w-auto mt-3 md:mt-0 gap-2 ${
-                  isFavorited 
-                    ? "bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500" 
-                    : "bg-white/10 hover:bg-white/20 text-white border-white/30"
-                }`}
-              >
-                <Star className={`h-4 w-4 ${isFavorited ? "fill-current" : ""}`} />
-                {isFavorited ? "Favorited" : "Add to Favorites"}
-              </Button>
-            )}
-            
-            {/* Fallback to external link if we don't have internal details */}
-            {!details && (
-              <a href={drill.url} target="_blank" rel="noopener noreferrer" className="w-full md:w-auto mt-3 md:mt-0">
-                <Button variant="secondary" className="w-full md:w-auto text-sm md:text-base">
-                  <span className="hidden sm:inline">View on USA Baseball</span>
-                  <span className="sm:hidden">View</span>
-                  <ExternalLink className="ml-2 h-3 md:h-4 w-3 md:w-4" />
+            <div className="flex gap-2 w-full md:w-auto">
+              {/* Add to Favorites Button */}
+              {user && (
+                <Button
+                  onClick={handleToggleFavorite}
+                  disabled={toggleFavoriteMutation.isPending}
+                  variant="outline"
+                  className={`flex-1 md:flex-none gap-2 ${
+                    isFavorited 
+                      ? "bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border-amber-500/30" 
+                      : "bg-white/[0.06] hover:bg-white/[0.12] text-white/80 border-white/[0.12]"
+                  }`}
+                >
+                  <Star className={`h-4 w-4 ${isFavorited ? "fill-current" : ""}`} />
+                  {isFavorited ? "Favorited" : "Favorite"}
                 </Button>
-              </a>
-            )}
+              )}
+              
+              {/* Fallback to external link */}
+              {!details && (
+                <a href={drill.url} target="_blank" rel="noopener noreferrer" className="flex-1 md:flex-none">
+                  <Button variant="outline" className="w-full bg-white/[0.06] hover:bg-white/[0.12] text-white/80 border-white/[0.12] gap-2">
+                    <span className="hidden sm:inline">View on USA Baseball</span>
+                    <span className="sm:hidden">View</span>
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </a>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -1437,13 +1454,15 @@ export default function DrillDetail() {
             )}
 
             {/* Coaching Cues - Above the Fold */}
-            <Card className="border-l-4 border-l-secondary bg-gradient-to-br from-secondary/5 to-background">
-              <CardHeader>
-                <div className="flex items-center justify-between gap-2">
-                  <CardTitle className="flex items-center gap-2 text-xl md:text-2xl font-black">
-                    <Lightbulb className="h-5 md:h-6 w-5 md:w-6 text-secondary" />
+            <div className="glass-card rounded-xl border-l-4 border-l-blue-500 overflow-hidden">
+              <div className="p-4 md:p-6">
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <h3 className="flex items-center gap-2 text-xl md:text-2xl font-heading font-black">
+                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center">
+                      <Lightbulb className="h-4 w-4 text-blue-400" />
+                    </div>
                     Goal of Drill
-                  </CardTitle>
+                  </h3>
                   {user && (user.role === 'admin' || user.role === 'coach') && (
                     <div className="flex gap-2">
                       <button
@@ -1470,28 +1489,38 @@ export default function DrillDetail() {
                     </div>
                   )}
                 </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-base md:text-lg font-semibold text-foreground leading-relaxed">{details.goal}</p>
-              </CardContent>
-            </Card>
+                <p className="text-base md:text-lg font-medium text-foreground/90 leading-relaxed">{details.goal}</p>
+              </div>
+            </div>
 
             {/* Quick Info Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
-              <div className="bg-muted rounded-lg p-2.5 md:p-3 border">
-                <div className="text-xs font-bold text-muted-foreground uppercase mb-1">Time</div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="glass-card rounded-xl p-3 md:p-4">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Clock className="h-3.5 w-3.5 text-blue-400" />
+                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Time</span>
+                </div>
                 <div className="font-bold text-foreground text-sm md:text-base">{details.time}</div>
               </div>
-              <div className="bg-muted rounded-lg p-2.5 md:p-3 border">
-                <div className="text-xs font-bold text-muted-foreground uppercase mb-1">Athletes</div>
+              <div className="glass-card rounded-xl p-3 md:p-4">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Users className="h-3.5 w-3.5 text-purple-400" />
+                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Athletes</span>
+                </div>
                 <div className="font-bold text-foreground text-xs md:text-sm">{details.athletes.split(',')[0]}</div>
               </div>
-              <div className="bg-muted rounded-lg p-2.5 md:p-3 border">
-                <div className="text-xs font-bold text-muted-foreground uppercase mb-1">Equipment</div>
+              <div className="glass-card rounded-xl p-3 md:p-4">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Dumbbell className="h-3.5 w-3.5 text-amber-400" />
+                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Equipment</span>
+                </div>
                 <div className="font-bold text-foreground text-xs md:text-sm">{details.equipment.split(',')[0]}</div>
               </div>
-              <div className="bg-muted rounded-lg p-2.5 md:p-3 border">
-                <div className="text-xs font-bold text-muted-foreground uppercase mb-1">Skill Set</div>
+              <div className="glass-card rounded-xl p-3 md:p-4">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Target className="h-3.5 w-3.5 text-green-400" />
+                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Skill Set</span>
+                </div>
                 <div className="font-bold text-foreground text-xs md:text-sm">{details.skillSet}</div>
               </div>
             </div>
@@ -1499,10 +1528,12 @@ export default function DrillDetail() {
             {/* Custom Instructions */}
             <section>
               <h2 className="text-2xl md:text-3xl font-heading font-black mb-3 md:mb-4 flex items-center gap-2">
-                <Target className="h-6 md:h-8 w-6 md:w-8 text-secondary" />
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center">
+                  <Target className="h-4 w-4 text-green-400" />
+                </div>
                 Instructions
               </h2>
-              <div className="bg-card rounded-lg md:rounded-xl border p-4 md:p-6 shadow-sm">
+              <div className="glass-card rounded-xl p-4 md:p-6">
                 {user && (user.role === 'admin' || user.role === 'coach') ? (
                   <InstructionsEditor
                     value={customInstructions}
