@@ -1105,3 +1105,24 @@
 - [x] Redesign DrillDetail page with premium dark theme
 - [x] Redesign DrillComparison page with glass-card styling
 - [x] Redesign AthleteAssessment page with glass-card styling
+
+
+## Athlete Table with All Details (Frontend Only)
+- [ ] Examine existing tRPC queries for athlete data
+- [ ] Build comprehensive Athlete Table (ID, name, email, latest activity, status, drill count, etc.)
+- [ ] Add to Coach Dashboard with sorting and search
+- [ ] No backend or database changes
+
+## Athlete Table - Coach Dashboard
+- [x] Create AthleteTable component with comprehensive athlete details
+- [x] Add "Athletes Table" tab to Coach Dashboard tab navigation
+- [x] Display columns: ID, Name, Email, Status, Drills, Done, Last Activity, Last Sign In, Joined
+- [x] Implement sortable columns (click to sort asc/desc)
+- [x] Implement search by name, email, or ID
+- [x] Implement status filter tabs (All, Active, Pending, Inactive)
+- [x] Add expandable row detail view with full athlete info (role, account type, active client, completion rate, etc.)
+- [x] Add pagination (15 rows per page)
+- [x] Style with premium dark theme (glass-card, gradient borders)
+- [x] Frontend-only implementation (no backend/database changes)
+- [x] Merge data from getAthleteAssignmentOverview and getAllUsers endpoints
+- [x] Write vitest tests for data merging, filtering, sorting, and pagination logic (28 tests passing)

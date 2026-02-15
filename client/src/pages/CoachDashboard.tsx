@@ -8,7 +8,7 @@ import {
   ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, 
   Sparkles, Video, Upload, MessageSquare, BarChart3, Activity, Users, 
   LayoutTemplate, Edit3, ArrowLeftRight, FileText, ChevronRight,
-  Zap, Target, TrendingUp, Shield
+  Zap, Target, TrendingUp, Shield, Table2
 } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
@@ -34,6 +34,7 @@ import { BulkGoalUpload } from "@/components/BulkGoalUpload";
 import { AthleteProgressReport } from "@/components/AthleteProgressReport";
 import { AthleteAssignmentOverview } from "@/components/AthleteAssignmentOverview";
 import { DrillPageBuilderNotion } from "@/components/DrillPageBuilderNotion";
+import { AthleteTable } from "@/components/AthleteTable";
 
 interface Drill {
   id: string;
@@ -60,7 +61,7 @@ export default function CoachDashboard() {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [searchDrill, setSearchDrill] = useState("");
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts" | "athletes">("overview");
   const [editingLayoutDrill, setEditingLayoutDrill] = useState<{ id: string; name: string } | null>(null);
   const [layoutSearchQuery, setLayoutSearchQuery] = useState("");
   const [isBulkGoalOpen, setIsBulkGoalOpen] = useState(false);
@@ -311,6 +312,7 @@ export default function CoachDashboard() {
               { key: "overview" as const, label: "Athlete Overview", shortLabel: "Overview", icon: Users },
               { key: "assign" as const, label: "Assign Drills", shortLabel: "Assign", icon: Plus },
               { key: "page-layouts" as const, label: "Page Layouts", shortLabel: "Layouts", icon: LayoutTemplate },
+              { key: "athletes" as const, label: "Athletes Table", shortLabel: "Athletes", icon: Table2 },
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -341,6 +343,8 @@ export default function CoachDashboard() {
               setActiveTab("assign");
             }} 
           />
+        ) : activeTab === "athletes" ? (
+          <AthleteTable />
         ) : activeTab === "page-layouts" ? (
           <div className="space-y-6">
             {editingLayoutDrill ? (
