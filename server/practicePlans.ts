@@ -13,6 +13,11 @@ export interface PlanBlockInput {
   sets?: number | null;
   reps?: number | null;
   notes?: string | null;
+  coachingCues?: string | null;
+  keyPoints?: string | null;
+  equipment?: string | null;
+  intensity?: "low" | "medium" | "high" | null;
+  goal?: string | null;
 }
 
 export interface CreatePlanInput {
@@ -43,6 +48,27 @@ export interface UpdatePlanInput {
   blocks?: PlanBlockInput[];
 }
 
+// ─── Block Insert Helper ────────────────────────────────────────────────────
+
+function mapBlockToInsert(b: PlanBlockInput, planId: number) {
+  return {
+    planId,
+    sortOrder: b.sortOrder,
+    blockType: b.blockType,
+    drillId: b.drillId ?? null,
+    title: b.title,
+    duration: b.duration,
+    sets: b.sets ?? null,
+    reps: b.reps ?? null,
+    notes: b.notes ?? null,
+    coachingCues: b.coachingCues ?? null,
+    keyPoints: b.keyPoints ?? null,
+    equipment: b.equipment ?? null,
+    intensity: b.intensity ?? null,
+    goal: b.goal ?? null,
+  };
+}
+
 // ─── Queries ─────────────────────────────────────────────────────────────────
 
 /** Create a new practice plan with blocks */
@@ -66,17 +92,7 @@ export async function createPlan(input: CreatePlanInput) {
 
   if (input.blocks.length > 0) {
     await db.insert(practicePlanBlocks).values(
-      input.blocks.map((b) => ({
-        planId: plan.id,
-        sortOrder: b.sortOrder,
-        blockType: b.blockType,
-        drillId: b.drillId ?? null,
-        title: b.title,
-        duration: b.duration,
-        sets: b.sets ?? null,
-        reps: b.reps ?? null,
-        notes: b.notes ?? null,
-      }))
+      input.blocks.map((b) => mapBlockToInsert(b, plan.id))
     );
   }
 
@@ -189,17 +205,7 @@ export async function updatePlan(planId: number, input: UpdatePlanInput) {
     await db.delete(practicePlanBlocks).where(eq(practicePlanBlocks.planId, planId));
     if (input.blocks.length > 0) {
       await db.insert(practicePlanBlocks).values(
-        input.blocks.map((b: PlanBlockInput) => ({
-          planId,
-          sortOrder: b.sortOrder,
-          blockType: b.blockType,
-          drillId: b.drillId ?? null,
-          title: b.title,
-          duration: b.duration,
-          sets: b.sets ?? null,
-          reps: b.reps ?? null,
-          notes: b.notes ?? null,
-        }))
+        input.blocks.map((b: PlanBlockInput) => mapBlockToInsert(b, planId))
       );
     }
   }
@@ -243,6 +249,11 @@ export async function duplicatePlan(
       sets: b.sets,
       reps: b.reps,
       notes: b.notes,
+      coachingCues: b.coachingCues,
+      keyPoints: b.keyPoints,
+      equipment: b.equipment,
+      intensity: b.intensity,
+      goal: b.goal,
     })),
   });
 

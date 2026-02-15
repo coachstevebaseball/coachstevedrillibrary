@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,11 +18,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import { Progress } from "@/components/ui/progress";
 import {
   Plus, Trash2, Clock, Search, Copy, Share2, Edit3,
   ChevronDown, ChevronUp, Calendar, Target, Dumbbell,
   Coffee, Zap, ArrowLeft, Check, Eye, EyeOff,
-  MoreVertical, BookOpen,
+  MoreVertical, BookOpen, Play, Pause, SkipForward,
+  X, GripVertical, AlertCircle, Flame, Snowflake,
+  Activity, ChevronRight, FileText, Timer, Maximize2,
+  Minimize2, MessageSquare, Lightbulb, Wrench,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import drillsData from "@/data/drills.json";
@@ -48,9 +53,14 @@ interface PlanBlock {
   sets?: number | null;
   reps?: number | null;
   notes?: string | null;
+  coachingCues?: string | null;
+  keyPoints?: string | null;
+  equipment?: string | null;
+  intensity?: "low" | "medium" | "high" | null;
+  goal?: string | null;
 }
 
-type ViewMode = "list" | "create" | "edit" | "detail";
+type ViewMode = "list" | "create" | "edit" | "detail" | "session";
 
 const FOCUS_AREAS = [
   "Hitting", "Pitching", "Fielding", "Catching",
@@ -59,11 +69,17 @@ const FOCUS_AREAS = [
 ];
 
 const BLOCK_TYPE_CONFIG = {
-  drill: { icon: Target, label: "Drill", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20" },
-  warmup: { icon: Zap, label: "Warm-Up", color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20" },
-  cooldown: { icon: Coffee, label: "Cool-Down", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
-  break: { icon: Coffee, label: "Break", color: "text-gray-400", bg: "bg-gray-500/10 border-gray-500/20" },
-  custom: { icon: Dumbbell, label: "Custom", color: "text-purple-400", bg: "bg-purple-500/10 border-purple-500/20" },
+  drill: { icon: Target, label: "Drill", color: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/30", accent: "#3b82f6", gradient: "from-blue-500/20 to-blue-600/5" },
+  warmup: { icon: Flame, label: "Warm-Up", color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/30", accent: "#f59e0b", gradient: "from-amber-500/20 to-amber-600/5" },
+  cooldown: { icon: Snowflake, label: "Cool-Down", color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30", accent: "#10b981", gradient: "from-emerald-500/20 to-emerald-600/5" },
+  break: { icon: Coffee, label: "Break", color: "text-gray-400", bg: "bg-gray-500/10", border: "border-gray-500/30", accent: "#6b7280", gradient: "from-gray-500/20 to-gray-600/5" },
+  custom: { icon: Dumbbell, label: "Custom", color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/30", accent: "#a855f7", gradient: "from-purple-500/20 to-purple-600/5" },
+};
+
+const INTENSITY_CONFIG = {
+  low: { label: "Low", color: "text-green-400", bg: "bg-green-500/15", icon: "🟢" },
+  medium: { label: "Medium", color: "text-yellow-400", bg: "bg-yellow-500/15", icon: "🟡" },
+  high: { label: "High", color: "text-red-400", bg: "bg-red-500/15", icon: "🔴" },
 };
 
 let _tempId = 0;
@@ -75,140 +91,146 @@ export default function PracticePlanner() {
   const [view, setView] = useState<ViewMode>("list");
   const [editingPlanId, setEditingPlanId] = useState<number | null>(null);
   const [detailPlanId, setDetailPlanId] = useState<number | null>(null);
+  const [sessionPlanId, setSessionPlanId] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   const utils = trpc.useUtils();
-  const { data: plans = [], isLoading: plansLoading } = trpc.practicePlans.getAll.useQuery();
-  const { data: allUsers = [] } = trpc.admin.getAllUsers.useQuery();
-  const { data: allInvites = [] } = trpc.invites.getAllInvites.useQuery();
+  const { data: plans, isLoading } = trpc.practicePlans.getAll.useQuery();
 
-  const athleteOptions = useMemo(() => {
-    const opts: { id: string; name: string; email: string; type: "user" | "invite"; userId?: number; inviteId?: number }[] = [];
-    allUsers.forEach((u: any) => {
-      if (u.role !== "admin") {
-        opts.push({ id: `user-${u.id}`, name: u.name || u.email?.split("@")[0] || `User ${u.id}`, email: u.email || "", type: "user", userId: u.id });
-      }
-    });
-    allInvites.forEach((inv: any) => {
-      if (inv.status === "pending" || inv.status === "accepted") {
-        const existing = allUsers.find((u: any) => u.email === inv.email);
-        if (!existing) {
-          opts.push({ id: `invite-${inv.id}`, name: inv.email.split("@")[0], email: inv.email, type: "invite", inviteId: inv.id });
-        }
-      }
-    });
-    return opts;
-  }, [allUsers, allInvites]);
-
-  const createMutation = trpc.practicePlans.create.useMutation({
-    onSuccess: () => { utils.practicePlans.getAll.invalidate(); setView("list"); toast.success("Practice plan saved successfully."); },
-    onError: (err) => toast.error(err.message),
+  const deleteMut = trpc.practicePlans.delete.useMutation({
+    onSuccess: () => { utils.practicePlans.getAll.invalidate(); toast.success("Plan deleted"); },
   });
-  const updateMutation = trpc.practicePlans.update.useMutation({
-    onSuccess: () => { utils.practicePlans.getAll.invalidate(); setView("list"); toast.success("Changes saved."); },
-    onError: (err) => toast.error(err.message),
+  const duplicateMut = trpc.practicePlans.duplicate.useMutation({
+    onSuccess: () => { utils.practicePlans.getAll.invalidate(); toast.success("Plan duplicated"); },
   });
-  const deleteMutation = trpc.practicePlans.delete.useMutation({
-    onSuccess: () => { utils.practicePlans.getAll.invalidate(); toast.success("Practice plan removed."); },
-    onError: (err) => toast.error(err.message),
-  });
-  const duplicateMutation = trpc.practicePlans.duplicate.useMutation({
-    onSuccess: () => { utils.practicePlans.getAll.invalidate(); toast.success("Plan copy created."); },
-    onError: (err) => toast.error(err.message),
-  });
-  const toggleShareMutation = trpc.practicePlans.toggleShare.useMutation({
-    onSuccess: () => { utils.practicePlans.getAll.invalidate(); toast.success("Share status changed."); },
-    onError: (err) => toast.error(err.message),
+  const shareMut = trpc.practicePlans.toggleShare.useMutation({
+    onSuccess: () => { utils.practicePlans.getAll.invalidate(); },
   });
 
   const filteredPlans = useMemo(() => {
-    return plans.filter((p: any) => {
+    if (!plans) return [];
+    return plans.filter((p) => {
       const matchesStatus = statusFilter === "all" || p.status === statusFilter;
-      const matchesSearch = !searchQuery || p.title.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = !searchQuery || p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (p.athleteName && p.athleteName.toLowerCase().includes(searchQuery.toLowerCase()));
       return matchesStatus && matchesSearch;
     });
   }, [plans, statusFilter, searchQuery]);
 
-  const handleCreate = () => { setEditingPlanId(null); setView("create"); };
-  const handleEdit = (planId: number) => { setEditingPlanId(planId); setView("edit"); };
-  const handleViewDetail = (planId: number) => { setDetailPlanId(planId); setView("detail"); };
-  const handleDelete = (planId: number) => { if (confirm("Delete this practice plan?")) deleteMutation.mutate({ planId }); };
-  const handleDuplicate = (planId: number) => { duplicateMutation.mutate({ planId }); };
-  const handleToggleShare = (planId: number, currentlyShared: boolean) => { toggleShareMutation.mutate({ planId, isShared: !currentlyShared }); };
-
-  if (view === "create" || view === "edit") {
+  // ─── Session Mode ───────────────────────────────────────────────────────────
+  if (view === "session" && sessionPlanId) {
     return (
-      <PlanForm
-        planId={editingPlanId}
-        athleteOptions={athleteOptions}
-        onCancel={() => setView("list")}
-        onSave={(data) => {
-          if (editingPlanId) updateMutation.mutate({ planId: editingPlanId, ...data });
-          else createMutation.mutate(data);
-        }}
-        isSaving={createMutation.isPending || updateMutation.isPending}
+      <SessionMode
+        planId={sessionPlanId}
+        onExit={() => { setView("list"); setSessionPlanId(null); }}
       />
     );
   }
 
+  // ─── Detail View ────────────────────────────────────────────────────────────
   if (view === "detail" && detailPlanId) {
     return (
       <PlanDetail
         planId={detailPlanId}
-        onBack={() => setView("list")}
-        onEdit={() => handleEdit(detailPlanId)}
-        onToggleShare={handleToggleShare}
+        onBack={() => { setView("list"); setDetailPlanId(null); }}
+        onEdit={() => { setEditingPlanId(detailPlanId); setView("edit"); setDetailPlanId(null); }}
+        onStartSession={() => { setSessionPlanId(detailPlanId); setView("session"); setDetailPlanId(null); }}
+        onShare={(planId, shared) => shareMut.mutate({ planId, isShared: shared })}
       />
     );
   }
 
+  // ─── Create / Edit Form ─────────────────────────────────────────────────────
+  if (view === "create" || view === "edit") {
+    return (
+      <PlanForm
+        planId={view === "edit" ? editingPlanId : null}
+        onCancel={() => { setView("list"); setEditingPlanId(null); }}
+        onSaved={() => { setView("list"); setEditingPlanId(null); utils.practicePlans.getAll.invalidate(); }}
+      />
+    );
+  }
+
+  // ─── List View ──────────────────────────────────────────────────────────────
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-heading font-bold text-white">Practice Planner</h2>
-          <p className="text-sm text-white/50 mt-1">Plan and organize your training sessions</p>
+          <h2 className="text-2xl font-heading font-bold text-white">Practice Plans</h2>
+          <p className="text-sm text-white/40 mt-1">{plans?.length || 0} plans created</p>
         </div>
-        <Button onClick={handleCreate} className="bg-blue-600 hover:bg-blue-700 text-white gap-2">
+        <Button onClick={() => setView("create")} className="bg-blue-600 hover:bg-blue-700 text-white gap-2 shadow-lg shadow-blue-600/20">
           <Plus className="h-4 w-4" /> New Plan
         </Button>
       </div>
 
+      {/* Search & Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
-          <Input placeholder="Search plans..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 bg-white/[0.06] border-white/[0.08] text-white placeholder:text-white/30" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search plans or athletes..."
+            className="pl-9 bg-white/[0.04] border-white/[0.08] text-white placeholder:text-white/25"
+          />
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-1">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide">
           {["all", "draft", "scheduled", "completed", "cancelled"].map((s) => (
-            <button key={s} onClick={() => setStatusFilter(s)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${statusFilter === s ? "bg-blue-600 text-white" : "bg-white/[0.06] text-white/50 hover:text-white/80"}`}>
+            <button
+              key={s}
+              onClick={() => setStatusFilter(s)}
+              className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+                statusFilter === s
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+                  : "bg-white/[0.04] text-white/50 hover:text-white/80 hover:bg-white/[0.08]"
+              }`}
+            >
               {s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
             </button>
           ))}
         </div>
       </div>
 
-      {plansLoading ? (
-        <div className="space-y-4">{[1, 2, 3].map((i) => <div key={i} className="h-32 bg-white/[0.04] rounded-xl animate-pulse" />)}</div>
+      {/* Plans Grid */}
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-48 bg-white/[0.03] rounded-xl animate-pulse border border-white/[0.06]" />
+          ))}
+        </div>
       ) : filteredPlans.length === 0 ? (
-        <div className="text-center py-16 bg-white/[0.03] rounded-xl border border-white/[0.06]">
-          <Target className="h-12 w-12 text-white/20 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-white/80 mb-2">{plans.length === 0 ? "No practice plans yet" : "No plans match your filters"}</h3>
-          <p className="text-sm text-white/40 mb-6 max-w-md mx-auto">{plans.length === 0 ? "Create your first practice plan to organize training sessions." : "Try adjusting your search or filter criteria."}</p>
-          {plans.length === 0 && (
-            <Button onClick={handleCreate} className="bg-blue-600 hover:bg-blue-700 text-white gap-2"><Plus className="h-4 w-4" /> Create First Plan</Button>
+        <div className="text-center py-16 bg-white/[0.02] rounded-xl border border-dashed border-white/[0.08]">
+          <FileText className="h-12 w-12 text-white/15 mx-auto mb-4" />
+          <h3 className="text-lg font-bold text-white/60 mb-2">
+            {plans?.length === 0 ? "No practice plans yet" : "No plans match your filters"}
+          </h3>
+          <p className="text-sm text-white/30 mb-6 max-w-md mx-auto">
+            {plans?.length === 0
+              ? "Create your first session plan to stay organized during training."
+              : "Try adjusting your search or filter criteria."}
+          </p>
+          {plans?.length === 0 && (
+            <Button onClick={() => setView("create")} className="bg-blue-600 hover:bg-blue-700 text-white gap-2">
+              <Plus className="h-4 w-4" /> Create First Plan
+            </Button>
           )}
         </div>
       ) : (
-        <div className="grid gap-4">
-          {filteredPlans.map((plan: any) => (
-            <PlanCard key={plan.id} plan={plan}
-              onView={() => handleViewDetail(plan.id)} onEdit={() => handleEdit(plan.id)}
-              onDelete={() => handleDelete(plan.id)} onDuplicate={() => handleDuplicate(plan.id)}
-              onToggleShare={() => handleToggleShare(plan.id, !!plan.isShared)} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {filteredPlans.map((plan) => (
+            <PlanCard
+              key={plan.id}
+              plan={plan}
+              onView={() => { setDetailPlanId(plan.id); setView("detail"); }}
+              onEdit={() => { setEditingPlanId(plan.id); setView("edit"); }}
+              onStartSession={() => { setSessionPlanId(plan.id); setView("session"); }}
+              onDuplicate={() => duplicateMut.mutate({ planId: plan.id })}
+              onDelete={() => { if (confirm("Delete this plan?")) deleteMut.mutate({ planId: plan.id }); }}
+              onToggleShare={() => shareMut.mutate({ planId: plan.id, isShared: !plan.isShared })}
+            />
           ))}
         </div>
       )}
@@ -216,65 +238,127 @@ export default function PracticePlanner() {
   );
 }
 
-// ─── Plan Card ───────────────────────────────────────────────────────────────
+// ─── Plan Card ──────────────────────────────────────────────────────────────
 
-function PlanCard({ plan, onView, onEdit, onDelete, onDuplicate, onToggleShare }: {
-  plan: any; onView: () => void; onEdit: () => void; onDelete: () => void; onDuplicate: () => void; onToggleShare: () => void;
+function PlanCard({ plan, onView, onEdit, onStartSession, onDuplicate, onDelete, onToggleShare }: {
+  plan: any;
+  onView: () => void;
+  onEdit: () => void;
+  onStartSession: () => void;
+  onDuplicate: () => void;
+  onDelete: () => void;
+  onToggleShare: () => void;
 }) {
-  const [showActions, setShowActions] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const focusAreas = (plan.focusAreas as string[] | null) || [];
   const statusColors: Record<string, string> = {
-    draft: "bg-gray-500/20 text-gray-300 border-gray-500/30",
-    scheduled: "bg-blue-500/20 text-blue-300 border-blue-500/30",
-    completed: "bg-green-500/20 text-green-300 border-green-500/30",
-    cancelled: "bg-red-500/20 text-red-300 border-red-500/30",
+    draft: "bg-gray-500/20 text-gray-400 border-gray-500/30",
+    scheduled: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+    completed: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+    cancelled: "bg-red-500/20 text-red-400 border-red-500/30",
   };
-  const focusAreas = (plan.focusAreas as string[]) || [];
 
   return (
-    <Card className="bg-white/[0.04] border-white/[0.08] hover:bg-white/[0.06] transition-all cursor-pointer group" onClick={onView}>
-      <CardContent className="p-4 sm:p-5">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap mb-2">
-              <h3 className="font-heading font-bold text-white text-lg truncate">{plan.title}</h3>
-              <Badge variant="outline" className={`text-[10px] ${statusColors[plan.status] || statusColors.draft}`}>{plan.status}</Badge>
-              {plan.isShared ? (
-                <Badge variant="outline" className="text-[10px] bg-cyan-500/20 text-cyan-300 border-cyan-500/30">
-                  <Share2 className="h-2.5 w-2.5 mr-1" /> Shared
-                </Badge>
-              ) : null}
+    <Card
+      className="bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all duration-300 cursor-pointer group overflow-hidden"
+      onClick={onView}
+    >
+      <CardContent className="p-0">
+        {/* Top accent bar */}
+        <div className="h-1 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 opacity-60 group-hover:opacity-100 transition-opacity" />
+
+        <div className="p-4 sm:p-5">
+          {/* Header row */}
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <div className="flex-1 min-w-0">
+              <h3 className="font-heading font-bold text-white text-lg leading-tight truncate group-hover:text-blue-300 transition-colors">
+                {plan.title}
+              </h3>
+              {plan.athleteName && (
+                <p className="text-sm text-white/40 mt-0.5 truncate">{plan.athleteName}</p>
+              )}
             </div>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-white/40 mb-3">
-              {plan.athleteName && <span className="text-white/60">Athlete: <span className="text-white/80">{plan.athleteName}</span></span>}
-              <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{plan.duration} min</span>
-              {plan.sessionDate && <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{new Date(plan.sessionDate).toLocaleDateString()}</span>}
-            </div>
-            {focusAreas.length > 0 && (
-              <div className="flex flex-wrap gap-1.5">
-                {focusAreas.map((area) => (
-                  <span key={area} className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-white/[0.06] text-white/50">{area}</span>
-                ))}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Badge className={`${statusColors[plan.status] || statusColors.draft} border text-[10px] font-medium uppercase tracking-wider`}>
+                {plan.status}
+              </Badge>
+              <div className="relative">
+                <button
+                  onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen); }}
+                  className="p-1.5 rounded-lg hover:bg-white/[0.1] text-white/30 hover:text-white transition-colors"
+                >
+                  <MoreVertical className="h-4 w-4" />
+                </button>
+                {menuOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }} />
+                    <div className="absolute right-0 top-full mt-1 z-50 bg-[#1a1f2e] border border-white/[0.1] rounded-xl shadow-2xl py-1.5 min-w-[180px]">
+                      <button onClick={(e) => { e.stopPropagation(); onStartSession(); setMenuOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.06] flex items-center gap-2.5 transition-colors">
+                        <Play className="h-4 w-4 text-green-400" /> Start Session
+                      </button>
+                      <button onClick={(e) => { e.stopPropagation(); onEdit(); setMenuOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.06] flex items-center gap-2.5 transition-colors">
+                        <Edit3 className="h-4 w-4 text-blue-400" /> Edit Plan
+                      </button>
+                      <button onClick={(e) => { e.stopPropagation(); onDuplicate(); setMenuOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.06] flex items-center gap-2.5 transition-colors">
+                        <Copy className="h-4 w-4 text-cyan-400" /> Duplicate
+                      </button>
+                      <button onClick={(e) => { e.stopPropagation(); onToggleShare(); setMenuOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.06] flex items-center gap-2.5 transition-colors">
+                        {plan.isShared ? <EyeOff className="h-4 w-4 text-yellow-400" /> : <Share2 className="h-4 w-4 text-yellow-400" />}
+                        {plan.isShared ? "Unshare" : "Share with Athlete"}
+                      </button>
+                      <div className="border-t border-white/[0.06] my-1" />
+                      <button onClick={(e) => { e.stopPropagation(); onDelete(); setMenuOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 flex items-center gap-2.5 transition-colors">
+                        <Trash2 className="h-4 w-4" /> Delete
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
+            </div>
+          </div>
+
+          {/* Meta row */}
+          <div className="flex flex-wrap items-center gap-3 text-xs text-white/35 mb-3">
+            <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {plan.duration} min</span>
+            {plan.sessionDate && (
+              <span className="flex items-center gap-1">
+                <Calendar className="h-3 w-3" />
+                {new Date(plan.sessionDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+              </span>
+            )}
+            {plan.isShared === 1 && (
+              <span className="flex items-center gap-1 text-green-400/60"><Share2 className="h-3 w-3" /> Shared</span>
             )}
           </div>
-          <div className="relative flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setShowActions(!showActions)} className="p-2 rounded-lg hover:bg-white/[0.1] text-white/40 hover:text-white/80 transition-colors">
-              <MoreVertical className="h-4 w-4" />
+
+          {/* Focus areas */}
+          {focusAreas.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {focusAreas.slice(0, 4).map((area) => (
+                <span key={area} className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-white/[0.05] text-white/40 border border-white/[0.06]">
+                  {area}
+                </span>
+              ))}
+              {focusAreas.length > 4 && (
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-medium text-white/25">+{focusAreas.length - 4}</span>
+              )}
+            </div>
+          )}
+
+          {/* Quick action row */}
+          <div className="flex items-center gap-2 pt-2 border-t border-white/[0.05]">
+            <button
+              onClick={(e) => { e.stopPropagation(); onStartSession(); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 transition-all"
+            >
+              <Play className="h-3 w-3" /> Session
             </button>
-            {showActions && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setShowActions(false)} />
-                <div className="absolute right-0 top-10 z-50 bg-[#1a1f2e] border border-white/[0.1] rounded-xl shadow-2xl py-1 min-w-[160px]">
-                  <button onClick={() => { onEdit(); setShowActions(false); }} className="w-full px-4 py-2 text-left text-sm text-white/70 hover:bg-white/[0.06] flex items-center gap-2"><Edit3 className="h-3.5 w-3.5" /> Edit</button>
-                  <button onClick={() => { onDuplicate(); setShowActions(false); }} className="w-full px-4 py-2 text-left text-sm text-white/70 hover:bg-white/[0.06] flex items-center gap-2"><Copy className="h-3.5 w-3.5" /> Duplicate</button>
-                  <button onClick={() => { onToggleShare(); setShowActions(false); }} className="w-full px-4 py-2 text-left text-sm text-white/70 hover:bg-white/[0.06] flex items-center gap-2">
-                    {plan.isShared ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />} {plan.isShared ? "Unshare" : "Share"}
-                  </button>
-                  <div className="border-t border-white/[0.06] my-1" />
-                  <button onClick={() => { onDelete(); setShowActions(false); }} className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-red-500/10 flex items-center gap-2"><Trash2 className="h-3.5 w-3.5" /> Delete</button>
-                </div>
-              </>
-            )}
+            <button
+              onClick={(e) => { e.stopPropagation(); onEdit(); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.04] text-white/50 border border-white/[0.06] hover:bg-white/[0.08] hover:text-white/80 transition-all"
+            >
+              <Edit3 className="h-3 w-3" /> Edit
+            </button>
           </div>
         </div>
       </CardContent>
@@ -282,99 +366,538 @@ function PlanCard({ plan, onView, onEdit, onDelete, onDuplicate, onToggleShare }
   );
 }
 
-// ─── Plan Detail View ────────────────────────────────────────────────────────
+// ─── Plan Detail View ───────────────────────────────────────────────────────
 
-function PlanDetail({ planId, onBack, onEdit, onToggleShare }: {
-  planId: number; onBack: () => void; onEdit: () => void; onToggleShare: (planId: number, currentlyShared: boolean) => void;
+function PlanDetail({ planId, onBack, onEdit, onStartSession, onShare }: {
+  planId: number;
+  onBack: () => void;
+  onEdit: () => void;
+  onStartSession: () => void;
+  onShare: (planId: number, shared: boolean) => void;
 }) {
   const { data: plan, isLoading } = trpc.practicePlans.getById.useQuery({ planId });
 
-  if (isLoading) return <div className="space-y-4"><div className="h-8 w-48 bg-white/[0.06] rounded animate-pulse" /><div className="h-64 bg-white/[0.04] rounded-xl animate-pulse" /></div>;
-  if (!plan) return <div className="text-center py-16"><p className="text-white/50">Plan not found</p><Button variant="outline" onClick={onBack} className="mt-4">Go Back</Button></div>;
+  if (isLoading) return (
+    <div className="space-y-4">
+      <div className="h-8 w-48 bg-white/[0.06] rounded animate-pulse" />
+      <div className="h-64 bg-white/[0.04] rounded-xl animate-pulse" />
+    </div>
+  );
 
-  const focusAreas = (plan.focusAreas as string[]) || [];
-  const blocks = (plan as any).blocks || [];
+  if (!plan) return (
+    <div className="text-center py-16">
+      <AlertCircle className="h-12 w-12 text-white/20 mx-auto mb-4" />
+      <p className="text-white/40">Plan not found</p>
+      <Button variant="outline" onClick={onBack} className="mt-4 bg-transparent border-white/[0.1] text-white/60">Go Back</Button>
+    </div>
+  );
+
+  const focusAreas = (plan.focusAreas as string[] | null) || [];
+  const blocks = plan.blocks || [];
   let runningTime = 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-24">
+      {/* Header */}
       <div className="flex items-center gap-3">
-        <button onClick={onBack} className="p-2 rounded-lg hover:bg-white/[0.1] text-white/50 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></button>
+        <button onClick={onBack} className="p-2 rounded-lg hover:bg-white/[0.1] text-white/50 hover:text-white transition-colors">
+          <ArrowLeft className="h-5 w-5" />
+        </button>
         <div className="flex-1 min-w-0">
           <h2 className="text-2xl font-heading font-bold text-white truncate">{plan.title}</h2>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-white/40 mt-1">
-            {plan.athleteName && <span>Athlete: <span className="text-white/70">{plan.athleteName}</span></span>}
-            <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" />{plan.duration} min</span>
-            {plan.sessionDate && <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" />{new Date(plan.sessionDate).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</span>}
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => onToggleShare(plan.id, !!plan.isShared)}
-            className="bg-transparent border-white/[0.1] text-white/60 hover:text-white hover:bg-white/[0.06] gap-1.5">
-            {plan.isShared ? <EyeOff className="h-3.5 w-3.5" /> : <Share2 className="h-3.5 w-3.5" />}
-            <span className="hidden sm:inline">{plan.isShared ? "Unshare" : "Share"}</span>
-          </Button>
-          <Button size="sm" onClick={onEdit} className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5">
-            <Edit3 className="h-3.5 w-3.5" /><span className="hidden sm:inline">Edit</span>
-          </Button>
+          {plan.athleteName && <p className="text-sm text-white/40">{plan.athleteName}</p>}
         </div>
       </div>
 
-      {focusAreas.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {focusAreas.map((area) => <Badge key={area} variant="outline" className="bg-blue-500/10 text-blue-300 border-blue-500/20">{area}</Badge>)}
+      {/* Session Overview Card */}
+      <Card className="bg-gradient-to-br from-blue-500/10 via-white/[0.03] to-cyan-500/5 border-white/[0.08] overflow-hidden">
+        <CardContent className="p-5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
+            <div>
+              <p className="text-[10px] font-medium text-white/30 uppercase tracking-wider mb-1">Duration</p>
+              <p className="text-xl font-bold text-white flex items-center gap-1.5"><Clock className="h-4 w-4 text-blue-400" /> {plan.duration} min</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-medium text-white/30 uppercase tracking-wider mb-1">Blocks</p>
+              <p className="text-xl font-bold text-white flex items-center gap-1.5"><Activity className="h-4 w-4 text-cyan-400" /> {blocks.length}</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-medium text-white/30 uppercase tracking-wider mb-1">Status</p>
+              <Badge className="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-xs">{plan.status}</Badge>
+            </div>
+            <div>
+              <p className="text-[10px] font-medium text-white/30 uppercase tracking-wider mb-1">Date</p>
+              <p className="text-sm font-medium text-white/70">
+                {plan.sessionDate ? new Date(plan.sessionDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Not set"}
+              </p>
+            </div>
+          </div>
+
+          {focusAreas.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {focusAreas.map((area) => (
+                <Badge key={area} className="bg-white/[0.06] text-white/50 border border-white/[0.08] text-xs">{area}</Badge>
+              ))}
+            </div>
+          )}
+
+          {plan.sessionNotes && (
+            <div className="bg-white/[0.04] rounded-lg p-3 border border-white/[0.06]">
+              <p className="text-[10px] font-medium text-white/30 uppercase tracking-wider mb-1.5 flex items-center gap-1"><MessageSquare className="h-3 w-3" /> Session Notes</p>
+              <p className="text-sm text-white/60 whitespace-pre-wrap leading-relaxed">{plan.sessionNotes}</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Session Timeline */}
+      <div>
+        <h3 className="text-sm font-medium text-white/40 uppercase tracking-wider mb-4 flex items-center gap-2">
+          <Timer className="h-4 w-4" /> Session Timeline
+        </h3>
+
+        <div className="space-y-3">
+          {blocks.map((block: any, idx: number) => {
+            const config = BLOCK_TYPE_CONFIG[block.blockType as keyof typeof BLOCK_TYPE_CONFIG] || BLOCK_TYPE_CONFIG.custom;
+            const Icon = config.icon;
+            const startTime = runningTime;
+            runningTime += block.duration;
+            const intensityConf = block.intensity ? INTENSITY_CONFIG[block.intensity as keyof typeof INTENSITY_CONFIG] : null;
+
+            return (
+              <DetailBlock
+                key={block.id}
+                block={block}
+                index={idx}
+                startTime={startTime}
+                config={config}
+                intensityConf={intensityConf}
+              />
+            );
+          })}
         </div>
-      )}
+      </div>
 
-      {plan.sessionNotes && (
-        <Card className="bg-white/[0.04] border-white/[0.08]">
-          <CardContent className="p-4">
-            <h4 className="text-xs font-medium text-white/40 uppercase tracking-wider mb-2">Session Notes</h4>
-            <p className="text-sm text-white/70 whitespace-pre-wrap">{plan.sessionNotes}</p>
-          </CardContent>
-        </Card>
-      )}
+      {/* Sticky Action Bar */}
+      <div className="fixed bottom-0 left-0 right-0 bg-[#0d1117]/95 backdrop-blur-xl border-t border-white/[0.08] px-4 py-3 z-50">
+        <div className="max-w-4xl mx-auto flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <Button variant="outline" onClick={onEdit} className="bg-transparent border-white/[0.1] text-white/60 hover:text-white hover:bg-white/[0.06] gap-2">
+              <Edit3 className="h-4 w-4" /> Edit
+            </Button>
+            <button
+              onClick={() => onShare(planId, !(plan.isShared === 1))}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
+                plan.isShared === 1
+                  ? "bg-green-500/15 text-green-400 border-green-500/30 hover:bg-green-500/25"
+                  : "bg-white/[0.04] text-white/50 border-white/[0.08] hover:bg-white/[0.08]"
+              }`}
+            >
+              {plan.isShared === 1 ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+              {plan.isShared === 1 ? "Shared" : "Share"}
+            </button>
+          </div>
+          <Button onClick={onStartSession} className="bg-green-600 hover:bg-green-700 text-white gap-2 shadow-lg shadow-green-600/20 px-6">
+            <Play className="h-4 w-4" /> Start Session
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-      <div className="space-y-3">
-        <h3 className="text-sm font-medium text-white/50 uppercase tracking-wider">Session Timeline</h3>
-        {blocks.length === 0 ? (
-          <p className="text-sm text-white/30 italic">No blocks added yet.</p>
-        ) : (
-          <div className="space-y-2">
-            {blocks.map((block: any, idx: number) => {
-              const startTime = runningTime;
-              runningTime += block.duration;
-              const config = BLOCK_TYPE_CONFIG[block.blockType as keyof typeof BLOCK_TYPE_CONFIG] || BLOCK_TYPE_CONFIG.custom;
-              const Icon = config.icon;
-              return (
-                <div key={block.id || idx} className={`rounded-xl border p-4 ${config.bg}`}>
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 mt-0.5">
-                      <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${config.bg}`}><Icon className={`h-4 w-4 ${config.color}`} /></div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2">
-                        <h4 className="font-medium text-white text-sm">{block.title}</h4>
-                        <span className="text-xs text-white/40 whitespace-nowrap">{startTime}–{runningTime} min</span>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs text-white/40">
-                        <span>{block.duration} min</span>
-                        {block.sets && <span>{block.sets} sets</span>}
-                        {block.reps && <span>{block.reps} reps</span>}
-                      </div>
-                      {block.notes && <p className="text-xs text-white/40 mt-2 italic">{block.notes}</p>}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+// ─── Detail Block (Read-Only Visual Block) ──────────────────────────────────
+
+function DetailBlock({ block, index, startTime, config, intensityConf }: {
+  block: any; index: number; startTime: number; config: any; intensityConf: any;
+}) {
+  const [expanded, setExpanded] = useState(true);
+  const Icon = config.icon;
+  const hasDetails = block.notes || block.coachingCues || block.keyPoints || block.equipment || block.goal;
+
+  return (
+    <div className={`rounded-xl border ${config.border} overflow-hidden transition-all`}>
+      {/* Block Header */}
+      <div
+        className={`flex items-center gap-3 p-4 cursor-pointer bg-gradient-to-r ${config.gradient}`}
+        onClick={() => setExpanded(!expanded)}
+      >
+        {/* Timeline indicator */}
+        <div className="flex flex-col items-center gap-0.5 flex-shrink-0 w-12">
+          <span className="text-[10px] font-mono text-white/30">{startTime}m</span>
+          <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${config.bg}`}>
+            <Icon className={`h-4 w-4 ${config.color}`} />
+          </div>
+        </div>
+
+        {/* Block info */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-0.5">
+            <span className="text-sm font-bold text-white truncate">{block.title}</span>
+            {intensityConf && (
+              <span className={`text-[10px] px-1.5 py-0.5 rounded ${intensityConf.bg} ${intensityConf.color} font-medium`}>
+                {intensityConf.label}
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-3 text-[11px] text-white/35">
+            <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {block.duration} min</span>
+            {block.sets && <span>{block.sets} sets</span>}
+            {block.reps && <span>{block.reps} reps</span>}
+            {block.equipment && <span className="flex items-center gap-1"><Wrench className="h-3 w-3" /> {block.equipment}</span>}
+          </div>
+        </div>
+
+        {/* Expand toggle */}
+        {hasDetails && (
+          <div className="text-white/20">
+            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </div>
         )}
       </div>
 
-      <div className="bg-white/[0.04] rounded-xl border border-white/[0.08] p-4 flex items-center justify-between">
-        <span className="text-sm text-white/50">Total Session Duration</span>
-        <span className="font-heading font-bold text-white text-lg">{plan.duration} min</span>
+      {/* Expanded Details */}
+      {expanded && hasDetails && (
+        <div className="px-4 pb-4 space-y-3 border-t border-white/[0.05] pt-3">
+          {block.goal && (
+            <div className="flex items-start gap-2">
+              <Target className="h-3.5 w-3.5 text-blue-400 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-[10px] font-medium text-blue-400/60 uppercase tracking-wider mb-0.5">Goal</p>
+                <p className="text-sm text-white/70">{block.goal}</p>
+              </div>
+            </div>
+          )}
+
+          {block.coachingCues && (
+            <div className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
+              <p className="text-[10px] font-medium text-amber-400/70 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <Lightbulb className="h-3 w-3" /> Coaching Cues
+              </p>
+              <p className="text-sm text-white/70 whitespace-pre-wrap leading-relaxed">{block.coachingCues}</p>
+            </div>
+          )}
+
+          {block.keyPoints && (
+            <div className="bg-cyan-500/5 border border-cyan-500/15 rounded-lg p-3">
+              <p className="text-[10px] font-medium text-cyan-400/70 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <AlertCircle className="h-3 w-3" /> Key Points / What to Watch
+              </p>
+              <p className="text-sm text-white/70 whitespace-pre-wrap leading-relaxed">{block.keyPoints}</p>
+            </div>
+          )}
+
+          {block.notes && (
+            <div>
+              <p className="text-[10px] font-medium text-white/30 uppercase tracking-wider mb-1 flex items-center gap-1">
+                <FileText className="h-3 w-3" /> Notes
+              </p>
+              <p className="text-sm text-white/50 whitespace-pre-wrap">{block.notes}</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Session Mode (Full-Screen Live View) ───────────────────────────────────
+
+function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }) {
+  const { data: plan, isLoading } = trpc.practicePlans.getById.useQuery({ planId });
+  const [currentBlockIdx, setCurrentBlockIdx] = useState(0);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [sessionStarted, setSessionStarted] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const blocks = plan?.blocks || [];
+  const currentBlock = blocks[currentBlockIdx];
+  const totalBlocks = blocks.length;
+
+  // Timer logic
+  useEffect(() => {
+    if (isTimerRunning) {
+      timerRef.current = setInterval(() => {
+        setElapsedSeconds((prev) => prev + 1);
+      }, 1000);
+    } else {
+      if (timerRef.current) clearInterval(timerRef.current);
+    }
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [isTimerRunning]);
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
+
+  const goToBlock = (idx: number) => {
+    if (idx >= 0 && idx < totalBlocks) {
+      setCurrentBlockIdx(idx);
+      setElapsedSeconds(0);
+    }
+  };
+
+  const startSession = () => {
+    setSessionStarted(true);
+    setIsTimerRunning(true);
+    setCurrentBlockIdx(0);
+    setElapsedSeconds(0);
+  };
+
+  if (isLoading) return (
+    <div className="fixed inset-0 bg-[#0a0e14] z-[100] flex items-center justify-center">
+      <div className="animate-pulse text-white/30 text-lg">Loading session...</div>
+    </div>
+  );
+
+  if (!plan) return null;
+
+  const config = currentBlock ? (BLOCK_TYPE_CONFIG[currentBlock.blockType as keyof typeof BLOCK_TYPE_CONFIG] || BLOCK_TYPE_CONFIG.custom) : BLOCK_TYPE_CONFIG.custom;
+  const Icon = config.icon;
+  const blockDurationSec = currentBlock ? currentBlock.duration * 60 : 0;
+  const progress = blockDurationSec > 0 ? Math.min((elapsedSeconds / blockDurationSec) * 100, 100) : 0;
+  const isOvertime = elapsedSeconds > blockDurationSec;
+  const intensityConf = currentBlock?.intensity ? INTENSITY_CONFIG[currentBlock.intensity as keyof typeof INTENSITY_CONFIG] : null;
+
+  // Pre-session start screen
+  if (!sessionStarted) {
+    return (
+      <div className="fixed inset-0 bg-[#0a0e14] z-[100] flex flex-col">
+        <div className="flex items-center justify-between p-4 border-b border-white/[0.06]">
+          <button onClick={onExit} className="p-2 rounded-lg hover:bg-white/[0.1] text-white/50 hover:text-white transition-colors">
+            <X className="h-5 w-5" />
+          </button>
+          <span className="text-sm text-white/30 font-medium">Session Mode</span>
+          <div className="w-9" />
+        </div>
+
+        <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
+          <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/10 flex items-center justify-center mb-6 border border-blue-500/20">
+            <Play className="h-10 w-10 text-blue-400" />
+          </div>
+          <h2 className="text-3xl font-heading font-bold text-white mb-2">{plan.title}</h2>
+          {plan.athleteName && <p className="text-lg text-white/40 mb-2">{plan.athleteName}</p>}
+          <p className="text-white/30 mb-8">{totalBlocks} blocks · {plan.duration} min</p>
+
+          {/* Block preview list */}
+          <div className="w-full max-w-sm space-y-2 mb-8 max-h-[40vh] overflow-y-auto">
+            {blocks.map((b: any, i: number) => {
+              const bConfig = BLOCK_TYPE_CONFIG[b.blockType as keyof typeof BLOCK_TYPE_CONFIG] || BLOCK_TYPE_CONFIG.custom;
+              const BIcon = bConfig.icon;
+              return (
+                <div key={b.id} className={`flex items-center gap-3 px-4 py-2.5 rounded-lg ${bConfig.bg} border ${bConfig.border}`}>
+                  <span className="text-xs text-white/25 font-mono w-5">{i + 1}</span>
+                  <BIcon className={`h-4 w-4 ${bConfig.color} flex-shrink-0`} />
+                  <span className="text-sm text-white/70 flex-1 truncate text-left">{b.title}</span>
+                  <span className="text-xs text-white/30">{b.duration}m</span>
+                </div>
+              );
+            })}
+          </div>
+
+          <Button onClick={startSession} size="lg" className="bg-green-600 hover:bg-green-700 text-white gap-3 px-10 py-6 text-lg shadow-2xl shadow-green-600/30 rounded-xl">
+            <Play className="h-6 w-6" /> Start Session
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Active session view
+  return (
+    <div className="fixed inset-0 bg-[#0a0e14] z-[100] flex flex-col">
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-[#0a0e14]/95 backdrop-blur-lg flex-shrink-0">
+        <button onClick={() => { setIsTimerRunning(false); onExit(); }} className="p-2 rounded-lg hover:bg-white/[0.1] text-white/50 hover:text-white transition-colors">
+          <X className="h-5 w-5" />
+        </button>
+        <div className="text-center">
+          <p className="text-[10px] text-white/30 uppercase tracking-wider font-medium">Session</p>
+          <p className="text-sm text-white/70 font-medium truncate max-w-[200px]">{plan.title}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-[10px] text-white/30 uppercase tracking-wider">Block</p>
+          <p className="text-sm text-white/70 font-mono">{currentBlockIdx + 1}/{totalBlocks}</p>
+        </div>
+      </div>
+
+      {/* Progress bar across all blocks */}
+      <div className="flex gap-1 px-4 py-2 flex-shrink-0">
+        {blocks.map((_: any, i: number) => (
+          <div
+            key={i}
+            className={`h-1 flex-1 rounded-full transition-all cursor-pointer ${
+              i < currentBlockIdx ? "bg-green-500" : i === currentBlockIdx ? "bg-blue-500" : "bg-white/[0.08]"
+            }`}
+            onClick={() => goToBlock(i)}
+          />
+        ))}
+      </div>
+
+      {/* Main content - scrollable */}
+      {currentBlock && (
+        <div className="flex-1 overflow-y-auto px-4 py-6">
+          {/* Block type & timer */}
+          <div className="text-center mb-6">
+            <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl ${config.bg} border ${config.border} mb-4`}>
+              <Icon className={`h-5 w-5 ${config.color}`} />
+              <span className={`text-sm font-medium ${config.color}`}>{config.label}</span>
+              {intensityConf && (
+                <span className={`text-xs px-2 py-0.5 rounded-md ${intensityConf.bg} ${intensityConf.color} font-medium ml-1`}>
+                  {intensityConf.label}
+                </span>
+              )}
+            </div>
+
+            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-white mb-3 leading-tight px-2">
+              {currentBlock.title}
+            </h2>
+
+            {/* Timer */}
+            <div className="mb-4">
+              <p className={`text-5xl sm:text-6xl font-mono font-bold tracking-tight ${isOvertime ? "text-red-400" : "text-white"}`}>
+                {formatTime(elapsedSeconds)}
+              </p>
+              <p className="text-sm text-white/30 mt-1">
+                {isOvertime ? "Over time!" : `of ${currentBlock.duration}:00`}
+              </p>
+            </div>
+
+            {/* Progress */}
+            <div className="max-w-xs mx-auto mb-2">
+              <Progress value={progress} className="h-2 bg-white/[0.06]" />
+            </div>
+
+            {/* Timer controls */}
+            <div className="flex items-center justify-center gap-4 mt-4">
+              <button
+                onClick={() => setIsTimerRunning(!isTimerRunning)}
+                className={`h-14 w-14 rounded-full flex items-center justify-center transition-all shadow-lg ${
+                  isTimerRunning
+                    ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/30"
+                    : "bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30"
+                }`}
+              >
+                {isTimerRunning ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
+              </button>
+              <button
+                onClick={() => setElapsedSeconds(0)}
+                className="h-10 w-10 rounded-full flex items-center justify-center bg-white/[0.06] text-white/40 hover:text-white hover:bg-white/[0.1] transition-all border border-white/[0.08]"
+              >
+                <Timer className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Sets & Reps */}
+          {(currentBlock.sets || currentBlock.reps) && (
+            <div className="flex justify-center gap-6 mb-6">
+              {currentBlock.sets && (
+                <div className="text-center bg-white/[0.04] rounded-xl px-6 py-3 border border-white/[0.06]">
+                  <p className="text-3xl font-bold text-white">{currentBlock.sets}</p>
+                  <p className="text-xs text-white/30 uppercase tracking-wider mt-0.5">Sets</p>
+                </div>
+              )}
+              {currentBlock.reps && (
+                <div className="text-center bg-white/[0.04] rounded-xl px-6 py-3 border border-white/[0.06]">
+                  <p className="text-3xl font-bold text-white">{currentBlock.reps}</p>
+                  <p className="text-xs text-white/30 uppercase tracking-wider mt-0.5">Reps</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Equipment */}
+          {currentBlock.equipment && (
+            <div className="flex items-center justify-center gap-2 mb-4 text-white/40">
+              <Wrench className="h-4 w-4" />
+              <span className="text-sm">{currentBlock.equipment}</span>
+            </div>
+          )}
+
+          {/* Goal */}
+          {currentBlock.goal && (
+            <div className="bg-blue-500/8 border border-blue-500/15 rounded-xl p-4 mb-4 max-w-lg mx-auto">
+              <p className="text-[10px] font-medium text-blue-400/60 uppercase tracking-wider mb-1.5 flex items-center gap-1 justify-center">
+                <Target className="h-3 w-3" /> Block Goal
+              </p>
+              <p className="text-base text-white/80 text-center leading-relaxed">{currentBlock.goal}</p>
+            </div>
+          )}
+
+          {/* Coaching Cues - PROMINENT */}
+          {currentBlock.coachingCues && (
+            <div className="bg-amber-500/8 border border-amber-500/20 rounded-xl p-5 mb-4 max-w-lg mx-auto">
+              <p className="text-xs font-bold text-amber-400/80 uppercase tracking-wider mb-2 flex items-center gap-1.5 justify-center">
+                <Lightbulb className="h-4 w-4" /> Coaching Cues
+              </p>
+              <p className="text-lg text-white/80 text-center leading-relaxed whitespace-pre-wrap font-medium">{currentBlock.coachingCues}</p>
+            </div>
+          )}
+
+          {/* Key Points */}
+          {currentBlock.keyPoints && (
+            <div className="bg-cyan-500/8 border border-cyan-500/15 rounded-xl p-4 mb-4 max-w-lg mx-auto">
+              <p className="text-[10px] font-medium text-cyan-400/60 uppercase tracking-wider mb-1.5 flex items-center gap-1 justify-center">
+                <AlertCircle className="h-3 w-3" /> What to Watch
+              </p>
+              <p className="text-base text-white/70 text-center leading-relaxed whitespace-pre-wrap">{currentBlock.keyPoints}</p>
+            </div>
+          )}
+
+          {/* Notes */}
+          {currentBlock.notes && (
+            <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 max-w-lg mx-auto">
+              <p className="text-[10px] font-medium text-white/25 uppercase tracking-wider mb-1.5 flex items-center gap-1 justify-center">
+                <FileText className="h-3 w-3" /> Notes
+              </p>
+              <p className="text-sm text-white/50 text-center whitespace-pre-wrap">{currentBlock.notes}</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Bottom navigation */}
+      <div className="flex items-center justify-between px-4 py-4 border-t border-white/[0.06] bg-[#0a0e14]/95 backdrop-blur-lg flex-shrink-0">
+        <button
+          onClick={() => goToBlock(currentBlockIdx - 1)}
+          disabled={currentBlockIdx === 0}
+          className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium bg-white/[0.04] text-white/50 hover:text-white hover:bg-white/[0.08] disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-white/[0.06]"
+        >
+          <ArrowLeft className="h-4 w-4" /> Prev
+        </button>
+
+        {/* Block dots */}
+        <div className="flex gap-1.5 overflow-x-auto max-w-[40vw] scrollbar-hide">
+          {blocks.map((_: any, i: number) => (
+            <button
+              key={i}
+              onClick={() => goToBlock(i)}
+              className={`h-2.5 w-2.5 rounded-full transition-all flex-shrink-0 ${
+                i === currentBlockIdx ? "bg-blue-500 scale-125" : i < currentBlockIdx ? "bg-green-500/60" : "bg-white/[0.15]"
+              }`}
+            />
+          ))}
+        </div>
+
+        {currentBlockIdx < totalBlocks - 1 ? (
+          <button
+            onClick={() => { goToBlock(currentBlockIdx + 1); setElapsedSeconds(0); }}
+            className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20"
+          >
+            Next <SkipForward className="h-4 w-4" />
+          </button>
+        ) : (
+          <button
+            onClick={() => { setIsTimerRunning(false); toast.success("Session complete!"); onExit(); }}
+            className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium bg-green-600 text-white hover:bg-green-700 transition-all shadow-lg shadow-green-600/20"
+          >
+            <Check className="h-4 w-4" /> Done
+          </button>
+        )}
       </div>
     </div>
   );
@@ -382,100 +905,158 @@ function PlanDetail({ planId, onBack, onEdit, onToggleShare }: {
 
 // ─── Plan Form (Create / Edit) ──────────────────────────────────────────────
 
-function PlanForm({ planId, athleteOptions, onCancel, onSave, isSaving }: {
-  planId: number | null;
-  athleteOptions: { id: string; name: string; email: string; type: "user" | "invite"; userId?: number; inviteId?: number }[];
-  onCancel: () => void; onSave: (data: any) => void; isSaving: boolean;
-}) {
+function PlanForm({ planId, onCancel, onSaved }: { planId: number | null; onCancel: () => void; onSaved: () => void; }) {
   const { data: existingPlan, isLoading: loadingPlan } = trpc.practicePlans.getById.useQuery(
-    { planId: planId! }, { enabled: !!planId }
+    { planId: planId! },
+    { enabled: !!planId }
   );
 
   const [title, setTitle] = useState("");
   const [selectedAthlete, setSelectedAthlete] = useState<string>("none");
   const [sessionDate, setSessionDate] = useState("");
-  const [sessionNotes, setSessionNotes] = useState("");
-  const [focusAreas, setFocusAreas] = useState<string[]>([]);
   const [status, setStatus] = useState<"draft" | "scheduled" | "completed" | "cancelled">("draft");
+  const [focusAreas, setFocusAreas] = useState<string[]>([]);
+  const [sessionNotes, setSessionNotes] = useState("");
   const [blocks, setBlocks] = useState<PlanBlock[]>([]);
-  const [initialized, setInitialized] = useState(false);
 
-  if (planId && existingPlan && !initialized) {
-    setTitle(existingPlan.title);
-    if (existingPlan.athleteId) setSelectedAthlete(`user-${existingPlan.athleteId}`);
-    if (existingPlan.sessionDate) {
-      const d = new Date(existingPlan.sessionDate);
-      setSessionDate(d.toISOString().slice(0, 16));
+  const { data: overviewData } = trpc.drillAssignments.getAthleteAssignmentOverview.useQuery();
+  const athleteOptions = useMemo(() => {
+    if (!overviewData?.athletes) return [];
+    return overviewData.athletes.map((a: any) => ({ id: String(a.userId), name: a.name || a.email, email: a.email }));
+  }, [overviewData]);
+
+  const createMut = trpc.practicePlans.create.useMutation({ onSuccess: () => { toast.success("Plan created!"); onSaved(); } });
+  const updateMut = trpc.practicePlans.update.useMutation({ onSuccess: () => { toast.success("Plan updated!"); onSaved(); } });
+  const isSaving = createMut.isPending || updateMut.isPending;
+
+  // Load existing plan data
+  useEffect(() => {
+    if (existingPlan) {
+      setTitle(existingPlan.title);
+      setSelectedAthlete(existingPlan.athleteId ? String(existingPlan.athleteId) : "none");
+      setSessionDate(existingPlan.sessionDate ? new Date(existingPlan.sessionDate).toISOString().slice(0, 16) : "");
+      setStatus(existingPlan.status as any);
+      setFocusAreas((existingPlan.focusAreas as string[]) || []);
+      setSessionNotes(existingPlan.sessionNotes || "");
+      setBlocks(
+        existingPlan.blocks.map((b: any) => ({
+          id: tempId(),
+          sortOrder: b.sortOrder,
+          blockType: b.blockType,
+          drillId: b.drillId,
+          title: b.title,
+          duration: b.duration,
+          sets: b.sets,
+          reps: b.reps,
+          notes: b.notes,
+          coachingCues: b.coachingCues,
+          keyPoints: b.keyPoints,
+          equipment: b.equipment,
+          intensity: b.intensity,
+          goal: b.goal,
+        }))
+      );
     }
-    setSessionNotes(existingPlan.sessionNotes || "");
-    setFocusAreas((existingPlan.focusAreas as string[]) || []);
-    setStatus(existingPlan.status as any);
-    setBlocks(
-      ((existingPlan as any).blocks || []).map((b: any) => ({
-        id: tempId(), sortOrder: b.sortOrder, blockType: b.blockType, drillId: b.drillId,
-        title: b.title, duration: b.duration, sets: b.sets, reps: b.reps, notes: b.notes,
-      }))
-    );
-    setInitialized(true);
-  }
-
-  const totalDuration = blocks.reduce((sum, b) => sum + b.duration, 0);
+  }, [existingPlan]);
 
   const toggleFocusArea = (area: string) => {
     setFocusAreas((prev) => prev.includes(area) ? prev.filter((a) => a !== area) : [...prev, area]);
   };
 
   const addBlock = (type: PlanBlock["blockType"]) => {
-    const defaultTitles: Record<string, string> = { drill: "New Drill", warmup: "Warm-Up", cooldown: "Cool-Down", break: "Break", custom: "Custom Activity" };
-    setBlocks((prev) => [...prev, {
-      id: tempId(), sortOrder: prev.length, blockType: type, title: defaultTitles[type],
-      duration: type === "break" ? 5 : 10, drillId: null, sets: null, reps: null, notes: null,
-    }]);
+    const config = BLOCK_TYPE_CONFIG[type];
+    setBlocks((prev) => [
+      ...prev,
+      {
+        id: tempId(),
+        sortOrder: prev.length,
+        blockType: type,
+        title: config.label,
+        duration: type === "break" ? 5 : 15,
+        sets: null,
+        reps: null,
+        notes: null,
+        coachingCues: null,
+        keyPoints: null,
+        equipment: null,
+        intensity: null,
+        goal: null,
+      },
+    ]);
   };
 
   const updateBlock = (id: string, updates: Partial<PlanBlock>) => {
-    setBlocks((prev) => prev.map((b) => b.id === id ? { ...b, ...updates } : b));
+    setBlocks((prev) => prev.map((b) => (b.id === id ? { ...b, ...updates } : b)));
   };
 
-  const removeBlock = (id: string) => { setBlocks((prev) => prev.filter((b) => b.id !== id)); };
+  const removeBlock = (id: string) => setBlocks((prev) => prev.filter((b) => b.id !== id));
 
-  const moveBlock = (id: string, direction: "up" | "down") => {
+  const moveBlock = (id: string, dir: "up" | "down") => {
     setBlocks((prev) => {
       const idx = prev.findIndex((b) => b.id === id);
-      if (idx < 0) return prev;
-      const newIdx = direction === "up" ? idx - 1 : idx + 1;
-      if (newIdx < 0 || newIdx >= prev.length) return prev;
-      const copy = [...prev];
-      [copy[idx], copy[newIdx]] = [copy[newIdx], copy[idx]];
-      return copy;
+      if ((dir === "up" && idx === 0) || (dir === "down" && idx === prev.length - 1)) return prev;
+      const next = [...prev];
+      const swapIdx = dir === "up" ? idx - 1 : idx + 1;
+      [next[idx], next[swapIdx]] = [next[swapIdx], next[idx]];
+      return next;
     });
   };
+
+  const totalDuration = blocks.reduce((sum, b) => sum + b.duration, 0);
 
   const handleSubmit = () => {
-    if (!title.trim()) return;
-    const athleteId = selectedAthlete.startsWith("user-") ? parseInt(selectedAthlete.replace("user-", "")) : null;
-    onSave({
-      title: title.trim(), athleteId, sessionDate: sessionDate || null,
-      duration: totalDuration || 60, sessionNotes: sessionNotes || null,
-      focusAreas: focusAreas.length > 0 ? focusAreas : null, status, isShared: false,
+    if (!title.trim()) { toast.error("Please enter a plan title"); return; }
+    const payload = {
+      title: title.trim(),
+      athleteId: selectedAthlete !== "none" ? parseInt(selectedAthlete) : null,
+      sessionDate: sessionDate || null,
+      duration: totalDuration || 1,
+      sessionNotes: sessionNotes || null,
+      focusAreas: focusAreas.length > 0 ? focusAreas : null,
+      status,
       blocks: blocks.map((b, i) => ({
-        sortOrder: i, blockType: b.blockType, drillId: b.drillId || null,
-        title: b.title, duration: b.duration, sets: b.sets || null, reps: b.reps || null, notes: b.notes || null,
+        sortOrder: i,
+        blockType: b.blockType,
+        drillId: b.drillId || null,
+        title: b.title,
+        duration: b.duration,
+        sets: b.sets || null,
+        reps: b.reps || null,
+        notes: b.notes || null,
+        coachingCues: b.coachingCues || null,
+        keyPoints: b.keyPoints || null,
+        equipment: b.equipment || null,
+        intensity: b.intensity || null,
+        goal: b.goal || null,
       })),
-    });
+    };
+
+    if (planId) {
+      updateMut.mutate({ planId, ...payload });
+    } else {
+      createMut.mutate(payload);
+    }
   };
 
-  if (planId && loadingPlan) return <div className="space-y-4"><div className="h-8 w-48 bg-white/[0.06] rounded animate-pulse" /><div className="h-64 bg-white/[0.04] rounded-xl animate-pulse" /></div>;
+  if (planId && loadingPlan) return (
+    <div className="space-y-4">
+      <div className="h-8 w-48 bg-white/[0.06] rounded animate-pulse" />
+      <div className="h-64 bg-white/[0.04] rounded-xl animate-pulse" />
+    </div>
+  );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-24">
       <div className="flex items-center gap-3">
-        <button onClick={onCancel} className="p-2 rounded-lg hover:bg-white/[0.1] text-white/50 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></button>
+        <button onClick={onCancel} className="p-2 rounded-lg hover:bg-white/[0.1] text-white/50 hover:text-white transition-colors">
+          <ArrowLeft className="h-5 w-5" />
+        </button>
         <h2 className="text-2xl font-heading font-bold text-white">{planId ? "Edit Plan" : "New Practice Plan"}</h2>
       </div>
 
-      <Card className="bg-white/[0.04] border-white/[0.08]">
-        <CardContent className="p-4 sm:p-6 space-y-4">
+      {/* Plan Details Card */}
+      <Card className="bg-white/[0.03] border-white/[0.08]">
+        <CardContent className="p-4 sm:p-6 space-y-5">
           <div>
             <label className="text-xs font-medium text-white/40 uppercase tracking-wider mb-1.5 block">Plan Title</label>
             <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g., Hitting Mechanics - Joey T"
@@ -489,7 +1070,7 @@ function PlanForm({ planId, athleteOptions, onCancel, onSave, isSaving }: {
                 <SelectTrigger className="bg-white/[0.06] border-white/[0.08] text-white"><SelectValue placeholder="Select athlete (optional)" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="none">No specific athlete</SelectItem>
-                  {athleteOptions.map((a) => <SelectItem key={a.id} value={a.id}>{a.name} ({a.email})</SelectItem>)}
+                  {athleteOptions.map((a: any) => <SelectItem key={a.id} value={a.id}>{a.name} ({a.email})</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -533,6 +1114,7 @@ function PlanForm({ planId, athleteOptions, onCancel, onSave, isSaving }: {
         </CardContent>
       </Card>
 
+      {/* Session Blocks */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-medium text-white/50 uppercase tracking-wider">Session Blocks ({blocks.length})</h3>
@@ -551,7 +1133,7 @@ function PlanForm({ planId, athleteOptions, onCancel, onSave, isSaving }: {
             const Icon = config.icon;
             return (
               <button key={type} onClick={() => addBlock(type)}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-all hover:scale-[1.02] ${config.bg} ${config.color}`}>
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-all hover:scale-[1.02] ${config.bg} ${config.color} ${config.border}`}>
                 <Icon className="h-3.5 w-3.5" /> {config.label}
               </button>
             );
@@ -559,13 +1141,16 @@ function PlanForm({ planId, athleteOptions, onCancel, onSave, isSaving }: {
         </div>
       </div>
 
-      <div className="sticky bottom-0 bg-[#0d1117]/95 backdrop-blur-lg border-t border-white/[0.08] -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 flex items-center justify-between gap-4 z-10">
-        <Button variant="outline" onClick={onCancel} className="bg-transparent border-white/[0.1] text-white/60 hover:text-white hover:bg-white/[0.06]">Cancel</Button>
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-white/40 hidden sm:inline">{blocks.length} blocks · {totalDuration} min</span>
-          <Button onClick={handleSubmit} disabled={!title.trim() || isSaving} className="bg-blue-600 hover:bg-blue-700 text-white gap-2 min-w-[120px]">
-            {isSaving ? <span className="animate-pulse">Saving...</span> : <><Check className="h-4 w-4" />{planId ? "Save Changes" : "Create Plan"}</>}
-          </Button>
+      {/* Sticky Save Bar */}
+      <div className="fixed bottom-0 left-0 right-0 bg-[#0d1117]/95 backdrop-blur-xl border-t border-white/[0.08] px-4 py-3 z-50">
+        <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
+          <Button variant="outline" onClick={onCancel} className="bg-transparent border-white/[0.1] text-white/60 hover:text-white hover:bg-white/[0.06]">Cancel</Button>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-white/40 hidden sm:inline">{blocks.length} blocks · {totalDuration} min</span>
+            <Button onClick={handleSubmit} disabled={!title.trim() || isSaving} className="bg-blue-600 hover:bg-blue-700 text-white gap-2 min-w-[120px]">
+              {isSaving ? <span className="animate-pulse">Saving...</span> : <><Check className="h-4 w-4" />{planId ? "Save Changes" : "Create Plan"}</>}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
@@ -583,7 +1168,8 @@ function BlockEditor({ block, index, total, onUpdate, onRemove, onMoveUp, onMove
   const Icon = config.icon;
 
   return (
-    <div className={`rounded-xl border transition-all ${config.bg}`}>
+    <div className={`rounded-xl border transition-all ${config.border} ${config.bg}`}>
+      {/* Block header */}
       <div className="flex items-center gap-2 p-3 cursor-pointer" onClick={() => setExpanded(!expanded)}>
         <div className="flex flex-col gap-0.5 text-white/20">
           <button onClick={(e) => { e.stopPropagation(); onMoveUp(); }} disabled={index === 0} className="hover:text-white/60 disabled:opacity-20"><ChevronUp className="h-3.5 w-3.5" /></button>
@@ -592,14 +1178,15 @@ function BlockEditor({ block, index, total, onUpdate, onRemove, onMoveUp, onMove
         <div className={`h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0 ${config.bg}`}><Icon className={`h-4 w-4 ${config.color}`} /></div>
         <div className="flex-1 min-w-0">
           <span className="text-sm font-medium text-white truncate block">{block.title}</span>
-          <span className="text-[10px] text-white/30">{block.duration} min</span>
+          <span className="text-[10px] text-white/30">{block.duration} min{block.intensity ? ` · ${block.intensity}` : ""}</span>
         </div>
         <button onClick={(e) => { e.stopPropagation(); onRemove(); }} className="p-1.5 rounded-lg hover:bg-red-500/20 text-white/20 hover:text-red-400 transition-colors"><Trash2 className="h-3.5 w-3.5" /></button>
         {expanded ? <ChevronUp className="h-4 w-4 text-white/20" /> : <ChevronDown className="h-4 w-4 text-white/20" />}
       </div>
 
       {expanded && (
-        <div className="px-3 pb-3 space-y-3 border-t border-white/[0.06] pt-3">
+        <div className="px-3 pb-4 space-y-3 border-t border-white/[0.06] pt-3">
+          {/* Title + Duration */}
           <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3">
             <div>
               <label className="text-[10px] font-medium text-white/30 uppercase mb-1 block">Title</label>
@@ -611,6 +1198,7 @@ function BlockEditor({ block, index, total, onUpdate, onRemove, onMoveUp, onMove
             </div>
           </div>
 
+          {/* Drill Library Picker */}
           {block.blockType === "drill" && (
             <div>
               <label className="text-[10px] font-medium text-white/30 uppercase mb-1 block">Drill from Library</label>
@@ -618,7 +1206,8 @@ function BlockEditor({ block, index, total, onUpdate, onRemove, onMoveUp, onMove
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-3">
+          {/* Sets, Reps, Intensity */}
+          <div className="grid grid-cols-3 gap-3">
             <div>
               <label className="text-[10px] font-medium text-white/30 uppercase mb-1 block">Sets</label>
               <Input type="number" min={0} value={block.sets || ""} onChange={(e) => onUpdate({ sets: parseInt(e.target.value) || null })} placeholder="—" className="bg-white/[0.06] border-white/[0.06] text-white text-sm h-9" />
@@ -627,12 +1216,56 @@ function BlockEditor({ block, index, total, onUpdate, onRemove, onMoveUp, onMove
               <label className="text-[10px] font-medium text-white/30 uppercase mb-1 block">Reps</label>
               <Input type="number" min={0} value={block.reps || ""} onChange={(e) => onUpdate({ reps: parseInt(e.target.value) || null })} placeholder="—" className="bg-white/[0.06] border-white/[0.06] text-white text-sm h-9" />
             </div>
+            <div>
+              <label className="text-[10px] font-medium text-white/30 uppercase mb-1 block">Intensity</label>
+              <Select value={block.intensity || "none"} onValueChange={(v) => onUpdate({ intensity: v === "none" ? null : v as any })}>
+                <SelectTrigger className="bg-white/[0.06] border-white/[0.06] text-white text-sm h-9"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">—</SelectItem>
+                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="high">High</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
+          {/* Equipment */}
           <div>
-            <label className="text-[10px] font-medium text-white/30 uppercase mb-1 block">Notes</label>
+            <label className="text-[10px] font-medium text-white/30 uppercase mb-1 block flex items-center gap-1"><Wrench className="h-3 w-3" /> Equipment</label>
+            <Input value={block.equipment || ""} onChange={(e) => onUpdate({ equipment: e.target.value || null })}
+              placeholder="e.g., Tee, Batting cage, Cones..." className="bg-white/[0.06] border-white/[0.06] text-white text-sm h-9 placeholder:text-white/20" />
+          </div>
+
+          {/* Goal */}
+          <div>
+            <label className="text-[10px] font-medium text-white/30 uppercase mb-1 block flex items-center gap-1"><Target className="h-3 w-3" /> Block Goal</label>
+            <Input value={block.goal || ""} onChange={(e) => onUpdate({ goal: e.target.value || null })}
+              placeholder="What should the athlete achieve in this block?" className="bg-white/[0.06] border-white/[0.06] text-white text-sm h-9 placeholder:text-white/20" />
+          </div>
+
+          {/* Coaching Cues */}
+          <div>
+            <label className="text-[10px] font-medium text-amber-400/60 uppercase mb-1 block flex items-center gap-1"><Lightbulb className="h-3 w-3" /> Coaching Cues</label>
+            <Textarea value={block.coachingCues || ""} onChange={(e) => onUpdate({ coachingCues: e.target.value || null })}
+              placeholder="Key verbal cues to give during this drill (e.g., 'Stay back, let it travel, hands inside the ball')"
+              rows={2} className="bg-amber-500/5 border-amber-500/10 text-white text-sm resize-none placeholder:text-white/20" />
+          </div>
+
+          {/* Key Points */}
+          <div>
+            <label className="text-[10px] font-medium text-cyan-400/60 uppercase mb-1 block flex items-center gap-1"><AlertCircle className="h-3 w-3" /> Key Points / What to Watch</label>
+            <Textarea value={block.keyPoints || ""} onChange={(e) => onUpdate({ keyPoints: e.target.value || null })}
+              placeholder="What to observe and correct (e.g., 'Watch for early hip rotation, head movement off the ball')"
+              rows={2} className="bg-cyan-500/5 border-cyan-500/10 text-white text-sm resize-none placeholder:text-white/20" />
+          </div>
+
+          {/* Notes */}
+          <div>
+            <label className="text-[10px] font-medium text-white/30 uppercase mb-1 block flex items-center gap-1"><FileText className="h-3 w-3" /> Notes</label>
             <Textarea value={block.notes || ""} onChange={(e) => onUpdate({ notes: e.target.value || null })}
-              placeholder="Coaching cues, reminders..." rows={2} className="bg-white/[0.06] border-white/[0.06] text-white text-sm resize-none placeholder:text-white/20" />
+              placeholder="Additional notes, modifications, progressions..." rows={2}
+              className="bg-white/[0.06] border-white/[0.06] text-white text-sm resize-none placeholder:text-white/20" />
           </div>
         </div>
       )}

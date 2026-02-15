@@ -12,6 +12,11 @@ const blockSchema = z.object({
   sets: z.number().nullable().optional(),
   reps: z.number().nullable().optional(),
   notes: z.string().nullable().optional(),
+  coachingCues: z.string().nullable().optional(),
+  keyPoints: z.string().nullable().optional(),
+  equipment: z.string().nullable().optional(),
+  intensity: z.enum(["low", "medium", "high"]).nullable().optional(),
+  goal: z.string().nullable().optional(),
 });
 
 export const practicePlansRouter = router({

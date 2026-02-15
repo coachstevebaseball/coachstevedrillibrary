@@ -1,0 +1,9 @@
+{
+  "query": "DELETE FROM practicePlans WHERE title IN ('warmup test', 'cooldown test', 'break test', 'custom test', 'drill test', 'Drill Ref Test', 'Sets Reps Test', 'Notes Test', 'Focus Test', 'Quick Session', 'Fetch Test Plan', 'Updated Title', 'Block Replace Test', 'Original Plan', 'Original Plan (Copy)', 'Share Test', 'Shared Plan for Athlete', 'Private Plan', 'Plan for Athlete 2', 'Shared Athlete Plan', 'Viewable Shared Plan', 'Other Athlete Plan', 'Full Focus Plan', 'Multi Block Plan', 'Get By ID Test', 'Test Hitting Session');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute DELETE FROM practicePlans WHERE title IN ('warmup test', 'cooldown test', 'break test', 'custom test', 'drill test', 'Drill Ref Test', 'Sets Reps Test', 'Notes Test', 'Focus Test', 'Quick Session', 'Fetch Test Plan', 'Updated Title', 'Block Replace Test', 'Original Plan', 'Original Plan (Copy)', 'Share Test', 'Shared Plan for Athlete', 'Private Plan', 'Plan for Athlete 2', 'Shared Athlete Plan', 'Viewable Shared Plan', 'Other Athlete Plan', 'Full Focus Plan', 'Multi Block Plan', 'Get By ID Test', 'Test Hitting Session');",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 350
+}

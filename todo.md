@@ -1153,3 +1153,14 @@
 ## Mobile Tab Visibility Fix - Practice Planner
 - [x] Make Practice Planner tab easily visible on mobile
 - [x] Improve tab bar scrollability/layout for 5 tabs on small screens
+
+## Practice Planner Redesign - Visual Session Playbook
+- [x] Redesign planner as a highly visual, detailed session playbook
+- [x] Add rich block customization (coaching cues, key points, visual indicators per block)
+- [x] Add session mode view for quick pull-up during live sessions
+- [x] Add floating quick-access button for instant planner access (Session button on each card)
+- [x] Add granular athlete sharing controls (selective share per athlete)
+- [x] Mobile-optimized session view with large touch targets
+- [x] Color-coded block types with visual hierarchy
+- [x] Add notes/cues field per block for memory aids
+- [x] Test on mobile and verify responsiveness

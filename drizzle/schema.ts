@@ -479,6 +479,11 @@ export const practicePlanBlocks = mysqlTable("practicePlanBlocks", {
   sets: int("sets"), // Optional sets count
   reps: int("reps"), // Optional reps count
   notes: text("notes"), // Block-specific notes
+  coachingCues: text("coachingCues"), // Key coaching cues to remember during this block
+  keyPoints: text("keyPoints"), // Key teaching points / what to watch for
+  equipment: varchar("equipment", { length: 500 }), // Equipment needed for this block
+  intensity: mysqlEnum("intensity", ["low", "medium", "high"]), // Intensity level
+  goal: varchar("goal", { length: 500 }), // Block-specific goal
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 

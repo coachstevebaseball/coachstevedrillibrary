@@ -1,8 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, afterAll } from "vitest";
 import { appRouter } from "./routers";
 import type { TrpcContext } from "./_core/context";
 
 type AuthenticatedUser = NonNullable<TrpcContext["user"]>;
+
+// Track all plan IDs created during tests for cleanup
+const createdPlanIds: number[] = [];
 
 function createCoachContext(): TrpcContext {
   const user: AuthenticatedUser = {
@@ -42,6 +45,16 @@ function createAthleteContext(id = 2): TrpcContext {
   };
 }
 
+/** Helper that creates a plan and tracks its ID for cleanup */
+async function createAndTrack(
+  caller: ReturnType<typeof appRouter.createCaller>,
+  input: Parameters<ReturnType<typeof appRouter.createCaller>["practicePlans"]["create"]>[0]
+) {
+  const result = await caller.practicePlans.create(input);
+  createdPlanIds.push(result.planId);
+  return result;
+}
+
 const sampleBlocks = [
   { sortOrder: 0, blockType: "warmup" as const, title: "Dynamic Stretching", duration: 10, drillId: null, sets: null, reps: null, notes: "Full body warm-up" },
   { sortOrder: 1, blockType: "drill" as const, title: "1-2-3 Rhythm Tee", duration: 15, drillId: "1-2-3-rhythm-tee", sets: 3, reps: 10, notes: "Focus on load timing" },
@@ -50,11 +63,23 @@ const sampleBlocks = [
 ];
 
 describe("practicePlans", () => {
+  // Clean up all test-created plans after all tests finish
+  afterAll(async () => {
+    const caller = appRouter.createCaller(createCoachContext());
+    for (const id of createdPlanIds) {
+      try {
+        await caller.practicePlans.delete({ planId: id });
+      } catch {
+        // Plan may already be deleted by a test — ignore
+      }
+    }
+  });
+
   // ─── CRUD Tests ────────────────────────────────────────────────────────────
 
   it("coach can create a practice plan", async () => {
     const caller = appRouter.createCaller(createCoachContext());
-    const result = await caller.practicePlans.create({
+    const result = await createAndTrack(caller, {
       title: "Test Hitting Session",
       athleteId: null,
       sessionDate: null,
@@ -78,7 +103,7 @@ describe("practicePlans", () => {
 
   it("coach can get a plan by ID with blocks", async () => {
     const caller = appRouter.createCaller(createCoachContext());
-    const { planId } = await caller.practicePlans.create({
+    const { planId } = await createAndTrack(caller, {
       title: "Get By ID Test",
       duration: 30,
       blocks: [{ sortOrder: 0, blockType: "drill", title: "Test Drill", duration: 30 }],
@@ -93,7 +118,7 @@ describe("practicePlans", () => {
 
   it("coach can update a plan", async () => {
     const caller = appRouter.createCaller(createCoachContext());
-    const { planId } = await caller.practicePlans.create({
+    const { planId } = await createAndTrack(caller, {
       title: "Update Test",
       duration: 30,
       blocks: [],
@@ -112,7 +137,7 @@ describe("practicePlans", () => {
 
   it("coach can delete a plan", async () => {
     const caller = appRouter.createCaller(createCoachContext());
-    const { planId } = await caller.practicePlans.create({
+    const { planId } = await createAndTrack(caller, {
       title: "Delete Test",
       duration: 30,
       blocks: [],
@@ -121,17 +146,21 @@ describe("practicePlans", () => {
     expect(result.success).toBe(true);
 
     await expect(caller.practicePlans.getById({ planId })).rejects.toThrow("Plan not found");
+    // Remove from tracking since it's already deleted
+    const idx = createdPlanIds.indexOf(planId);
+    if (idx !== -1) createdPlanIds.splice(idx, 1);
   });
 
   it("coach can duplicate a plan", async () => {
     const caller = appRouter.createCaller(createCoachContext());
-    const { planId } = await caller.practicePlans.create({
+    const { planId } = await createAndTrack(caller, {
       title: "Original Plan",
       duration: 40,
       focusAreas: ["Hitting"],
       blocks: sampleBlocks,
     });
     const dupResult = await caller.practicePlans.duplicate({ planId });
+    createdPlanIds.push(dupResult.planId); // Track the duplicate too
     expect(dupResult.success).toBe(true);
     expect(dupResult.planId).toBeDefined();
     expect(dupResult.planId).not.toBe(planId);
@@ -145,7 +174,7 @@ describe("practicePlans", () => {
 
   it("coach can toggle share on a plan", async () => {
     const caller = appRouter.createCaller(createCoachContext());
-    const { planId } = await caller.practicePlans.create({
+    const { planId } = await createAndTrack(caller, {
       title: "Share Test",
       athleteId: 2,
       duration: 30,
@@ -160,7 +189,7 @@ describe("practicePlans", () => {
 
   it("athlete can see shared plans assigned to them", async () => {
     const coachCaller = appRouter.createCaller(createCoachContext());
-    const { planId } = await coachCaller.practicePlans.create({
+    const { planId } = await createAndTrack(coachCaller, {
       title: "Shared Athlete Plan",
       athleteId: 2,
       duration: 30,
@@ -178,7 +207,7 @@ describe("practicePlans", () => {
 
   it("athlete can view a shared plan by ID", async () => {
     const coachCaller = appRouter.createCaller(createCoachContext());
-    const { planId } = await coachCaller.practicePlans.create({
+    const { planId } = await createAndTrack(coachCaller, {
       title: "Viewable Shared Plan",
       athleteId: 2,
       duration: 45,
@@ -236,7 +265,7 @@ describe("practicePlans", () => {
 
   it("athlete cannot view a non-shared plan", async () => {
     const coachCaller = appRouter.createCaller(createCoachContext());
-    const { planId } = await coachCaller.practicePlans.create({
+    const { planId } = await createAndTrack(coachCaller, {
       title: "Private Plan",
       athleteId: 2,
       duration: 30,
@@ -250,7 +279,7 @@ describe("practicePlans", () => {
 
   it("athlete cannot view a plan assigned to someone else", async () => {
     const coachCaller = appRouter.createCaller(createCoachContext());
-    const { planId } = await coachCaller.practicePlans.create({
+    const { planId } = await createAndTrack(coachCaller, {
       title: "Other Athlete Plan",
       athleteId: 99,
       duration: 30,
@@ -290,7 +319,7 @@ describe("practicePlans", () => {
   it("creates plan with all focus areas", async () => {
     const caller = appRouter.createCaller(createCoachContext());
     const allAreas = ["Hitting", "Pitching", "Fielding", "Catching", "Baserunning", "Throwing", "Mental Game", "Conditioning"];
-    const result = await caller.practicePlans.create({
+    const result = await createAndTrack(caller, {
       title: "Full Focus Plan",
       duration: 60,
       focusAreas: allAreas,
@@ -304,7 +333,7 @@ describe("practicePlans", () => {
 
   it("creates plan with multiple block types", async () => {
     const caller = appRouter.createCaller(createCoachContext());
-    const result = await caller.practicePlans.create({
+    const result = await createAndTrack(caller, {
       title: "Multi Block Plan",
       duration: 50,
       blocks: sampleBlocks,
@@ -324,7 +353,7 @@ describe("practicePlans", () => {
   it("handles session date correctly", async () => {
     const caller = appRouter.createCaller(createCoachContext());
     const dateStr = "2026-03-15T14:00:00.000Z";
-    const result = await caller.practicePlans.create({
+    const result = await createAndTrack(caller, {
       title: "Dated Plan",
       duration: 60,
       sessionDate: dateStr,
@@ -332,6 +361,36 @@ describe("practicePlans", () => {
     });
     const plan = await caller.practicePlans.getById({ planId: result.planId });
     expect(plan.sessionDate).toBeDefined();
+  });
+
+  // ─── New Fields Tests ─────────────────────────────────────────────────────
+
+  it("creates plan with coaching cues and key points", async () => {
+    const caller = appRouter.createCaller(createCoachContext());
+    const result = await createAndTrack(caller, {
+      title: "Cues Test Plan",
+      duration: 30,
+      blocks: [{
+        sortOrder: 0,
+        blockType: "drill",
+        title: "Tee Work",
+        duration: 15,
+        coachingCues: "Stay back, let it travel",
+        keyPoints: "Watch for early hip rotation",
+        equipment: "Tee, Baseballs",
+        intensity: "medium",
+        goal: "Consistent contact point",
+      }],
+    });
+    expect(result.success).toBe(true);
+
+    const plan = await caller.practicePlans.getById({ planId: result.planId });
+    const block = (plan as any).blocks[0];
+    expect(block.coachingCues).toBe("Stay back, let it travel");
+    expect(block.keyPoints).toBe("Watch for early hip rotation");
+    expect(block.equipment).toBe("Tee, Baseballs");
+    expect(block.intensity).toBe("medium");
+    expect(block.goal).toBe("Consistent contact point");
   });
 
   // ─── Templates Tests ───────────────────────────────────────────────────────
