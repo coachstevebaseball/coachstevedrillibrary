@@ -803,3 +803,12 @@
     transition: opacity 0.25s ease;
   }
 }
+
+/* Hide scrollbar for horizontal tab navigation on mobile */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

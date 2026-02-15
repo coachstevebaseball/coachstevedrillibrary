@@ -1149,3 +1149,7 @@
 - [x] Mobile-first responsive design throughout
 - [x] Write vitest tests (24 tests: CRUD, sharing, authorization, validation, templates)
 - [x] All 24 tests passing
+
+## Mobile Tab Visibility Fix - Practice Planner
+- [x] Make Practice Planner tab easily visible on mobile
+- [x] Improve tab bar scrollability/layout for 5 tabs on small screens

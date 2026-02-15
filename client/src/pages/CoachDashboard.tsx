@@ -308,28 +308,30 @@ export default function CoachDashboard() {
           )}
 
           {/* Tab Navigation */}
-          <div className="flex gap-1 bg-white/[0.06] backdrop-blur-sm rounded-xl p-1 border border-white/[0.08] w-fit">
-            {[
-              { key: "overview" as const, label: "Athlete Overview", shortLabel: "Overview", icon: Users },
-              { key: "assign" as const, label: "Assign Drills", shortLabel: "Assign", icon: Plus },
-              { key: "page-layouts" as const, label: "Page Layouts", shortLabel: "Layouts", icon: LayoutTemplate },
-              { key: "athletes" as const, label: "Athletes Table", shortLabel: "Athletes", icon: Table2 },
-              { key: "planner" as const, label: "Practice Planner", shortLabel: "Planner", icon: Target },
-            ].map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  activeTab === tab.key
-                    ? "bg-white/[0.15] text-white shadow-sm"
-                    : "text-white/50 hover:text-white/80 hover:bg-white/[0.06]"
-                }`}
-              >
-                <tab.icon className="h-4 w-4" />
-                <span className="hidden sm:inline">{tab.label}</span>
-                <span className="sm:hidden">{tab.shortLabel}</span>
-              </button>
-            ))}
+          <div className="w-full overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1">
+            <div className="flex gap-1 bg-white/[0.06] backdrop-blur-sm rounded-xl p-1 border border-white/[0.08] w-max md:w-fit">
+              {[
+                { key: "overview" as const, label: "Athlete Overview", shortLabel: "Overview", icon: Users },
+                { key: "assign" as const, label: "Assign Drills", shortLabel: "Assign", icon: Plus },
+                { key: "page-layouts" as const, label: "Page Layouts", shortLabel: "Layouts", icon: LayoutTemplate },
+                { key: "athletes" as const, label: "Athletes Table", shortLabel: "Athletes", icon: Table2 },
+                { key: "planner" as const, label: "Practice Planner", shortLabel: "Planner", icon: Target },
+              ].map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`flex items-center gap-2 px-3 md:px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                    activeTab === tab.key
+                      ? "bg-white/[0.15] text-white shadow-sm"
+                      : "text-white/50 hover:text-white/80 hover:bg-white/[0.06]"
+                  }`}
+                >
+                  <tab.icon className="h-4 w-4 shrink-0" />
+                  <span className="hidden sm:inline">{tab.label}</span>
+                  <span className="sm:hidden">{tab.shortLabel}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </header>
