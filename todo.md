@@ -1126,3 +1126,26 @@
 - [x] Frontend-only implementation (no backend/database changes)
 - [x] Merge data from getAthleteAssignmentOverview and getAllUsers endpoints
 - [x] Write vitest tests for data merging, filtering, sorting, and pagination logic (28 tests passing)
+
+## Practice Planner - Session Planning Tool
+- [x] Research best baseball practice plan generators (Dugout Edge, Baseball Blueprint, Connected Performance)
+- [x] Design database schema (practicePlans + practicePlanBlocks tables)
+- [x] Create database tables and push migrations
+- [x] Build database helper functions (create, get, update, delete, duplicate, share)
+- [x] Create tRPC routes with coach-only authorization (create, getAll, getById, update, delete, duplicate, toggleShare, getMySharedPlans, getTemplates)
+- [x] Build PracticePlanner UI component with list/create/edit/detail views
+- [x] Implement drill library picker with search (pulls from drills.json + custom drills)
+- [x] Add session blocks: drill, warmup, cooldown, break, custom types
+- [x] Add drag-reorder for blocks, sets/reps/notes per block
+- [x] Add focus area chips (Hitting, Pitching, Fielding, etc.)
+- [x] Add athlete assignment dropdown (from users + invites)
+- [x] Add session date picker and duration tracking
+- [x] Add plan status management (Draft, Scheduled, Completed, Cancelled)
+- [x] Add duplicate plan functionality
+- [x] Add share toggle to share plans with assigned athletes
+- [x] Add "Practice Planner" tab to Coach Dashboard
+- [x] Build SharedPracticePlans component in Athlete Portal
+- [x] Athlete can view shared plans with expandable block details
+- [x] Mobile-first responsive design throughout
+- [x] Write vitest tests (24 tests: CRUD, sharing, authorization, validation, templates)
+- [x] All 24 tests passing

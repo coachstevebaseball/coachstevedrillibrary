@@ -35,6 +35,7 @@ import { AthleteProgressReport } from "@/components/AthleteProgressReport";
 import { AthleteAssignmentOverview } from "@/components/AthleteAssignmentOverview";
 import { DrillPageBuilderNotion } from "@/components/DrillPageBuilderNotion";
 import { AthleteTable } from "@/components/AthleteTable";
+import PracticePlanner from "@/components/PracticePlanner";
 
 interface Drill {
   id: string;
@@ -61,7 +62,7 @@ export default function CoachDashboard() {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [searchDrill, setSearchDrill] = useState("");
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts" | "athletes">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts" | "athletes" | "planner">("overview");
   const [editingLayoutDrill, setEditingLayoutDrill] = useState<{ id: string; name: string } | null>(null);
   const [layoutSearchQuery, setLayoutSearchQuery] = useState("");
   const [isBulkGoalOpen, setIsBulkGoalOpen] = useState(false);
@@ -313,6 +314,7 @@ export default function CoachDashboard() {
               { key: "assign" as const, label: "Assign Drills", shortLabel: "Assign", icon: Plus },
               { key: "page-layouts" as const, label: "Page Layouts", shortLabel: "Layouts", icon: LayoutTemplate },
               { key: "athletes" as const, label: "Athletes Table", shortLabel: "Athletes", icon: Table2 },
+              { key: "planner" as const, label: "Practice Planner", shortLabel: "Planner", icon: Target },
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -345,6 +347,8 @@ export default function CoachDashboard() {
           />
         ) : activeTab === "athletes" ? (
           <AthleteTable />
+        ) : activeTab === "planner" ? (
+          <PracticePlanner />
         ) : activeTab === "page-layouts" ? (
           <div className="space-y-6">
             {editingLayoutDrill ? (

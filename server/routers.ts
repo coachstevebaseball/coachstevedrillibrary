@@ -17,6 +17,7 @@ import { qaRouter } from "./routers-qa";
 import { imageUploadRouter } from "./routers-image-upload";
 import { activityRouter } from "./routers-activity";
 import { favoritesRouter } from "./routers-favorites";
+import { practicePlansRouter } from "./routers-practice-plans";
 import * as drillCustomizationsDb from "./drillCustomizations";
 import { storagePut } from "./storage";
 
@@ -27,6 +28,7 @@ export const appRouter = router({
   imageUpload: imageUploadRouter,
   activity: activityRouter,
   favorites: favoritesRouter,
+  practicePlans: practicePlansRouter,
   auth: router({
     me: publicProcedure.query(async (opts) => {
       if (!opts.ctx.user) return null;

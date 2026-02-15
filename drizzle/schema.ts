@@ -444,3 +444,43 @@ export const quizQuestionResults = mysqlTable("quizQuestionResults", {
 
 export type QuizQuestionResult = typeof quizQuestionResults.$inferSelect;
 export type InsertQuizQuestionResult = typeof quizQuestionResults.$inferInsert;
+
+
+// Practice Plans - Session planning for coach-athlete sessions
+export const practicePlans = mysqlTable("practicePlans", {
+  id: int("id").autoincrement().primaryKey(),
+  coachId: int("coachId").notNull(),
+  athleteId: int("athleteId"), // Nullable - can be a general plan
+  inviteId: int("inviteId"), // For pre-assigning to invited athletes
+  title: varchar("title", { length: 255 }).notNull(),
+  sessionDate: timestamp("sessionDate"), // When the session is scheduled
+  duration: int("duration").notNull(), // Total planned duration in minutes
+  sessionNotes: text("sessionNotes"), // Coach notes for the session
+  focusAreas: json("focusAreas"), // JSON array of focus areas like ["Hitting", "Throwing"]
+  status: mysqlEnum("status", ["draft", "scheduled", "completed", "cancelled"]).default("draft").notNull(),
+  isShared: int("isShared").default(0).notNull(), // 0 = coach only, 1 = shared with athlete
+  isTemplate: int("isTemplate").default(0).notNull(), // 0 = regular plan, 1 = reusable template
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type PracticePlan = typeof practicePlans.$inferSelect;
+export type InsertPracticePlan = typeof practicePlans.$inferInsert;
+
+// Practice Plan Blocks - Individual activities within a practice plan
+export const practicePlanBlocks = mysqlTable("practicePlanBlocks", {
+  id: int("id").autoincrement().primaryKey(),
+  planId: int("planId").notNull(),
+  sortOrder: int("sortOrder").notNull(),
+  blockType: mysqlEnum("blockType", ["drill", "warmup", "cooldown", "break", "custom"]).notNull(),
+  drillId: varchar("drillId", { length: 255 }), // Reference to drill from library (nullable for custom blocks)
+  title: varchar("title", { length: 255 }).notNull(),
+  duration: int("duration").notNull(), // Duration in minutes
+  sets: int("sets"), // Optional sets count
+  reps: int("reps"), // Optional reps count
+  notes: text("notes"), // Block-specific notes
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type PracticePlanBlock = typeof practicePlanBlocks.$inferSelect;
+export type InsertPracticePlanBlock = typeof practicePlanBlocks.$inferInsert;
