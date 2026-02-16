@@ -1199,3 +1199,26 @@
 - [x] Parse links [text](url) and inline code within text blocks
 - [x] Handle multi-line paste creating multiple blocks at once
 - [x] Write tests for Markdown paste parsing
+
+## SEO Fixes - Homepage
+- [x] Add H2 heading to homepage
+- [x] Set document.title to 30-60 characters on homepage
+
+## Phase 2: Session Notes Input
+- [x] Create sessionNotes table in schema (athleteId, sessionDate, sessionNumber, skillsWorked, whatImproved, whatNeedsWork, homeworkDrills, overallRating, privateNotes)
+- [x] Create progressReports table in schema (for storing generated reports)
+- [x] Run db:push migration
+- [x] Build tRPC procedures: createSessionNote, getSessionNotes, getSessionNote, updateSessionNote, deleteSessionNote, getNextSessionNumber
+- [x] Build mobile-optimized Session Notes form (quick-tap skill chips, fast text entry)
+- [x] Build Session History timeline view per athlete
+- [x] Integrate Session Notes tab into Coach Dashboard
+- [x] Write vitest tests for session notes procedures
+
+## Phase 3: AI Reports + Email Delivery
+- [ ] Build AI report generation tRPC procedure using invokeLLM with Coach Steve's voice
+- [ ] Build Report Review UI with inline editing
+- [ ] Build branded PDF export with logo and tagline
+- [ ] Build email delivery for reports to parents via Resend
+- [ ] Store generated reports in database with report history
+- [ ] Add Generate Report button to session notes view
+- [ ] Write vitest tests for report generation

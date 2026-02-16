@@ -490,3 +490,65 @@ export const practicePlanBlocks = mysqlTable("practicePlanBlocks", {
 
 export type PracticePlanBlock = typeof practicePlanBlocks.$inferSelect;
 export type InsertPracticePlanBlock = typeof practicePlanBlocks.$inferInsert;
+
+
+// ============================================================
+// Session Notes — Structured post-lesson notes for progress reports
+// ============================================================
+export const sessionNotes = mysqlTable("sessionNotes", {
+  id: int("id").autoincrement().primaryKey(),
+  coachId: int("coachId").notNull(),
+  athleteId: int("athleteId").notNull(),
+  /** Auto-incremented per athlete (Session #1, #2, #3…) */
+  sessionNumber: int("sessionNumber").notNull(),
+  sessionDate: timestamp("sessionDate").notNull(),
+  /** Duration in minutes */
+  duration: int("duration"),
+  /** JSON array of skill category strings */
+  skillsWorked: json("skillsWorked").notNull(), // e.g. ["Swing Mechanics", "Pitch Recognition"]
+  /** What improved this session — free text */
+  whatImproved: text("whatImproved").notNull(),
+  /** What still needs work — free text */
+  whatNeedsWork: text("whatNeedsWork").notNull(),
+  /** JSON array of homework drill objects [{drillId, drillName}] */
+  homeworkDrills: json("homeworkDrills"), // e.g. [{ drillId: "123", drillName: "Front Toss" }]
+  /** Coach's internal rating 1-5 (not shown to parents) */
+  overallRating: int("overallRating"),
+  /** Private coach notes — never included in parent reports */
+  privateNotes: text("privateNotes"),
+  /** Optional link to a practice plan used during this session */
+  practicePlanId: int("practicePlanId"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type SessionNote = typeof sessionNotes.$inferSelect;
+export type InsertSessionNote = typeof sessionNotes.$inferInsert;
+
+// ============================================================
+// Progress Reports — AI-generated, parent-facing reports
+// ============================================================
+export const progressReports = mysqlTable("progressReports", {
+  id: int("id").autoincrement().primaryKey(),
+  coachId: int("coachId").notNull(),
+  athleteId: int("athleteId").notNull(),
+  /** The session note this report was generated from */
+  sessionNoteId: int("sessionNoteId"),
+  /** Report title (e.g. "Session #5 Progress Report — Feb 16, 2026") */
+  title: varchar("title", { length: 500 }).notNull(),
+  /** Full report content as JSON with structured sections */
+  reportContent: json("reportContent").notNull(),
+  /** The final rendered report text (for email body / display) */
+  reportHtml: longtext("reportHtml"),
+  /** Status of the report */
+  status: mysqlEnum("reportStatus", ["draft", "reviewed", "sent"]).default("draft").notNull(),
+  /** When the report was sent to the parent */
+  sentAt: timestamp("sentAt"),
+  /** Parent email the report was sent to */
+  sentToEmail: varchar("sentToEmail", { length: 320 }),
+  /** Parent name for personalization */
+  sentToName: varchar("sentToName", { length: 255 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type ProgressReport = typeof progressReports.$inferSelect;
+export type InsertProgressReport = typeof progressReports.$inferInsert;

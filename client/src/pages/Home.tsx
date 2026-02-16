@@ -54,6 +54,11 @@ export default function Home() {
     return map;
   }, [drillCustomizations]);
 
+  // Set SEO-friendly document title (30-60 characters)
+  useEffect(() => {
+    document.title = "Baseball Training Drills | Coach Steve's Library";
+  }, []);
+
   // Parallax scroll effect
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -117,9 +122,9 @@ export default function Home() {
               <Zap className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4 text-gradient">Access Restricted</h1>
-            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              This content is exclusive to invited athletes. Please log in to access the drill library.
-            </p>
+            <h2 className="text-lg text-muted-foreground mb-8 leading-relaxed font-normal">
+              Exclusive baseball training drills for invited athletes. Log in to access the full drill library.
+            </h2>
             <Button 
               onClick={() => window.location.href = getLoginUrl()} 
               size="lg"
@@ -260,12 +265,12 @@ export default function Home() {
               </h1>
             </div>
             
-            <p className="text-sm md:text-lg text-muted-foreground mt-6 mb-8 max-w-xl mx-auto leading-relaxed animate-fade-in-up stagger-3">
+            <h2 className="text-sm md:text-lg text-muted-foreground mt-6 mb-8 max-w-xl mx-auto leading-relaxed animate-fade-in-up stagger-3 font-normal">
               Professional training drills designed to build{" "}
               <span className="text-foreground font-semibold">elite mechanics</span>,{" "}
               <span className="text-foreground font-semibold">explosive power</span>, and{" "}
               <span className="text-foreground font-semibold">game-ready confidence</span>.
-            </p>
+            </h2>
             
             {/* Stats row */}
             <div className="flex justify-center gap-8 md:gap-12 animate-fade-in-up stagger-4">
