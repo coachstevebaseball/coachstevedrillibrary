@@ -1215,10 +1215,10 @@
 - [x] Write vitest tests for session notes procedures
 
 ## Phase 3: AI Reports + Email Delivery
-- [ ] Build AI report generation tRPC procedure using invokeLLM with Coach Steve's voice
-- [ ] Build Report Review UI with inline editing
-- [ ] Build branded PDF export with logo and tagline
-- [ ] Build email delivery for reports to parents via Resend
-- [ ] Store generated reports in database with report history
-- [ ] Add Generate Report button to session notes view
-- [ ] Write vitest tests for report generation
+- [x] Build AI report generation tRPC procedure using invokeLLM with Coach Steve's voice
+- [x] Build Report Review UI with inline editing
+- [x] Build branded HTML report with logo and tagline (Coach Steve / Elite Instruction. Measurable Growth.)
+- [x] Build email delivery for reports to parents via Resend
+- [x] Store generated reports in database with report history
+- [x] Add Generate Report button to session notes view (wired in SessionHistory + SessionNotesTab)
+- [x] Write vitest tests for report generation (12 tests passing)

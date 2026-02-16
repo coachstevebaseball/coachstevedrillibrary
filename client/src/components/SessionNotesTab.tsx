@@ -11,6 +11,7 @@ import { Plus, Users, FileText, ArrowLeft } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { SessionNotesForm } from "./SessionNotesForm";
 import { SessionHistory } from "./SessionHistory";
+import { ProgressReportReview } from "./ProgressReportReview";
 
 interface SessionNotesTabProps {
   /** Pre-select an athlete by ID */
@@ -21,8 +22,9 @@ export function SessionNotesTab({ initialAthleteId }: SessionNotesTabProps) {
   const [selectedAthleteId, setSelectedAthleteId] = useState<number | null>(
     initialAthleteId ?? null
   );
-  const [view, setView] = useState<"list" | "form" | "edit">("list");
+  const [view, setView] = useState<"list" | "form" | "edit" | "report">("list");
   const [editingNote, setEditingNote] = useState<any>(null);
+  const [reportSessionNoteId, setReportSessionNoteId] = useState<number | null>(null);
 
   // Get all users (athletes) for the dropdown
   const { data: allUsers = [] } = trpc.admin.getAllUsers.useQuery();
@@ -72,6 +74,11 @@ export function SessionNotesTab({ initialAthleteId }: SessionNotesTabProps) {
     setEditingNote(null);
   };
 
+  const handleGenerateReport = (noteId: number) => {
+    setReportSessionNoteId(noteId);
+    setView("report");
+  };
+
   // If no athlete selected, show athlete picker
   if (!selectedAthleteId) {
     return (
@@ -115,6 +122,21 @@ export function SessionNotesTab({ initialAthleteId }: SessionNotesTabProps) {
         {/* Athletes with existing sessions */}
         <AthleteSessionOverview onSelectAthlete={setSelectedAthleteId} />
       </div>
+    );
+  }
+
+  // Report view — full screen within the tab
+  if (view === "report" && reportSessionNoteId && selectedAthleteId) {
+    return (
+      <ProgressReportReview
+        sessionNoteId={reportSessionNoteId}
+        athleteId={selectedAthleteId}
+        athleteName={selectedAthlete?.name ?? "Athlete"}
+        onBack={() => {
+          setView("list");
+          setReportSessionNoteId(null);
+        }}
+      />
     );
   }
 
@@ -185,10 +207,7 @@ export function SessionNotesTab({ initialAthleteId }: SessionNotesTabProps) {
           athleteName={selectedAthlete?.name ?? "Athlete"}
           onNewNote={handleNewNote}
           onEditNote={handleEditNote}
-          onGenerateReport={(noteId) => {
-            // Will be wired in Phase 3
-            window.location.href = `/session-report/${noteId}`;
-          }}
+          onGenerateReport={handleGenerateReport}
         />
       )}
     </div>
