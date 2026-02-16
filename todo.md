@@ -1164,3 +1164,6 @@
 - [x] Color-coded block types with visual hierarchy
 - [x] Add notes/cues field per block for memory aids
 - [x] Test on mobile and verify responsiveness
+
+## Bug Fix - AthleteTable Key Prop
+- [x] Fix missing unique "key" prop in AthleteTable list rendering

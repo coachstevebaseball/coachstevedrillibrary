@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, Fragment } from "react";
 import { trpc } from "@/lib/trpc";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -338,9 +338,8 @@ export function AthleteTable() {
                 </tr>
               ) : (
                 paginatedAthletes.map((athlete, idx) => (
-                  <>
+                  <Fragment key={athlete.id}>
                     <tr
-                      key={athlete.id}
                       className={`border-b border-white/[0.04] hover:bg-white/[0.04] transition-colors cursor-pointer ${
                         expandedRow === athlete.id ? "bg-white/[0.06]" : ""
                       } ${idx % 2 === 0 ? "" : "bg-white/[0.015]"}`}
@@ -442,7 +441,7 @@ export function AthleteTable() {
 
                     {/* Expanded Detail Row */}
                     {expandedRow === athlete.id && (
-                      <tr key={`${athlete.id}-detail`} className="bg-white/[0.03]">
+                      <tr className="bg-white/[0.03]">
                         <td colSpan={10} className="px-4 py-4">
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="bg-white/[0.04] rounded-lg p-3">
@@ -503,7 +502,7 @@ export function AthleteTable() {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 ))
               )}
             </tbody>
