@@ -24,7 +24,7 @@ export async function getTemplates(userId: number) {
     .where(
       or(
         eq(drillPageTemplates.createdBy, userId),
-        eq(drillPageTemplates.isSystem, true)
+        eq(drillPageTemplates.isSystem, 1)
       )
     );
   return templates;

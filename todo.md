@@ -1187,3 +1187,15 @@
 - [x] Add preview functionality to Page Builder
 - [x] Add clearer instructions/guidance in Page Builder
 - [x] Create templated page layouts for drill pages (5 built-in templates seeded)
+
+## Page Builder: Markdown Paste from Notion
+- [x] Support pasting Markdown content from Notion into Page Builder templates
+- [x] Parse headings (# ## ### ####) into appropriate block types
+- [x] Parse bold (**text**) and italic (*text*) formatting within blocks
+- [x] Parse bulleted lists (- item) into bulleted list blocks
+- [x] Parse numbered lists (1. item) into numbered list blocks
+- [x] Parse blockquotes (> text) into quote blocks
+- [x] Parse horizontal rules (---) into divider blocks
+- [x] Parse links [text](url) and inline code within text blocks
+- [x] Handle multi-line paste creating multiple blocks at once
+- [x] Write tests for Markdown paste parsing

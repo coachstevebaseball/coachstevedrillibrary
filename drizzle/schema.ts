@@ -1,4 +1,4 @@
-import { boolean, int, json, longtext, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, json, longtext, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -301,7 +301,7 @@ export const drillPageTemplates = mysqlTable("drillPageTemplates", {
   // JSON array of content blocks that can be reused
   blocks: json("blocks").notNull(),
   createdBy: int("createdBy").notNull(),
-  isSystem: boolean("isSystem").default(false).notNull(),
+  isSystem: int("isSystem").default(0).notNull(), // 0 = user template, 1 = system template
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

@@ -40,6 +40,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/lib/trpc";
+import { parseMarkdownToBlocks, looksLikeMarkdown, type ParsedBlock } from "@/lib/markdownParser";
+import { toast } from "sonner";
 
 // Block type definitions
 export type BlockType =
@@ -1231,6 +1233,57 @@ export function NotionBlockEditor({
     setSelectedBlockIndex(blockIndex);
   };
 
+  // ─── Paste handler: detect Markdown and convert to blocks ───────────
+  const handlePaste = useCallback(
+    (e: ClipboardEvent) => {
+      const text = e.clipboardData?.getData("text/plain");
+      if (!text || !looksLikeMarkdown(text)) return; // let default paste handle it
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const parsed: ParsedBlock[] = parseMarkdownToBlocks(text);
+      if (parsed.length === 0) return;
+
+      // Cast parsed blocks to NotionBlock (they share the same shape)
+      const newBlocks = parsed as unknown as NotionBlock[];
+
+      // If editor is empty (single empty paragraph), replace entirely
+      const isEditorEmpty =
+        blocks.length === 0 ||
+        (blocks.length === 1 &&
+          blocks[0].type === "paragraph" &&
+          blocks[0].content === "");
+
+      if (isEditorEmpty) {
+        onChange(newBlocks);
+      } else {
+        // Insert after the currently selected block, or append at end
+        const insertAfter =
+          selectedBlockIndex !== null ? selectedBlockIndex : blocks.length - 1;
+        const updated = [
+          ...blocks.slice(0, insertAfter + 1),
+          ...newBlocks,
+          ...blocks.slice(insertAfter + 1),
+        ];
+        onChange(updated);
+        setSelectedBlockIndex(insertAfter + newBlocks.length);
+      }
+
+      toast.success(
+        `Pasted ${newBlocks.length} block${newBlocks.length !== 1 ? "s" : ""} from Markdown`
+      );
+    },
+    [blocks, onChange, selectedBlockIndex]
+  );
+
+  useEffect(() => {
+    const el = editorRef.current;
+    if (!el || readOnly) return;
+    el.addEventListener("paste", handlePaste, true);
+    return () => el.removeEventListener("paste", handlePaste, true);
+  }, [handlePaste, readOnly]);
+
   // Initialize with empty paragraph if no blocks
   useEffect(() => {
     if (blocks.length === 0) {
@@ -1275,7 +1328,7 @@ export function NotionBlockEditor({
       {/* Help text */}
       <div className="text-xs text-muted-foreground mb-4 flex items-center gap-2">
         <span className="bg-white/5 px-2 py-1 rounded">✨</span>
-        <span>Type <code className="bg-white/10 px-1 rounded">/</code> for commands, or use markdown shortcuts like <code className="bg-white/10 px-1 rounded">#</code>, <code className="bg-white/10 px-1 rounded">-</code>, <code className="bg-white/10 px-1 rounded">1.</code></span>
+        <span>Type <code className="bg-white/10 px-1 rounded">/</code> for commands, use markdown shortcuts like <code className="bg-white/10 px-1 rounded">#</code>, <code className="bg-white/10 px-1 rounded">-</code>, <code className="bg-white/10 px-1 rounded">1.</code> — or <strong className="text-foreground/70">paste Markdown</strong> from Notion</span>
       </div>
 
       {blocks.map((block, index) => (
