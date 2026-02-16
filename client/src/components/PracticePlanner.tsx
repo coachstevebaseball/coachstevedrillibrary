@@ -28,6 +28,7 @@ import {
   X, GripVertical, AlertCircle, Flame, Snowflake,
   Activity, ChevronRight, FileText, Timer, Maximize2,
   Minimize2, MessageSquare, Lightbulb, Wrench,
+  CalendarDays, List, ChevronLeft,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import drillsData from "@/data/drills.json";
@@ -60,7 +61,7 @@ interface PlanBlock {
   goal?: string | null;
 }
 
-type ViewMode = "list" | "create" | "edit" | "detail" | "session";
+type ViewMode = "list" | "calendar" | "create" | "edit" | "detail" | "session";
 
 const FOCUS_AREAS = [
   "Hitting", "Pitching", "Fielding", "Catching",
@@ -152,6 +153,19 @@ export default function PracticePlanner() {
     );
   }
 
+  // ─── Calendar View ──────────────────────────────────────────────────────────
+  if (view === "calendar") {
+    return (
+      <CalendarView
+        plans={plans || []}
+        onBack={() => setView("list")}
+        onViewPlan={(id) => { setDetailPlanId(id); setView("detail"); }}
+        onCreatePlan={(date) => { setView("create"); }}
+        onStartSession={(id) => { setSessionPlanId(id); setView("session"); }}
+      />
+    );
+  }
+
   // ─── List View ──────────────────────────────────────────────────────────────
   return (
     <div className="space-y-6">
@@ -161,9 +175,28 @@ export default function PracticePlanner() {
           <h2 className="text-2xl font-heading font-bold text-white">Practice Plans</h2>
           <p className="text-sm text-white/40 mt-1">{plans?.length || 0} plans created</p>
         </div>
-        <Button onClick={() => setView("create")} className="bg-blue-600 hover:bg-blue-700 text-white gap-2 shadow-lg shadow-blue-600/20">
-          <Plus className="h-4 w-4" /> New Plan
-        </Button>
+        <div className="flex items-center gap-2">
+          {/* View Toggle */}
+          <div className="flex bg-white/[0.04] rounded-lg border border-white/[0.08] p-0.5">
+            <button
+              onClick={() => setView("list")}
+              className="p-2 rounded-md transition-all bg-white/[0.1] text-white"
+              aria-label="List view"
+            >
+              <List className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setView("calendar")}
+              className="p-2 rounded-md transition-all text-white/40 hover:text-white/70"
+              aria-label="Calendar view"
+            >
+              <CalendarDays className="h-4 w-4" />
+            </button>
+          </div>
+          <Button onClick={() => setView("create")} className="bg-blue-600 hover:bg-blue-700 text-white gap-2 shadow-lg shadow-blue-600/20">
+            <Plus className="h-4 w-4" /> New Plan
+          </Button>
+        </div>
       </div>
 
       {/* Search & Filters */}
@@ -665,9 +698,9 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
   // Pre-session start screen
   if (!sessionStarted) {
     return (
-      <div className="fixed inset-0 bg-[#0a0e14] z-[100] flex flex-col">
+      <div className="fixed inset-0 bg-[#0a0e14] z-[100] flex flex-col safe-area-inset-top safe-area-inset-bottom" role="dialog" aria-label="Session Mode">
         <div className="flex items-center justify-between p-4 border-b border-white/[0.06]">
-          <button onClick={onExit} className="p-2 rounded-lg hover:bg-white/[0.1] text-white/50 hover:text-white transition-colors">
+          <button onClick={onExit} aria-label="Exit session" className="p-2 rounded-lg hover:bg-white/[0.1] text-white/50 hover:text-white transition-colors touch-target">
             <X className="h-5 w-5" />
           </button>
           <span className="text-sm text-white/30 font-medium">Session Mode</span>
@@ -708,10 +741,10 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
 
   // Active session view
   return (
-    <div className="fixed inset-0 bg-[#0a0e14] z-[100] flex flex-col">
+    <div className="fixed inset-0 bg-[#0a0e14] z-[100] flex flex-col safe-area-inset-top safe-area-inset-bottom" role="dialog" aria-label="Active Session">
       {/* Top bar */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-[#0a0e14]/95 backdrop-blur-lg flex-shrink-0">
-        <button onClick={() => { setIsTimerRunning(false); onExit(); }} className="p-2 rounded-lg hover:bg-white/[0.1] text-white/50 hover:text-white transition-colors">
+        <button onClick={() => { setIsTimerRunning(false); onExit(); }} aria-label="Exit session" className="p-2 rounded-lg hover:bg-white/[0.1] text-white/50 hover:text-white transition-colors touch-target">
           <X className="h-5 w-5" />
         </button>
         <div className="text-center">
@@ -775,7 +808,8 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
             <div className="flex items-center justify-center gap-4 mt-4">
               <button
                 onClick={() => setIsTimerRunning(!isTimerRunning)}
-                className={`h-14 w-14 rounded-full flex items-center justify-center transition-all shadow-lg ${
+                aria-label={isTimerRunning ? "Pause timer" : "Resume timer"}
+                className={`h-14 w-14 rounded-full flex items-center justify-center transition-all shadow-lg touch-target ${
                   isTimerRunning
                     ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/30"
                     : "bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30"
@@ -785,7 +819,8 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
               </button>
               <button
                 onClick={() => setElapsedSeconds(0)}
-                className="h-10 w-10 rounded-full flex items-center justify-center bg-white/[0.06] text-white/40 hover:text-white hover:bg-white/[0.1] transition-all border border-white/[0.08]"
+                aria-label="Reset timer"
+                className="h-10 w-10 rounded-full flex items-center justify-center bg-white/[0.06] text-white/40 hover:text-white hover:bg-white/[0.1] transition-all border border-white/[0.08] touch-target"
               >
                 <Timer className="h-4 w-4" />
               </button>
@@ -865,7 +900,8 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
         <button
           onClick={() => goToBlock(currentBlockIdx - 1)}
           disabled={currentBlockIdx === 0}
-          className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium bg-white/[0.04] text-white/50 hover:text-white hover:bg-white/[0.08] disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-white/[0.06]"
+          aria-label="Previous block"
+          className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium bg-white/[0.04] text-white/50 hover:text-white hover:bg-white/[0.08] disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-white/[0.06] touch-target"
         >
           <ArrowLeft className="h-4 w-4" /> Prev
         </button>
@@ -1317,5 +1353,267 @@ function DrillPickerButton({ currentDrillId, onSelect }: { currentDrillId: strin
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+
+// ─── Calendar View ──────────────────────────────────────────────────────────
+
+function CalendarView({ plans, onBack, onViewPlan, onCreatePlan, onStartSession }: {
+  plans: any[];
+  onBack: () => void;
+  onViewPlan: (id: number) => void;
+  onCreatePlan: (date: Date) => void;
+  onStartSession: (id: number) => void;
+}) {
+  const [currentMonth, setCurrentMonth] = useState(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  });
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  const year = currentMonth.getFullYear();
+  const month = currentMonth.getMonth();
+
+  // Build calendar grid
+  const firstDay = new Date(year, month, 1).getDay(); // 0=Sun
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+  const calendarDays: { date: Date; isCurrentMonth: boolean }[] = [];
+
+  // Previous month padding
+  for (let i = firstDay - 1; i >= 0; i--) {
+    calendarDays.push({ date: new Date(year, month - 1, daysInPrevMonth - i), isCurrentMonth: false });
+  }
+  // Current month
+  for (let d = 1; d <= daysInMonth; d++) {
+    calendarDays.push({ date: new Date(year, month, d), isCurrentMonth: true });
+  }
+  // Next month padding
+  const remaining = 42 - calendarDays.length;
+  for (let d = 1; d <= remaining; d++) {
+    calendarDays.push({ date: new Date(year, month + 1, d), isCurrentMonth: false });
+  }
+
+  // Map plans to dates
+  const plansByDate = useMemo(() => {
+    const map = new Map<string, any[]>();
+    plans.forEach((p) => {
+      if (p.sessionDate) {
+        const d = new Date(p.sessionDate);
+        const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+        if (!map.has(key)) map.set(key, []);
+        map.get(key)!.push(p);
+      }
+    });
+    return map;
+  }, [plans]);
+
+  const getPlansForDate = (date: Date) => {
+    const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    return plansByDate.get(key) || [];
+  };
+
+  const today = new Date();
+  const isToday = (date: Date) =>
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate();
+
+  const isSelected = (date: Date) =>
+    selectedDate &&
+    date.getFullYear() === selectedDate.getFullYear() &&
+    date.getMonth() === selectedDate.getMonth() &&
+    date.getDate() === selectedDate.getDate();
+
+  const prevMonth = () => setCurrentMonth(new Date(year, month - 1, 1));
+  const nextMonth = () => setCurrentMonth(new Date(year, month + 1, 1));
+  const goToToday = () => {
+    const now = new Date();
+    setCurrentMonth(new Date(now.getFullYear(), now.getMonth(), 1));
+    setSelectedDate(now);
+  };
+
+  const monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const selectedPlans = selectedDate ? getPlansForDate(selectedDate) : [];
+
+  const statusColors: Record<string, string> = {
+    draft: "bg-gray-400",
+    scheduled: "bg-blue-400",
+    completed: "bg-emerald-400",
+    cancelled: "bg-red-400",
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button onClick={onBack} className="p-2 rounded-lg hover:bg-white/[0.08] text-white/50 hover:text-white transition-colors" aria-label="Back to list">
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          <div>
+            <h2 className="text-2xl font-heading font-bold text-white">Schedule</h2>
+            <p className="text-sm text-white/40">{monthNames[month]} {year}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={goToToday} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.06] text-white/60 hover:text-white hover:bg-white/[0.1] transition-colors border border-white/[0.08]">
+            Today
+          </button>
+          <button onClick={prevMonth} className="p-2 rounded-lg hover:bg-white/[0.08] text-white/50 hover:text-white transition-colors" aria-label="Previous month">
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button onClick={nextMonth} className="p-2 rounded-lg hover:bg-white/[0.08] text-white/50 hover:text-white transition-colors" aria-label="Next month">
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Calendar Grid */}
+      <div className="glass-card rounded-xl overflow-hidden border border-white/[0.08]">
+        {/* Day headers */}
+        <div className="grid grid-cols-7 border-b border-white/[0.06]">
+          {dayNames.map((d) => (
+            <div key={d} className="px-1 py-2.5 text-center text-[10px] font-semibold text-white/40 uppercase tracking-wider">
+              {d}
+            </div>
+          ))}
+        </div>
+
+        {/* Date cells */}
+        <div className="grid grid-cols-7">
+          {calendarDays.map((day, idx) => {
+            const dayPlans = getPlansForDate(day.date);
+            const hasPlans = dayPlans.length > 0;
+            const isTodayCell = isToday(day.date);
+            const isSelectedCell = isSelected(day.date);
+
+            return (
+              <button
+                key={idx}
+                onClick={() => setSelectedDate(day.date)}
+                className={`
+                  relative min-h-[72px] sm:min-h-[90px] p-1 sm:p-1.5 border-b border-r border-white/[0.04] text-left transition-all
+                  ${!day.isCurrentMonth ? "opacity-30" : ""}
+                  ${isSelectedCell ? "bg-blue-600/10 ring-1 ring-inset ring-blue-500/30" : "hover:bg-white/[0.03]"}
+                  ${isTodayCell ? "bg-white/[0.03]" : ""}
+                `}
+                aria-label={`${day.date.toLocaleDateString()}, ${dayPlans.length} sessions`}
+              >
+                {/* Date number */}
+                <span className={`
+                  inline-flex items-center justify-center h-6 w-6 rounded-full text-xs font-medium
+                  ${isTodayCell ? "bg-blue-600 text-white font-bold" : day.isCurrentMonth ? "text-white/70" : "text-white/20"}
+                `}>
+                  {day.date.getDate()}
+                </span>
+
+                {/* Plan indicators */}
+                {hasPlans && (
+                  <div className="mt-0.5 space-y-0.5">
+                    {dayPlans.slice(0, 3).map((p: any) => (
+                      <div key={p.id} className="flex items-center gap-1 px-1 py-0.5 rounded text-[9px] sm:text-[10px] truncate bg-white/[0.04]">
+                        <span className={`h-1.5 w-1.5 rounded-full flex-shrink-0 ${statusColors[p.status] || "bg-gray-400"}`} />
+                        <span className="truncate text-white/60 hidden sm:inline">{p.title}</span>
+                        <span className="truncate text-white/60 sm:hidden">{p.title.slice(0, 8)}</span>
+                      </div>
+                    ))}
+                    {dayPlans.length > 3 && (
+                      <span className="text-[9px] text-white/30 px-1">+{dayPlans.length - 3} more</span>
+                    )}
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Selected Date Detail */}
+      {selectedDate && (
+        <div className="glass-card rounded-xl p-4 border border-white/[0.08] animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-heading font-bold text-white">
+              {selectedDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
+            </h3>
+            <Button
+              size="sm"
+              onClick={() => onCreatePlan(selectedDate)}
+              className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5 text-xs"
+            >
+              <Plus className="h-3.5 w-3.5" /> New Session
+            </Button>
+          </div>
+
+          {selectedPlans.length === 0 ? (
+            <div className="text-center py-8 text-white/30">
+              <CalendarDays className="h-8 w-8 mx-auto mb-2 opacity-40" />
+              <p className="text-sm">No sessions scheduled</p>
+              <p className="text-xs mt-1">Click "New Session" to plan one</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {selectedPlans.map((plan: any) => {
+                const focusAreas = (plan.focusAreas as string[] | null) || [];
+                return (
+                  <div
+                    key={plan.id}
+                    className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] transition-colors group"
+                  >
+                    {/* Status dot */}
+                    <span className={`h-2.5 w-2.5 rounded-full flex-shrink-0 ${statusColors[plan.status] || "bg-gray-400"}`} />
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-white truncate">{plan.title}</p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        {plan.athleteName && (
+                          <span className="text-[10px] text-white/40">{plan.athleteName}</span>
+                        )}
+                        <span className="text-[10px] text-white/30">{plan.duration} min</span>
+                        {focusAreas.slice(0, 2).map((fa: string) => (
+                          <span key={fa} className="text-[9px] px-1.5 py-0.5 rounded bg-white/[0.06] text-white/40">{fa}</span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); onStartSession(plan.id); }}
+                        className="p-1.5 rounded-md hover:bg-green-500/20 text-green-400 transition-colors"
+                        aria-label="Start session"
+                      >
+                        <Play className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); onViewPlan(plan.id); }}
+                        className="p-1.5 rounded-md hover:bg-blue-500/20 text-blue-400 transition-colors"
+                        aria-label="View plan details"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Legend */}
+      <div className="flex items-center gap-4 text-[10px] text-white/30 px-1">
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-gray-400" /> Draft</span>
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-blue-400" /> Scheduled</span>
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-400" /> Completed</span>
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-red-400" /> Cancelled</span>
+      </div>
+    </div>
   );
 }

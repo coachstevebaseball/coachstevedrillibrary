@@ -1,6 +1,6 @@
 import { getDb } from "./db";
 import { drillPageTemplates } from "../drizzle/schema";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 
 export async function createTemplate(data: {
   name: string;
@@ -17,10 +17,16 @@ export async function createTemplate(data: {
 export async function getTemplates(userId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database connection failed");
+  // Return both user-created templates and system (built-in) templates
   const templates = await db
     .select()
     .from(drillPageTemplates)
-    .where(eq(drillPageTemplates.createdBy, userId));
+    .where(
+      or(
+        eq(drillPageTemplates.createdBy, userId),
+        eq(drillPageTemplates.isSystem, true)
+      )
+    );
   return templates;
 }
 

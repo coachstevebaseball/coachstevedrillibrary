@@ -1,0 +1,1 @@
+ALTER TABLE `drillPageTemplates` ADD `isSystem` boolean DEFAULT false NOT NULL;

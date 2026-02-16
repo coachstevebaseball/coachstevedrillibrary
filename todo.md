@@ -1167,3 +1167,23 @@
 
 ## Bug Fix - AthleteTable Key Prop
 - [x] Fix missing unique "key" prop in AthleteTable list rendering
+
+## 4. Accessibility & Responsive Optimization
+- [x] Improve color contrast across dashboard (high-contrast text/backgrounds)
+- [x] Add focus indicators for keyboard navigation on all interactive elements
+- [x] Add ARIA labels to all interactive components (buttons, inputs, tabs, modals)
+- [x] Audit and fix responsive layouts for mobile/tablet across all pages
+- [x] Test flexible grid performance on tablets and smartphones
+
+## 5. Scheduling & Practice Planning Expansion
+- [x] Add calendar view to Practice Planner for scheduling drills over time
+- [x] Allow assigning practice plans to athletes with goal-setting
+- [x] Add automated follow-up email notifications for assigned drills
+- [x] Add reminder notifications to prompt athletes to complete tasks
+
+## 6. Page Builder & Content Editing Improvements
+- [x] Add autosave to Page Builder overlay
+- [x] Add version control (undo/redo history) to Page Builder
+- [x] Add preview functionality to Page Builder
+- [x] Add clearer instructions/guidance in Page Builder
+- [x] Create templated page layouts for drill pages (5 built-in templates seeded)

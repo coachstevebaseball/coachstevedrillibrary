@@ -189,6 +189,40 @@ export const appRouter = router({
         await drillAssignmentDb.unassignDrill(input.assignmentId);
         return { success: true };
       }),
+
+    sendFollowUpReminder: protectedProcedure
+      .input(z.object({
+        userId: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        // Get athlete info
+        const athlete = await db.getUserById(input.userId);
+        if (!athlete) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Athlete not found' });
+        }
+        // Get incomplete assignments for this athlete
+        const assignments = await drillAssignmentDb.getUserAssignments(input.userId);
+        const incompleteDrills = assignments.filter((a: any) => a.status !== 'completed');
+        if (incompleteDrills.length === 0) {
+          return { success: false, message: 'No incomplete drills to remind about' };
+        }
+        const { sendDrillFollowUpReminder } = await import('./email');
+        const result = await sendDrillFollowUpReminder({
+          athleteEmail: athlete.email || '',
+          athleteName: athlete.name || 'Athlete',
+          drills: incompleteDrills.map((d: any) => ({
+            name: d.drillName || d.drill_name || 'Drill',
+            assignedDate: new Date(d.assignedAt || d.assigned_at || Date.now()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+            status: d.status || 'assigned',
+          })),
+          coachName: ctx.user.name || 'Coach',
+          portalUrl: `${ctx.req.protocol}://${ctx.req.get('host')}/athlete-portal`,
+        });
+        return { success: result.success, error: result.error };
+      }),
     
     updateStatus: protectedProcedure
       .input(z.object({ assignmentId: z.number(), status: z.enum(["assigned", "in-progress", "completed"]) }))

@@ -914,3 +914,231 @@ function getActivitySubject(activityType: string): string {
   };
   return subjects[activityType] || "performed an activity";
 }
+
+
+// ==========================================
+// Follow-up Reminder Emails
+// ==========================================
+
+export interface DrillFollowUpReminderData {
+  athleteEmail: string;
+  athleteName: string;
+  drills: Array<{ name: string; assignedDate: string; status: string }>;
+  coachName: string;
+  portalUrl: string;
+}
+
+export async function sendDrillFollowUpReminder(data: DrillFollowUpReminderData): Promise<{ success: boolean; error?: string }> {
+  if (!ENV.resendApiKey) {
+    console.warn("[Email] Resend API key not configured, skipping follow-up reminder");
+    return { success: false, error: "Email service not configured" };
+  }
+
+  try {
+    const drillRows = data.drills.map(d => `
+      <tr>
+        <td style="padding: 10px 15px; border-bottom: 1px solid #e5e7eb; font-weight: 500;">${d.name}</td>
+        <td style="padding: 10px 15px; border-bottom: 1px solid #e5e7eb; color: #666;">${d.assignedDate}</td>
+        <td style="padding: 10px 15px; border-bottom: 1px solid #e5e7eb;">
+          <span style="background: ${d.status === 'in-progress' ? '#fef3c7' : '#fee2e2'}; color: ${d.status === 'in-progress' ? '#92400e' : '#991b1b'}; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">${d.status === 'in-progress' ? 'In Progress' : 'Not Started'}</span>
+        </td>
+      </tr>
+    `).join('');
+
+    const emailHtml = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; line-height: 1.6; color: #333; }
+      .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+      .header h1 { margin: 0; font-size: 24px; font-weight: bold; }
+      .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb; border-top: none; }
+      .drill-table { width: 100%; border-collapse: collapse; background: white; border-radius: 6px; overflow: hidden; margin: 20px 0; }
+      .drill-table th { background: #1e3a8a; color: white; padding: 12px 15px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+      .cta-button { display: inline-block; background: #dc2626; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: bold; margin: 20px 0; }
+      .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #666; }
+      .motivation { background: #ecfdf5; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #10b981; font-style: italic; color: #065f46; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>⏰ Drill Reminder</h1>
+        <p>You have ${data.drills.length} drill${data.drills.length > 1 ? 's' : ''} waiting for you!</p>
+      </div>
+      <div class="content">
+        <p>Hi ${data.athleteName},</p>
+        <p>Your coach <strong>${data.coachName}</strong> wanted to remind you about your outstanding drill assignments. Here's what's on your plate:</p>
+        
+        <table class="drill-table">
+          <thead>
+            <tr>
+              <th>Drill</th>
+              <th>Assigned</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${drillRows}
+          </tbody>
+        </table>
+        
+        <div class="motivation">
+          "Consistency beats intensity. Show up, put in the work, and the results will follow." — ${data.coachName}
+        </div>
+        
+        <div style="text-align: center;">
+          <a href="${data.portalUrl}" class="cta-button">Go to Athlete Portal</a>
+        </div>
+        
+        <p style="color: #666; font-size: 14px; margin-top: 20px;">Log in and start working through your drills. Your coach is tracking your progress and is here to help!</p>
+      </div>
+      <div class="footer">
+        <p>This is an automated reminder from Coach Steve's Mobile Coach.</p>
+      </div>
+    </div>
+  </body>
+</html>
+    `;
+
+    const result = await resend.emails.send({
+      from: "coach@coachstevemobilecoach.com",
+      to: data.athleteEmail,
+      subject: `Drill Reminder: ${data.drills.length} drill${data.drills.length > 1 ? 's' : ''} waiting for you`,
+      html: emailHtml,
+    });
+
+    if (result.error) {
+      console.error("[Email] Failed to send follow-up reminder:", result.error);
+      return { success: false, error: result.error.message };
+    }
+
+    console.log("[Email] Follow-up reminder sent to", data.athleteEmail);
+    return { success: true };
+  } catch (error) {
+    console.error("[Email] Error sending follow-up reminder:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+
+// ==========================================
+// Practice Plan Sharing Notification
+// ==========================================
+
+export interface PracticePlanShareData {
+  athleteEmail: string;
+  athleteName: string;
+  planTitle: string;
+  sessionDate?: string;
+  focusAreas: string[];
+  totalDuration: number;
+  blockCount: number;
+  coachName: string;
+  portalUrl: string;
+}
+
+export async function sendPracticePlanShareEmail(data: PracticePlanShareData): Promise<{ success: boolean; error?: string }> {
+  if (!ENV.resendApiKey) {
+    console.warn("[Email] Resend API key not configured, skipping practice plan share notification");
+    return { success: false, error: "Email service not configured" };
+  }
+
+  try {
+    const focusBadges = data.focusAreas.map(f => 
+      `<span style="display: inline-block; background: #dbeafe; color: #1e40af; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; margin: 2px;">${f}</span>`
+    ).join(' ');
+
+    const emailHtml = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; line-height: 1.6; color: #333; }
+      .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+      .header h1 { margin: 0; font-size: 24px; font-weight: bold; }
+      .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb; border-top: none; }
+      .plan-card { background: white; padding: 25px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #7c3aed; }
+      .plan-title { font-size: 20px; font-weight: bold; color: #1e3a8a; margin: 0 0 15px 0; }
+      .plan-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 15px 0; }
+      .meta-item { font-size: 14px; }
+      .meta-label { font-weight: bold; color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+      .meta-value { color: #333; margin-top: 4px; }
+      .cta-button { display: inline-block; background: #7c3aed; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: bold; margin: 20px 0; }
+      .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #666; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📋 New Practice Plan Shared</h1>
+        <p>Your coach has shared a session plan with you!</p>
+      </div>
+      <div class="content">
+        <p>Hi ${data.athleteName},</p>
+        <p>Coach <strong>${data.coachName}</strong> has shared a practice plan with you. Review the details below and prepare for your session!</p>
+        
+        <div class="plan-card">
+          <div class="plan-title">${data.planTitle}</div>
+          <div class="plan-meta">
+            ${data.sessionDate ? `
+            <div class="meta-item">
+              <div class="meta-label">Session Date</div>
+              <div class="meta-value">${data.sessionDate}</div>
+            </div>
+            ` : ''}
+            <div class="meta-item">
+              <div class="meta-label">Duration</div>
+              <div class="meta-value">${data.totalDuration} minutes</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Activities</div>
+              <div class="meta-value">${data.blockCount} block${data.blockCount > 1 ? 's' : ''}</div>
+            </div>
+          </div>
+          ${data.focusAreas.length > 0 ? `
+          <div style="margin-top: 12px;">
+            <div style="font-weight: bold; color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Focus Areas</div>
+            ${focusBadges}
+          </div>
+          ` : ''}
+        </div>
+        
+        <div style="text-align: center;">
+          <a href="${data.portalUrl}" class="cta-button">View Practice Plan</a>
+        </div>
+        
+        <p style="color: #666; font-size: 14px; margin-top: 20px;">Log in to your athlete portal to see the full session breakdown with all drill details and coaching notes.</p>
+      </div>
+      <div class="footer">
+        <p>This is an automated notification from Coach Steve's Mobile Coach.</p>
+      </div>
+    </div>
+  </body>
+</html>
+    `;
+
+    const result = await resend.emails.send({
+      from: "coach@coachstevemobilecoach.com",
+      to: data.athleteEmail,
+      subject: `Practice Plan: ${data.planTitle}`,
+      html: emailHtml,
+    });
+
+    if (result.error) {
+      console.error("[Email] Failed to send practice plan share email:", result.error);
+      return { success: false, error: result.error.message };
+    }
+
+    console.log("[Email] Practice plan share email sent to", data.athleteEmail);
+    return { success: true };
+  } catch (error) {
+    console.error("[Email] Error sending practice plan share email:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}

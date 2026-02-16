@@ -218,6 +218,13 @@
       "when": 1771179175685,
       "tag": "0030_faulty_proteus",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "5",
+      "when": 1771217370063,
+      "tag": "0031_faithful_talisman",
+      "breakpoints": true
     }
   ]
 }

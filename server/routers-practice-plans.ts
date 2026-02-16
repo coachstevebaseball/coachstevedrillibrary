@@ -164,6 +164,34 @@ export const practicePlansRouter = router({
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       await practicePlanDb.toggleSharePlan(input.planId, input.isShared);
+      
+      // Send email notification when sharing a plan with an athlete
+      if (input.isShared) {
+        try {
+          const plan = await practicePlanDb.getPlanWithBlocks(input.planId);
+          if (plan && plan.athleteId) {
+            const { getUserById } = await import('./db');
+            const athlete = await getUserById(plan.athleteId);
+            if (athlete?.email) {
+              const { sendPracticePlanShareEmail } = await import('./email');
+              await sendPracticePlanShareEmail({
+                athleteEmail: athlete.email,
+                athleteName: athlete.name || 'Athlete',
+                planTitle: plan.title,
+                sessionDate: plan.sessionDate ? new Date(plan.sessionDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : undefined,
+                focusAreas: (Array.isArray(plan.focusAreas) ? plan.focusAreas : []) as string[],
+                totalDuration: plan.duration,
+                blockCount: plan.blocks?.length || 0,
+                coachName: ctx.user.name || 'Coach',
+                portalUrl: `${ctx.req.protocol}://${ctx.req.get('host')}/athlete-portal`,
+              });
+            }
+          }
+        } catch (emailError) {
+          console.warn('[PracticePlans] Failed to send share notification email:', emailError);
+          // Don't fail the share operation if email fails
+        }
+      }
       return { success: true };
     }),
 

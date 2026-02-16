@@ -271,22 +271,22 @@ export default function CoachDashboard() {
           </div>
 
           {/* Stats Row */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
+          <section aria-label="Dashboard Statistics" className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
             {[
               { label: "Athletes", value: totalAthletes, icon: Users, color: "text-blue-400" },
               { label: "Assigned", value: totalAssignments, icon: Target, color: "text-amber-400" },
               { label: "In Progress", value: inProgressAssignments, icon: Clock, color: "text-purple-400" },
               { label: "Completed", value: completedAssignments, icon: TrendingUp, color: "text-green-400" },
             ].map((stat) => (
-              <div key={stat.label} className="bg-white/[0.06] backdrop-blur-sm border border-white/[0.08] rounded-xl p-3 md:p-4">
+              <div key={stat.label} className="bg-white/[0.06] backdrop-blur-sm border border-white/[0.08] rounded-xl p-3 md:p-4" role="status" aria-label={`${stat.label}: ${stat.value}`}>
                 <div className="flex items-center gap-2 mb-1">
-                  <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                  <stat.icon className={`h-4 w-4 ${stat.color}`} aria-hidden="true" />
                   <span className="text-white/50 text-xs font-medium uppercase tracking-wider">{stat.label}</span>
                 </div>
                 <p className="text-2xl md:text-3xl font-heading font-black text-white">{stat.value}</p>
               </div>
             ))}
-          </div>
+          </section>
 
           {/* Quick Actions Grid (collapsible) */}
           {showQuickActions && (
@@ -309,7 +309,7 @@ export default function CoachDashboard() {
 
           {/* Tab Navigation */}
           <div className="w-full overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1">
-            <div className="flex gap-1 bg-white/[0.06] backdrop-blur-sm rounded-xl p-1 border border-white/[0.08] w-max md:w-fit">
+            <nav role="tablist" aria-label="Coach Dashboard Navigation" className="flex gap-1 bg-white/[0.06] backdrop-blur-sm rounded-xl p-1 border border-white/[0.08] w-max md:w-fit">
               {[
                 { key: "overview" as const, label: "Athlete Overview", shortLabel: "Overview", icon: Users },
                 { key: "assign" as const, label: "Assign Drills", shortLabel: "Assign", icon: Plus },
@@ -319,25 +319,29 @@ export default function CoachDashboard() {
               ].map((tab) => (
                 <button
                   key={tab.key}
+                  role="tab"
+                  aria-selected={activeTab === tab.key}
+                  aria-controls={`panel-${tab.key}`}
+                  aria-label={tab.label}
                   onClick={() => setActiveTab(tab.key)}
-                  className={`flex items-center gap-2 px-3 md:px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                  className={`flex items-center gap-2 px-3 md:px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap touch-target ${
                     activeTab === tab.key
                       ? "bg-white/[0.15] text-white shadow-sm"
                       : "text-white/50 hover:text-white/80 hover:bg-white/[0.06]"
                   }`}
                 >
-                  <tab.icon className="h-4 w-4 shrink-0" />
+                  <tab.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
                   <span className="hidden sm:inline">{tab.label}</span>
                   <span className="sm:hidden">{tab.shortLabel}</span>
                 </button>
               ))}
-            </div>
+            </nav>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container max-w-7xl pb-8 md:pb-12 px-3 md:px-4 py-6 md:py-8">
+      <main role="tabpanel" aria-label={`${activeTab} panel`} className="container max-w-7xl pb-8 md:pb-12 px-3 md:px-4 py-6 md:py-8">
         <BulkGoalUpload isOpen={isBulkGoalOpen} onClose={() => setIsBulkGoalOpen(false)} />
         
         {activeTab === "overview" ? (

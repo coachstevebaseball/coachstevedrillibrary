@@ -16,6 +16,7 @@ import {
   Mail,
   Calendar,
   Activity,
+  Bell,
   Shield,
   ChevronLeft,
   ChevronRight,
@@ -236,6 +237,8 @@ export function AthleteTable() {
       </div>
     );
   }
+
+  const sendReminderMutation = trpc.drillAssignments.sendFollowUpReminder.useMutation();
 
   return (
     <div className="space-y-4">
@@ -481,7 +484,7 @@ export function AthleteTable() {
                               <p className="text-sm font-medium">{formatDateTime(athlete.lastSignedIn)}</p>
                             </div>
                           </div>
-                          <div className="mt-3 flex items-center gap-3">
+                          <div className="mt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                             <div className="flex-1 bg-white/[0.04] rounded-lg p-3">
                               <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Full Email</p>
                               <p className="text-sm font-medium break-all">{athlete.email || "No email on file"}</p>
@@ -499,6 +502,36 @@ export function AthleteTable() {
                               </p>
                             </div>
                           </div>
+                          {/* Action buttons */}
+                          {athlete.type === "user" && athlete.totalDrills > athlete.completedDrills && (
+                            <div className="mt-3 flex items-center gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="gap-1.5 text-xs border-amber-500/30 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300"
+                                disabled={sendReminderMutation.isPending}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  sendReminderMutation.mutate(
+                                    { userId: athlete.numericId },
+                                    {
+                                      onSuccess: (data: any) => {
+                                        if (data.success) {
+                                          alert(`Reminder sent to ${athlete.name}!`);
+                                        } else {
+                                          alert(data.message || data.error || 'Failed to send reminder');
+                                        }
+                                      },
+                                      onError: (err: any) => alert(`Error: ${err.message}`),
+                                    }
+                                  );
+                                }}
+                              >
+                                <Bell className="h-3.5 w-3.5" />
+                                {sendReminderMutation.isPending ? 'Sending...' : `Send Reminder (${athlete.totalDrills - athlete.completedDrills} incomplete)`}
+                              </Button>
+                            </div>
+                          )}
                         </td>
                       </tr>
                     )}
