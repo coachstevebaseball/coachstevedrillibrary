@@ -13,7 +13,7 @@ import drillsData from "@/data/drills.json";
 import { getCategoryConfig } from "@/lib/categoryColors";
 import { trpc } from "@/lib/trpc";
 import { CompletionModal } from "@/components/CompletionModal";
-import { DrillSubmissionForm } from "@/components/DrillSubmissionForm";
+import { DrillCoachFocus, DrillQuickNotes } from "@/components/DrillActionComponents";
 import { AthletePortalSkeleton } from "@/components/Skeleton";
 
 // Hook to merge static drills with custom drills from database
@@ -515,12 +515,12 @@ export default function AthletePortal() {
         </div>
       </main>
 
-      {/* Drill Focus Modal */}
+      {/* Drill Focus Modal — Action-Oriented Redesign */}
       <Dialog open={showDrillModal} onOpenChange={setShowDrillModal}>
-        <DialogContent className="max-w-lg mx-auto h-[90vh] flex flex-col p-0 gap-0 glass-card border-white/10">
-          <DialogHeader className="p-4 border-b border-white/10 bg-gradient-to-r from-navy to-charcoal flex-shrink-0">
+        <DialogContent className="max-w-lg mx-auto max-h-[90vh] flex flex-col p-0 gap-0 glass-card border-white/10">
+          <DialogHeader className="p-5 pb-4 border-b border-white/10 bg-gradient-to-r from-navy to-charcoal flex-shrink-0">
             <div className="flex items-center justify-between">
-              <DialogTitle className="text-lg font-bold pr-8 text-foreground">
+              <DialogTitle className="text-xl font-bold pr-8 text-foreground leading-tight">
                 {selectedAssignment?.drillName}
               </DialogTitle>
               <button 
@@ -532,24 +532,24 @@ export default function AthletePortal() {
             </div>
           </DialogHeader>
           
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-background">
+          <div className="flex-1 overflow-y-auto p-5 space-y-5 bg-background">
             {selectedAssignment && (() => {
               const drill = getDrill(selectedAssignment.drillId);
               return (
                 <>
-                  {/* Drill Info */}
-                  <div className="flex items-center gap-3 flex-wrap">
+                  {/* Drill Meta Badges */}
+                  <div className="flex items-center gap-2 flex-wrap">
                     {drill && (
                       <>
-                        <Badge className="bg-white/10 text-foreground border border-white/20">
+                        <Badge className="bg-white/10 text-foreground border border-white/20 text-xs px-2.5 py-1">
                           <Clock className="w-3 h-3 mr-1" />
                           {drill.duration || "10 min"}
                         </Badge>
-                        <Badge className={getDifficultyStyles(drill.difficulty)}>
+                        <Badge className={`${getDifficultyStyles(drill.difficulty)} text-xs px-2.5 py-1`}>
                           {drill.difficulty}
                         </Badge>
                         {drill.categories[0] && (
-                          <Badge className="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                          <Badge className="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs px-2.5 py-1">
                             {drill.categories[0]}
                           </Badge>
                         )}
@@ -557,44 +557,36 @@ export default function AthletePortal() {
                     )}
                   </div>
 
-                  {/* Video Link */}
+                  {/* Coach's Focus — pulls from drill goal */}
+                  <DrillCoachFocus drillId={selectedAssignment.drillId} />
+
+                  {/* Watch Video Button */}
                   <Link href={`/drill/${selectedAssignment.drillId}`}>
-                    <Button className="w-full btn-glow bg-electric hover:bg-electric/90 gap-2">
+                    <Button variant="outline" className="w-full gap-2 border-white/20 hover:bg-white/10 text-foreground">
                       <Play className="w-4 h-4" />
                       Watch Video Instructions
                     </Button>
                   </Link>
 
-                  {/* Submission Form */}
-                  <div className="border-t border-white/10 pt-4">
-                    <h3 className="font-bold text-foreground mb-3">Submit Your Work</h3>
-                    <DrillSubmissionForm
+                  {/* Optional Notes — Collapsible */}
+                  {selectedAssignment.status !== "completed" && (
+                    <DrillQuickNotes
                       assignmentId={selectedAssignment.id}
-                      drillId={selectedAssignment.drillId}
-                      onSubmitSuccess={() => {
+                      onComplete={() => {
                         utils.drillAssignments.getUserAssignments.invalidate();
+                        setShowDrillModal(false);
+                        setShowCompletionModal(true);
                       }}
                     />
-                  </div>
-
-                  {/* Mark Complete Button */}
-                  {selectedAssignment.status !== "completed" && (
-                    <Button
-                      onClick={() => setShowCompletionModal(true)}
-                      className="w-full bg-emerald-600 hover:bg-emerald-700 gap-2"
-                    >
-                      <CheckCircle className="w-4 h-4" />
-                      Mark as Complete
-                    </Button>
                   )}
 
                   {/* Already Completed */}
                   {selectedAssignment.status === "completed" && (
-                    <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-center">
-                      <CheckCircle className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
-                      <p className="font-medium text-emerald-400">Drill Completed!</p>
+                    <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-6 text-center">
+                      <CheckCircle className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
+                      <p className="font-bold text-emerald-400 text-lg">Drill Completed!</p>
                       {selectedAssignment.completedAt && (
-                        <p className="text-sm text-emerald-400/80">
+                        <p className="text-sm text-emerald-400/70 mt-1">
                           {new Date(selectedAssignment.completedAt).toLocaleDateString()}
                         </p>
                       )}

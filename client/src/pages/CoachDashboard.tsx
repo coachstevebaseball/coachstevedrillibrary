@@ -48,14 +48,10 @@ interface Drill {
 
 // Quick action card data
 const quickActions = [
-  { label: "Submissions", shortLabel: "Subs", href: "/submissions", icon: MessageSquare, color: "from-blue-500/20 to-cyan-500/20", iconColor: "text-blue-400" },
-  { label: "Messages", shortLabel: "Msgs", href: "/coach-messaging", icon: MessageSquare, color: "from-purple-500/20 to-pink-500/20", iconColor: "text-purple-400" },
-  { label: "Activity Feed", shortLabel: "Activity", href: "/activity-feed", icon: Activity, color: "from-green-500/20 to-emerald-500/20", iconColor: "text-green-400" },
-  { label: "Manage Videos", shortLabel: "Videos", href: "/manage-drill-videos", icon: Video, color: "from-orange-500/20 to-amber-500/20", iconColor: "text-orange-400" },
-  { label: "Create Details", shortLabel: "Create", href: "/create-drill-details", icon: Sparkles, color: "from-yellow-500/20 to-orange-500/20", iconColor: "text-yellow-400" },
+  { label: "Drill Directory", shortLabel: "Drills", href: "/", icon: Search, color: "from-blue-500/20 to-cyan-500/20", iconColor: "text-blue-400" },
   { label: "AI Generator", shortLabel: "AI", href: "/drill-generator", icon: Zap, color: "from-violet-500/20 to-fuchsia-500/20", iconColor: "text-violet-400" },
-  { label: "Compare Drills", shortLabel: "Compare", href: "/drill-comparison", icon: ArrowLeftRight, color: "from-teal-500/20 to-cyan-500/20", iconColor: "text-teal-400" },
-  { label: "Assessment Reports", shortLabel: "Reports", href: "/athlete-assessment", icon: FileText, color: "from-rose-500/20 to-pink-500/20", iconColor: "text-rose-400" },
+  { label: "Manage Videos", shortLabel: "Videos", href: "/manage-drill-videos", icon: Video, color: "from-orange-500/20 to-amber-500/20", iconColor: "text-orange-400" },
+  { label: "User Management", shortLabel: "Users", href: "/user-management", icon: Users, color: "from-green-500/20 to-emerald-500/20", iconColor: "text-green-400" },
 ];
 
 export default function CoachDashboard() {

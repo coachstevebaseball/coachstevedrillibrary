@@ -131,7 +131,7 @@ export async function unassignDrill(assignmentId: number) {
   return await db.delete(drillAssignments).where(eq(drillAssignments.id, assignmentId));
 }
 
-export async function updateAssignmentStatus(assignmentId: number, status: "assigned" | "in-progress" | "completed") {
+export async function updateAssignmentStatus(assignmentId: number, status: "assigned" | "in-progress" | "completed", notes?: string) {
   const db = await getDb();
   if (!db) {
     throw new Error("Database not available");
@@ -140,6 +140,9 @@ export async function updateAssignmentStatus(assignmentId: number, status: "assi
   const updateData: any = { status };
   if (status === "completed") {
     updateData.completedAt = new Date();
+  }
+  if (notes !== undefined) {
+    updateData.notes = notes;
   }
 
   return await db.update(drillAssignments).set(updateData).where(eq(drillAssignments.id, assignmentId));

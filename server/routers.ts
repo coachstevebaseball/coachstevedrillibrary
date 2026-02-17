@@ -229,11 +229,11 @@ export const appRouter = router({
       }),
     
     updateStatus: protectedProcedure
-      .input(z.object({ assignmentId: z.number(), status: z.enum(["assigned", "in-progress", "completed"]) }))
+      .input(z.object({ assignmentId: z.number(), status: z.enum(["assigned", "in-progress", "completed"]), notes: z.string().optional() }))
       .mutation(async ({ ctx, input }) => {
         // Allow admins to update any assignment
         if (ctx.user.role === 'admin') {
-          await drillAssignmentDb.updateAssignmentStatus(input.assignmentId, input.status);
+          await drillAssignmentDb.updateAssignmentStatus(input.assignmentId, input.status, input.notes);
           return { success: true };
         }
         
@@ -246,7 +246,7 @@ export const appRouter = router({
           throw new TRPCError({ code: 'FORBIDDEN', message: 'You can only update your own assignments' });
         }
         
-        await drillAssignmentDb.updateAssignmentStatus(input.assignmentId, input.status);
+        await drillAssignmentDb.updateAssignmentStatus(input.assignmentId, input.status, input.notes);
         return { success: true };
       }),
 
