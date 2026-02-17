@@ -1224,4 +1224,7 @@
 - [x] Write vitest tests for report generation (12 tests passing)
 
 ## Bug Fix: Generate Report 404
-- [ ] Fix Generate Report button navigating to 404 instead of triggering inline report generation
+- [x] Fix Generate Report button navigating to 404 instead of triggering inline report generation (verified working — re-publish to deploy)
+
+## LLM Model Change
+- [x] Switch LLM model from gemini-2.5-flash to gpt-4o
