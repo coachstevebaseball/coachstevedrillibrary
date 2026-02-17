@@ -958,7 +958,13 @@ function PlanForm({ planId, onCancel, onSaved }: { planId: number | null; onCanc
   const { data: overviewData } = trpc.drillAssignments.getAthleteAssignmentOverview.useQuery();
   const athleteOptions = useMemo(() => {
     if (!overviewData?.athletes) return [];
-    return overviewData.athletes.map((a: any) => ({ id: String(a.userId), name: a.name || a.email, email: a.email }));
+    return overviewData.athletes
+      .filter((a: any) => a.type === 'user') // Only show registered users, not pending invites
+      .map((a: any) => {
+        // a.id is in format "user-5" — extract the numeric part
+        const numericId = a.id.replace('user-', '');
+        return { id: numericId, name: a.name || a.email, email: a.email };
+      });
   }, [overviewData]);
 
   const createMut = trpc.practicePlans.create.useMutation({ onSuccess: () => { toast.success("Plan created!"); onSaved(); } });

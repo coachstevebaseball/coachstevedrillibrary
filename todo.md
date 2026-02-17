@@ -1228,3 +1228,6 @@
 
 ## LLM Model Change
 - [x] Switch LLM model from gemini-2.5-flash to gpt-4o
+
+## Bug Fix: Practice Plan Player Selection
+- [x] Fix selecting one athlete auto-selects entire group instead of individual selection (root cause: a.userId was undefined for all athletes, making all Select items share value "undefined")
