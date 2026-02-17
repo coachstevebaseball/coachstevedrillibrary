@@ -1222,3 +1222,6 @@
 - [x] Store generated reports in database with report history
 - [x] Add Generate Report button to session notes view (wired in SessionHistory + SessionNotesTab)
 - [x] Write vitest tests for report generation (12 tests passing)
+
+## Bug Fix: Generate Report 404
+- [ ] Fix Generate Report button navigating to 404 instead of triggering inline report generation
