@@ -20,6 +20,7 @@ import { favoritesRouter } from "./routers-favorites";
 import { practicePlansRouter } from "./routers-practice-plans";
 import { sessionNotesRouter } from "./routers-session-notes";
 import { progressReportsRouter } from "./routers-progress-reports";
+import { athleteProfilesRouter } from "./routers-athlete-profiles";
 import * as drillCustomizationsDb from "./drillCustomizations";
 import { storagePut } from "./storage";
 
@@ -33,6 +34,7 @@ export const appRouter = router({
   practicePlans: practicePlansRouter,
   sessionNotes: sessionNotesRouter,
   progressReports: progressReportsRouter,
+  athleteProfiles: athleteProfilesRouter,
   auth: router({
     me: publicProcedure.query(async (opts) => {
       if (!opts.ctx.user) return null;

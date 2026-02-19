@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,9 +14,12 @@ import {
   UserPlus,
   Target,
   TrendingUp,
-  AlertTriangle
+  AlertTriangle,
+  User,
+  ArrowLeft,
 } from "lucide-react";
 import { Link } from "wouter";
+import { AthleteProfilePanel } from "./AthleteProfilePanel";
 
 interface AthleteAssignmentOverviewProps {
   onSelectAthlete?: (athleteId: string) => void;
@@ -25,6 +28,7 @@ interface AthleteAssignmentOverviewProps {
 export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignmentOverviewProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<"all" | "with-drills" | "without-drills">("all");
+  const [viewingProfileId, setViewingProfileId] = useState<number | null>(null);
   
   const { data, isLoading, error } = trpc.drillAssignments.getAthleteAssignmentOverview.useQuery();
 
@@ -58,6 +62,27 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
   if (!data) return null;
 
   const { summary, athletes } = data;
+
+  // If viewing a specific athlete's profile
+  if (viewingProfileId !== null) {
+    const athlete = athletes.find((a) => {
+      const numId = parseInt(a.id.replace(/^(user-|invite-)/, ""));
+      return a.type === "user" && numId === viewingProfileId;
+    });
+
+    return (
+      <div className="space-y-4">
+        <Card>
+          <CardContent className="p-5 md:p-6">
+            <AthleteProfilePanel
+              userId={viewingProfileId}
+              onClose={() => setViewingProfileId(null)}
+            />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Filter and search athletes
   const filteredAthletes = athletes
@@ -213,74 +238,101 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
             </div>
           ) : (
             <div className="space-y-2">
-              {filteredAthletes.map((athlete) => (
-                <div
-                  key={athlete.id}
-                  className={`flex items-center justify-between p-3 rounded-lg border transition-all hover:shadow-sm cursor-pointer ${
-                    !athlete.hasDrills 
-                      ? 'bg-amber-500/5 border-amber-500/20 hover:border-amber-500/40' 
-                      : 'bg-card hover:bg-muted/50'
-                  }`}
-                  onClick={() => onSelectAthlete?.(athlete.id)}
-                >
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    {/* Status Indicator */}
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+              {filteredAthletes.map((athlete) => {
+                const numericId = parseInt(athlete.id.replace(/^(user-|invite-)/, ""));
+                const isUser = athlete.type === "user";
+
+                return (
+                  <div
+                    key={athlete.id}
+                    className={`flex items-center justify-between p-3 rounded-lg border transition-all hover:shadow-sm ${
                       !athlete.hasDrills 
-                        ? 'bg-amber-500/20' 
-                        : athlete.completedDrills === athlete.totalDrills && athlete.totalDrills > 0
-                          ? 'bg-green-500/20'
-                          : 'bg-blue-500/20'
-                    }`}>
-                      {!athlete.hasDrills ? (
-                        <AlertTriangle className="h-5 w-5 text-amber-500" />
-                      ) : athlete.completedDrills === athlete.totalDrills && athlete.totalDrills > 0 ? (
-                        <CheckCircle className="h-5 w-5 text-green-500" />
-                      ) : (
-                        <Clock className="h-5 w-5 text-blue-500" />
-                      )}
-                    </div>
-
-                    {/* Athlete Info */}
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium truncate">{athlete.name}</p>
-                        {athlete.type === 'invite' && (
-                          <Badge variant="outline" className="text-xs flex-shrink-0">
-                            <UserPlus className="h-3 w-3 mr-1" />
-                            Pending
-                          </Badge>
+                        ? 'bg-amber-500/5 border-amber-500/20 hover:border-amber-500/40' 
+                        : 'bg-card hover:bg-muted/50'
+                    }`}
+                  >
+                    <div
+                      className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer"
+                      onClick={() => onSelectAthlete?.(athlete.id)}
+                    >
+                      {/* Status Indicator */}
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        !athlete.hasDrills 
+                          ? 'bg-amber-500/20' 
+                          : athlete.completedDrills === athlete.totalDrills && athlete.totalDrills > 0
+                            ? 'bg-green-500/20'
+                            : 'bg-blue-500/20'
+                      }`}>
+                        {!athlete.hasDrills ? (
+                          <AlertTriangle className="h-5 w-5 text-amber-500" />
+                        ) : athlete.completedDrills === athlete.totalDrills && athlete.totalDrills > 0 ? (
+                          <CheckCircle className="h-5 w-5 text-green-500" />
+                        ) : (
+                          <Clock className="h-5 w-5 text-blue-500" />
                         )}
                       </div>
-                      <p className="text-xs text-muted-foreground truncate">{athlete.email}</p>
-                    </div>
-                  </div>
 
-                  {/* Drill Stats */}
-                  <div className="flex items-center gap-4">
-                    {athlete.hasDrills ? (
-                      <div className="text-right hidden sm:block">
-                        <div className="flex items-center gap-1.5 text-sm">
-                          <span className="text-green-500 font-medium">{athlete.completedDrills}</span>
-                          <span className="text-muted-foreground">/</span>
-                          <span className="font-medium">{athlete.totalDrills}</span>
-                          <span className="text-muted-foreground text-xs">drills</span>
+                      {/* Athlete Info */}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium truncate">{athlete.name}</p>
+                          {athlete.type === 'invite' && (
+                            <Badge variant="outline" className="text-xs flex-shrink-0">
+                              <UserPlus className="h-3 w-3 mr-1" />
+                              Pending
+                            </Badge>
+                          )}
                         </div>
-                        {athlete.inProgressDrills > 0 && (
-                          <p className="text-xs text-muted-foreground">
-                            {athlete.inProgressDrills} in progress
-                          </p>
-                        )}
+                        <p className="text-xs text-muted-foreground truncate">{athlete.email}</p>
                       </div>
-                    ) : (
-                      <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/30">
-                        No drills assigned
-                      </Badge>
-                    )}
-                    <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-2">
+                      {athlete.hasDrills ? (
+                        <div className="text-right hidden sm:block">
+                          <div className="flex items-center gap-1.5 text-sm">
+                            <span className="text-green-500 font-medium">{athlete.completedDrills}</span>
+                            <span className="text-muted-foreground">/</span>
+                            <span className="font-medium">{athlete.totalDrills}</span>
+                            <span className="text-muted-foreground text-xs">drills</span>
+                          </div>
+                          {athlete.inProgressDrills > 0 && (
+                            <p className="text-xs text-muted-foreground">
+                              {athlete.inProgressDrills} in progress
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/30 hidden sm:flex">
+                          No drills assigned
+                        </Badge>
+                      )}
+
+                      {/* Profile button for registered users */}
+                      {isUser && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0 text-muted-foreground hover:text-electric-blue"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setViewingProfileId(numericId);
+                          }}
+                          title="View Profile"
+                        >
+                          <User className="h-4 w-4" />
+                        </Button>
+                      )}
+
+                      <ChevronRight
+                        className="h-4 w-4 text-muted-foreground flex-shrink-0 cursor-pointer"
+                        onClick={() => onSelectAthlete?.(athlete.id)}
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </CardContent>

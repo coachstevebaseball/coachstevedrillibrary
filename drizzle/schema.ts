@@ -552,3 +552,38 @@ export const progressReports = mysqlTable("progressReports", {
 });
 export type ProgressReport = typeof progressReports.$inferSelect;
 export type InsertProgressReport = typeof progressReports.$inferInsert;
+
+// ============================================================
+// Athlete Profiles — Extended player info for coaches & reports
+// ============================================================
+export const athleteProfiles = mysqlTable("athleteProfiles", {
+  id: int("id").autoincrement().primaryKey(),
+  /** The user ID this profile belongs to */
+  userId: int("userId").notNull().unique(),
+  /** Player's date of birth */
+  birthDate: timestamp("birthDate"),
+  /** Primary position (e.g., SS, CF, RHP) */
+  position: varchar("position", { length: 50 }),
+  /** Secondary position */
+  secondaryPosition: varchar("secondaryPosition", { length: 50 }),
+  /** Bats: L, R, S (switch) */
+  bats: mysqlEnum("bats", ["L", "R", "S"]),
+  /** Throws: L, R */
+  throws: mysqlEnum("throws", ["L", "R"]),
+  /** Team / organization name */
+  teamName: varchar("teamName", { length: 255 }),
+  /** JSON array of focus area strings */
+  focusAreas: json("focusAreas").$type<string[]>(),
+  /** Parent / guardian name */
+  parentName: varchar("parentName", { length: 255 }),
+  /** Parent / guardian email */
+  parentEmail: varchar("parentEmail", { length: 320 }),
+  /** Parent / guardian phone */
+  parentPhone: varchar("parentPhone", { length: 30 }),
+  /** Any notes the coach wants to keep about this player */
+  coachProfileNotes: text("coachProfileNotes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type AthleteProfile = typeof athleteProfiles.$inferSelect;
+export type InsertAthleteProfile = typeof athleteProfiles.$inferInsert;

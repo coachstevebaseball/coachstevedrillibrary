@@ -1231,3 +1231,15 @@
 
 ## Bug Fix: Practice Plan Player Selection
 - [x] Fix selecting one athlete auto-selects entire group instead of individual selection (root cause: a.userId was undefined for all athletes, making all Select items share value "undefined")
+
+## Enhanced Player Profiles
+- [x] Add parent contact fields (parentName, parentEmail, parentPhone) to database schema
+- [x] Add birthDate field to database schema
+- [x] Add position field to database schema
+- [x] Add focusAreas field to database schema
+- [x] Migrate database with new fields
+- [x] Update server procedures for reading/writing profile fields
+- [x] Build coach-facing athlete profile edit UI (view/edit player details)
+- [x] Build athlete-facing profile display/edit UI
+- [x] Integrate profile data into progress reports (parent email, player context)
+- [x] Write tests for new profile CRUD operations

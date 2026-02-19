@@ -125,6 +125,12 @@ export function SessionNotesTab({ initialAthleteId }: SessionNotesTabProps) {
     );
   }
 
+  // Fetch athlete profile for parent email when generating reports
+  const { data: athleteProfile } = trpc.athleteProfiles.get.useQuery(
+    { userId: selectedAthleteId! },
+    { enabled: !!selectedAthleteId && view === "report" }
+  );
+
   // Report view — full screen within the tab
   if (view === "report" && reportSessionNoteId && selectedAthleteId) {
     return (
@@ -132,6 +138,8 @@ export function SessionNotesTab({ initialAthleteId }: SessionNotesTabProps) {
         sessionNoteId={reportSessionNoteId}
         athleteId={selectedAthleteId}
         athleteName={selectedAthlete?.name ?? "Athlete"}
+        parentEmail={athleteProfile?.parentEmail ?? undefined}
+        parentName={athleteProfile?.parentName ?? undefined}
         onBack={() => {
           setView("list");
           setReportSessionNoteId(null);

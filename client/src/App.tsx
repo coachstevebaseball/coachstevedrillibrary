@@ -23,6 +23,7 @@ import ParentDashboard from "./pages/ParentDashboard";
 import ActivityFeed from "./pages/ActivityFeed";
 import DrillComparison from "./pages/DrillComparison";
 import AthleteAssessment from "./pages/AthleteAssessment";
+import MyProfile from "./pages/MyProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
@@ -137,6 +138,12 @@ function Router() {
       <Route path={"/athlete-portal"}>
         <ProtectedRoute requiredRole="athlete">
           <AthletePortal />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path={"/my-profile"}>
+        <ProtectedRoute requiredRole="athlete">
+          <MyProfile />
         </ProtectedRoute>
       </Route>
       

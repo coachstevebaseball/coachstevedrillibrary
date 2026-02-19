@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { 
   CheckCircle, Clock, AlertCircle, Play, Home, LogOut, 
-  MessageCircle, Star, Flame, Target, X, Trophy, FileText, ChevronDown, ChevronUp, Dumbbell, Coffee, Zap
+  MessageCircle, Star, Flame, Target, X, Trophy, FileText, ChevronDown, ChevronUp, Dumbbell, Coffee, Zap, User
 } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo, useEffect } from "react";
@@ -272,12 +272,20 @@ export default function AthletePortal() {
             </button>
           </Link>
           <h1 className="font-bold text-lg text-gradient">My Training</h1>
-          <Link href="/athlete-messaging">
-            <button className="flex items-center gap-1 text-muted-foreground hover:text-electric text-sm transition-colors hover-lift">
-              <MessageCircle className="w-4 h-4" />
-              <span className="hidden sm:inline">Messages</span>
-            </button>
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/my-profile">
+              <button className="flex items-center gap-1 text-muted-foreground hover:text-electric text-sm transition-colors hover-lift">
+                <User className="w-4 h-4" />
+                <span className="hidden sm:inline">Profile</span>
+              </button>
+            </Link>
+            <Link href="/athlete-messaging">
+              <button className="flex items-center gap-1 text-muted-foreground hover:text-electric text-sm transition-colors hover-lift">
+                <MessageCircle className="w-4 h-4" />
+                <span className="hidden sm:inline">Messages</span>
+              </button>
+            </Link>
+          </div>
         </div>
       </header>
 
