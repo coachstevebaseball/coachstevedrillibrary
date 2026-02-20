@@ -344,6 +344,22 @@ export const videoAnalysisRouter = router({
     }),
 
   /**
+   * Get ALL analyses for the current athlete (all statuses, both standalone and drill-specific).
+   * Used by the athlete feedback hub to show a unified view of all submissions.
+   */
+  getMyAllAnalyses: protectedProcedure
+    .query(async ({ ctx }) => {
+      const database = await requireDb();
+
+      const results = await database.select()
+        .from(videoAnalysis)
+        .where(eq(videoAnalysis.athleteId, ctx.user.id))
+        .orderBy(desc(videoAnalysis.createdAt));
+
+      return results;
+    }),
+
+  /**
    * Coach edits the AI-generated feedback. Coach only.
    */
   updateFeedback: protectedProcedure

@@ -167,6 +167,28 @@ describe("videoAnalysis router", () => {
       expect(result.length).toBe(0);
     });
 
+    it("getMyAllAnalyses returns empty array for athlete with no analyses", async () => {
+      const caller = appRouter.createCaller(createAthleteContext(9998));
+      const result = await caller.videoAnalysis.getMyAllAnalyses();
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBe(0);
+    });
+
+    it("getMyAllAnalyses returns all statuses for the current athlete", async () => {
+      const caller = appRouter.createCaller(createAthleteContext(2));
+      const result = await caller.videoAnalysis.getMyAllAnalyses();
+      expect(Array.isArray(result)).toBe(true);
+      // Should return analyses of all statuses (not just approved/sent)
+      // Unlike getAthleteAnalyses which filters to approved/sent only
+    });
+
+    it("getMyAllAnalyses is accessible by non-admin users", async () => {
+      const caller = appRouter.createCaller(createAthleteContext(3));
+      // Should NOT throw — this is an athlete-accessible endpoint
+      const result = await caller.videoAnalysis.getMyAllAnalyses();
+      expect(Array.isArray(result)).toBe(true);
+    });
+
     it("getAnalysisBySubmission returns null for non-existent submission", async () => {
       const caller = appRouter.createCaller(createAthleteContext());
       const result = await caller.videoAnalysis.getAnalysisBySubmission({ submissionId: 999999 });

@@ -1312,3 +1312,14 @@
 - [x] Root cause: useQuery hook placed after early return in SessionNotesTab.tsx (conditional hook call)
 - [x] Fix: Moved athleteProfile useQuery hook before the early return, using `enabled` flag for conditional fetching
 - [x] Verified: Session Notes tab loads, athlete selection works, Generate Report works, navigation between views works
+
+## Athlete Portal: Video Feedback Viewer
+- [x] Create tRPC procedure for athletes to fetch their own video analyses (approved/sent status)
+- [x] Build AthleteVideoFeedback component with structured AI feedback display
+- [x] Add "My Swing Feedback" section/tab to Athlete Portal
+- [x] Display video player alongside AI analysis results
+- [x] Show feedback status indicators (pending, analyzing, under review, approved)
+- [x] Support both drill-specific and standalone swing feedback
+- [x] Mobile-optimized responsive design matching dark theme
+- [x] Write vitest tests for the new athlete feedback query
+- [x] Verify in browser and test navigation flows
