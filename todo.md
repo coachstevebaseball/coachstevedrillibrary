@@ -1252,3 +1252,14 @@
 - [x] Fix Home page, SessionNotesForm, PracticePlanner, SingleVideoUpload
 - [x] Create shared useAllDrills hook to eliminate duplicate merge logic
 - [x] Verify all drill listing surfaces show unified, alphabetically sorted results
+
+## AI-Powered Video Analysis
+- [x] Audit existing video infrastructure, schema, and Gemini API setup
+- [x] Add videoAnalysis table to database schema (status, AI feedback, coach edits, timestamps)
+- [x] Migrate database with new video analysis table
+- [x] Build Gemini video analysis server procedure (send video URL → receive structured feedback)
+- [x] Build coach review/edit UI for AI-generated feedback in dashboard
+- [x] Build athlete video submission UI with analysis status tracking
+- [x] Build athlete feedback display UI (view approved feedback)
+- [x] Build email delivery for coach-approved feedback
+- [x] Write tests for video analysis CRUD and Gemini integration

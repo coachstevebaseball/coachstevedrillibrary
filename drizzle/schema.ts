@@ -587,3 +587,65 @@ export const athleteProfiles = mysqlTable("athleteProfiles", {
 });
 export type AthleteProfile = typeof athleteProfiles.$inferSelect;
 export type InsertAthleteProfile = typeof athleteProfiles.$inferInsert;
+
+
+// ============================================================
+// Video Analysis — AI-powered feedback on athlete video submissions
+// ============================================================
+export const videoAnalysis = mysqlTable("videoAnalysis", {
+  id: int("id").autoincrement().primaryKey(),
+  /** The drill submission this analysis belongs to */
+  submissionId: int("submissionId").notNull(),
+  /** Athlete who submitted the video */
+  athleteId: int("athleteId").notNull(),
+  /** Coach who owns this review (admin) */
+  coachId: int("coachId"),
+  /** The drill this video is for */
+  drillId: varchar("drillId", { length: 255 }).notNull(),
+  /** S3 URL of the submitted video */
+  videoUrl: text("videoUrl").notNull(),
+  /** Pipeline status */
+  status: mysqlEnum("analysisStatus", [
+    "pending",      // Queued for AI analysis
+    "analyzing",    // Gemini is processing
+    "analyzed",     // AI feedback ready for coach review
+    "reviewed",     // Coach has reviewed/edited
+    "approved",     // Coach approved — ready to send
+    "sent",         // Feedback emailed to athlete
+    "failed",       // AI analysis failed
+  ]).default("pending").notNull(),
+  /** Raw AI-generated structured feedback as JSON */
+  aiFeedback: json("aiFeedback").$type<{
+    overallAssessment: string;
+    mechanicsBreakdown: {
+      phase: string;
+      observation: string;
+      rating: number; // 1-5
+    }[];
+    strengths: string[];
+    areasForImprovement: string[];
+    drillRecommendations: string[];
+    coachingCues: string[];
+    confidenceScore: number; // 0-100
+  }>(),
+  /** Coach-edited version of the feedback (what gets sent to athlete) */
+  coachEditedFeedback: text("coachEditedFeedback"),
+  /** Coach's private notes about this analysis (not sent to athlete) */
+  coachNotes: text("coachNotes"),
+  /** Error message if analysis failed */
+  errorMessage: text("errorMessage"),
+  /** When AI analysis completed */
+  analyzedAt: timestamp("analyzedAt"),
+  /** When coach reviewed */
+  reviewedAt: timestamp("reviewedAt"),
+  /** When feedback was approved */
+  approvedAt: timestamp("approvedAt"),
+  /** When feedback email was sent */
+  sentAt: timestamp("sentAt"),
+  /** Email the feedback was sent to */
+  sentToEmail: varchar("sentToEmail", { length: 320 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type VideoAnalysis = typeof videoAnalysis.$inferSelect;
+export type InsertVideoAnalysis = typeof videoAnalysis.$inferInsert;

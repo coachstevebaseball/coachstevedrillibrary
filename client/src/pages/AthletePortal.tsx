@@ -15,6 +15,7 @@ import { CompletionModal } from "@/components/CompletionModal";
 import { DrillCoachFocus, DrillQuickNotes } from "@/components/DrillActionComponents";
 import { AthletePortalSkeleton } from "@/components/Skeleton";
 import { useAllDrills } from "@/hooks/useAllDrills";
+import { AthleteVideoFeedback } from "@/components/AthleteVideoFeedback";
 
 interface Drill {
   id: string;
@@ -486,6 +487,9 @@ export default function AthletePortal() {
             </div>
           </div>
         )}
+
+        {/* Video Feedback from Coach */}
+        <AthleteVideoFeedback />
 
         {/* Next Badge Progress */}
         <div className="glass-card rounded-2xl p-4 border-glow animate-fade-in-up" style={{ animationDelay: '0.5s' }}>

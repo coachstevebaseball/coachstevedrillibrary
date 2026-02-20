@@ -1,0 +1,21 @@
+CREATE TABLE `videoAnalysis` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`submissionId` int NOT NULL,
+	`athleteId` int NOT NULL,
+	`coachId` int,
+	`drillId` varchar(255) NOT NULL,
+	`videoUrl` text NOT NULL,
+	`analysisStatus` enum('pending','analyzing','analyzed','reviewed','approved','sent','failed') NOT NULL DEFAULT 'pending',
+	`aiFeedback` json,
+	`coachEditedFeedback` text,
+	`coachNotes` text,
+	`errorMessage` text,
+	`analyzedAt` timestamp,
+	`reviewedAt` timestamp,
+	`approvedAt` timestamp,
+	`sentAt` timestamp,
+	`sentToEmail` varchar(320),
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `videoAnalysis_id` PRIMARY KEY(`id`)
+);

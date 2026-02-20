@@ -22,6 +22,7 @@ import { DrillPageBuilderNotion } from "@/components/DrillPageBuilderNotion";
 import { AthleteTable } from "@/components/AthleteTable";
 import PracticePlanner from "@/components/PracticePlanner";
 import { SessionNotesTab } from "@/components/SessionNotesTab";
+import { VideoAnalysisTab } from "@/components/VideoAnalysisTab";
 
 interface Drill {
   id: string;
@@ -44,7 +45,7 @@ export default function CoachDashboard() {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [searchDrill, setSearchDrill] = useState("");
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts" | "athletes" | "planner" | "session-notes">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts" | "athletes" | "planner" | "session-notes" | "video-analysis">("overview");
   const [editingLayoutDrill, setEditingLayoutDrill] = useState<{ id: string; name: string } | null>(null);
   const [layoutSearchQuery, setLayoutSearchQuery] = useState("");
   const [isBulkGoalOpen, setIsBulkGoalOpen] = useState(false);
@@ -299,6 +300,7 @@ export default function CoachDashboard() {
                 { key: "athletes" as const, label: "Athletes Table", shortLabel: "Athletes", icon: Table2 },
                 { key: "planner" as const, label: "Practice Planner", shortLabel: "Planner", icon: Target },
                 { key: "session-notes" as const, label: "Session Notes", shortLabel: "Notes", icon: FileText },
+                { key: "video-analysis" as const, label: "Video Analysis", shortLabel: "AI Video", icon: Sparkles },
               ].map((tab) => (
                 <button
                   key={tab.key}
@@ -340,6 +342,8 @@ export default function CoachDashboard() {
           <PracticePlanner />
         ) : activeTab === "session-notes" ? (
           <SessionNotesTab />
+        ) : activeTab === "video-analysis" ? (
+          <VideoAnalysisTab />
         ) : activeTab === "page-layouts" ? (
           <div className="space-y-6">
             {editingLayoutDrill ? (

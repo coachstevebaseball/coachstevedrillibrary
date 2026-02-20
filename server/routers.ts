@@ -21,6 +21,7 @@ import { practicePlansRouter } from "./routers-practice-plans";
 import { sessionNotesRouter } from "./routers-session-notes";
 import { progressReportsRouter } from "./routers-progress-reports";
 import { athleteProfilesRouter } from "./routers-athlete-profiles";
+import { videoAnalysisRouter } from "./routers-video-analysis";
 import * as drillCustomizationsDb from "./drillCustomizations";
 import { storagePut } from "./storage";
 
@@ -411,6 +412,9 @@ export const appRouter = router({
 
   // Video upload router
   videoUpload: videoUploadRouter,
+
+  // AI Video Analysis router
+  videoAnalysis: videoAnalysisRouter,
 
   // Q&A router
   qa: qaRouter,
