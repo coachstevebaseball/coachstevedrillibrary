@@ -41,6 +41,55 @@ function requireCoach(role: string) {
 
 export const videoAnalysisRouter = router({
   /**
+   * Submit a standalone swing video for AI analysis (no drill required).
+   * Athletes can upload any hitting video from their portal.
+   */
+  submitSwing: protectedProcedure
+    .input(z.object({
+      videoUrl: z.string().min(1, "Video URL is required"),
+      swingType: z.string().optional(),
+      athleteNotes: z.string().optional(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const database = await requireDb();
+
+      const result = await database.insert(videoAnalysis).values({
+        athleteId: ctx.user.id,
+        videoUrl: input.videoUrl,
+        swingType: input.swingType || null,
+        athleteNotes: input.athleteNotes || null,
+        isStandalone: 1,
+        submissionId: null,
+        drillId: null,
+        status: "pending",
+      });
+
+      const insertId = result[0].insertId;
+      return { id: insertId, status: "pending" as const };
+    }),
+
+  /**
+   * Get all swing submissions for the current athlete (all statuses).
+   * Athletes can see their pending/analyzing/failed swings too (not just approved).
+   */
+  getMySwings: protectedProcedure
+    .query(async ({ ctx }) => {
+      const database = await requireDb();
+
+      const results = await database.select()
+        .from(videoAnalysis)
+        .where(
+          and(
+            eq(videoAnalysis.athleteId, ctx.user.id),
+            eq(videoAnalysis.isStandalone, 1)
+          )
+        )
+        .orderBy(desc(videoAnalysis.createdAt));
+
+      return results;
+    }),
+
+  /**
    * Create a pending analysis record when an athlete submits a video.
    * Called automatically after video upload. Any authenticated user can trigger.
    */
@@ -134,7 +183,7 @@ export const videoAnalysisRouter = router({
         // Run Gemini analysis
         const aiFeedback = await analyzeAthleteVideo({
           videoUrl: record.videoUrl,
-          drillName: record.drillId,
+          drillName: record.drillId || "Swing Analysis",
           athleteName: athlete?.name || undefined,
           athleteAge,
           athletePosition,
@@ -426,7 +475,7 @@ export const videoAnalysisRouter = router({
           athleteName: athlete?.name || "Athlete",
           coachName: ctx.user.name || "Coach",
           feedback: record.coachEditedFeedback || "Feedback is available in your portal.",
-          drillName: record.drillId,
+          drillName: record.drillId || "Swing Analysis",
           portalUrl: `${process.env.VITE_FRONTEND_URL || ""}/athlete-portal`,
         });
       } catch (error) {
@@ -450,7 +499,7 @@ export const videoAnalysisRouter = router({
           userId: record.athleteId,
           type: "feedback",
           title: "Video Feedback Ready",
-          message: `Coach has reviewed your video submission for ${record.drillId} and provided feedback.`,
+          message: `Coach has reviewed your video submission${record.drillId ? ` for ${record.drillId}` : ""} and provided feedback.`,
           relatedId: record.id,
           relatedType: "videoAnalysis",
           actionUrl: "/athlete-portal",

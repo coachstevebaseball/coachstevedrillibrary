@@ -37,10 +37,13 @@ type AnalysisStatus = "pending" | "analyzing" | "analyzed" | "reviewed" | "appro
 
 interface AnalysisRecord {
   id: number;
-  submissionId: number;
+  submissionId: number | null;
   athleteId: number;
   athleteName: string;
-  drillId: string;
+  drillId: string | null;
+  swingType: string | null;
+  athleteNotes: string | null;
+  isStandalone: number;
   videoUrl: string;
   status: AnalysisStatus;
   aiFeedback: {
@@ -125,7 +128,8 @@ export function VideoAnalysisTab() {
     return (analyses as AnalysisRecord[]).filter((a) => {
       const matchesSearch =
         a.athleteName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        a.drillId.toLowerCase().includes(searchQuery.toLowerCase());
+        (a.drillId || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (a.swingType || "").toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = statusFilter === "all" || a.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
@@ -207,7 +211,7 @@ export function VideoAnalysisTab() {
           <div>
             <h2 className="text-2xl font-bold text-foreground">{selectedAnalysis.athleteName}</h2>
             <p className="text-muted-foreground mt-1">
-              Drill: <span className="text-foreground font-medium">{selectedAnalysis.drillId}</span>
+              {selectedAnalysis.isStandalone ? "Swing Type" : "Drill"}: <span className="text-foreground font-medium">{selectedAnalysis.isStandalone ? (selectedAnalysis.swingType || "General Swing") : (selectedAnalysis.drillId || "Unknown")}</span>
             </p>
           </div>
           <Badge variant="outline" className={`${statusCfg.color} border px-3 py-1.5`}>
@@ -639,7 +643,7 @@ export function VideoAnalysisTab() {
                           {statusCfg.label}
                         </Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground truncate">Drill: {analysis.drillId}</p>
+                      <p className="text-sm text-muted-foreground truncate">{analysis.isStandalone ? (analysis.swingType || "General Swing") : `Drill: ${analysis.drillId || "Unknown"}`}</p>
                       <p className="text-xs text-muted-foreground/60 mt-1">
                         {(analysis.createdAt instanceof Date ? analysis.createdAt : new Date(analysis.createdAt)).toLocaleDateString(undefined, {
                           month: "short",

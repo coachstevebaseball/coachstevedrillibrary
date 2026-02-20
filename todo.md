@@ -1295,3 +1295,14 @@
 - [x] Graceful fallback if compression fails (uploads original)
 - [x] Increased file limit to 500MB client-side, 200MB server-side
 - [x] TypeScript compiles cleanly, 286 tests pass
+
+## Standalone Swing Analyzer (Athlete Portal)
+- [x] Add server procedure for standalone swing submission (no drill/assignment required)
+- [x] Make submissionId and drillId nullable in videoAnalysis schema for standalone swings
+- [x] Build prominent "Analyze My Swing" button on Athlete Portal with glassmorphism styling
+- [x] Build mobile-optimized swing upload dialog (video + notes + swing type selector)
+- [x] Integrated real-time XHR upload progress and ffmpeg compression
+- [x] Auto-trigger Gemini analysis on submission via submitSwing procedure
+- [x] Updated coach VideoAnalysisTab to display standalone swings (shows swing type instead of drill)
+- [x] Show submission history and feedback status on athlete portal
+- [x] TypeScript compiles cleanly, 286 tests pass (2 pre-existing failures)

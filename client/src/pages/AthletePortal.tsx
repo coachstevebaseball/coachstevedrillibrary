@@ -16,6 +16,7 @@ import { DrillCoachFocus, DrillQuickNotes } from "@/components/DrillActionCompon
 import { AthletePortalSkeleton } from "@/components/Skeleton";
 import { useAllDrills } from "@/hooks/useAllDrills";
 import { AthleteVideoFeedback } from "@/components/AthleteVideoFeedback";
+import { SwingAnalyzer } from "@/components/SwingAnalyzer";
 import { DrillSubmissionForm } from "@/components/DrillSubmissionForm";
 
 interface Drill {
@@ -488,6 +489,9 @@ export default function AthletePortal() {
             </div>
           </div>
         )}
+
+        {/* Swing Analyzer — standalone video upload */}
+        <SwingAnalyzer />
 
         {/* Video Feedback from Coach */}
         <AthleteVideoFeedback />

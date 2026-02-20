@@ -594,14 +594,20 @@ export type InsertAthleteProfile = typeof athleteProfiles.$inferInsert;
 // ============================================================
 export const videoAnalysis = mysqlTable("videoAnalysis", {
   id: int("id").autoincrement().primaryKey(),
-  /** The drill submission this analysis belongs to */
-  submissionId: int("submissionId").notNull(),
+  /** The drill submission this analysis belongs to (null for standalone swings) */
+  submissionId: int("submissionId"),
   /** Athlete who submitted the video */
   athleteId: int("athleteId").notNull(),
   /** Coach who owns this review (admin) */
   coachId: int("coachId"),
-  /** The drill this video is for */
-  drillId: varchar("drillId", { length: 255 }).notNull(),
+  /** The drill this video is for (null for standalone swings) */
+  drillId: varchar("drillId", { length: 255 }),
+  /** Type of swing submission */
+  swingType: varchar("swingType", { length: 100 }),
+  /** Athlete's notes about the swing */
+  athleteNotes: text("athleteNotes"),
+  /** Whether this is a standalone swing (not tied to a drill) */
+  isStandalone: int("isStandalone").default(0).notNull(),
   /** S3 URL of the submitted video */
   videoUrl: text("videoUrl").notNull(),
   /** Pipeline status */
