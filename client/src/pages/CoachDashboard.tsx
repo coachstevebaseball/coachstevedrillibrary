@@ -12,23 +12,8 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
-import drillsData from "@/data/drills.json";
 import { trpc } from "@/lib/trpc";
-
-// Hook to merge static drills with custom drills from database
-function useAllDrills() {
-  const { data: customDrills = [] } = trpc.drillDetails.getCustomDrills.useQuery();
-  return useMemo(() => {
-    const customDrillsFormatted = customDrills.map((cd: any) => ({
-      id: cd.drillId,
-      name: cd.name,
-      difficulty: cd.difficulty,
-      categories: [cd.category],
-      duration: cd.duration,
-    }));
-    return [...drillsData, ...customDrillsFormatted];
-  }, [customDrills]);
-}
+import { useAllDrills } from "@/hooks/useAllDrills";
 import { BulkInstructionImport } from "@/components/BulkInstructionImport";
 import { BulkGoalUpload } from "@/components/BulkGoalUpload";
 import { AthleteProgressReport } from "@/components/AthleteProgressReport";

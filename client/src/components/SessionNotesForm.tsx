@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import drillsData from "@/data/drills.json";
+import { useAllDrills } from "@/hooks/useAllDrills";
 
 const SKILL_CATEGORIES = [
   "Swing Mechanics",
@@ -135,18 +135,9 @@ export function SessionNotesForm({
     { enabled: !isEditing }
   );
 
-  // Custom drills from database
-  const { data: customDrills = [] } = trpc.drillDetails.getCustomDrills.useQuery();
-
-  // Merge all drills for homework picker
-  const allDrills = useMemo(() => {
-    const custom = customDrills.map((cd: any) => ({
-      id: cd.drillId,
-      name: cd.name,
-    }));
-    const base = drillsData.map((d) => ({ id: String(d.id), name: d.name }));
-    return [...base, ...custom];
-  }, [customDrills]);
+  // All drills (static + custom), sorted alphabetically
+  const allDrillsFull = useAllDrills();
+  const allDrills = useMemo(() => allDrillsFull.map(d => ({ id: d.id, name: d.name })), [allDrillsFull]);
 
   // Filtered drills for picker
   const filteredDrills = useMemo(() => {

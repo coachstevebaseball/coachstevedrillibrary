@@ -31,7 +31,7 @@ import {
   CalendarDays, List, ChevronLeft,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
-import drillsData from "@/data/drills.json";
+import { useAllDrills, type UnifiedDrill } from "@/hooks/useAllDrills";
 import { toast } from "sonner";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -1320,12 +1320,13 @@ function BlockEditor({ block, index, total, onUpdate, onRemove, onMoveUp, onMove
 function DrillPickerButton({ currentDrillId, onSelect }: { currentDrillId: string | null; onSelect: (drill: DrillItem) => void; }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const currentDrill = currentDrillId ? (drillsData as DrillItem[]).find((d) => d.id === currentDrillId) : null;
+  const allDrills = useAllDrills();
+  const currentDrill = currentDrillId ? (allDrills as DrillItem[]).find((d) => d.id === currentDrillId) : null;
 
   const filtered = useMemo(() => {
-    if (!search) return (drillsData as DrillItem[]).slice(0, 20);
-    return (drillsData as DrillItem[]).filter((d) => d.name.toLowerCase().includes(search.toLowerCase())).slice(0, 20);
-  }, [search]);
+    if (!search) return (allDrills as DrillItem[]).slice(0, 20);
+    return (allDrills as DrillItem[]).filter((d) => d.name.toLowerCase().includes(search.toLowerCase())).slice(0, 20);
+  }, [search, allDrills]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

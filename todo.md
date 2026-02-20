@@ -1243,3 +1243,12 @@
 - [x] Build athlete-facing profile display/edit UI
 - [x] Integrate profile data into progress reports (parent email, player context)
 - [x] Write tests for new profile CRUD operations
+
+## Fix: Custom Drills Not Integrated Alphabetically
+- [x] Investigate how custom drills are loaded vs static drills across all surfaces
+- [x] Fix DrillsDirectory page to merge custom drills alphabetically with built-in drills
+- [x] Fix coach dashboard drill assignment to include custom drills alphabetically
+- [x] Fix Athlete Portal drill listing to merge custom drills alphabetically
+- [x] Fix Home page, SessionNotesForm, PracticePlanner, SingleVideoUpload
+- [x] Create shared useAllDrills hook to eliminate duplicate merge logic
+- [x] Verify all drill listing surfaces show unified, alphabetically sorted results

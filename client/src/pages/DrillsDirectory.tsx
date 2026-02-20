@@ -6,8 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, Filter, LogIn, LogOut, Shield, X, Users, Activity, ChevronDown } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
-import drillsData from "@/data/drills.json";
 import { useState, useMemo } from "react";
+import { useAllDrills } from "@/hooks/useAllDrills";
 
 // Types
 interface Drill {
@@ -45,24 +45,27 @@ export default function DrillsDirectory() {
   const [showFilters, setShowFilters] = useState(false);
   const DRILLS_PER_PAGE = 20;
 
-  // Extract unique categories
+  // Merge static + custom drills, sorted alphabetically
+  const allDrills = useAllDrills();
+
+  // Extract unique categories from ALL drills (static + custom)
   const allCategories = useMemo(() => {
     const categories = new Set<string>();
-    drillsData.forEach(drill => {
+    allDrills.forEach(drill => {
       drill.categories.forEach(cat => categories.add(cat));
     });
     return ["All", ...Array.from(categories).sort()];
-  }, []);
+  }, [allDrills]);
 
-  // Filter drills
+  // Filter drills (now includes custom drills, already sorted alphabetically)
   const filteredDrills = useMemo(() => {
-    return drillsData.filter(drill => {
+    return allDrills.filter(drill => {
       const matchesSearch = drill.name.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesDifficulty = difficultyFilter === "All" || drill.difficulty === difficultyFilter;
       const matchesCategory = categoryFilter === "All" || drill.categories.includes(categoryFilter);
       return matchesSearch && matchesDifficulty && matchesCategory;
     });
-  }, [searchQuery, difficultyFilter, categoryFilter]);
+  }, [allDrills, searchQuery, difficultyFilter, categoryFilter]);
 
   // Pagination logic
   const totalPages = Math.ceil(filteredDrills.length / DRILLS_PER_PAGE);
@@ -185,7 +188,7 @@ export default function DrillsDirectory() {
               Drills Directory
             </h1>
             <p className="text-base md:text-lg text-primary-foreground/90 mb-6 md:mb-10 max-w-3xl leading-relaxed font-medium">
-              {drillsData.length} professional baseball drills. Filter by skill set, difficulty, and duration to build the perfect practice plan.
+              {allDrills.length} professional baseball drills. Filter by skill set, difficulty, and duration to build the perfect practice plan.
             </p>
             
             {/* Search Bar in Hero */}

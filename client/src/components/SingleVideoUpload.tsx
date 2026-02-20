@@ -26,7 +26,7 @@ import {
 import { Video, Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
-import drillsData from "@/data/drills.json";
+import { useAllDrills } from "@/hooks/useAllDrills";
 import { cn } from "@/lib/utils";
 
 export function SingleVideoUpload() {
@@ -38,18 +38,20 @@ export function SingleVideoUpload() {
 
   const saveVideoMutation = trpc.videos.saveVideo.useMutation();
 
-  // Filter drills based on search
+  const allDrills = useAllDrills();
+
+  // Filter drills based on search (now includes custom drills, sorted alphabetically)
   const filteredDrills = useMemo(() => {
-    if (!searchValue) return drillsData.slice(0, 20); // Show first 20 by default
-    return drillsData.filter(drill =>
+    if (!searchValue) return allDrills.slice(0, 20); // Show first 20 by default
+    return allDrills.filter(drill =>
       drill.name.toLowerCase().includes(searchValue.toLowerCase())
     ).slice(0, 20);
-  }, [searchValue]);
+  }, [searchValue, allDrills]);
 
   const selectedDrillName = useMemo(() => {
-    const drill = drillsData.find(d => d.id.toString() === selectedDrill);
+    const drill = allDrills.find(d => d.id.toString() === selectedDrill);
     return drill?.name || "";
-  }, [selectedDrill]);
+  }, [selectedDrill, allDrills]);
 
   const handleSave = () => {
     if (!selectedDrill) {
@@ -68,7 +70,7 @@ export function SingleVideoUpload() {
       return;
     }
 
-    const drill = drillsData.find(d => d.id.toString() === selectedDrill);
+    const drill = allDrills.find(d => d.id.toString() === selectedDrill);
     const drillId = drill?.name.toLowerCase().replace(/\s+/g, "-") || selectedDrill;
 
     saveVideoMutation.mutate(

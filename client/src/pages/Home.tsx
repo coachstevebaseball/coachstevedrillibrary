@@ -5,9 +5,9 @@ import { Search, LogIn, LogOut, Shield, Users, Activity, ChevronRight, Sparkles,
 import { HomePageSkeleton } from "@/components/Skeleton";
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
-import drillsData from "@/data/drills.json";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { trpc } from "@/lib/trpc";
+import { useAllDrills } from "@/hooks/useAllDrills";
 import { DrillEditModal } from "@/components/DrillEditModal";
 import { Pencil } from "lucide-react";
 
@@ -17,8 +17,9 @@ interface Drill {
   difficulty: string;
   categories: string[];
   duration: string;
-  url: string;
-  is_direct_link: boolean;
+  url?: string;
+  is_direct_link?: boolean;
+  isCustom?: boolean;
 }
 
 // Difficulty config
@@ -66,21 +67,8 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Fetch custom drills from database
-  const { data: customDrills = [] } = trpc.drillDetails.getCustomDrills.useQuery();
-
-  const allDrills: Drill[] = useMemo(() => {
-    const customDrillsFormatted: Drill[] = customDrills.map((cd: any) => ({
-      id: cd.drillId,
-      name: cd.name,
-      difficulty: cd.difficulty,
-      categories: [cd.category],
-      duration: cd.duration,
-      url: `/drill/${cd.drillId}`,
-      is_direct_link: true,
-    }));
-    return [...drillsData, ...customDrillsFormatted];
-  }, [customDrills]);
+  // Merge static + custom drills, sorted alphabetically
+  const allDrills = useAllDrills();
 
   const allCategories = useMemo(() => {
     const categories = new Set<string>();

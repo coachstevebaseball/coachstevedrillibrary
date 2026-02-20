@@ -1,0 +1,234 @@
+{
+  "query": "SELECT id, drillId, name, difficulty, category, duration FROM customDrills ORDER BY name;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT id, drillId, name, difficulty, category, duration FROM customDrills ORDER BY name;",
+  "rows": [
+    {
+      "id": "210001",
+      "drillId": "airplane-drill",
+      "name": "Airplane Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "300001",
+      "drillId": "anti-rotation-resistance-drill",
+      "name": "Anti Rotation Resistance Drill",
+      "difficulty": "Easy",
+      "category": "Hitting",
+      "duration": "5m"
+    },
+    {
+      "id": "180001",
+      "drillId": "bounce-drill",
+      "name": "Bounce Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "120001",
+      "drillId": "bow-and-arrow-drill",
+      "name": "Bow and Arrow Drill",
+      "difficulty": "Easy",
+      "category": "Hitting",
+      "duration": "5m"
+    },
+    {
+      "id": "4",
+      "drillId": "crossover-drill",
+      "name": "Crossover Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "5",
+      "drillId": "elevated-front-toss-drill",
+      "name": "Elevated Front Toss Drill",
+      "difficulty": "Hard",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "270001",
+      "drillId": "extension-and-direction-drill",
+      "name": "Extension and Direction Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "90001",
+      "drillId": "flamingo-one-leg-balanced-drill",
+      "name": "Flamingo (One Leg Balanced) Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "5m"
+    },
+    {
+      "id": "180004",
+      "drillId": "gain-ground-drill",
+      "name": "Gain Ground Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "180003",
+      "drillId": "happy-gilmore-drill",
+      "name": "Happy Gilmore Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "120004",
+      "drillId": "heavy-bat-drill",
+      "name": "Heavy Bat Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "120002",
+      "drillId": "hips-fire-first-tee-drill",
+      "name": "Hips Fire First Tee Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "60001",
+      "drillId": "jump-back-drill",
+      "name": "Jump Back Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "150002",
+      "drillId": "kaboom-drill",
+      "name": "KaBoom Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "180005",
+      "drillId": "kneel-to-hip-hinge-drill",
+      "name": "Kneel to Hip Hinge Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "5m"
+    },
+    {
+      "id": "180002",
+      "drillId": "mirror-drill",
+      "name": "Mirror Drill",
+      "difficulty": "Easy",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "210002",
+      "drillId": "one-handed-load-drill",
+      "name": "One Handed Load Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "3",
+      "drillId": "one-handed-drills",
+      "name": "One handed drills",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "180006",
+      "drillId": "reverse-flamingo-drill",
+      "name": "Reverse Flamingo Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "150001",
+      "drillId": "rhythm-drill-1-2-step",
+      "name": "Rhythm Drill 1-2 Step",
+      "difficulty": "Easy",
+      "category": "Hitting",
+      "duration": "5m"
+    },
+    {
+      "id": "270002",
+      "drillId": "see-saw-to-contact-drill",
+      "name": "SEE SAW TO CONTACT DRILL",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "240001",
+      "drillId": "seesaw-drill",
+      "name": "Seesaw Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "210003",
+      "drillId": "separation-drill",
+      "name": "Separation Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "1",
+      "drillId": "slow---controlled---explode-drill",
+      "name": "Slow - Controlled - Explode Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "5m"
+    },
+    {
+      "id": "2",
+      "drillId": "slow-controlled-explode",
+      "name": "Slow-Controlled-Explode",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "30001",
+      "drillId": "step-back-drill",
+      "name": "Step-back Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "120003",
+      "drillId": "test-video-url-drill",
+      "name": "Test Video URL Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    },
+    {
+      "id": "150003",
+      "drillId": "track-and-catch-drill",
+      "name": "Track and Catch Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "10m"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdrillId\tname\tdifficulty\tcategory\tduration\n210001\tairplane-drill\tAirplane Drill\tMedium\tHitting\t10m\n300001\tanti-rotation-resistance-drill\tAnti Rotation Resistance Drill\tEasy\tHitting\t5m\n180001\tbounce-drill\tBounce Drill\tMedium\tHitting\t10m\n120001\tbow-and-arrow-drill\tBow and Arrow Drill\tEasy\tHitting\t5m\n4\tcrossover-drill\tCrossover Drill\tMedium\tHitting\t10m\n5\televated-front-toss-drill\tElevated Front Toss Drill\tHard\tHitting\t10m\n270001\textension-and-direction-drill\tExtension and Direction Drill\tMedium\tHitting\t10m\n90001\tflamingo-one-leg-balanced-drill\tFlamingo (One Leg Balanced) Drill\tMedium\tHitting\t5m\n180004\tgain-ground-drill\tGain Ground Drill\tMedium\tHitting\t10m\n180003\thappy-gilmore-drill\tHappy Gilmore Drill\tMedium\tHitting\t10m\n120004\theavy-bat-drill\tHeavy Bat Drill\tMedium\tHitting\t10m\n120002\thips-fire-first-tee-drill\tHips Fire First Tee Drill\tMedium\tHitting\t10m\n60001\tjump-back-drill\tJump Back Drill\tMedium\tHitting\t10m\n150002\tkaboom-drill\tKaBoom Drill\tMedium\tHitting\t10m\n180005\tkneel-to-hip-hinge-drill\tKneel to Hip Hinge Drill\tMedium\tHitting\t5m\n180002\tmirror-drill\tMirror Drill\tEasy\tHitting\t10m\n210002\tone-handed-load-drill\tOne Handed Load Drill\tMedium\tHitting\t10m\n3\tone-handed-drills\tOne handed drills\tMedium\tHitting\t10m\n180006\treverse-flamingo-drill\tReverse Flamingo Drill\tMedium\tHitting\t10m\n150001\trhythm-drill-1-2-step\tRhythm Drill 1-2 Step\tEasy\tHitting\t5m\n270002\tsee-saw-to-contact-drill\tSEE SAW TO CONTACT DRILL\tMedium\tHitting\t10m\n240001\tseesaw-drill\tSeesaw Drill\tMedium\tHitting\t10m\n210003\tseparation-drill\tSeparation Drill\tMedium\tHitting\t10m\n1\tslow---controlled---explode-drill\tSlow - Controlled - Explode Drill\tMedium\tHitting\t5m\n2\tslow-controlled-explode\tSlow-Controlled-Explode\tMedium\tHitting\t10m\n30001\tstep-back-drill\tStep-back Drill\tMedium\tHitting\t10m\n120003\ttest-video-url-drill\tTest Video URL Drill\tMedium\tHitting\t10m\n150003\ttrack-and-catch-drill\tTrack and Catch Drill\tMedium\tHitting\t10m\n",
+  "stderr": "",
+  "execution_time_ms": 102
+}

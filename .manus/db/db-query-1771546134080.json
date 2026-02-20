@@ -1,0 +1,50 @@
+{
+  "query": "SELECT drillId, name FROM customDrills ORDER BY name LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT drillId, name FROM customDrills ORDER BY name LIMIT 10;",
+  "rows": [
+    {
+      "drillId": "airplane-drill",
+      "name": "Airplane Drill"
+    },
+    {
+      "drillId": "anti-rotation-resistance-drill",
+      "name": "Anti Rotation Resistance Drill"
+    },
+    {
+      "drillId": "bounce-drill",
+      "name": "Bounce Drill"
+    },
+    {
+      "drillId": "bow-and-arrow-drill",
+      "name": "Bow and Arrow Drill"
+    },
+    {
+      "drillId": "crossover-drill",
+      "name": "Crossover Drill"
+    },
+    {
+      "drillId": "elevated-front-toss-drill",
+      "name": "Elevated Front Toss Drill"
+    },
+    {
+      "drillId": "extension-and-direction-drill",
+      "name": "Extension and Direction Drill"
+    },
+    {
+      "drillId": "flamingo-one-leg-balanced-drill",
+      "name": "Flamingo (One Leg Balanced) Drill"
+    },
+    {
+      "drillId": "gain-ground-drill",
+      "name": "Gain Ground Drill"
+    },
+    {
+      "drillId": "happy-gilmore-drill",
+      "name": "Happy Gilmore Drill"
+    }
+  ],
+  "messages": [],
+  "stdout": "drillId\tname\nairplane-drill\tAirplane Drill\nanti-rotation-resistance-drill\tAnti Rotation Resistance Drill\nbounce-drill\tBounce Drill\nbow-and-arrow-drill\tBow and Arrow Drill\ncrossover-drill\tCrossover Drill\nelevated-front-toss-drill\tElevated Front Toss Drill\nextension-and-direction-drill\tExtension and Direction Drill\nflamingo-one-leg-balanced-drill\tFlamingo (One Leg Balanced) Drill\ngain-ground-drill\tGain Ground Drill\nhappy-gilmore-drill\tHappy Gilmore Drill\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}
