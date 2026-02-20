@@ -1263,3 +1263,6 @@
 - [x] Build athlete feedback display UI (view approved feedback)
 - [x] Build email delivery for coach-approved feedback
 - [x] Write tests for video analysis CRUD and Gemini integration
+
+## Bug Fix: Empty src Attribute on Coach Dashboard
+- [x] Fix empty string passed to src attribute causing browser re-download warning

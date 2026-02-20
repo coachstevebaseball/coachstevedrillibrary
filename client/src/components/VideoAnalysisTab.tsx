@@ -219,12 +219,18 @@ export function VideoAnalysisTab() {
         {/* Video Player */}
         <Card className="bg-card border-border overflow-hidden">
           <CardContent className="p-0">
-            <video
-              src={selectedAnalysis.videoUrl}
-              controls
-              className="w-full max-h-[400px] bg-black"
-              preload="metadata"
-            />
+            {selectedAnalysis.videoUrl ? (
+              <video
+                src={selectedAnalysis.videoUrl}
+                controls
+                className="w-full max-h-[400px] bg-black"
+                preload="metadata"
+              />
+            ) : (
+              <div className="w-full h-48 bg-muted flex items-center justify-center">
+                <p className="text-muted-foreground text-sm">No video available</p>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -609,12 +615,16 @@ export function VideoAnalysisTab() {
                   <div className="flex items-center gap-4">
                     {/* Video thumbnail placeholder */}
                     <div className="h-16 w-24 md:h-20 md:w-32 bg-muted rounded-lg flex items-center justify-center shrink-0 overflow-hidden relative">
-                      <video
-                        src={analysis.videoUrl}
-                        className="h-full w-full object-cover"
-                        preload="metadata"
-                        muted
-                      />
+                      {analysis.videoUrl ? (
+                        <video
+                          src={analysis.videoUrl}
+                          className="h-full w-full object-cover"
+                          preload="metadata"
+                          muted
+                        />
+                      ) : (
+                        <div className="h-full w-full bg-muted" />
+                      )}
                       <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                         <Play className="h-6 w-6 text-white" />
                       </div>

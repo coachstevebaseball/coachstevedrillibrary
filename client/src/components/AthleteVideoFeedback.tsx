@@ -99,14 +99,20 @@ export function AthleteVideoFeedback() {
           {selectedAnalysis && (
             <div className="space-y-6 mt-4">
               {/* Video */}
-              <div className="rounded-lg overflow-hidden bg-black">
-                <video
-                  src={selectedAnalysis.videoUrl}
-                  controls
-                  className="w-full max-h-[300px]"
-                  preload="metadata"
-                />
-              </div>
+              {selectedAnalysis.videoUrl ? (
+                <div className="rounded-lg overflow-hidden bg-black">
+                  <video
+                    src={selectedAnalysis.videoUrl}
+                    controls
+                    className="w-full max-h-[300px]"
+                    preload="metadata"
+                  />
+                </div>
+              ) : (
+                <div className="rounded-lg bg-white/[0.04] border border-white/[0.08] h-32 flex items-center justify-center">
+                  <p className="text-white/40 text-sm">No video available</p>
+                </div>
+              )}
 
               {/* AI Feedback structured view */}
               {selectedAnalysis.aiFeedback && (
