@@ -21,7 +21,6 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
   const [submitted, setSubmitted] = useState(false);
 
   const createSubmissionMutation = trpc.submissions.drillSubmissions.createSubmission.useMutation();
-  const uploadVideoMutation = trpc.videoUpload.uploadSubmissionVideo.useMutation();
 
   const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -40,6 +39,27 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
     }
   };
 
+  const uploadVideoViaMultipart = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("video", file);
+    formData.append("assignmentId", String(assignmentId));
+    formData.append("drillId", drillId);
+
+    const response = await fetch("/api/upload/video", {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const errBody = await response.json().catch(() => ({}));
+      throw new Error(errBody.error || `Upload failed (${response.status})`);
+    }
+
+    const result = await response.json();
+    return result.videoUrl;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -55,35 +75,10 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
     try {
       let videoUrl: string | undefined;
 
-      // Upload video to S3 if provided
+      // Upload video via multipart (not base64) for large file support
       if (videoFile) {
-        setUploadProgress(10);
-        
-        // Read file as base64
-        const reader = new FileReader();
-        const fileBase64Promise = new Promise<string>((resolve, reject) => {
-          reader.onload = () => {
-            const base64 = (reader.result as string).split(',')[1];
-            resolve(base64);
-          };
-          reader.onerror = reject;
-        });
-
-        reader.readAsDataURL(videoFile);
-        const fileBase64 = await fileBase64Promise;
-        
-        setUploadProgress(30);
-
-        // Upload to S3 via tRPC
-        const uploadResult = await uploadVideoMutation.mutateAsync({
-          assignmentId,
-          drillId,
-          fileData: fileBase64,
-          fileName: videoFile.name,
-          mimeType: videoFile.type,
-        });
-
-        videoUrl = uploadResult.videoUrl;
+        setUploadProgress(20);
+        videoUrl = await uploadVideoViaMultipart(videoFile);
         setUploadProgress(80);
       }
 
@@ -185,7 +180,6 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
           <input
             type="file"
             accept="video/*"
-            capture="environment"
             onChange={handleVideoSelect}
             className="hidden"
             id={`video-input-${assignmentId}`}
@@ -204,7 +198,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
                 Tap to upload video
               </span>
               <span className="text-xs text-muted-foreground">
-                MP4, WebM, MOV — Max 100MB
+                Record or choose from library — Max 100MB
               </span>
             </label>
           ) : (
@@ -246,7 +240,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
           )}
         </div>
 
-        {/* Notes (optional, collapsed by default) */}
+        {/* Notes (optional) */}
         <div>
           <label className="block text-xs font-medium text-muted-foreground mb-1.5">
             Notes <span className="text-white/30">(optional)</span>

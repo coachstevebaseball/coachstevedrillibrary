@@ -1275,3 +1275,11 @@
 - [x] Restyle DrillSubmissionForm for dark theme with mobile-first design
 - [x] Add capture="environment" for direct phone camera access
 - [ ] Test end-to-end: athlete uploads → record created → coach sees in dashboard
+
+## Bug Fix: Video Upload Issues
+- [x] Remove capture="environment" so mobile users can choose from photo library (not camera-only)
+- [x] Fix desktop upload fetch error — switched from base64 tRPC to multipart FormData upload route
+- [x] Added /api/upload/video Express route with multer for large file support (100MB)
+- [x] Updated DrillSubmissionForm to use multipart upload instead of base64
+- [x] Verified endpoint returns 401 for unauthenticated requests
+- [x] TypeScript compiles cleanly, 286 tests pass (2 pre-existing failures unrelated)

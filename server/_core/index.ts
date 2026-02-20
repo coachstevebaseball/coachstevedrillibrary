@@ -2,13 +2,15 @@ import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import net from "net";
+import multer from "multer";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { startBatchProcessor } from "../emailBatching";
-import { storageDownload } from "../storage";
+import { storageDownload, storagePut } from "../storage";
+import { sdk } from "./sdk";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -38,6 +40,59 @@ async function startServer() {
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
   
+  // --- Multipart video upload route (bypasses tRPC body size limits) ---
+  const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 100 * 1024 * 1024 }, // 100MB
+    fileFilter: (_req, file, cb) => {
+      if (file.mimetype.startsWith("video/")) {
+        cb(null, true);
+      } else {
+        cb(new Error("Only video files are allowed"));
+      }
+    },
+  });
+
+  app.post("/api/upload/video", upload.single("video"), async (req, res) => {
+    try {
+      // Authenticate the request
+      const user = await sdk.authenticateRequest(req);
+      if (!user) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const file = req.file;
+      if (!file) {
+        return res.status(400).json({ error: "No video file provided" });
+      }
+
+      const assignmentId = req.body?.assignmentId || "0";
+      const drillId = req.body?.drillId || "unknown";
+
+      // Create S3 key
+      const timestamp = Date.now();
+      const sanitizedFileName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, "_");
+      const fileKey = `drill-submissions/${user.id}/${drillId}/${timestamp}-${sanitizedFileName}`;
+
+      // Upload to S3
+      const uploadResult = await storagePut(fileKey, file.buffer, file.mimetype);
+
+      console.log(`[Video Upload] User ${user.id} uploaded ${file.originalname} (${(file.size / (1024 * 1024)).toFixed(1)}MB)`);
+
+      return res.json({
+        success: true,
+        videoUrl: uploadResult.url,
+        fileKey: uploadResult.key,
+      });
+    } catch (error: any) {
+      console.error("[Video Upload] Failed:", error);
+      if (error.message === "Invalid session cookie" || error.message?.includes("session")) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      return res.status(500).json({ error: error.message || "Upload failed" });
+    }
+  });
+
   // Image proxy route to serve storage images
   app.get("/api/storage/image/*", async (req, res) => {
     try {
