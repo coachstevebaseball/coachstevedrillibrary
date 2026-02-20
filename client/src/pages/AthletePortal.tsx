@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { 
   CheckCircle, Clock, AlertCircle, Play, Home, LogOut, 
-  MessageCircle, Star, Flame, Target, X, Trophy, FileText, ChevronDown, ChevronUp, Dumbbell, Coffee, Zap, User
+  MessageCircle, Star, Flame, Target, X, Trophy, FileText, ChevronDown, ChevronUp, Dumbbell, Coffee, Zap, User, Video, Upload
 } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo, useEffect } from "react";
@@ -16,6 +16,7 @@ import { DrillCoachFocus, DrillQuickNotes } from "@/components/DrillActionCompon
 import { AthletePortalSkeleton } from "@/components/Skeleton";
 import { useAllDrills } from "@/hooks/useAllDrills";
 import { AthleteVideoFeedback } from "@/components/AthleteVideoFeedback";
+import { DrillSubmissionForm } from "@/components/DrillSubmissionForm";
 
 interface Drill {
   id: string;
@@ -564,6 +565,17 @@ export default function AthletePortal() {
                       Watch Video Instructions
                     </Button>
                   </Link>
+
+                  {/* Video Submission for AI Analysis */}
+                  {selectedAssignment.status !== "completed" && (
+                    <DrillSubmissionForm
+                      assignmentId={selectedAssignment.id}
+                      drillId={selectedAssignment.drillId}
+                      onSubmitSuccess={() => {
+                        utils.drillAssignments.getUserAssignments.invalidate();
+                      }}
+                    />
+                  )}
 
                   {/* Optional Notes — Collapsible */}
                   {selectedAssignment.status !== "completed" && (

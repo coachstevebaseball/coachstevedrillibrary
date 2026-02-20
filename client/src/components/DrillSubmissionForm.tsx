@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Upload, Send, AlertCircle } from "lucide-react";
+import { Upload, Send, AlertCircle, Video, Loader2, CheckCircle } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useNotification } from "@/contexts/NotificationContext";
 
@@ -19,6 +18,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [submitted, setSubmitted] = useState(false);
 
   const createSubmissionMutation = trpc.submissions.drillSubmissions.createSubmission.useMutation();
   const uploadVideoMutation = trpc.videoUpload.uploadSubmissionVideo.useMutation();
@@ -87,7 +87,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
         setUploadProgress(80);
       }
 
-      // Create submission with S3 URL
+      // Create submission with S3 URL (auto-triggers videoAnalysis record on server)
       await createSubmissionMutation.mutateAsync({
         assignmentId,
         drillId,
@@ -96,20 +96,26 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
       });
 
       setUploadProgress(100);
+      setSubmitted(true);
 
       // Show success toast
       addToast({
         type: 'success',
-        title: 'Submission Successful!',
-        message: 'Your drill submission has been recorded. Great work!',
+        title: 'Video Submitted!',
+        message: videoFile 
+          ? 'Your video has been uploaded and queued for AI analysis. Coach will review the feedback soon.'
+          : 'Your drill submission has been recorded. Great work!',
       });
 
-      // Reset form
-      setNotes("");
-      setVideoFile(null);
-      setVideoPreview(null);
-      setUploadProgress(0);
-      onSubmitSuccess?.();
+      // Reset form after short delay
+      setTimeout(() => {
+        setNotes("");
+        setVideoFile(null);
+        setVideoPreview(null);
+        setUploadProgress(0);
+        setSubmitted(false);
+        onSubmitSuccess?.();
+      }, 2000);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to submit drill";
       setError(errorMessage);
@@ -126,79 +132,104 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
     }
   };
 
+  // Success state
+  if (submitted) {
+    return (
+      <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-6 text-center animate-in fade-in duration-300">
+        <CheckCircle className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
+        <p className="font-bold text-emerald-400 text-lg">Submitted!</p>
+        <p className="text-sm text-emerald-400/70 mt-1">
+          {videoFile ? "Your video is queued for analysis" : "Your work has been recorded"}
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <Card className="border-l-4 border-l-secondary">
-      <CardHeader>
-        <CardTitle className="text-lg">Submit Your Work</CardTitle>
-        <p className="text-sm text-muted-foreground mt-2">Please provide either notes or a video (or both) to complete your submission</p>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-700">{error}</p>
-            </div>
-          )}
+    <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl overflow-hidden">
+      {/* Header */}
+      <div className="px-4 py-3 border-b border-white/[0.06] bg-white/[0.02] flex items-center gap-2">
+        <Video className="w-4 h-4 text-blue-400" />
+        <h4 className="font-semibold text-foreground text-sm">Submit Your Work</h4>
+      </div>
 
-          {uploadProgress > 0 && uploadProgress < 100 && (
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Uploading video...</span>
-                <span>{uploadProgress}%</span>
-              </div>
-              <div className="w-full bg-muted rounded-full h-2">
-                <div
-                  className="bg-secondary h-2 rounded-full transition-all"
-                  style={{ width: `${uploadProgress}%` }}
-                />
-              </div>
-            </div>
-          )}
-
-          <div>
-            <label className="block text-sm font-semibold mb-2">Notes <span className="text-amber-600 font-normal">(or video)</span></label>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Add notes about your performance, what you learned, or any challenges..."
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-sm"
-              rows={3}
-              disabled={isSubmitting}
-            />
-            <p className="text-xs text-muted-foreground mt-1">Share your thoughts and progress</p>
+      <form onSubmit={handleSubmit} className="p-4 space-y-4">
+        {error && (
+          <div className="flex items-start gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+            <AlertCircle className="h-4 w-4 text-red-400 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-red-400">{error}</p>
           </div>
+        )}
 
-          <div>
-            <label className="block text-sm font-semibold mb-2">Video Upload <span className="text-amber-600 font-normal">(or notes)</span></label>
-            <div className="relative">
-              <input
-                type="file"
-                accept="video/*"
-                onChange={handleVideoSelect}
-                className="hidden"
-                id="video-input"
-                disabled={isSubmitting}
-              />
-              <label
-                htmlFor="video-input"
-                className="flex items-center justify-center gap-2 w-full px-4 py-3 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-              >
-                <Upload className="h-5 w-5 text-muted-foreground" />
-                <span className="text-sm font-medium">
-                  {videoFile ? videoFile.name : "Click to upload video"}
-                </span>
-              </label>
+        {/* Upload Progress */}
+        {uploadProgress > 0 && uploadProgress < 100 && (
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Uploading video...
+              </span>
+              <span>{uploadProgress}%</span>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">MP4, WebM, or other video formats. Max 100MB.</p>
+            <div className="w-full bg-white/[0.06] rounded-full h-1.5">
+              <div
+                className="bg-blue-500 h-1.5 rounded-full transition-all duration-500"
+                style={{ width: `${uploadProgress}%` }}
+              />
+            </div>
+          </div>
+        )}
 
-            {videoPreview && (
-              <div className="mt-3 relative">
-                <video
-                  src={videoPreview}
-                  controls
-                  className="w-full rounded-lg bg-black max-h-64"
-                />
+        {/* Video Upload Area */}
+        <div>
+          <input
+            type="file"
+            accept="video/*"
+            capture="environment"
+            onChange={handleVideoSelect}
+            className="hidden"
+            id={`video-input-${assignmentId}`}
+            disabled={isSubmitting}
+          />
+          
+          {!videoFile ? (
+            <label
+              htmlFor={`video-input-${assignmentId}`}
+              className="flex flex-col items-center justify-center gap-2 w-full px-4 py-6 border-2 border-dashed border-white/[0.12] rounded-xl cursor-pointer hover:bg-white/[0.04] hover:border-blue-500/40 transition-all duration-200 active:scale-[0.98]"
+            >
+              <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center">
+                <Upload className="h-5 w-5 text-blue-400" />
+              </div>
+              <span className="text-sm font-medium text-foreground">
+                Tap to upload video
+              </span>
+              <span className="text-xs text-muted-foreground">
+                MP4, WebM, MOV — Max 100MB
+              </span>
+            </label>
+          ) : (
+            <div className="space-y-3">
+              {/* Video Preview */}
+              {videoPreview && (
+                <div className="relative rounded-xl overflow-hidden bg-black">
+                  <video
+                    src={videoPreview}
+                    controls
+                    className="w-full max-h-48"
+                    preload="metadata"
+                  />
+                </div>
+              )}
+              
+              {/* File info + remove */}
+              <div className="flex items-center justify-between bg-white/[0.04] rounded-lg px-3 py-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Video className="h-4 w-4 text-blue-400 shrink-0" />
+                  <span className="text-xs text-foreground truncate">{videoFile.name}</span>
+                  <span className="text-xs text-muted-foreground shrink-0">
+                    ({(videoFile.size / (1024 * 1024)).toFixed(1)} MB)
+                  </span>
+                </div>
                 <button
                   type="button"
                   onClick={() => {
@@ -206,24 +237,49 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
                     setVideoPreview(null);
                   }}
                   disabled={isSubmitting}
-                  className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 disabled:opacity-50"
+                  className="text-xs text-red-400 hover:text-red-300 font-medium ml-2 shrink-0 disabled:opacity-50"
                 >
                   Remove
                 </button>
               </div>
-            )}
-          </div>
+            </div>
+          )}
+        </div>
 
-          <Button
-            type="submit"
-            disabled={isSubmitting || (!notes.trim() && !videoFile)}
-            className="w-full gap-2"
-          >
-            <Send className="h-4 w-4" />
-            {isSubmitting ? `Submitting... ${uploadProgress > 0 ? `(${uploadProgress}%)` : ''}` : "Submit Drill Work"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+        {/* Notes (optional, collapsed by default) */}
+        <div>
+          <label className="block text-xs font-medium text-muted-foreground mb-1.5">
+            Notes <span className="text-white/30">(optional)</span>
+          </label>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="How did it feel? Any questions for Coach?"
+            className="w-full h-16 bg-white/[0.04] border border-white/[0.08] rounded-lg p-3 text-sm text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30"
+            disabled={isSubmitting}
+            maxLength={500}
+          />
+        </div>
+
+        {/* Submit Button */}
+        <Button
+          type="submit"
+          disabled={isSubmitting || (!notes.trim() && !videoFile)}
+          className="w-full h-12 gap-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-blue-600/20 hover:shadow-blue-500/30 active:scale-[0.98] disabled:opacity-40 disabled:shadow-none"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              {uploadProgress > 0 ? `Uploading... ${uploadProgress}%` : 'Submitting...'}
+            </>
+          ) : (
+            <>
+              <Send className="h-4 w-4" />
+              {videoFile ? "Submit Video for Analysis" : "Submit Notes"}
+            </>
+          )}
+        </Button>
+      </form>
+    </div>
   );
 }

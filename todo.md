@@ -1266,3 +1266,12 @@
 
 ## Bug Fix: Empty src Attribute on Coach Dashboard
 - [x] Fix empty string passed to src attribute causing browser re-download warning
+
+## Athlete Video Upload for AI Analysis
+- [x] Audit current athlete portal and existing video submission flow
+- [x] Build athlete video upload component (drill picker, video upload to S3, mobile-optimized)
+- [x] Integrate upload component into Athlete Portal (drill focus modal)
+- [x] Auto-create videoAnalysis record on upload so it appears in coach review queue
+- [x] Restyle DrillSubmissionForm for dark theme with mobile-first design
+- [x] Add capture="environment" for direct phone camera access
+- [ ] Test end-to-end: athlete uploads → record created → coach sees in dashboard
