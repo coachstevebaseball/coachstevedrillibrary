@@ -46,6 +46,13 @@ export function SessionNotesTab({ initialAthleteId }: SessionNotesTabProps) {
     (a: any) => a.id === selectedAthleteId
   );
 
+  // Fetch athlete profile for parent email when generating reports
+  // MUST be before any early returns to avoid conditional hook calls (React error #310)
+  const { data: athleteProfile } = trpc.athleteProfiles.get.useQuery(
+    { userId: selectedAthleteId! },
+    { enabled: !!selectedAthleteId && view === "report" }
+  );
+
   const handleNewNote = () => {
     setEditingNote(null);
     setView("form");
@@ -124,12 +131,6 @@ export function SessionNotesTab({ initialAthleteId }: SessionNotesTabProps) {
       </div>
     );
   }
-
-  // Fetch athlete profile for parent email when generating reports
-  const { data: athleteProfile } = trpc.athleteProfiles.get.useQuery(
-    { userId: selectedAthleteId! },
-    { enabled: !!selectedAthleteId && view === "report" }
-  );
 
   // Report view — full screen within the tab
   if (view === "report" && reportSessionNoteId && selectedAthleteId) {

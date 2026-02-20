@@ -1306,3 +1306,9 @@
 - [x] Updated coach VideoAnalysisTab to display standalone swings (shows swing type instead of drill)
 - [x] Show submission history and feedback status on athlete portal
 - [x] TypeScript compiles cleanly, 286 tests pass (2 pre-existing failures)
+
+## Bug Fix: React Error #310 on Coach Dashboard
+- [x] Investigate and fix React error #310 crash when accessing coach dashboard (Session Notes tab)
+- [x] Root cause: useQuery hook placed after early return in SessionNotesTab.tsx (conditional hook call)
+- [x] Fix: Moved athleteProfile useQuery hook before the early return, using `enabled` flag for conditional fetching
+- [x] Verified: Session Notes tab loads, athlete selection works, Generate Report works, navigation between views works
