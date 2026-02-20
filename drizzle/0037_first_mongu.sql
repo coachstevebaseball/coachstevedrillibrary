@@ -1,0 +1,1 @@
+ALTER TABLE `sessionNotes` ADD `sessionLabel` varchar(200);

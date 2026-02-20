@@ -62,6 +62,8 @@ export function SessionNotesTab({ initialAthleteId }: SessionNotesTabProps) {
     setEditingNote({
       id: note.id,
       sessionDate: note.sessionDate,
+      sessionNumber: note.sessionNumber,
+      sessionLabel: note.sessionLabel,
       duration: note.duration,
       skillsWorked: note.skillsWorked as string[],
       whatImproved: note.whatImproved,

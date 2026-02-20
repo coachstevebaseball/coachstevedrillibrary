@@ -37,6 +37,7 @@ export const sessionNotesRouter = router({
         athleteId: z.number(),
         sessionDate: z.string(), // ISO date string
         duration: z.number().optional(),
+        sessionLabel: z.string().optional(),
         skillsWorked: z.array(z.string()).min(1, "Select at least one skill"),
         whatImproved: z.string().min(1, "Required"),
         whatNeedsWork: z.string().min(1, "Required"),
@@ -57,6 +58,7 @@ export const sessionNotesRouter = router({
         coachId: ctx.user.id,
         athleteId: input.athleteId,
         sessionNumber,
+        sessionLabel: input.sessionLabel || null,
         sessionDate: new Date(input.sessionDate),
         duration: input.duration ?? null,
         skillsWorked: input.skillsWorked,
@@ -94,6 +96,7 @@ export const sessionNotesRouter = router({
         id: z.number(),
         sessionDate: z.string().optional(),
         duration: z.number().optional(),
+        sessionLabel: z.string().optional(),
         skillsWorked: z.array(z.string()).optional(),
         whatImproved: z.string().optional(),
         whatNeedsWork: z.string().optional(),

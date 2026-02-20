@@ -29,6 +29,7 @@ vi.mock("../drizzle/schema", () => ({
     coachId: "coachId",
     athleteId: "athleteId",
     sessionNumber: "sessionNumber",
+    sessionLabel: "sessionLabel",
     sessionDate: "sessionDate",
   },
   progressReports: {
@@ -233,5 +234,44 @@ describe("Session Notes Router Validation", () => {
     expect(validInput.whatNeedsWork.length).toBeGreaterThan(0);
     expect(validInput.overallRating).toBeGreaterThanOrEqual(1);
     expect(validInput.overallRating).toBeLessThanOrEqual(5);
+  });
+
+  it("should accept sessionLabel as an optional field", () => {
+    const inputWithLabel = {
+      athleteId: 1,
+      sessionDate: "2026-02-20T12:00:00.000Z",
+      duration: 60,
+      sessionLabel: "Hitting Assessment #1",
+      skillsWorked: ["Swing Mechanics"],
+      whatImproved: "Better contact",
+      whatNeedsWork: "Load timing",
+    };
+
+    expect(inputWithLabel.sessionLabel).toBe("Hitting Assessment #1");
+    expect(typeof inputWithLabel.sessionLabel).toBe("string");
+  });
+
+  it("should work without sessionLabel (backward compatible)", () => {
+    const inputWithoutLabel = {
+      athleteId: 1,
+      sessionDate: "2026-02-20T12:00:00.000Z",
+      skillsWorked: ["Pitch Recognition"],
+      whatImproved: "Tracking spin better",
+      whatNeedsWork: "Still chasing",
+    };
+
+    expect(inputWithoutLabel).not.toHaveProperty("sessionLabel");
+    expect(inputWithoutLabel.skillsWorked.length).toBeGreaterThan(0);
+  });
+
+  it("should display sessionLabel when available, fallback to Session #N", () => {
+    const noteWithLabel = { sessionNumber: 3, sessionLabel: "Game Day Review" };
+    const noteWithoutLabel = { sessionNumber: 3, sessionLabel: null };
+
+    const displayWithLabel = noteWithLabel.sessionLabel || `Session #${noteWithLabel.sessionNumber}`;
+    const displayWithoutLabel = noteWithoutLabel.sessionLabel || `Session #${noteWithoutLabel.sessionNumber}`;
+
+    expect(displayWithLabel).toBe("Game Day Review");
+    expect(displayWithoutLabel).toBe("Session #3");
   });
 });

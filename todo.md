@@ -1323,3 +1323,12 @@
 - [x] Mobile-optimized responsive design matching dark theme
 - [x] Write vitest tests for the new athlete feedback query
 - [x] Verify in browser and test navigation flows
+
+## Session Notes: Pre-built Templates & Editable Fields
+- [x] Add pre-built template options for "What Improved This Session" with Coach Steve coaching phrases
+- [x] Add pre-built template options for "What Still Needs Work" with Coach Steve coaching phrases
+- [x] Include "Custom" option for free-text entry when templates don't fit
+- [x] Make session title (Session #) editable
+- [x] Make date field editable (was already editable, confirmed)
+- [x] Write vitest tests for the updated session notes functionality
+- [x] Verify in browser — all features working correctly

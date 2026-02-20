@@ -260,6 +260,13 @@
       "when": 1771557956875,
       "tag": "0036_fixed_arachne",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "5",
+      "when": 1771560406397,
+      "tag": "0037_first_mongu",
+      "breakpoints": true
     }
   ]
 }

@@ -160,7 +160,7 @@ export function SessionHistory({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-heading font-bold text-sm md:text-base">
-                        Session #{note.sessionNumber}
+                        {(note as any).sessionLabel || `Session #${note.sessionNumber}`}
                       </span>
                       <span className="text-xs text-muted-foreground flex items-center gap-1">
                         <Calendar className="h-3 w-3" />

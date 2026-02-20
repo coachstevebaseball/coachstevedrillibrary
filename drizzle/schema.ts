@@ -501,6 +501,8 @@ export const sessionNotes = mysqlTable("sessionNotes", {
   athleteId: int("athleteId").notNull(),
   /** Auto-incremented per athlete (Session #1, #2, #3…) */
   sessionNumber: int("sessionNumber").notNull(),
+  /** Custom label for the session (defaults to "Session #N", editable by coach) */
+  sessionLabel: varchar("sessionLabel", { length: 200 }),
   sessionDate: timestamp("sessionDate").notNull(),
   /** Duration in minutes */
   duration: int("duration"),
