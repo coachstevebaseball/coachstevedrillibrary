@@ -43,7 +43,7 @@ async function startServer() {
   // --- Multipart video upload route (bypasses tRPC body size limits) ---
   const upload = multer({
     storage: multer.memoryStorage(),
-    limits: { fileSize: 100 * 1024 * 1024 }, // 100MB
+    limits: { fileSize: 200 * 1024 * 1024 }, // 200MB (compression reduces most files well below this)
     fileFilter: (_req, file, cb) => {
       if (file.mimetype.startsWith("video/")) {
         cb(null, true);

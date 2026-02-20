@@ -1283,3 +1283,15 @@
 - [x] Updated DrillSubmissionForm to use multipart upload instead of base64
 - [x] Verified endpoint returns 401 for unauthenticated requests
 - [x] TypeScript compiles cleanly, 286 tests pass (2 pre-existing failures unrelated)
+
+## Upload UX: Real-Time Progress & Video Compression
+- [x] Replace fetch() with XMLHttpRequest for real-time upload progress percentage
+- [x] Show accurate upload progress bar with bytes transferred / total
+- [x] Add client-side video compression via ffmpeg.wasm before upload
+- [x] Show two-phase progress: compression (amber) then upload (blue) with phase indicators
+- [x] Skip compression for files under 10MB threshold
+- [x] Show compression savings indicator (original → compressed size)
+- [x] Add cancel upload button
+- [x] Graceful fallback if compression fails (uploads original)
+- [x] Increased file limit to 500MB client-side, 200MB server-side
+- [x] TypeScript compiles cleanly, 286 tests pass

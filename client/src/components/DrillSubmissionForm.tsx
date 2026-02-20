@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Upload, Send, AlertCircle, Video, Loader2, CheckCircle } from "lucide-react";
+import { Upload, Send, AlertCircle, Video, Loader2, CheckCircle, Zap, ArrowDown } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useNotification } from "@/contexts/NotificationContext";
+import { uploadVideo, type UploadProgress, type UploadPhase } from "@/lib/videoUpload";
 
 interface DrillSubmissionFormProps {
   assignmentId: number;
@@ -17,16 +18,22 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [progress, setProgress] = useState<UploadProgress>({
+    phase: "idle",
+    percent: 0,
+    message: "",
+  });
   const [submitted, setSubmitted] = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
 
   const createSubmissionMutation = trpc.submissions.drillSubmissions.createSubmission.useMutation();
 
   const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 100 * 1024 * 1024) {
-        setError("Video file must be less than 100MB");
+      // Allow up to 500MB before compression (will be compressed down)
+      if (file.size > 500 * 1024 * 1024) {
+        setError("Video file must be less than 500MB");
         return;
       }
       if (!file.type.startsWith("video/")) {
@@ -39,31 +46,10 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
     }
   };
 
-  const uploadVideoViaMultipart = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append("video", file);
-    formData.append("assignmentId", String(assignmentId));
-    formData.append("drillId", drillId);
-
-    const response = await fetch("/api/upload/video", {
-      method: "POST",
-      body: formData,
-      credentials: "include",
-    });
-
-    if (!response.ok) {
-      const errBody = await response.json().catch(() => ({}));
-      throw new Error(errBody.error || `Upload failed (${response.status})`);
-    }
-
-    const result = await response.json();
-    return result.videoUrl;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setUploadProgress(0);
+    setProgress({ phase: "idle", percent: 0, message: "" });
 
     if (!notes.trim() && !videoFile) {
       setError("Please add notes or upload a video");
@@ -71,15 +57,21 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
     }
 
     setIsSubmitting(true);
+    abortRef.current = new AbortController();
 
     try {
       let videoUrl: string | undefined;
 
-      // Upload video via multipart (not base64) for large file support
+      // Upload video with compression + real-time progress
       if (videoFile) {
-        setUploadProgress(20);
-        videoUrl = await uploadVideoViaMultipart(videoFile);
-        setUploadProgress(80);
+        const result = await uploadVideo({
+          file: videoFile,
+          assignmentId,
+          drillId,
+          onProgress: setProgress,
+          signal: abortRef.current.signal,
+        });
+        videoUrl = result.videoUrl;
       }
 
       // Create submission with S3 URL (auto-triggers videoAnalysis record on server)
@@ -90,16 +82,15 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
         videoUrl,
       });
 
-      setUploadProgress(100);
+      setProgress({ phase: "done", percent: 100, message: "Upload complete!" });
       setSubmitted(true);
 
-      // Show success toast
       addToast({
-        type: 'success',
-        title: 'Video Submitted!',
-        message: videoFile 
-          ? 'Your video has been uploaded and queued for AI analysis. Coach will review the feedback soon.'
-          : 'Your drill submission has been recorded. Great work!',
+        type: "success",
+        title: "Video Submitted!",
+        message: videoFile
+          ? "Your video has been uploaded and queued for AI analysis. Coach will review the feedback soon."
+          : "Your drill submission has been recorded. Great work!",
       });
 
       // Reset form after short delay
@@ -107,25 +98,43 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
         setNotes("");
         setVideoFile(null);
         setVideoPreview(null);
-        setUploadProgress(0);
+        setProgress({ phase: "idle", percent: 0, message: "" });
         setSubmitted(false);
         onSubmitSuccess?.();
-      }, 2000);
+      }, 2500);
     } catch (err) {
+      if ((err as Error).message === "Upload cancelled") return;
       const errorMessage = err instanceof Error ? err.message : "Failed to submit drill";
       setError(errorMessage);
-      setUploadProgress(0);
-      
-      // Show error toast
+      setProgress({ phase: "error", percent: 0, message: errorMessage });
+
       addToast({
-        type: 'error',
-        title: 'Submission Failed',
+        type: "error",
+        title: "Submission Failed",
         message: errorMessage,
       });
     } finally {
       setIsSubmitting(false);
+      abortRef.current = null;
     }
   };
+
+  const handleCancel = () => {
+    abortRef.current?.abort();
+    setIsSubmitting(false);
+    setProgress({ phase: "idle", percent: 0, message: "" });
+  };
+
+  // Phase-specific colors and icons
+  const phaseConfig: Record<UploadPhase, { color: string; bgColor: string; glowColor: string }> = {
+    idle: { color: "text-blue-400", bgColor: "bg-blue-500", glowColor: "shadow-blue-500/30" },
+    compressing: { color: "text-amber-400", bgColor: "bg-amber-500", glowColor: "shadow-amber-500/30" },
+    uploading: { color: "text-blue-400", bgColor: "bg-blue-500", glowColor: "shadow-blue-500/30" },
+    done: { color: "text-emerald-400", bgColor: "bg-emerald-500", glowColor: "shadow-emerald-500/30" },
+    error: { color: "text-red-400", bgColor: "bg-red-500", glowColor: "shadow-red-500/30" },
+  };
+
+  const currentPhaseConfig = phaseConfig[progress.phase];
 
   // Success state
   if (submitted) {
@@ -136,6 +145,14 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
         <p className="text-sm text-emerald-400/70 mt-1">
           {videoFile ? "Your video is queued for analysis" : "Your work has been recorded"}
         </p>
+        {progress.compressedSize && progress.originalSize && progress.compressedSize < progress.originalSize && (
+          <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-emerald-400/60">
+            <Zap className="w-3 h-3" />
+            <span>
+              Compressed {formatBytes(progress.originalSize)} → {formatBytes(progress.compressedSize)}
+            </span>
+          </div>
+        )}
       </div>
     );
   }
@@ -156,104 +173,158 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
           </div>
         )}
 
-        {/* Upload Progress */}
-        {uploadProgress > 0 && uploadProgress < 100 && (
-          <div className="space-y-2">
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <Loader2 className="h-3 w-3 animate-spin" />
-                Uploading video...
-              </span>
-              <span>{uploadProgress}%</span>
+        {/* Progress Panel — shown during compression and upload */}
+        {progress.phase !== "idle" && progress.phase !== "error" && isSubmitting && (
+          <div className="space-y-3 bg-white/[0.04] border border-white/[0.08] rounded-xl p-4">
+            {/* Phase indicator */}
+            <div className="flex items-center gap-3">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentPhaseConfig.bgColor}/20`}>
+                {progress.phase === "compressing" ? (
+                  <Zap className={`w-4 h-4 ${currentPhaseConfig.color} animate-pulse`} />
+                ) : progress.phase === "uploading" ? (
+                  <Upload className={`w-4 h-4 ${currentPhaseConfig.color}`} />
+                ) : (
+                  <CheckCircle className={`w-4 h-4 ${currentPhaseConfig.color}`} />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1">
+                  <span className={`text-xs font-semibold uppercase tracking-wider ${currentPhaseConfig.color}`}>
+                    {progress.phase === "compressing" ? "Compressing" : progress.phase === "uploading" ? "Uploading" : "Complete"}
+                  </span>
+                  <span className="text-xs font-mono text-muted-foreground">
+                    {progress.percent}%
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground truncate">{progress.message}</p>
+              </div>
             </div>
-            <div className="w-full bg-white/[0.06] rounded-full h-1.5">
+
+            {/* Progress bar */}
+            <div className="w-full bg-white/[0.06] rounded-full h-2 overflow-hidden">
               <div
-                className="bg-blue-500 h-1.5 rounded-full transition-all duration-500"
-                style={{ width: `${uploadProgress}%` }}
+                className={`h-full rounded-full transition-all duration-300 ease-out ${currentPhaseConfig.bgColor} ${currentPhaseConfig.glowColor} shadow-lg`}
+                style={{ width: `${progress.percent}%` }}
               />
             </div>
+
+            {/* Compression savings indicator */}
+            {progress.compressedSize && progress.originalSize && progress.compressedSize < progress.originalSize && (
+              <div className="flex items-center gap-2 text-xs text-amber-400/80 bg-amber-500/10 rounded-lg px-3 py-2">
+                <ArrowDown className="w-3 h-3" />
+                <span>
+                  {formatBytes(progress.originalSize)} → {formatBytes(progress.compressedSize)}
+                  {" "}({Math.round((1 - progress.compressedSize / progress.originalSize) * 100)}% smaller)
+                </span>
+              </div>
+            )}
+
+            {/* Cancel button */}
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="text-xs text-muted-foreground hover:text-red-400 transition-colors"
+            >
+              Cancel upload
+            </button>
           </div>
         )}
 
-        {/* Video Upload Area */}
-        <div>
-          <input
-            type="file"
-            accept="video/*"
-            onChange={handleVideoSelect}
-            className="hidden"
-            id={`video-input-${assignmentId}`}
-            disabled={isSubmitting}
-          />
-          
-          {!videoFile ? (
-            <label
-              htmlFor={`video-input-${assignmentId}`}
-              className="flex flex-col items-center justify-center gap-2 w-full px-4 py-6 border-2 border-dashed border-white/[0.12] rounded-xl cursor-pointer hover:bg-white/[0.04] hover:border-blue-500/40 transition-all duration-200 active:scale-[0.98]"
-            >
-              <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center">
-                <Upload className="h-5 w-5 text-blue-400" />
-              </div>
-              <span className="text-sm font-medium text-foreground">
-                Tap to upload video
-              </span>
-              <span className="text-xs text-muted-foreground">
-                Record or choose from library — Max 100MB
-              </span>
-            </label>
-          ) : (
-            <div className="space-y-3">
-              {/* Video Preview */}
-              {videoPreview && (
-                <div className="relative rounded-xl overflow-hidden bg-black">
-                  <video
-                    src={videoPreview}
-                    controls
-                    className="w-full max-h-48"
-                    preload="metadata"
-                  />
-                </div>
-              )}
-              
-              {/* File info + remove */}
-              <div className="flex items-center justify-between bg-white/[0.04] rounded-lg px-3 py-2">
-                <div className="flex items-center gap-2 min-w-0">
-                  <Video className="h-4 w-4 text-blue-400 shrink-0" />
-                  <span className="text-xs text-foreground truncate">{videoFile.name}</span>
-                  <span className="text-xs text-muted-foreground shrink-0">
-                    ({(videoFile.size / (1024 * 1024)).toFixed(1)} MB)
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setVideoFile(null);
-                    setVideoPreview(null);
-                  }}
-                  disabled={isSubmitting}
-                  className="text-xs text-red-400 hover:text-red-300 font-medium ml-2 shrink-0 disabled:opacity-50"
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+        {/* Video Upload Area — hidden during active upload */}
+        {(!isSubmitting || progress.phase === "idle") && (
+          <div>
+            <input
+              type="file"
+              accept="video/*"
+              onChange={handleVideoSelect}
+              className="hidden"
+              id={`video-input-${assignmentId}`}
+              disabled={isSubmitting}
+            />
 
-        {/* Notes (optional) */}
-        <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1.5">
-            Notes <span className="text-white/30">(optional)</span>
-          </label>
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="How did it feel? Any questions for Coach?"
-            className="w-full h-16 bg-white/[0.04] border border-white/[0.08] rounded-lg p-3 text-sm text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30"
-            disabled={isSubmitting}
-            maxLength={500}
-          />
-        </div>
+            {!videoFile ? (
+              <label
+                htmlFor={`video-input-${assignmentId}`}
+                className="flex flex-col items-center justify-center gap-2 w-full px-4 py-6 border-2 border-dashed border-white/[0.12] rounded-xl cursor-pointer hover:bg-white/[0.04] hover:border-blue-500/40 transition-all duration-200 active:scale-[0.98]"
+              >
+                <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center">
+                  <Upload className="h-5 w-5 text-blue-400" />
+                </div>
+                <span className="text-sm font-medium text-foreground">
+                  Tap to upload video
+                </span>
+                <span className="text-xs text-muted-foreground text-center">
+                  Choose from library or record new — Max 500MB
+                </span>
+                <span className="text-xs text-blue-400/60 flex items-center gap-1">
+                  <Zap className="w-3 h-3" />
+                  Auto-compressed before upload
+                </span>
+              </label>
+            ) : (
+              <div className="space-y-3">
+                {/* Video Preview */}
+                {videoPreview && (
+                  <div className="relative rounded-xl overflow-hidden bg-black">
+                    <video
+                      src={videoPreview}
+                      controls
+                      className="w-full max-h-48"
+                      preload="metadata"
+                    />
+                  </div>
+                )}
+
+                {/* File info + remove */}
+                <div className="flex items-center justify-between bg-white/[0.04] rounded-lg px-3 py-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Video className="h-4 w-4 text-blue-400 shrink-0" />
+                    <span className="text-xs text-foreground truncate">{videoFile.name}</span>
+                    <span className="text-xs text-muted-foreground shrink-0">
+                      ({formatBytes(videoFile.size)})
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setVideoFile(null);
+                      setVideoPreview(null);
+                    }}
+                    disabled={isSubmitting}
+                    className="text-xs text-red-400 hover:text-red-300 font-medium ml-2 shrink-0 disabled:opacity-50"
+                  >
+                    Remove
+                  </button>
+                </div>
+
+                {/* Compression hint for large files */}
+                {videoFile.size > 10 * 1024 * 1024 && (
+                  <div className="flex items-center gap-1.5 text-xs text-amber-400/70 px-1">
+                    <Zap className="w-3 h-3" />
+                    <span>This video will be compressed before upload to save time</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Notes (optional) — hidden during active upload */}
+        {(!isSubmitting || progress.phase === "idle") && (
+          <div>
+            <label className="block text-xs font-medium text-muted-foreground mb-1.5">
+              Notes <span className="text-white/30">(optional)</span>
+            </label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="How did it feel? Any questions for Coach?"
+              className="w-full h-16 bg-white/[0.04] border border-white/[0.08] rounded-lg p-3 text-sm text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30"
+              disabled={isSubmitting}
+              maxLength={500}
+            />
+          </div>
+        )}
 
         {/* Submit Button */}
         <Button
@@ -264,7 +335,11 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
           {isSubmitting ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              {uploadProgress > 0 ? `Uploading... ${uploadProgress}%` : 'Submitting...'}
+              {progress.phase === "compressing"
+                ? `Compressing... ${progress.percent}%`
+                : progress.phase === "uploading"
+                  ? `Uploading... ${progress.percent}%`
+                  : "Processing..."}
             </>
           ) : (
             <>
@@ -276,4 +351,9 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
       </form>
     </div>
   );
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
