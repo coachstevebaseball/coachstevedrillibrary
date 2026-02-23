@@ -669,6 +669,8 @@ export const blastPlayers = mysqlTable("blastPlayers", {
   fullName: varchar("fullName", { length: 255 }).notNull(),
   /** Optional link to a platform user account */
   userId: int("userId"),
+  /** Email from Blast Connect (may differ from portal email) */
+  blastEmail: varchar("blastEmail", { length: 320 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 export type BlastPlayer = typeof blastPlayers.$inferSelect;

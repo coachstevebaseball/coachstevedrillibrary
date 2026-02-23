@@ -1359,5 +1359,12 @@
 ## Blast Motion: Data Cleanup & Session Count Fix
 - [x] Remove sample players (Mike Troutman, Alex Johnson, David Ortiz Jr., Shannon Caputo) — kept only Sean Yaegar and Gavin Goldstein
 - [x] Fix Drizzle ORM session count subquery — switched from correlated subquery to LEFT JOIN with GROUP BY
-- [ ] Link Blast players to actual portal user accounts if possible
+- [x] Link Blast players to actual portal user accounts — Sean Jaeger (userId 3570024), Gavin Goldstein (userId 3780043)
 - [x] Verify session counts display correctly in the UI — Gavin: 1 session, Sean: 3 sessions ✓
+
+## Link Blast Players to Portal Accounts
+- [x] Find portal user IDs for Sean Yaegar and Gavin Goldstein
+- [x] Update blastPlayers.userId to link to their portal user accounts
+- [x] Added blastEmail column to store Blast Connect emails (JKrichever@gmail.com, adgold77@yahoo.com)
+- [x] Update Blast Metrics UI to show linked user info (portal email, Blast email)
+- [x] Verify linked profiles display correctly in the Coach Dashboard — green dot with linked email shown

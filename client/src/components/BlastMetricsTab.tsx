@@ -195,6 +195,12 @@ export function BlastMetricsTab() {
                       <p className="text-xs text-white/40">
                         {p.sessionCount} session{p.sessionCount !== 1 ? "s" : ""}
                       </p>
+                      {p.portalName && (
+                        <p className="text-xs text-green-400/70 mt-0.5 flex items-center gap-1">
+                          <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400"></span>
+                          Linked: {p.portalEmail}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <ChevronRight className="h-4 w-4 text-white/20 group-hover:text-violet-400 transition-all group-hover:translate-x-1" />
@@ -233,9 +239,18 @@ export function BlastMetricsTab() {
           All Players
         </Button>
         <div className="h-6 w-px bg-white/10" />
-        <h2 className="text-xl font-heading font-bold text-white">
-          {player?.fullName || "Loading..."}
-        </h2>
+        <div>
+          <h2 className="text-xl font-heading font-bold text-white">
+            {player?.fullName || "Loading..."}
+          </h2>
+          {player?.portalEmail && (
+            <p className="text-xs text-green-400/60 flex items-center gap-1.5 mt-0.5">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400"></span>
+              Portal: {player.portalEmail}
+              {player.blastEmail && <span className="text-white/30">| Blast: {player.blastEmail}</span>}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Summary Score Cards */}

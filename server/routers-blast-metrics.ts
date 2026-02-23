@@ -2,7 +2,7 @@ import { protectedProcedure, router } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { getDb } from "./db";
-import { blastPlayers, blastSessions, blastMetrics } from "../drizzle/schema";
+import { blastPlayers, blastSessions, blastMetrics, users } from "../drizzle/schema";
 import { eq, asc, and, sql } from "drizzle-orm";
 
 async function requireDb() {
@@ -23,13 +23,17 @@ export const blastMetricsRouter = router({
         id: blastPlayers.id,
         fullName: blastPlayers.fullName,
         userId: blastPlayers.userId,
+        blastEmail: blastPlayers.blastEmail,
         createdAt: blastPlayers.createdAt,
-        sessionCount: sql<number>`COUNT(${blastSessions.id})`.mapWith(Number),
+        sessionCount: sql<number>`COUNT(DISTINCT ${blastSessions.id})`.mapWith(Number),
         latestSession: sql<Date | null>`MAX(${blastSessions.sessionDate})`,
+        portalName: users.name,
+        portalEmail: users.email,
       })
       .from(blastPlayers)
       .leftJoin(blastSessions, eq(blastSessions.playerId, blastPlayers.id))
-      .groupBy(blastPlayers.id, blastPlayers.fullName, blastPlayers.userId, blastPlayers.createdAt)
+      .leftJoin(users, eq(users.id, blastPlayers.userId))
+      .groupBy(blastPlayers.id, blastPlayers.fullName, blastPlayers.userId, blastPlayers.blastEmail, blastPlayers.createdAt, users.name, users.email)
       .orderBy(asc(blastPlayers.fullName));
     return players;
   }),
@@ -43,8 +47,17 @@ export const blastMetricsRouter = router({
       }
       const db = await requireDb();
       const [player] = await db
-        .select()
+        .select({
+          id: blastPlayers.id,
+          fullName: blastPlayers.fullName,
+          userId: blastPlayers.userId,
+          blastEmail: blastPlayers.blastEmail,
+          createdAt: blastPlayers.createdAt,
+          portalName: users.name,
+          portalEmail: users.email,
+        })
         .from(blastPlayers)
+        .leftJoin(users, eq(users.id, blastPlayers.userId))
         .where(eq(blastPlayers.id, input.playerId));
       if (!player) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Player not found" });
