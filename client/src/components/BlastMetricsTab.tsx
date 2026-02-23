@@ -6,12 +6,15 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   ArrowLeft, Users, Activity, TrendingUp, Zap, Target,
-  ChevronRight, BarChart3, Gauge, Timer, Crosshair
+  ChevronRight, BarChart3, Gauge, Timer, Crosshair, Plus, UserPlus, Trash2
 } from "lucide-react";
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend, Area, AreaChart
 } from "recharts";
+import { AddBlastSession } from "./AddBlastSession";
+import { AddBlastPlayer } from "./AddBlastPlayer";
+import { DeleteBlastSession } from "./DeleteBlastSession";
 
 // Metric display config
 const METRIC_CONFIGS = {
@@ -36,14 +39,6 @@ function getScoreColor(score: number | null): string {
   if (score >= 70) return "text-blue-400";
   if (score >= 55) return "text-yellow-400";
   return "text-red-400";
-}
-
-function getScoreBg(score: number | null): string {
-  if (score === null) return "bg-muted/30";
-  if (score >= 85) return "bg-green-500/10 border-green-500/20";
-  if (score >= 70) return "bg-blue-500/10 border-blue-500/20";
-  if (score >= 55) return "bg-yellow-500/10 border-yellow-500/20";
-  return "bg-red-500/10 border-red-500/20";
 }
 
 function formatDate(date: Date | string | null): string {
@@ -77,6 +72,15 @@ export function BlastMetricsTab() {
   const [chartMetric1, setChartMetric1] = useState<MetricKey>("batSpeed");
   const [chartMetric2, setChartMetric2] = useState<MetricKey>("rotAccel");
   const [chartView, setChartView] = useState<"line" | "bar">("line");
+
+  // Dialog states
+  const [addSessionOpen, setAddSessionOpen] = useState(false);
+  const [addPlayerOpen, setAddPlayerOpen] = useState(false);
+  const [deleteSession, setDeleteSession] = useState<{
+    id: string;
+    date: string;
+    type: string;
+  } | null>(null);
 
   const { data: players = [], isLoading: playersLoading } = trpc.blastMetrics.listPlayers.useQuery();
 
@@ -154,9 +158,19 @@ export function BlastMetricsTab() {
             </h2>
             <p className="text-white/50 mt-1">Track swing metrics and identify trends across your players</p>
           </div>
-          <Badge variant="outline" className="text-white/60 border-white/10">
-            {players.length} Players
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => setAddPlayerOpen(true)}
+              size="sm"
+              className="bg-violet-600 hover:bg-violet-700 text-white"
+            >
+              <UserPlus className="h-4 w-4 mr-1.5" />
+              Add Player
+            </Button>
+            <Badge variant="outline" className="text-white/60 border-white/10">
+              {players.length} Players
+            </Badge>
+          </div>
         </div>
 
         {playersLoading ? (
@@ -170,9 +184,16 @@ export function BlastMetricsTab() {
             <CardContent className="py-12 text-center">
               <Users className="h-12 w-12 text-white/20 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-white/80 mb-2">No Players Yet</h3>
-              <p className="text-white/40 max-w-md mx-auto">
+              <p className="text-white/40 max-w-md mx-auto mb-6">
                 Add players and their Blast Motion session data to start tracking swing metrics.
               </p>
+              <Button
+                onClick={() => setAddPlayerOpen(true)}
+                className="bg-violet-600 hover:bg-violet-700 text-white"
+              >
+                <UserPlus className="h-4 w-4 mr-2" />
+                Add Your First Player
+              </Button>
             </CardContent>
           </Card>
         ) : (
@@ -214,6 +235,9 @@ export function BlastMetricsTab() {
             ))}
           </div>
         )}
+
+        {/* Add Player Dialog */}
+        <AddBlastPlayer open={addPlayerOpen} onOpenChange={setAddPlayerOpen} />
       </div>
     );
   }
@@ -225,32 +249,42 @@ export function BlastMetricsTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => {
-            setSelectedPlayerId(null);
-            setSessionTypeFilter("All");
-          }}
-          className="text-white/60 hover:text-white hover:bg-white/[0.06]"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          All Players
-        </Button>
-        <div className="h-6 w-px bg-white/10" />
-        <div>
-          <h2 className="text-xl font-heading font-bold text-white">
-            {player?.fullName || "Loading..."}
-          </h2>
-          {player?.portalEmail && (
-            <p className="text-xs text-green-400/60 flex items-center gap-1.5 mt-0.5">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400"></span>
-              Portal: {player.portalEmail}
-              {player.blastEmail && <span className="text-white/30">| Blast: {player.blastEmail}</span>}
-            </p>
-          )}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              setSelectedPlayerId(null);
+              setSessionTypeFilter("All");
+            }}
+            className="text-white/60 hover:text-white hover:bg-white/[0.06]"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            All Players
+          </Button>
+          <div className="h-6 w-px bg-white/10" />
+          <div>
+            <h2 className="text-xl font-heading font-bold text-white">
+              {player?.fullName || "Loading..."}
+            </h2>
+            {player?.portalEmail && (
+              <p className="text-xs text-green-400/60 flex items-center gap-1.5 mt-0.5">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400"></span>
+                Portal: {player.portalEmail}
+                {player.blastEmail && <span className="text-white/30">| Blast: {player.blastEmail}</span>}
+              </p>
+            )}
+          </div>
         </div>
+        <Button
+          onClick={() => setAddSessionOpen(true)}
+          size="sm"
+          className="bg-violet-600 hover:bg-violet-700 text-white"
+        >
+          <Plus className="h-4 w-4 mr-1.5" />
+          Add Session
+        </Button>
       </div>
 
       {/* Summary Score Cards */}
@@ -347,8 +381,17 @@ export function BlastMetricsTab() {
         </CardHeader>
         <CardContent>
           {chartData.length === 0 ? (
-            <div className="h-64 flex items-center justify-center text-white/30">
-              No session data available for the selected filters
+            <div className="h-64 flex flex-col items-center justify-center text-white/30 gap-3">
+              <p>No session data available for the selected filters</p>
+              <Button
+                onClick={() => setAddSessionOpen(true)}
+                size="sm"
+                variant="outline"
+                className="text-violet-400 border-violet-500/30 hover:bg-violet-500/10"
+              >
+                <Plus className="h-4 w-4 mr-1.5" />
+                Add First Session
+              </Button>
             </div>
           ) : (
             <div className="h-72 md:h-80">
@@ -452,7 +495,7 @@ export function BlastMetricsTab() {
                 </thead>
                 <tbody>
                   {averages.map((avg: any, idx: number) => (
-                    <tr key={idx} className="border-b border-white/[0.04] hover:bg-white/[0.02]">
+                    <tr key={avg.sessionType || idx} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
                       <td className="py-3 px-3">
                         <Badge variant="outline" className="text-white/70 border-white/10 font-normal">
                           {avg.sessionType}
@@ -483,13 +526,24 @@ export function BlastMetricsTab() {
       {/* Session History Table */}
       <Card className="bg-white/[0.04] border-white/[0.08]">
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg text-white flex items-center gap-2">
-            <Activity className="h-5 w-5 text-green-400" />
-            Session History
-            <Badge variant="outline" className="text-white/40 border-white/10 ml-2 font-normal">
-              {sessions.length} sessions
-            </Badge>
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg text-white flex items-center gap-2">
+              <Activity className="h-5 w-5 text-green-400" />
+              Session History
+              <Badge variant="outline" className="text-white/40 border-white/10 ml-2 font-normal">
+                {sessions.length} sessions
+              </Badge>
+            </CardTitle>
+            <Button
+              onClick={() => setAddSessionOpen(true)}
+              size="sm"
+              variant="outline"
+              className="text-violet-400 border-violet-500/30 hover:bg-violet-500/10 h-8"
+            >
+              <Plus className="h-3.5 w-3.5 mr-1" />
+              Add
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {sessionsLoading ? (
@@ -499,8 +553,17 @@ export function BlastMetricsTab() {
               ))}
             </div>
           ) : sessions.length === 0 ? (
-            <div className="py-8 text-center text-white/30">
-              No sessions found for the selected filters
+            <div className="py-8 text-center text-white/30 space-y-3">
+              <p>No sessions found for the selected filters</p>
+              <Button
+                onClick={() => setAddSessionOpen(true)}
+                size="sm"
+                variant="outline"
+                className="text-violet-400 border-violet-500/30 hover:bg-violet-500/10"
+              >
+                <Plus className="h-4 w-4 mr-1.5" />
+                Add Session
+              </Button>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -517,11 +580,12 @@ export function BlastMetricsTab() {
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Power</th>
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Efficiency</th>
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Attack Angle</th>
+                    <th className="w-10"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {sessions.map((s: any, idx: number) => (
-                    <tr key={s.id || idx} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                    <tr key={s.id || idx} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors group">
                       <td className="py-3 px-3 text-white/80 whitespace-nowrap">{formatDate(s.sessionDate)}</td>
                       <td className="py-3 px-2">
                         <Badge variant="outline" className="text-white/60 border-white/10 font-normal text-xs">
@@ -552,6 +616,19 @@ export function BlastMetricsTab() {
                       <td className="text-center py-3 px-2 text-lime-400">
                         {s.attackAngleDeg ? `${parseFloat(s.attackAngleDeg).toFixed(1)}°` : "—"}
                       </td>
+                      <td className="py-3 px-1">
+                        <button
+                          onClick={() => setDeleteSession({
+                            id: s.id,
+                            date: formatDate(s.sessionDate),
+                            type: s.sessionType || "Unknown",
+                          })}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-red-500/10 text-white/30 hover:text-red-400"
+                          title="Delete session"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -560,6 +637,28 @@ export function BlastMetricsTab() {
           )}
         </CardContent>
       </Card>
+
+      {/* Add Session Dialog */}
+      {selectedPlayerId && player && (
+        <AddBlastSession
+          open={addSessionOpen}
+          onOpenChange={setAddSessionOpen}
+          playerId={selectedPlayerId}
+          playerName={player.fullName}
+        />
+      )}
+
+      {/* Delete Session Dialog */}
+      {deleteSession && player && (
+        <DeleteBlastSession
+          open={!!deleteSession}
+          onOpenChange={(open) => { if (!open) setDeleteSession(null); }}
+          sessionId={deleteSession.id}
+          sessionDate={deleteSession.date}
+          sessionType={deleteSession.type}
+          playerName={player.fullName}
+        />
+      )}
     </div>
   );
 }

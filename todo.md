@@ -1368,3 +1368,14 @@
 - [x] Added blastEmail column to store Blast Connect emails (JKrichever@gmail.com, adgold77@yahoo.com)
 - [x] Update Blast Metrics UI to show linked user info (portal email, Blast email)
 - [x] Verify linked profiles display correctly in the Coach Dashboard — green dot with linked email shown
+
+## Manual Blast Session Entry UI
+- [x] Build "Add Session" dialog/form accessible from Blast Metrics player detail view
+- [x] Player selector (existing players + add new player option) on roster view
+- [x] Session date picker and session type selector
+- [x] All 13 Blast metric input fields with proper labels and units
+- [x] Form validation (require player, date, session type; metrics optional)
+- [x] Success feedback and auto-refresh of player data after adding
+- [x] Add "Add New Player" inline form on roster view
+- [x] Delete session capability
+- [x] Write vitest tests for the add session flow

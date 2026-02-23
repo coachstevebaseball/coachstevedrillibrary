@@ -269,4 +269,18 @@ export const blastMetricsRouter = router({
       });
       return { sessionId };
     }),
+
+  /** Delete a session and its metrics */
+  deleteSession: protectedProcedure
+    .input(z.object({ sessionId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.role !== "admin") {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" });
+      }
+      const db = await requireDb();
+      // Delete metrics first (child), then session (parent)
+      await db.delete(blastMetrics).where(eq(blastMetrics.sessionId, input.sessionId));
+      await db.delete(blastSessions).where(eq(blastSessions.id, input.sessionId));
+      return { success: true };
+    }),
 });

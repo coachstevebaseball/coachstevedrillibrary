@@ -1,348 +1,332 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { eq } from "drizzle-orm";
+import { blastPlayers, blastSessions, blastMetrics } from "../drizzle/schema";
+import { getDb } from "./db";
+import { appRouter } from "./routers";
+import type { TrpcContext } from "./_core/context";
 
-// Mock the database module
-vi.mock("./db", () => {
-  const mockDb = {
-    insert: vi.fn().mockReturnThis(),
-    values: vi.fn().mockResolvedValue([{ insertId: 1 }]),
-    select: vi.fn().mockReturnThis(),
-    selectDistinct: vi.fn().mockReturnThis(),
-    from: vi.fn().mockReturnThis(),
-    where: vi.fn().mockReturnThis(),
-    orderBy: vi.fn().mockReturnThis(),
-    limit: vi.fn().mockResolvedValue([]),
-    leftJoin: vi.fn().mockReturnThis(),
-    groupBy: vi.fn().mockReturnThis(),
-  };
-
+// Helper to create an admin context for tRPC calls
+function createAdminContext(): TrpcContext {
   return {
-    getDb: vi.fn().mockResolvedValue(mockDb),
+    user: {
+      id: 999999,
+      openId: "test-blast-admin",
+      email: "blastadmin@test.com",
+      name: "Blast Admin",
+      loginMethod: "manus",
+      role: "admin",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      lastSignedIn: new Date(),
+    },
+    req: {
+      protocol: "https",
+      headers: {},
+    } as TrpcContext["req"],
+    res: {
+      clearCookie: () => {},
+    } as TrpcContext["res"],
   };
+}
+
+function createNonAdminContext(): TrpcContext {
+  return {
+    user: {
+      id: 999998,
+      openId: "test-blast-user",
+      email: "blastuser@test.com",
+      name: "Blast User",
+      loginMethod: "manus",
+      role: "user",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      lastSignedIn: new Date(),
+    },
+    req: {
+      protocol: "https",
+      headers: {},
+    } as TrpcContext["req"],
+    res: {
+      clearCookie: () => {},
+    } as TrpcContext["res"],
+  };
+}
+
+describe("Blast Metrics - Add Player", () => {
+  let createdPlayerIds: string[] = [];
+
+  afterEach(async () => {
+    const db = await getDb();
+    if (!db) return;
+    for (const id of createdPlayerIds) {
+      await db.delete(blastSessions).where(eq(blastSessions.playerId, id));
+      await db.delete(blastPlayers).where(eq(blastPlayers.id, id));
+    }
+    createdPlayerIds = [];
+  });
+
+  it("should add a new player as admin", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    const result = await caller.blastMetrics.addPlayer({ fullName: "Test Player 1" });
+
+    expect(result.id).toBeDefined();
+    expect(result.fullName).toBe("Test Player 1");
+    createdPlayerIds.push(result.id);
+  });
+
+  it("should reject non-admin users from adding players", async () => {
+    const caller = appRouter.createCaller(createNonAdminContext());
+    await expect(
+      caller.blastMetrics.addPlayer({ fullName: "Unauthorized Player" })
+    ).rejects.toThrow("Admin access required");
+  });
 });
 
-// Mock schema
-vi.mock("../drizzle/schema", () => ({
-  blastPlayers: {
-    id: "id",
-    fullName: "fullName",
-    userId: "userId",
-    createdAt: "createdAt",
-  },
-  blastSessions: {
-    id: "id",
-    playerId: "playerId",
-    sessionDate: "sessionDate",
-    sessionType: "sessionType",
-  },
-  blastMetrics: {
-    sessionId: "sessionId",
-    planeScore: "planeScore",
-    connectionScore: "connectionScore",
-    rotationScore: "rotationScore",
-    batSpeedMph: "batSpeedMph",
-    rotationalAccelerationG: "rotationalAccelerationG",
-    onPlaneEfficiencyPercent: "onPlaneEfficiencyPercent",
-    attackAngleDeg: "attackAngleDeg",
-    earlyConnectionDeg: "earlyConnectionDeg",
-    connectionAtImpactDeg: "connectionAtImpactDeg",
-    verticalBatAngleDeg: "verticalBatAngleDeg",
-    powerKw: "powerKw",
-    timeToContactSec: "timeToContactSec",
-    peakHandSpeedMph: "peakHandSpeedMph",
-  },
-}));
+describe("Blast Metrics - Add Session", () => {
+  let testPlayerId: string;
 
-// Mock drizzle-orm
-vi.mock("drizzle-orm", () => ({
-  eq: vi.fn((...args: any[]) => ({ type: "eq", args })),
-  and: vi.fn((...args: any[]) => ({ type: "and", args })),
-  asc: vi.fn((col: any) => ({ type: "asc", col })),
-  sql: Object.assign(vi.fn(), {
-    // Allow template literal usage: sql`...`
-    raw: vi.fn(),
-  }),
-}));
-
-// Mock crypto.randomUUID
-vi.stubGlobal("crypto", { randomUUID: vi.fn().mockReturnValue("test-uuid-123") });
-
-import { getDb } from "./db";
-
-describe("Blast Metrics Router", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  describe("Database Connection", () => {
-    it("should get a database connection via getDb", async () => {
-      const db = await getDb();
-      expect(db).toBeDefined();
-      expect(db).toHaveProperty("select");
-      expect(db).toHaveProperty("insert");
-      expect(db).toHaveProperty("selectDistinct");
+  beforeEach(async () => {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    testPlayerId = `test-player-${Date.now()}`;
+    await db.insert(blastPlayers).values({
+      id: testPlayerId,
+      fullName: "Test Session Player",
+      userId: null,
     });
   });
 
-  describe("listPlayers query pattern", () => {
-    it("should query blastPlayers table with select and orderBy", async () => {
-      const db = await getDb();
-      (db as any).select.mockReturnThis();
-      (db as any).from.mockReturnThis();
-      (db as any).orderBy.mockResolvedValue([
-        { id: "p1", fullName: "Mike Troutman", sessionCount: 5, latestSession: new Date() },
-        { id: "p2", fullName: "Jake Sonsay", sessionCount: 3, latestSession: new Date() },
-      ]);
+  afterEach(async () => {
+    const db = await getDb();
+    if (!db) return;
+    const sessions = await db
+      .select({ id: blastSessions.id })
+      .from(blastSessions)
+      .where(eq(blastSessions.playerId, testPlayerId));
+    for (const s of sessions) {
+      await db.delete(blastMetrics).where(eq(blastMetrics.sessionId, s.id));
+    }
+    await db.delete(blastSessions).where(eq(blastSessions.playerId, testPlayerId));
+    await db.delete(blastPlayers).where(eq(blastPlayers.id, testPlayerId));
+  });
 
-      const result = await (db as any).select().from("blastPlayers").orderBy("fullName");
-      expect(result).toHaveLength(2);
-      expect(result[0].fullName).toBe("Mike Troutman");
-      expect(result[1].fullName).toBe("Jake Sonsay");
+  it("should add a session with full metrics", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    const result = await caller.blastMetrics.addSession({
+      playerId: testPlayerId,
+      sessionDate: "2026-02-20",
+      sessionType: "Tee",
+      metrics: {
+        batSpeedMph: "65.5",
+        rotationalAccelerationG: "12.3",
+        planeScore: 78,
+        connectionScore: 82,
+        rotationScore: 75,
+        powerKw: "1.85",
+        peakHandSpeedMph: "22.0",
+        onPlaneEfficiencyPercent: "85.0",
+        attackAngleDeg: "10.5",
+        earlyConnectionDeg: "95.0",
+        connectionAtImpactDeg: "90.0",
+        verticalBatAngleDeg: "-25.0",
+        timeToContactSec: "0.150",
+      },
+    });
+
+    expect(result.sessionId).toBeDefined();
+
+    // Verify session was created
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    const [session] = await db
+      .select()
+      .from(blastSessions)
+      .where(eq(blastSessions.id, result.sessionId));
+    expect(session).toBeDefined();
+    expect(session.playerId).toBe(testPlayerId);
+    expect(session.sessionType).toBe("Tee");
+
+    // Verify metrics were created
+    const [metrics] = await db
+      .select()
+      .from(blastMetrics)
+      .where(eq(blastMetrics.sessionId, result.sessionId));
+    expect(metrics).toBeDefined();
+    expect(metrics.batSpeedMph).toBe("65.5");
+    expect(metrics.planeScore).toBe(78);
+    expect(metrics.connectionScore).toBe(82);
+    expect(metrics.rotationScore).toBe(75);
+    expect(metrics.powerKw).toBe("1.85");
+  });
+
+  it("should add a session with partial metrics (only bat speed)", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    const result = await caller.blastMetrics.addSession({
+      playerId: testPlayerId,
+      sessionDate: "2026-02-21",
+      sessionType: "Soft Toss",
+      metrics: {
+        batSpeedMph: "48.0",
+      },
+    });
+
+    expect(result.sessionId).toBeDefined();
+
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    const [metrics] = await db
+      .select()
+      .from(blastMetrics)
+      .where(eq(blastMetrics.sessionId, result.sessionId));
+    expect(metrics).toBeDefined();
+    expect(metrics.batSpeedMph).toBe("48.0");
+    expect(metrics.planeScore).toBeNull();
+    expect(metrics.connectionScore).toBeNull();
+  });
+
+  it("should add a session with empty metrics", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    const result = await caller.blastMetrics.addSession({
+      playerId: testPlayerId,
+      sessionDate: "2026-02-22",
+      sessionType: "Live BP",
+      metrics: {},
+    });
+
+    expect(result.sessionId).toBeDefined();
+
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    const [metrics] = await db
+      .select()
+      .from(blastMetrics)
+      .where(eq(blastMetrics.sessionId, result.sessionId));
+    expect(metrics).toBeDefined();
+    expect(metrics.batSpeedMph).toBeNull();
+    expect(metrics.planeScore).toBeNull();
+    expect(metrics.powerKw).toBeNull();
+  });
+
+  it("should reject non-admin users from adding sessions", async () => {
+    const caller = appRouter.createCaller(createNonAdminContext());
+    await expect(
+      caller.blastMetrics.addSession({
+        playerId: testPlayerId,
+        sessionDate: "2026-02-20",
+        sessionType: "Tee",
+        metrics: { batSpeedMph: "50.0" },
+      })
+    ).rejects.toThrow("Admin access required");
+  });
+});
+
+describe("Blast Metrics - Delete Session", () => {
+  let testPlayerId: string;
+  let testSessionId: string;
+
+  beforeEach(async () => {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+
+    testPlayerId = `test-del-player-${Date.now()}`;
+    await db.insert(blastPlayers).values({
+      id: testPlayerId,
+      fullName: "Test Delete Player",
+      userId: null,
+    });
+
+    testSessionId = `test-del-session-${Date.now()}`;
+    await db.insert(blastSessions).values({
+      id: testSessionId,
+      playerId: testPlayerId,
+      sessionDate: new Date("2026-02-20"),
+      sessionType: "Tee",
+    });
+    await db.insert(blastMetrics).values({
+      sessionId: testSessionId,
+      batSpeedMph: "55.0",
+      planeScore: 70,
     });
   });
 
-  describe("getPlayerSessions query pattern", () => {
-    it("should join blastSessions with blastMetrics and filter by playerId", async () => {
-      const db = await getDb();
-      (db as any).select.mockReturnThis();
-      (db as any).from.mockReturnThis();
-      (db as any).leftJoin.mockReturnThis();
-      (db as any).where.mockReturnThis();
-      (db as any).orderBy.mockResolvedValue([
-        {
-          id: "s1",
-          sessionDate: new Date("2025-01-15"),
-          sessionType: "Live BP",
-          batSpeedMph: "85.20",
-          rotationalAccelerationG: "24.50",
-          planeScore: 78,
-          connectionScore: 82,
-          rotationScore: 75,
-          powerKw: "5.80",
-        },
-      ]);
+  afterEach(async () => {
+    const db = await getDb();
+    if (!db) return;
+    await db.delete(blastMetrics).where(eq(blastMetrics.sessionId, testSessionId));
+    await db.delete(blastSessions).where(eq(blastSessions.id, testSessionId));
+    await db.delete(blastSessions).where(eq(blastSessions.playerId, testPlayerId));
+    await db.delete(blastPlayers).where(eq(blastPlayers.id, testPlayerId));
+  });
 
-      const sessions = await (db as any)
-        .select()
-        .from("blastSessions")
-        .leftJoin("blastMetrics")
-        .where("playerId = p1")
-        .orderBy("sessionDate");
+  it("should delete a session and its metrics", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    const result = await caller.blastMetrics.deleteSession({ sessionId: testSessionId });
 
-      expect(sessions).toHaveLength(1);
-      expect(sessions[0].sessionType).toBe("Live BP");
-      expect(sessions[0].batSpeedMph).toBe("85.20");
-      expect(sessions[0].planeScore).toBe(78);
-    });
+    expect(result.success).toBe(true);
 
-    it("should support filtering by session type", async () => {
-      const db = await getDb();
-      (db as any).select.mockReturnThis();
-      (db as any).from.mockReturnThis();
-      (db as any).leftJoin.mockReturnThis();
-      (db as any).where.mockReturnThis();
-      (db as any).orderBy.mockResolvedValue([
-        { id: "s1", sessionType: "Live BP", batSpeedMph: "85.20" },
-        { id: "s2", sessionType: "Live BP", batSpeedMph: "86.10" },
-      ]);
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    const sessions = await db
+      .select()
+      .from(blastSessions)
+      .where(eq(blastSessions.id, testSessionId));
+    expect(sessions).toHaveLength(0);
 
-      const sessions = await (db as any)
-        .select()
-        .from("blastSessions")
-        .leftJoin("blastMetrics")
-        .where("playerId = p1 AND sessionType = Live BP")
-        .orderBy("sessionDate");
+    const metrics = await db
+      .select()
+      .from(blastMetrics)
+      .where(eq(blastMetrics.sessionId, testSessionId));
+    expect(metrics).toHaveLength(0);
+  });
 
-      expect(sessions).toHaveLength(2);
-      expect(sessions.every((s: any) => s.sessionType === "Live BP")).toBe(true);
+  it("should reject non-admin users from deleting sessions", async () => {
+    const caller = appRouter.createCaller(createNonAdminContext());
+    await expect(
+      caller.blastMetrics.deleteSession({ sessionId: testSessionId })
+    ).rejects.toThrow("Admin access required");
+  });
+
+  it("should handle deleting a non-existent session gracefully", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    const result = await caller.blastMetrics.deleteSession({ sessionId: "non-existent-session-id" });
+    expect(result.success).toBe(true);
+  });
+});
+
+describe("Blast Metrics - List Players", () => {
+  let testPlayerId: string;
+
+  beforeEach(async () => {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    testPlayerId = `test-list-player-${Date.now()}`;
+    await db.insert(blastPlayers).values({
+      id: testPlayerId,
+      fullName: "Test List Player",
+      userId: null,
     });
   });
 
-  describe("getSessionTypes query pattern", () => {
-    it("should return distinct session types for a player", async () => {
-      const db = await getDb();
-      (db as any).selectDistinct.mockReturnThis();
-      (db as any).from.mockReturnThis();
-      (db as any).where.mockReturnThis();
-      (db as any).orderBy.mockResolvedValue([
-        { sessionType: "Front Toss" },
-        { sessionType: "Game Simulation" },
-        { sessionType: "Live BP" },
-        { sessionType: "Machine Work" },
-      ]);
-
-      const types = await (db as any)
-        .selectDistinct()
-        .from("blastSessions")
-        .where("playerId = p1")
-        .orderBy("sessionType");
-
-      const typeNames = types.map((t: any) => t.sessionType);
-      expect(typeNames).toContain("Live BP");
-      expect(typeNames).toContain("Front Toss");
-      expect(typeNames).toHaveLength(4);
-    });
+  afterEach(async () => {
+    const db = await getDb();
+    if (!db) return;
+    await db.delete(blastSessions).where(eq(blastSessions.playerId, testPlayerId));
+    await db.delete(blastPlayers).where(eq(blastPlayers.id, testPlayerId));
   });
 
-  describe("getAverages query pattern", () => {
-    it("should return averages grouped by session type", async () => {
-      const db = await getDb();
-      (db as any).select.mockReturnThis();
-      (db as any).from.mockReturnThis();
-      (db as any).leftJoin.mockReturnThis();
-      (db as any).where.mockReturnThis();
-      (db as any).groupBy.mockReturnThis();
-      (db as any).orderBy.mockResolvedValue([
-        {
-          sessionType: "Live BP",
-          avgBatSpeed: "85.15",
-          avgRotAccel: "24.15",
-          avgPlaneScore: 77,
-          avgConnectionScore: 81,
-          avgRotationScore: 74,
-          avgPower: "5.75",
-          sessionCount: 2,
-        },
-        {
-          sessionType: "Front Toss",
-          avgBatSpeed: "82.50",
-          avgRotAccel: "22.50",
-          avgPlaneScore: 80,
-          avgConnectionScore: 85,
-          avgRotationScore: 78,
-          avgPower: "5.20",
-          sessionCount: 1,
-        },
-      ]);
+  it("should list players with session counts", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    const players = await caller.blastMetrics.listPlayers();
 
-      const averages = await (db as any)
-        .select()
-        .from("blastSessions")
-        .leftJoin("blastMetrics")
-        .where("playerId = p1")
-        .groupBy("sessionType")
-        .orderBy("sessionType");
-
-      expect(averages).toHaveLength(2);
-      expect(averages[0].sessionType).toBe("Live BP");
-      expect(averages[0].avgBatSpeed).toBe("85.15");
-      expect(averages[0].sessionCount).toBe(2);
-      expect(averages[1].sessionType).toBe("Front Toss");
-    });
+    expect(Array.isArray(players)).toBe(true);
+    const testPlayer = players.find((p: any) => p.id === testPlayerId);
+    expect(testPlayer).toBeDefined();
+    expect(testPlayer!.fullName).toBe("Test List Player");
+    expect(testPlayer!.sessionCount).toBe(0);
   });
 
-  describe("getTrends query pattern", () => {
-    it("should return chronological trend data for charts", async () => {
-      const db = await getDb();
-      (db as any).select.mockReturnThis();
-      (db as any).from.mockReturnThis();
-      (db as any).leftJoin.mockReturnThis();
-      (db as any).where.mockReturnThis();
-      (db as any).orderBy.mockResolvedValue([
-        { sessionDate: new Date("2025-01-15"), batSpeedMph: "82.50", rotationalAccelerationG: "22.50" },
-        { sessionDate: new Date("2025-02-01"), batSpeedMph: "85.20", rotationalAccelerationG: "24.50" },
-        { sessionDate: new Date("2025-02-15"), batSpeedMph: "86.10", rotationalAccelerationG: "25.30" },
-      ]);
-
-      const trends = await (db as any)
-        .select()
-        .from("blastSessions")
-        .leftJoin("blastMetrics")
-        .where("playerId = p1")
-        .orderBy("sessionDate ASC");
-
-      expect(trends).toHaveLength(3);
-      // Verify chronological order
-      const speeds = trends.map((t: any) => parseFloat(t.batSpeedMph));
-      expect(speeds[0]).toBeLessThan(speeds[1]);
-      expect(speeds[1]).toBeLessThan(speeds[2]);
-    });
-  });
-
-  describe("addPlayer mutation pattern", () => {
-    it("should insert a new player with UUID", async () => {
-      const db = await getDb();
-      (db as any).insert.mockReturnThis();
-      (db as any).values.mockResolvedValue([{ insertId: 1 }]);
-
-      await (db as any).insert("blastPlayers").values({
-        id: crypto.randomUUID(),
-        fullName: "New Player",
-        userId: null,
-      });
-
-      expect((db as any).insert).toHaveBeenCalled();
-      expect((db as any).values).toHaveBeenCalledWith({
-        id: "test-uuid-123",
-        fullName: "New Player",
-        userId: null,
-      });
-    });
-  });
-
-  describe("addSession mutation pattern", () => {
-    it("should insert a session and metrics in sequence", async () => {
-      const db = await getDb();
-      (db as any).insert.mockReturnThis();
-      (db as any).values.mockResolvedValue([{ insertId: 1 }]);
-
-      // Insert session
-      await (db as any).insert("blastSessions").values({
-        id: "test-uuid-123",
-        playerId: "p1",
-        sessionDate: new Date("2025-03-01"),
-        sessionType: "Live BP",
-      });
-
-      // Insert metrics
-      await (db as any).insert("blastMetrics").values({
-        sessionId: "test-uuid-123",
-        batSpeedMph: "87.50",
-        rotationalAccelerationG: "26.00",
-        planeScore: 82,
-        connectionScore: 85,
-        rotationScore: 80,
-      });
-
-      // insert called twice (session + metrics)
-      expect((db as any).insert).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  describe("Mike Troutman verification query", () => {
-    it("should return correct averages for Mike Troutman by session type", async () => {
-      const db = await getDb();
-      (db as any).select.mockReturnThis();
-      (db as any).from.mockReturnThis();
-      (db as any).leftJoin.mockReturnThis();
-      (db as any).where.mockReturnThis();
-      (db as any).groupBy.mockReturnThis();
-      (db as any).orderBy.mockResolvedValue([
-        { sessionType: "Front Toss", avgBatSpeed: "82.50", avgRotAccel: "22.50", sessionCount: 1 },
-        { sessionType: "Game Simulation", avgBatSpeed: "88.10", avgRotAccel: "26.50", sessionCount: 1 },
-        { sessionType: "Live BP", avgBatSpeed: "85.15", avgRotAccel: "24.15", sessionCount: 2 },
-        { sessionType: "Machine Work", avgBatSpeed: "85.20", avgRotAccel: "24.50", sessionCount: 1 },
-      ]);
-
-      const averages = await (db as any)
-        .select()
-        .from("blastSessions")
-        .leftJoin("blastMetrics")
-        .where("playerId = mike-troutman-id")
-        .groupBy("sessionType")
-        .orderBy("sessionType");
-
-      expect(averages).toHaveLength(4);
-      
-      const liveBP = averages.find((a: any) => a.sessionType === "Live BP");
-      expect(liveBP).toBeDefined();
-      expect(liveBP.avgBatSpeed).toBe("85.15");
-      expect(liveBP.avgRotAccel).toBe("24.15");
-      expect(liveBP.sessionCount).toBe(2);
-
-      const gameSim = averages.find((a: any) => a.sessionType === "Game Simulation");
-      expect(gameSim).toBeDefined();
-      expect(gameSim.avgBatSpeed).toBe("88.10");
-      expect(gameSim.avgRotAccel).toBe("26.50");
-    });
+  it("should reject non-admin users from listing players", async () => {
+    const caller = appRouter.createCaller(createNonAdminContext());
+    await expect(caller.blastMetrics.listPlayers()).rejects.toThrow("Admin access required");
   });
 });
