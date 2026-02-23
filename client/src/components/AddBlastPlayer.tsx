@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import {
@@ -12,7 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UserPlus, Loader2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { UserPlus, Loader2, Link2 } from "lucide-react";
 
 interface AddBlastPlayerProps {
   open: boolean;
@@ -21,17 +22,31 @@ interface AddBlastPlayerProps {
 
 export function AddBlastPlayer({ open, onOpenChange }: AddBlastPlayerProps) {
   const [fullName, setFullName] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState<string>("");
   const [saving, setSaving] = useState(false);
 
   const utils = trpc.useUtils();
 
+  // Get all portal users for linking
+  const { data: allUsers = [] } = trpc.admin.getAllUsers.useQuery();
+  const portalUsers = useMemo(() => {
+    return allUsers
+      .filter((u: any) => u.role === "athlete" || u.role === "user")
+      .map((u: any) => ({
+        id: u.id,
+        name: u.name || u.email || `User #${u.id}`,
+        email: u.email,
+      }));
+  }, [allUsers]);
+
   const addPlayerMutation = trpc.blastMetrics.addPlayer.useMutation({
     onSuccess: (data) => {
       toast.success("Player added!", {
-        description: `${data.fullName} has been added to Blast Motion tracking.`,
+        description: `${data.fullName} has been added to Blast Motion tracking.${selectedUserId ? " Linked to portal account." : ""}`,
       });
       utils.blastMetrics.invalidate();
       setFullName("");
+      setSelectedUserId("");
       onOpenChange(false);
     },
     onError: (error) => {
@@ -47,7 +62,10 @@ export function AddBlastPlayer({ open, onOpenChange }: AddBlastPlayerProps) {
       return;
     }
     setSaving(true);
-    addPlayerMutation.mutate({ fullName: trimmed });
+    addPlayerMutation.mutate({
+      fullName: trimmed,
+      userId: selectedUserId ? parseInt(selectedUserId) : undefined,
+    });
   }
 
   return (
@@ -77,9 +95,30 @@ export function AddBlastPlayer({ open, onOpenChange }: AddBlastPlayerProps) {
               autoFocus
             />
           </div>
-          <p className="text-xs text-white/30 italic">
-            You can link this player to a portal account later from the player detail view.
-          </p>
+
+          <div className="space-y-2">
+            <Label className="text-white/70 text-sm flex items-center gap-1.5">
+              <Link2 className="h-3.5 w-3.5 text-electric-blue" />
+              Link to Portal Account
+              <span className="text-white/30 font-normal">(optional)</span>
+            </Label>
+            <Select value={selectedUserId} onValueChange={setSelectedUserId}>
+              <SelectTrigger className="bg-white/[0.06] border-white/[0.1] text-white">
+                <SelectValue placeholder="No portal link" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">No portal link</SelectItem>
+                {portalUsers.map((u: any) => (
+                  <SelectItem key={u.id} value={String(u.id)}>
+                    {u.name}{u.email ? ` (${u.email})` : ""}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-white/30 italic">
+              Linking to a portal account enables auto-creating session notes when adding Blast sessions.
+            </p>
+          </div>
         </div>
 
         <DialogFooter className="gap-2 sm:gap-0">

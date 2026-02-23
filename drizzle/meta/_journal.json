@@ -281,6 +281,13 @@
       "when": 1771844824658,
       "tag": "0039_powerful_plazm",
       "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "5",
+      "when": 1771879430175,
+      "tag": "0040_tiny_mojo",
+      "breakpoints": true
     }
   ]
 }

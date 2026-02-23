@@ -520,6 +520,8 @@ export const sessionNotes = mysqlTable("sessionNotes", {
   privateNotes: text("privateNotes"),
   /** Optional link to a practice plan used during this session */
   practicePlanId: int("practicePlanId"),
+  /** Optional link to a Blast Motion session (UUID from blastSessions) */
+  blastSessionId: varchar("blastSessionId", { length: 36 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

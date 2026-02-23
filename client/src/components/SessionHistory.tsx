@@ -13,9 +13,11 @@ import {
   Dumbbell,
   Loader2,
   Plus,
+  Zap,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import { BlastMetricsBadge } from "./BlastMetricsBadge";
 
 // Skill category colors (matching SessionNotesForm)
 const SKILL_COLORS: Record<string, string> = {
@@ -162,6 +164,12 @@ export function SessionHistory({
                       <span className="font-heading font-bold text-sm md:text-base">
                         {(note as any).sessionLabel || `Session #${note.sessionNumber}`}
                       </span>
+                      {note.blastSessionId && (
+                        <span className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded-full bg-violet-500/15 text-violet-400 border border-violet-500/20 font-medium">
+                          <Zap className="h-2.5 w-2.5" />
+                          Blast
+                        </span>
+                      )}
                       <span className="text-xs text-muted-foreground flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         {sessionDate.toLocaleDateString("en-US", {
@@ -259,6 +267,11 @@ export function SessionHistory({
                           ))}
                         </div>
                       </div>
+                    )}
+
+                    {/* Blast Metrics (if linked) */}
+                    {note.blastSessionId && (
+                      <BlastMetricsBadge blastSessionId={note.blastSessionId} />
                     )}
 
                     {/* Private Notes */}

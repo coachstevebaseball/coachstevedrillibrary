@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   ArrowLeft, Users, Activity, TrendingUp, Zap, Target,
-  ChevronRight, BarChart3, Gauge, Timer, Crosshair, Plus, UserPlus, Trash2
+  ChevronRight, BarChart3, Gauge, Timer, Crosshair, Plus, UserPlus, Trash2, Link2, FileText
 } from "lucide-react";
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -15,6 +15,7 @@ import {
 import { AddBlastSession } from "./AddBlastSession";
 import { AddBlastPlayer } from "./AddBlastPlayer";
 import { DeleteBlastSession } from "./DeleteBlastSession";
+import { LinkBlastPlayer } from "./LinkBlastPlayer";
 
 // Metric display config
 const METRIC_CONFIGS = {
@@ -81,6 +82,7 @@ export function BlastMetricsTab() {
     date: string;
     type: string;
   } | null>(null);
+  const [linkPlayerOpen, setLinkPlayerOpen] = useState(false);
 
   const { data: players = [], isLoading: playersLoading } = trpc.blastMetrics.listPlayers.useQuery();
 
@@ -277,14 +279,29 @@ export function BlastMetricsTab() {
             )}
           </div>
         </div>
-        <Button
-          onClick={() => setAddSessionOpen(true)}
-          size="sm"
-          className="bg-violet-600 hover:bg-violet-700 text-white"
-        >
-          <Plus className="h-4 w-4 mr-1.5" />
-          Add Session
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={() => setLinkPlayerOpen(true)}
+            size="sm"
+            variant="outline"
+            className={`h-8 text-xs ${
+              player?.userId
+                ? "text-green-400 border-green-500/30 hover:bg-green-500/10"
+                : "text-amber-400 border-amber-500/30 hover:bg-amber-500/10"
+            }`}
+          >
+            <Link2 className="h-3.5 w-3.5 mr-1" />
+            {player?.userId ? "Linked" : "Link Account"}
+          </Button>
+          <Button
+            onClick={() => setAddSessionOpen(true)}
+            size="sm"
+            className="bg-violet-600 hover:bg-violet-700 text-white"
+          >
+            <Plus className="h-4 w-4 mr-1.5" />
+            Add Session
+          </Button>
+        </div>
       </div>
 
       {/* Summary Score Cards */}
@@ -580,6 +597,7 @@ export function BlastMetricsTab() {
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Power</th>
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Efficiency</th>
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Attack Angle</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Note</th>
                     <th className="w-10"></th>
                   </tr>
                 </thead>
@@ -616,6 +634,15 @@ export function BlastMetricsTab() {
                       <td className="text-center py-3 px-2 text-lime-400">
                         {s.attackAngleDeg ? `${parseFloat(s.attackAngleDeg).toFixed(1)}°` : "—"}
                       </td>
+                      <td className="text-center py-3 px-2">
+                        {s.hasLinkedNote ? (
+                          <span className="inline-flex items-center gap-1 text-xs text-green-400/80" title="Linked to Session Note">
+                            <FileText className="h-3 w-3" />
+                          </span>
+                        ) : (
+                          <span className="text-white/15">—</span>
+                        )}
+                      </td>
                       <td className="py-3 px-1">
                         <button
                           onClick={() => setDeleteSession({
@@ -645,6 +672,20 @@ export function BlastMetricsTab() {
           onOpenChange={setAddSessionOpen}
           playerId={selectedPlayerId}
           playerName={player.fullName}
+          isLinkedToUser={!!player.userId}
+        />
+      )}
+
+      {/* Link Player Dialog */}
+      {selectedPlayerId && player && (
+        <LinkBlastPlayer
+          open={linkPlayerOpen}
+          onOpenChange={setLinkPlayerOpen}
+          playerId={selectedPlayerId}
+          playerName={player.fullName}
+          currentUserId={player.userId ?? null}
+          currentPortalName={player.portalName ?? null}
+          currentPortalEmail={player.portalEmail ?? null}
         />
       )}
 

@@ -1379,3 +1379,13 @@
 - [x] Add "Add New Player" inline form on roster view
 - [x] Delete session capability
 - [x] Write vitest tests for the add session flow
+
+## Link Blast Sessions with Session Notes
+- [x] Audit Blast players/sessions and Session Notes schemas to understand data models
+- [x] Design linking strategy between Blast sessions and Session Notes
+- [x] Add schema changes (e.g., blastSessionId FK on session_notes, or blastPlayerId link to athletes)
+- [x] Update backend procedures to auto-create/link session notes when adding Blast sessions
+- [x] Update Session Notes UI to show linked Blast metrics
+- [x] Update Blast Metrics UI to show linked session notes
+- [x] Ensure Shannon Caputo's Blast data links to her session/athlete profile
+- [x] Write vitest tests for the linking flow
