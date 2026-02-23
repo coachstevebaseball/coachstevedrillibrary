@@ -657,3 +657,51 @@ export const videoAnalysis = mysqlTable("videoAnalysis", {
 });
 export type VideoAnalysis = typeof videoAnalysis.$inferSelect;
 export type InsertVideoAnalysis = typeof videoAnalysis.$inferInsert;
+
+
+// ============================================================
+// Blast Motion — Normalized 3-tier: Players → Sessions → Metrics
+// ============================================================
+
+/** Blast Motion players (may or may not map to a platform user) */
+export const blastPlayers = mysqlTable("blastPlayers", {
+  id: varchar("id", { length: 36 }).primaryKey(), // UUID from Blast export
+  fullName: varchar("fullName", { length: 255 }).notNull(),
+  /** Optional link to a platform user account */
+  userId: int("userId"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type BlastPlayer = typeof blastPlayers.$inferSelect;
+export type InsertBlastPlayer = typeof blastPlayers.$inferInsert;
+
+/** Blast Motion sessions — one per player per date/type */
+export const blastSessions = mysqlTable("blastSessions", {
+  id: varchar("id", { length: 36 }).primaryKey(), // UUID
+  playerId: varchar("playerId", { length: 36 }).notNull(),
+  sessionDate: timestamp("sessionDate").notNull(),
+  sessionType: varchar("sessionType", { length: 255 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type BlastSession = typeof blastSessions.$inferSelect;
+export type InsertBlastSession = typeof blastSessions.$inferInsert;
+
+/** Blast Motion swing metrics — one row per session (aggregated) */
+export const blastMetrics = mysqlTable("blastMetrics", {
+  id: int("id").autoincrement().primaryKey(),
+  sessionId: varchar("sessionId", { length: 36 }).notNull(),
+  planeScore: int("planeScore"),
+  connectionScore: int("connectionScore"),
+  rotationScore: int("rotationScore"),
+  batSpeedMph: varchar("batSpeedMph", { length: 10 }),
+  rotationalAccelerationG: varchar("rotationalAccelerationG", { length: 10 }),
+  onPlaneEfficiencyPercent: varchar("onPlaneEfficiencyPercent", { length: 10 }),
+  attackAngleDeg: varchar("attackAngleDeg", { length: 10 }),
+  earlyConnectionDeg: varchar("earlyConnectionDeg", { length: 10 }),
+  connectionAtImpactDeg: varchar("connectionAtImpactDeg", { length: 10 }),
+  verticalBatAngleDeg: varchar("verticalBatAngleDeg", { length: 10 }),
+  powerKw: varchar("powerKw", { length: 10 }),
+  timeToContactSec: varchar("timeToContactSec", { length: 10 }),
+  peakHandSpeedMph: varchar("peakHandSpeedMph", { length: 10 }),
+});
+export type BlastMetric = typeof blastMetrics.$inferSelect;
+export type InsertBlastMetric = typeof blastMetrics.$inferInsert;

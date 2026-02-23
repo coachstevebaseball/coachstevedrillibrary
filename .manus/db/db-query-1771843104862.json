@@ -1,0 +1,20 @@
+{
+  "query": "SELECT p.id, p.fullName, (SELECT COUNT(*) FROM blastSessions WHERE blastSessions.playerId = p.id) as sessionCount FROM blastPlayers p;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT p.id, p.fullName, (SELECT COUNT(*) FROM blastSessions WHERE blastSessions.playerId = p.id) as sessionCount FROM blastPlayers p;",
+  "rows": [
+    {
+      "id": "33333333-3333-3333-3333-333333333333",
+      "fullName": "Gavin Goldstein",
+      "sessionCount": "1"
+    },
+    {
+      "id": "66666666-6666-6666-6666-666666666666",
+      "fullName": "Sean Yaegar",
+      "sessionCount": "3"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tfullName\tsessionCount\n33333333-3333-3333-3333-333333333333\tGavin Goldstein\t1\n66666666-6666-6666-6666-666666666666\tSean Yaegar\t3\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}

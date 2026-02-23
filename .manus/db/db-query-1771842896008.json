@@ -1,0 +1,19 @@
+{
+  "query": "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_NAME LIKE 'blast%' AND TABLE_SCHEMA = DATABASE();",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_NAME LIKE 'blast%' AND TABLE_SCHEMA = DATABASE();",
+  "rows": [
+    {
+      "TABLE_NAME": "blastMetrics"
+    },
+    {
+      "TABLE_NAME": "blastPlayers"
+    },
+    {
+      "TABLE_NAME": "blastSessions"
+    }
+  ],
+  "messages": [],
+  "stdout": "TABLE_NAME\nblastMetrics\nblastPlayers\nblastSessions\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}

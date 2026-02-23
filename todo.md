@@ -1340,3 +1340,24 @@
 - [x] Apply scroll restoration to drill library (Home.tsx)
 - [x] Test navigation flow: click card → view detail → go back → verify scroll position restored
 - [x] Verified: Returns to exact scroll position (1100px tested) — SUCCESS!
+
+## Blast Motion Metrics Tracking
+- [x] Add players, sessions, and blast_metrics tables to Drizzle schema
+- [x] Run database migration (pnpm db:push)
+- [x] Seed initial data — cleaned to only real athletes (Sean Yaegar, Gavin Goldstein)
+- [x] Create backend tRPC routes for blast metrics (listPlayers, getPlayer, getPlayerSessions, getSessionTypes, getTrends, getAverages, addPlayer, addSession)
+- [x] Verify data with test query: avg bat_speed_mph and rotational_acceleration_g by session_type
+- [x] Build Player Roster View component (list all players with session counts)
+- [x] Build Player Detail Dashboard (summary cards, session history, averages table)
+- [x] Build Trend Visualization (line/bar chart for bat_speed_mph and rotational_acceleration_g over time)
+- [x] Add session_type filter dropdown to isolate session types
+- [x] Integrate Blast Motion section into Coach Dashboard (coach-only, not athlete-facing)
+- [x] Fix tRPC "<!doctype" HTML response error — added /api/* exclusion in vite.ts catch-all
+- [x] Write vitest tests for blast metrics backend (10 tests pass)
+- [x] Verify in browser — all features working correctly
+
+## Blast Motion: Data Cleanup & Session Count Fix
+- [x] Remove sample players (Mike Troutman, Alex Johnson, David Ortiz Jr., Shannon Caputo) — kept only Sean Yaegar and Gavin Goldstein
+- [x] Fix Drizzle ORM session count subquery — switched from correlated subquery to LEFT JOIN with GROUP BY
+- [ ] Link Blast players to actual portal user accounts if possible
+- [x] Verify session counts display correctly in the UI — Gavin: 1 session, Sean: 3 sessions ✓
