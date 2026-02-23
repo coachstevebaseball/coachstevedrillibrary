@@ -1415,3 +1415,12 @@
 - [x] Ensure coach-only data (private notes) is hidden from athlete view
 - [x] Mobile-optimized layout for athlete dashboard
 - [x] Write vitest tests for athlete data access
+
+## Session Note Sharing Toggle
+- [x] Add sharedWithAthlete column to sessionNotes schema (default true for new notes)
+- [x] Run db:push to apply migration
+- [x] Add toggleSharing backend procedure to flip the flag
+- [x] Update getMyNotes athlete query to filter by sharedWithAthlete = true
+- [x] Add sharing toggle switch to coach SessionHistory UI
+- [x] Show shared/unshared indicator on each note
+- [x] Write vitest tests for sharing toggle

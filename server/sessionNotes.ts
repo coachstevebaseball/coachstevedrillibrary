@@ -119,6 +119,23 @@ export async function getRecentSessionNotes(
     .limit(limit);
 }
 
+/** Get shared session notes for an athlete (athlete-facing, only shared notes) */
+export async function getSharedSessionNotesForAthlete(athleteId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  return db
+    .select()
+    .from(sessionNotes)
+    .where(
+      and(
+        eq(sessionNotes.athleteId, athleteId),
+        eq(sessionNotes.sharedWithAthlete, true)
+      )
+    )
+    .orderBy(desc(sessionNotes.sessionDate));
+}
+
 /** Get all athletes who have session notes (for coach overview) */
 export async function getAthletesWithSessions(coachId: number) {
   const db = await getDb();

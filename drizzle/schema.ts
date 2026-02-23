@@ -1,4 +1,4 @@
-import { int, json, longtext, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { boolean, int, json, longtext, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -522,6 +522,8 @@ export const sessionNotes = mysqlTable("sessionNotes", {
   practicePlanId: int("practicePlanId"),
   /** Optional link to a Blast Motion session (UUID from blastSessions) */
   blastSessionId: varchar("blastSessionId", { length: 36 }),
+  /** Whether this note is shared with the athlete (visible on their portal) */
+  sharedWithAthlete: boolean("sharedWithAthlete").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

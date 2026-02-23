@@ -14,7 +14,10 @@ import {
   Loader2,
   Plus,
   Zap,
+  Eye,
+  EyeOff,
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { BlastMetricsBadge } from "./BlastMetricsBadge";
@@ -63,6 +66,37 @@ export function SessionHistory({
     },
     onError: (err) => {
       toast.error(err.message || "Failed to delete");
+    },
+  });
+
+  const toggleSharingMutation = trpc.sessionNotes.toggleSharing.useMutation({
+    onMutate: async ({ id, shared }) => {
+      // Optimistic update
+      await utils.sessionNotes.getForAthlete.cancel({ athleteId });
+      const prev = utils.sessionNotes.getForAthlete.getData({ athleteId });
+      utils.sessionNotes.getForAthlete.setData({ athleteId }, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          notes: old.notes.map((n: any) =>
+            n.id === id ? { ...n, sharedWithAthlete: shared } : n
+          ),
+        };
+      });
+      return { prev };
+    },
+    onSuccess: (_data, { shared }) => {
+      toast.success(shared ? "Note shared with athlete" : "Note hidden from athlete");
+    },
+    onError: (err, _vars, context) => {
+      // Rollback on error
+      if (context?.prev) {
+        utils.sessionNotes.getForAthlete.setData({ athleteId }, context.prev);
+      }
+      toast.error(err.message || "Failed to update sharing");
+    },
+    onSettled: () => {
+      utils.sessionNotes.getForAthlete.invalidate({ athleteId });
     },
   });
 
@@ -285,6 +319,34 @@ export function SessionHistory({
                         </p>
                       </div>
                     )}
+
+                    {/* Sharing Toggle */}
+                    <div className="flex items-center justify-between bg-white/[0.03] rounded-lg p-3 border border-white/[0.06]">
+                      <div className="flex items-center gap-2">
+                        {note.sharedWithAthlete ? (
+                          <Eye className="h-4 w-4 text-green-400" />
+                        ) : (
+                          <EyeOff className="h-4 w-4 text-muted-foreground" />
+                        )}
+                        <div>
+                          <span className="text-sm font-medium">
+                            {note.sharedWithAthlete ? "Shared with athlete" : "Hidden from athlete"}
+                          </span>
+                          <p className="text-[11px] text-muted-foreground">
+                            {note.sharedWithAthlete
+                              ? "Athlete can see this note on their portal"
+                              : "Only visible to coaches"}
+                          </p>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={!!note.sharedWithAthlete}
+                        onCheckedChange={(checked) => {
+                          toggleSharingMutation.mutate({ id: note.id, shared: checked });
+                        }}
+                        disabled={toggleSharingMutation.isPending}
+                      />
+                    </div>
 
                     {/* Actions */}
                     <div className="flex gap-2 pt-1">

@@ -144,9 +144,21 @@ export const sessionNotesRouter = router({
       return sessionNotesDb.getRecentSessionNotes(input.athleteId, input.limit);
     }),
 
-  /** Get my own session notes (athlete-facing, excludes private fields) */
+  /** Toggle sharing visibility for a session note */
+  toggleSharing: protectedProcedure
+    .input(z.object({ id: z.number(), shared: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
+      }
+      return sessionNotesDb.updateSessionNote(input.id, {
+        sharedWithAthlete: input.shared,
+      });
+    }),
+
+  /** Get my own session notes (athlete-facing, only shared notes, excludes private fields) */
   getMyNotes: protectedProcedure.query(async ({ ctx }) => {
-    const notes = await sessionNotesDb.getSessionNotesForAthlete(ctx.user.id);
+    const notes = await sessionNotesDb.getSharedSessionNotesForAthlete(ctx.user.id);
     // Strip coach-only fields
     return notes.map((n) => ({
       id: n.id,
