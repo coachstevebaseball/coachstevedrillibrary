@@ -23,6 +23,7 @@ import { AthleteTable } from "@/components/AthleteTable";
 import PracticePlanner from "@/components/PracticePlanner";
 import { SessionNotesTab } from "@/components/SessionNotesTab";
 import { VideoAnalysisTab } from "@/components/VideoAnalysisTab";
+import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 
 interface Drill {
   id: string;
@@ -41,6 +42,7 @@ const quickActions = [
 ];
 
 export default function CoachDashboard() {
+  useScrollRestoration();
   const { user, loading } = useAuth();
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [searchDrill, setSearchDrill] = useState("");

@@ -1332,3 +1332,11 @@
 - [x] Make date field editable (was already editable, confirmed)
 - [x] Write vitest tests for the updated session notes functionality
 - [x] Verify in browser — all features working correctly
+
+## UX: Scroll Position Restoration
+- [x] Identify all pages with card navigation (drill library, athlete portal, practice planner, etc.)
+- [x] Implement scroll restoration hook using sessionStorage
+- [x] Create ScrollRestoreLink component to save scroll position before navigation
+- [x] Apply scroll restoration to drill library (Home.tsx)
+- [x] Test navigation flow: click card → view detail → go back → verify scroll position restored
+- [x] Verified: Returns to exact scroll position (1100px tested) — SUCCESS!

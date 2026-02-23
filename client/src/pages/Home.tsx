@@ -5,11 +5,13 @@ import { Search, LogIn, LogOut, Shield, Users, Activity, ChevronRight, Sparkles,
 import { HomePageSkeleton } from "@/components/Skeleton";
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
+import { ScrollRestoreLink } from "@/components/ScrollRestoreLink";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { trpc } from "@/lib/trpc";
 import { useAllDrills } from "@/hooks/useAllDrills";
 import { DrillEditModal } from "@/components/DrillEditModal";
 import { Pencil } from "lucide-react";
+import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 
 interface Drill {
   id: string;
@@ -34,6 +36,7 @@ const CATEGORIES = ["All", "Hitting", "Bunting", "Pitching", "Infield", "Outfiel
 
 export default function Home() {
   const { user, loading, isAuthenticated, logout } = useAuth();
+  useScrollRestoration();
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState("All");
   const [categoryFilter, setCategoryFilter] = useState("All");
@@ -392,7 +395,7 @@ export default function Home() {
                     </button>
                   )}
 
-                  <Link href={`/drill/${drill.id}`} className="block h-full">
+                  <ScrollRestoreLink href={`/drill/${drill.id}`} className="block h-full">
                     <div className="glass-card rounded-xl overflow-hidden drill-card-hover cursor-pointer h-full flex flex-col">
                       {/* Card Image */}
                       <div className="relative h-44 bg-gradient-to-br from-card to-accent overflow-hidden">
@@ -461,7 +464,7 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                  </Link>
+                  </ScrollRestoreLink>
                 </div>
               );
             })}

@@ -18,6 +18,7 @@ import { useAllDrills } from "@/hooks/useAllDrills";
 import { AthleteVideoFeedback } from "@/components/AthleteVideoFeedback";
 import { SwingAnalyzer } from "@/components/SwingAnalyzer";
 import { DrillSubmissionForm } from "@/components/DrillSubmissionForm";
+import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 
 interface Drill {
   id: string;
@@ -94,6 +95,7 @@ function SkillIcon({ category }: { category: string }) {
 }
 
 export default function AthletePortal() {
+  useScrollRestoration();
   const { user, loading, logout } = useAuth();
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
   const [showDrillModal, setShowDrillModal] = useState(false);
