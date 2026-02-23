@@ -671,3 +671,461 @@ describe("Blast Metrics - getPlayerSessions with hasLinkedNote", () => {
     expect(sessions[0].hasLinkedNote).toBe(false);
   });
 });
+
+// ── New tests for Edit Session, CSV Import, Retroactive Notes, Athlete Dashboard ──
+
+function createAthleteContext(userId: number): TrpcContext {
+  return {
+    user: {
+      id: userId,
+      openId: `test-athlete-${userId}`,
+      email: "athlete@test.com",
+      name: "Test Athlete",
+      loginMethod: "manus",
+      role: "athlete",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      lastSignedIn: new Date(),
+    },
+    req: {
+      protocol: "https",
+      headers: {},
+      get: () => "localhost",
+    } as any,
+    res: {
+      clearCookie: () => {},
+    } as TrpcContext["res"],
+  };
+}
+
+describe("Blast Metrics - Update Session", () => {
+  let testPlayerId: string;
+  let testSessionId: string;
+
+  beforeEach(async () => {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    testPlayerId = `test-update-player-${Date.now()}`;
+    await db.insert(blastPlayers).values({
+      id: testPlayerId,
+      fullName: "Update Test Player",
+      userId: null,
+    });
+
+    // Create a session with metrics
+    const caller = appRouter.createCaller(createAdminContext());
+    const result = await caller.blastMetrics.addSession({
+      playerId: testPlayerId,
+      sessionDate: "2026-02-20",
+      sessionType: "Tee",
+      metrics: {
+        batSpeedMph: "60.0",
+        planeScore: 70,
+        connectionScore: 65,
+      },
+    });
+    testSessionId = result.sessionId;
+  });
+
+  afterEach(async () => {
+    const db = await getDb();
+    if (!db) return;
+    const sessions = await db
+      .select({ id: blastSessions.id })
+      .from(blastSessions)
+      .where(eq(blastSessions.playerId, testPlayerId));
+    for (const s of sessions) {
+      await db.delete(sessionNotes).where(eq(sessionNotes.blastSessionId, s.id));
+      await db.delete(blastMetrics).where(eq(blastMetrics.sessionId, s.id));
+    }
+    await db.delete(blastSessions).where(eq(blastSessions.playerId, testPlayerId));
+    await db.delete(blastPlayers).where(eq(blastPlayers.id, testPlayerId));
+  });
+
+  it("should update session date and type", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    const result = await caller.blastMetrics.updateSession({
+      sessionId: testSessionId,
+      sessionDate: "2026-02-25",
+      sessionType: "Live BP",
+      metrics: {
+        batSpeedMph: "60.0",
+        planeScore: 70,
+        connectionScore: 65,
+      },
+    });
+
+    expect(result.success).toBe(true);
+
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    const [session] = await db
+      .select()
+      .from(blastSessions)
+      .where(eq(blastSessions.id, testSessionId));
+    expect(session.sessionType).toBe("Live BP");
+  });
+
+  it("should update metrics values", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    await caller.blastMetrics.updateSession({
+      sessionId: testSessionId,
+      sessionDate: "2026-02-20",
+      sessionType: "Tee",
+      metrics: {
+        batSpeedMph: "72.5",
+        planeScore: 85,
+        connectionScore: 90,
+        rotationScore: 80,
+      },
+    });
+
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    const [metrics] = await db
+      .select()
+      .from(blastMetrics)
+      .where(eq(blastMetrics.sessionId, testSessionId));
+    expect(metrics.batSpeedMph).toBe("72.5");
+    expect(metrics.planeScore).toBe(85);
+    expect(metrics.connectionScore).toBe(90);
+    expect(metrics.rotationScore).toBe(80);
+  });
+
+  it("should reject non-admin users from updating sessions", async () => {
+    const caller = appRouter.createCaller(createNonAdminContext());
+    await expect(
+      caller.blastMetrics.updateSession({
+        sessionId: testSessionId,
+        sessionDate: "2026-02-20",
+        sessionType: "Tee",
+        metrics: { batSpeedMph: "70.0" },
+      })
+    ).rejects.toThrow("Admin access required");
+  });
+});
+
+describe("Blast Metrics - Bulk Import Sessions", () => {
+  let testPlayerId: string;
+
+  beforeEach(async () => {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    testPlayerId = `test-import-player-${Date.now()}`;
+    await db.insert(blastPlayers).values({
+      id: testPlayerId,
+      fullName: "Import Test Player",
+      userId: null,
+    });
+  });
+
+  afterEach(async () => {
+    const db = await getDb();
+    if (!db) return;
+    const sessions = await db
+      .select({ id: blastSessions.id })
+      .from(blastSessions)
+      .where(eq(blastSessions.playerId, testPlayerId));
+    for (const s of sessions) {
+      await db.delete(sessionNotes).where(eq(sessionNotes.blastSessionId, s.id));
+      await db.delete(blastMetrics).where(eq(blastMetrics.sessionId, s.id));
+    }
+    await db.delete(blastSessions).where(eq(blastSessions.playerId, testPlayerId));
+    await db.delete(blastPlayers).where(eq(blastPlayers.id, testPlayerId));
+  });
+
+  it("should import multiple sessions at once", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    const result = await caller.blastMetrics.bulkImportSessions({
+      playerId: testPlayerId,
+      sessions: [
+        {
+          sessionDate: "2026-01-15",
+          sessionType: "Tee",
+          metrics: { batSpeedMph: "55.0", planeScore: 70 },
+        },
+        {
+          sessionDate: "2026-01-20",
+          sessionType: "Soft Toss",
+          metrics: { batSpeedMph: "58.0", planeScore: 72 },
+        },
+        {
+          sessionDate: "2026-01-25",
+          sessionType: "Live BP",
+          metrics: { batSpeedMph: "62.0", planeScore: 75 },
+        },
+      ],
+    });
+
+    expect(result.imported).toBe(3);
+    expect(result.errors).toHaveLength(0);
+
+    // Verify sessions exist
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    const sessions = await db
+      .select()
+      .from(blastSessions)
+      .where(eq(blastSessions.playerId, testPlayerId));
+    expect(sessions).toHaveLength(3);
+  });
+
+  it("should reject non-admin users from bulk importing", async () => {
+    const caller = appRouter.createCaller(createNonAdminContext());
+    await expect(
+      caller.blastMetrics.bulkImportSessions({
+        playerId: testPlayerId,
+        sessions: [
+          {
+            sessionDate: "2026-01-15",
+            sessionType: "Tee",
+            metrics: { batSpeedMph: "55.0" },
+          },
+        ],
+      })
+    ).rejects.toThrow("Admin access required");
+  });
+});
+
+describe("Blast Metrics - Retroactive Session Notes", () => {
+  let testPlayerId: string;
+  let testUserId: number;
+  const testOpenId = `test-retro-${Date.now()}`;
+
+  beforeEach(async () => {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+
+    // Create a test user
+    const [userResult] = await db.insert(users).values({
+      openId: testOpenId,
+      name: "Retro Test Athlete",
+      email: "retro-athlete@test.com",
+      loginMethod: "manus",
+      role: "athlete",
+    });
+    testUserId = userResult.insertId;
+
+    // Create a Blast player linked to that user
+    testPlayerId = `test-retro-player-${Date.now()}`;
+    await db.insert(blastPlayers).values({
+      id: testPlayerId,
+      fullName: "Retro Test Athlete",
+      userId: testUserId,
+    });
+
+    // Add sessions WITHOUT creating notes (simulating pre-link sessions)
+    const caller = appRouter.createCaller(createAdminContext());
+    await caller.blastMetrics.addSession({
+      playerId: testPlayerId,
+      sessionDate: "2026-01-10",
+      sessionType: "Tee",
+      createSessionNote: false,
+      metrics: { batSpeedMph: "55.0", planeScore: 70 },
+    });
+    await caller.blastMetrics.addSession({
+      playerId: testPlayerId,
+      sessionDate: "2026-01-15",
+      sessionType: "Soft Toss",
+      createSessionNote: false,
+      metrics: { batSpeedMph: "58.0", planeScore: 72 },
+    });
+  });
+
+  afterEach(async () => {
+    const db = await getDb();
+    if (!db) return;
+    const sessions = await db
+      .select({ id: blastSessions.id })
+      .from(blastSessions)
+      .where(eq(blastSessions.playerId, testPlayerId));
+    for (const s of sessions) {
+      await db.delete(sessionNotes).where(eq(sessionNotes.blastSessionId, s.id));
+      await db.delete(blastMetrics).where(eq(blastMetrics.sessionId, s.id));
+    }
+    await db.delete(blastSessions).where(eq(blastSessions.playerId, testPlayerId));
+    await db.delete(blastPlayers).where(eq(blastPlayers.id, testPlayerId));
+    await db.delete(sessionNotes).where(eq(sessionNotes.athleteId, testUserId));
+    await db.delete(users).where(eq(users.id, testUserId));
+  });
+
+  it("should create session notes for all unlinked Blast sessions", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    const result = await caller.blastMetrics.createRetroactiveNotes({
+      playerId: testPlayerId,
+    });
+
+    expect(result.notesCreated).toBe(2);
+    expect(result.alreadyLinked).toBe(0);
+
+    // Verify session notes were created
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    const notes = await db
+      .select()
+      .from(sessionNotes)
+      .where(eq(sessionNotes.athleteId, testUserId));
+    expect(notes.length).toBe(2);
+    // Each note should have a blastSessionId
+    notes.forEach((n) => {
+      expect(n.blastSessionId).toBeDefined();
+      expect(n.blastSessionId).not.toBeNull();
+    });
+  });
+
+  it("should skip sessions that already have linked notes", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+
+    // First call creates notes
+    const first = await caller.blastMetrics.createRetroactiveNotes({
+      playerId: testPlayerId,
+    });
+    expect(first.notesCreated).toBe(2);
+
+    // Second call should skip all
+    const second = await caller.blastMetrics.createRetroactiveNotes({
+      playerId: testPlayerId,
+    });
+    expect(second.notesCreated).toBe(0);
+    expect(second.alreadyLinked).toBe(2);
+  });
+
+  it("should reject non-admin users from creating retroactive notes", async () => {
+    const caller = appRouter.createCaller(createNonAdminContext());
+    await expect(
+      caller.blastMetrics.createRetroactiveNotes({ playerId: testPlayerId })
+    ).rejects.toThrow("Admin access required");
+  });
+});
+
+describe("Blast Metrics - Athlete getMyBlastData", () => {
+  let testPlayerId: string;
+  let testUserId: number;
+  const testOpenId = `test-athlete-blast-${Date.now()}`;
+
+  beforeEach(async () => {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+
+    const [userResult] = await db.insert(users).values({
+      openId: testOpenId,
+      name: "My Blast Athlete",
+      email: "my-blast@test.com",
+      loginMethod: "manus",
+      role: "athlete",
+    });
+    testUserId = userResult.insertId;
+
+    testPlayerId = `test-myblast-player-${Date.now()}`;
+    await db.insert(blastPlayers).values({
+      id: testPlayerId,
+      fullName: "My Blast Athlete",
+      userId: testUserId,
+    });
+
+    // Add a session
+    const caller = appRouter.createCaller(createAdminContext());
+    await caller.blastMetrics.addSession({
+      playerId: testPlayerId,
+      sessionDate: "2026-02-20",
+      sessionType: "Tee",
+      metrics: { batSpeedMph: "65.0", planeScore: 80 },
+    });
+  });
+
+  afterEach(async () => {
+    const db = await getDb();
+    if (!db) return;
+    const sessions = await db
+      .select({ id: blastSessions.id })
+      .from(blastSessions)
+      .where(eq(blastSessions.playerId, testPlayerId));
+    for (const s of sessions) {
+      await db.delete(sessionNotes).where(eq(sessionNotes.blastSessionId, s.id));
+      await db.delete(blastMetrics).where(eq(blastMetrics.sessionId, s.id));
+    }
+    await db.delete(blastSessions).where(eq(blastSessions.playerId, testPlayerId));
+    await db.delete(blastPlayers).where(eq(blastPlayers.id, testPlayerId));
+    await db.delete(users).where(eq(users.id, testUserId));
+  });
+
+  it("should return the athlete's own Blast data", async () => {
+    const caller = appRouter.createCaller(createAthleteContext(testUserId));
+    const data = await caller.blastMetrics.getMyBlastData();
+
+    expect(data.player).toBeDefined();
+    expect(data.player!.fullName).toBe("My Blast Athlete");
+    expect(data.sessions).toHaveLength(1);
+    expect(data.sessions[0].batSpeedMph).toBe("65.0");
+    expect(data.sessions[0].planeScore).toBe(80);
+  });
+
+  it("should return empty data for athlete with no Blast player", async () => {
+    // Use a different userId that has no linked Blast player
+    const caller = appRouter.createCaller(createAthleteContext(999997));
+    const data = await caller.blastMetrics.getMyBlastData();
+
+    expect(data.player).toBeNull();
+    expect(data.sessions).toHaveLength(0);
+  });
+});
+
+describe("Session Notes - Athlete getMyNotes", () => {
+  let testUserId: number;
+  const testOpenId = `test-athlete-notes-${Date.now()}`;
+
+  beforeEach(async () => {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+
+    const [userResult] = await db.insert(users).values({
+      openId: testOpenId,
+      name: "My Notes Athlete",
+      email: "my-notes@test.com",
+      loginMethod: "manus",
+      role: "athlete",
+    });
+    testUserId = userResult.insertId;
+
+    // Create a session note for this athlete (as coach)
+    await db.insert(sessionNotes).values({
+      coachId: 999999,
+      athleteId: testUserId,
+      sessionNumber: 1,
+      sessionLabel: "Session #1",
+      sessionDate: new Date("2026-02-20"),
+      skillsWorked: JSON.stringify(["Swing Mechanics"]),
+      whatImproved: "Better bat path",
+      whatNeedsWork: "Timing on off-speed",
+      privateNotes: "SECRET COACH NOTE - should not be visible",
+      overallRating: 4,
+    });
+  });
+
+  afterEach(async () => {
+    const db = await getDb();
+    if (!db) return;
+    await db.delete(sessionNotes).where(eq(sessionNotes.athleteId, testUserId));
+    await db.delete(users).where(eq(users.id, testUserId));
+  });
+
+  it("should return the athlete's own session notes without private fields", async () => {
+    const caller = appRouter.createCaller(createAthleteContext(testUserId));
+    const notes = await caller.sessionNotes.getMyNotes();
+
+    expect(notes).toHaveLength(1);
+    expect(notes[0].sessionLabel).toBe("Session #1");
+    expect(notes[0].whatImproved).toBe("Better bat path");
+    expect(notes[0].whatNeedsWork).toBe("Timing on off-speed");
+    // Private fields should NOT be present
+    expect((notes[0] as any).privateNotes).toBeUndefined();
+    expect((notes[0] as any).overallRating).toBeUndefined();
+    expect((notes[0] as any).coachId).toBeUndefined();
+  });
+
+  it("should return empty for athlete with no notes", async () => {
+    const caller = appRouter.createCaller(createAthleteContext(999996));
+    const notes = await caller.sessionNotes.getMyNotes();
+    expect(notes).toHaveLength(0);
+  });
+});

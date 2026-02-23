@@ -144,6 +144,25 @@ export const sessionNotesRouter = router({
       return sessionNotesDb.getRecentSessionNotes(input.athleteId, input.limit);
     }),
 
+  /** Get my own session notes (athlete-facing, excludes private fields) */
+  getMyNotes: protectedProcedure.query(async ({ ctx }) => {
+    const notes = await sessionNotesDb.getSessionNotesForAthlete(ctx.user.id);
+    // Strip coach-only fields
+    return notes.map((n) => ({
+      id: n.id,
+      sessionNumber: n.sessionNumber,
+      sessionLabel: n.sessionLabel,
+      sessionDate: n.sessionDate,
+      duration: n.duration,
+      skillsWorked: n.skillsWorked,
+      whatImproved: n.whatImproved,
+      whatNeedsWork: n.whatNeedsWork,
+      homeworkDrills: n.homeworkDrills,
+      blastSessionId: n.blastSessionId,
+      createdAt: n.createdAt,
+    }));
+  }),
+
   /** Get skill categories list */
   getSkillCategories: protectedProcedure.query(() => {
     return SKILL_CATEGORIES;

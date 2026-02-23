@@ -1389,3 +1389,29 @@
 - [x] Update Blast Metrics UI to show linked session notes
 - [x] Ensure Shannon Caputo's Blast data links to her session/athlete profile
 - [x] Write vitest tests for the linking flow
+
+## Edit Blast Session Dialog
+- [x] Add updateSession backend procedure to update session date, type, and all metrics
+- [x] Build EditBlastSession dialog component with pre-filled form fields
+- [x] Add Edit button to session history table rows
+- [x] Write vitest tests for updateSession
+
+## CSV Bulk Import for Blast Sessions
+- [x] Add bulkImportSessions backend procedure that parses CSV and creates sessions+metrics
+- [x] Build CSV import dialog with file upload, column mapping preview, and confirmation
+- [x] Handle CSV parsing edge cases (missing columns, bad data, duplicates)
+- [x] Write vitest tests for bulk import
+
+## Retroactive Session Note Creation
+- [x] Add createRetroactiveNotes backend procedure that creates session notes for all unlinked Blast sessions of a linked player
+- [x] Add "Create Missing Notes" button on player detail view (visible when player is linked and has sessions without notes)
+- [x] Show count of sessions missing notes
+- [x] Write vitest tests for retroactive note creation
+
+## Athlete Dashboard - Sessions/Notes/Metrics View
+- [x] Build athlete-facing Blast Metrics view (read-only) showing their sessions and trends
+- [x] Build athlete-facing Session Notes view showing their session history and notes
+- [x] Add navigation to athlete dashboard for sessions/notes/metrics
+- [x] Ensure coach-only data (private notes) is hidden from athlete view
+- [x] Mobile-optimized layout for athlete dashboard
+- [x] Write vitest tests for athlete data access

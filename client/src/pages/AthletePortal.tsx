@@ -19,6 +19,8 @@ import { AthleteVideoFeedback } from "@/components/AthleteVideoFeedback";
 import { SwingAnalyzer } from "@/components/SwingAnalyzer";
 import { DrillSubmissionForm } from "@/components/DrillSubmissionForm";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
+import { AthleteSessionNotes } from "@/components/AthleteSessionNotes";
+import { AthleteBlastMetrics } from "@/components/AthleteBlastMetrics";
 
 interface Drill {
   id: string;
@@ -452,6 +454,12 @@ export default function AthletePortal() {
             </div>
           </div>
         )}
+
+        {/* Session Notes from Coach */}
+        <AthleteSessionNotes />
+
+        {/* Blast Motion Metrics */}
+        <AthleteBlastMetrics />
 
         {/* Shared Practice Plans */}
         <SharedPracticePlans />

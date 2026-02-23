@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   ArrowLeft, Users, Activity, TrendingUp, Zap, Target,
-  ChevronRight, BarChart3, Gauge, Timer, Crosshair, Plus, UserPlus, Trash2, Link2, FileText
+  ChevronRight, BarChart3, Gauge, Timer, Crosshair, Plus, UserPlus, Trash2, Link2, FileText, Pencil, FileSpreadsheet
 } from "lucide-react";
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -16,6 +16,9 @@ import { AddBlastSession } from "./AddBlastSession";
 import { AddBlastPlayer } from "./AddBlastPlayer";
 import { DeleteBlastSession } from "./DeleteBlastSession";
 import { LinkBlastPlayer } from "./LinkBlastPlayer";
+import { EditBlastSession, type SessionData } from "./EditBlastSession";
+import { ImportBlastCSV } from "./ImportBlastCSV";
+import { RetroactiveBlastNotes } from "./RetroactiveBlastNotes";
 
 // Metric display config
 const METRIC_CONFIGS = {
@@ -83,6 +86,9 @@ export function BlastMetricsTab() {
     type: string;
   } | null>(null);
   const [linkPlayerOpen, setLinkPlayerOpen] = useState(false);
+  const [editSession, setEditSession] = useState<SessionData | null>(null);
+  const [importCSVOpen, setImportCSVOpen] = useState(false);
+  const [retroNotesOpen, setRetroNotesOpen] = useState(false);
 
   const { data: players = [], isLoading: playersLoading } = trpc.blastMetrics.listPlayers.useQuery();
 
@@ -292,6 +298,26 @@ export function BlastMetricsTab() {
           >
             <Link2 className="h-3.5 w-3.5 mr-1" />
             {player?.userId ? "Linked" : "Link Account"}
+          </Button>
+          {player?.userId && (
+            <Button
+              onClick={() => setRetroNotesOpen(true)}
+              size="sm"
+              variant="outline"
+              className="h-8 text-xs text-blue-400 border-blue-500/30 hover:bg-blue-500/10"
+            >
+              <FileText className="h-3.5 w-3.5 mr-1" />
+              Sync Notes
+            </Button>
+          )}
+          <Button
+            onClick={() => setImportCSVOpen(true)}
+            size="sm"
+            variant="outline"
+            className="h-8 text-xs text-green-400 border-green-500/30 hover:bg-green-500/10"
+          >
+            <FileSpreadsheet className="h-3.5 w-3.5 mr-1" />
+            Import CSV
           </Button>
           <Button
             onClick={() => setAddSessionOpen(true)}
@@ -644,17 +670,26 @@ export function BlastMetricsTab() {
                         )}
                       </td>
                       <td className="py-3 px-1">
-                        <button
-                          onClick={() => setDeleteSession({
-                            id: s.id,
-                            date: formatDate(s.sessionDate),
-                            type: s.sessionType || "Unknown",
-                          })}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-red-500/10 text-white/30 hover:text-red-400"
-                          title="Delete session"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
+                        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => setEditSession(s as SessionData)}
+                            className="p-1.5 rounded-md hover:bg-amber-500/10 text-white/30 hover:text-amber-400"
+                            title="Edit session"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            onClick={() => setDeleteSession({
+                              id: s.id,
+                              date: formatDate(s.sessionDate),
+                              type: s.sessionType || "Unknown",
+                            })}
+                            className="p-1.5 rounded-md hover:bg-red-500/10 text-white/30 hover:text-red-400"
+                            title="Delete session"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -686,6 +721,37 @@ export function BlastMetricsTab() {
           currentUserId={player.userId ?? null}
           currentPortalName={player.portalName ?? null}
           currentPortalEmail={player.portalEmail ?? null}
+        />
+      )}
+
+      {/* Edit Session Dialog */}
+      {player && (
+        <EditBlastSession
+          open={!!editSession}
+          onOpenChange={(open) => { if (!open) setEditSession(null); }}
+          session={editSession}
+          playerName={player.fullName}
+        />
+      )}
+
+      {/* Retroactive Notes Dialog */}
+      {selectedPlayerId && player && (
+        <RetroactiveBlastNotes
+          open={retroNotesOpen}
+          onOpenChange={setRetroNotesOpen}
+          playerId={selectedPlayerId}
+          playerName={player.fullName}
+        />
+      )}
+
+      {/* Import CSV Dialog */}
+      {selectedPlayerId && player && (
+        <ImportBlastCSV
+          open={importCSVOpen}
+          onOpenChange={setImportCSVOpen}
+          playerId={selectedPlayerId}
+          playerName={player.fullName}
+          isLinkedToUser={!!player.userId}
         />
       )}
 
