@@ -1424,3 +1424,26 @@
 - [x] Add sharing toggle switch to coach SessionHistory UI
 - [x] Show shared/unshared indicator on each note
 - [x] Write vitest tests for sharing toggle
+
+## Bulk Share/Hide All Session Notes
+- [x] Add bulkToggleSharing backend procedure
+- [x] Add Share All / Hide All buttons to SessionHistory UI
+- [x] Write vitest tests for bulk toggle
+
+## Athlete Portal Redesign - Drill Modal
+- [x] Redesign drill modal to show clear instructions (objectives, steps, tips) first
+- [x] Add motivational coach message section ("Coach Steve says...")
+- [x] Move submission form to end of modal, make it optional
+- [x] Add "Mark as Done" quick completion button
+- [x] Simplify notes field with guided prompts
+- [x] De-emphasize video upload, offer pre-defined feedback options
+
+## Athlete Portal Gamification
+- [x] Create gamification schema (streaks, badges, points, achievements)
+- [x] Build streak tracking logic (consecutive days/sessions)
+- [x] Create badge/achievement system with unlock conditions
+- [x] Build progress tracking with visual indicators
+- [x] Add gamification dashboard section to athlete portal
+- [x] Display streaks, badges, and progress visually
+- [x] Reward athletes for completing drills with points/badges
+- [x] Write vitest tests for gamification system

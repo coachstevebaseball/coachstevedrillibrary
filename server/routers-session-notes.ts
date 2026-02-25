@@ -156,6 +156,26 @@ export const sessionNotesRouter = router({
       });
     }),
 
+  /** Bulk toggle sharing for all notes of an athlete */
+  bulkToggleSharing: protectedProcedure
+    .input(z.object({ athleteId: z.number(), shared: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
+      }
+      const notes = await sessionNotesDb.getSessionNotesForAthlete(input.athleteId);
+      let updated = 0;
+      for (const note of notes) {
+        if (note.sharedWithAthlete !== input.shared) {
+          await sessionNotesDb.updateSessionNote(note.id, {
+            sharedWithAthlete: input.shared,
+          });
+          updated++;
+        }
+      }
+      return { updated, total: notes.length };
+    }),
+
   /** Get my own session notes (athlete-facing, only shared notes, excludes private fields) */
   getMyNotes: protectedProcedure.query(async ({ ctx }) => {
     const notes = await sessionNotesDb.getSharedSessionNotesForAthlete(ctx.user.id);

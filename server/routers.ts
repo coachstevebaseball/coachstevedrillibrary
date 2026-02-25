@@ -23,6 +23,7 @@ import { progressReportsRouter } from "./routers-progress-reports";
 import { athleteProfilesRouter } from "./routers-athlete-profiles";
 import { videoAnalysisRouter } from "./routers-video-analysis";
 import { blastMetricsRouter } from "./routers-blast-metrics";
+import { badgesRouter } from "./routers-badges";
 import * as drillCustomizationsDb from "./drillCustomizations";
 import { storagePut } from "./storage";
 
@@ -37,6 +38,7 @@ export const appRouter = router({
   sessionNotes: sessionNotesRouter,
   progressReports: progressReportsRouter,
   athleteProfiles: athleteProfilesRouter,
+  badges: badgesRouter,
   auth: router({
     me: publicProcedure.query(async (opts) => {
       if (!opts.ctx.user) return null;

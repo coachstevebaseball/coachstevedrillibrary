@@ -69,6 +69,33 @@ export function SessionHistory({
     },
   });
 
+  const bulkToggleMutation = trpc.sessionNotes.bulkToggleSharing.useMutation({
+    onMutate: async ({ shared }) => {
+      await utils.sessionNotes.getForAthlete.cancel({ athleteId });
+      const prev = utils.sessionNotes.getForAthlete.getData({ athleteId });
+      utils.sessionNotes.getForAthlete.setData({ athleteId }, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          notes: old.notes.map((n: any) => ({ ...n, sharedWithAthlete: shared })),
+        };
+      });
+      return { prev };
+    },
+    onSuccess: (_data, { shared }) => {
+      toast.success(shared ? "All notes shared with athlete" : "All notes hidden from athlete");
+    },
+    onError: (err, _vars, context) => {
+      if (context?.prev) {
+        utils.sessionNotes.getForAthlete.setData({ athleteId }, context.prev);
+      }
+      toast.error(err.message || "Failed to update sharing");
+    },
+    onSettled: () => {
+      utils.sessionNotes.getForAthlete.invalidate({ athleteId });
+    },
+  });
+
   const toggleSharingMutation = trpc.sessionNotes.toggleSharing.useMutation({
     onMutate: async ({ id, shared }) => {
       // Optimistic update
@@ -144,17 +171,48 @@ export function SessionHistory({
             {notes.length} session{notes.length !== 1 ? "s" : ""} logged for {athleteName}
           </p>
         </div>
-        {onNewNote && (
-          <Button
-            onClick={onNewNote}
-            size="sm"
-            className="bg-electric-blue hover:bg-electric-blue/90"
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            <span className="hidden sm:inline">New Note</span>
-            <span className="sm:hidden">Add</span>
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {/* Bulk sharing buttons */}
+          {notes.length > 0 && (
+            <div className="flex items-center gap-1">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  bulkToggleMutation.mutate({ athleteId, shared: true });
+                }}
+                disabled={bulkToggleMutation.isPending || notes.every((n: any) => n.sharedWithAthlete)}
+                className="text-xs gap-1 border-green-500/30 text-green-400 hover:bg-green-500/10 hover:text-green-300"
+              >
+                <Eye className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Share All</span>
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  bulkToggleMutation.mutate({ athleteId, shared: false });
+                }}
+                disabled={bulkToggleMutation.isPending || notes.every((n: any) => !n.sharedWithAthlete)}
+                className="text-xs gap-1 border-orange-500/30 text-orange-400 hover:bg-orange-500/10 hover:text-orange-300"
+              >
+                <EyeOff className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Hide All</span>
+              </Button>
+            </div>
+          )}
+          {onNewNote && (
+            <Button
+              onClick={onNewNote}
+              size="sm"
+              className="bg-electric-blue hover:bg-electric-blue/90"
+            >
+              <Plus className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">New Note</span>
+              <span className="sm:hidden">Add</span>
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Timeline */}

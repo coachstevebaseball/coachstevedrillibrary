@@ -21,6 +21,8 @@ import { DrillSubmissionForm } from "@/components/DrillSubmissionForm";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { AthleteSessionNotes } from "@/components/AthleteSessionNotes";
 import { AthleteBlastMetrics } from "@/components/AthleteBlastMetrics";
+import { DrillModalRedesigned } from "@/components/DrillModalRedesigned";
+import { AthleteBadgesRedesigned } from "@/components/AthleteBadgesRedesigned";
 
 interface Drill {
   id: string;
@@ -506,121 +508,22 @@ export default function AthletePortal() {
         {/* Video Feedback from Coach */}
         <AthleteVideoFeedback />
 
-        {/* Next Badge Progress */}
-        <div className="glass-card rounded-2xl p-4 border-glow animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-purple-400" />
-              <span className="font-semibold text-foreground">Next Badge</span>
-            </div>
-            <Badge className="bg-purple-500/20 text-purple-400 border border-purple-500/30">
-              {Math.max(0, 5 - progressStats.completed)} more
-            </Badge>
-          </div>
-          <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
-            <div 
-              className="bg-gradient-to-r from-purple-500 to-purple-400 h-2 rounded-full transition-all duration-500"
-              style={{ width: `${Math.min(100, (progressStats.completed / 5) * 100)}%` }}
-            />
-          </div>
-          <p className="text-xs text-muted-foreground mt-2">Complete 5 drills to earn "Dedicated Athlete" badge</p>
-        </div>
+        {/* Badges & Gamification */}
+        <AthleteBadgesRedesigned />
       </main>
 
-      {/* Drill Focus Modal — Action-Oriented Redesign */}
-      <Dialog open={showDrillModal} onOpenChange={setShowDrillModal}>
-        <DialogContent className="max-w-lg mx-auto max-h-[90vh] flex flex-col p-0 gap-0 glass-card border-white/10">
-          <DialogHeader className="p-5 pb-4 border-b border-white/10 bg-gradient-to-r from-navy to-charcoal flex-shrink-0">
-            <div className="flex items-center justify-between">
-              <DialogTitle className="text-xl font-bold pr-8 text-foreground leading-tight">
-                {selectedAssignment?.drillName}
-              </DialogTitle>
-              <button 
-                onClick={() => setShowDrillModal(false)}
-                className="absolute right-4 top-4 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-          </DialogHeader>
-          
-          <div className="flex-1 overflow-y-auto p-5 space-y-5 bg-background">
-            {selectedAssignment && (() => {
-              const drill = getDrill(selectedAssignment.drillId);
-              return (
-                <>
-                  {/* Drill Meta Badges */}
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {drill && (
-                      <>
-                        <Badge className="bg-white/10 text-foreground border border-white/20 text-xs px-2.5 py-1">
-                          <Clock className="w-3 h-3 mr-1" />
-                          {drill.duration || "10 min"}
-                        </Badge>
-                        <Badge className={`${getDifficultyStyles(drill.difficulty)} text-xs px-2.5 py-1`}>
-                          {drill.difficulty}
-                        </Badge>
-                        {drill.categories[0] && (
-                          <Badge className="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs px-2.5 py-1">
-                            {drill.categories[0]}
-                          </Badge>
-                        )}
-                      </>
-                    )}
-                  </div>
-
-                  {/* Coach's Focus — pulls from drill goal */}
-                  <DrillCoachFocus drillId={selectedAssignment.drillId} />
-
-                  {/* Watch Video Button */}
-                  <Link href={`/drill/${selectedAssignment.drillId}`}>
-                    <Button variant="outline" className="w-full gap-2 border-white/20 hover:bg-white/10 text-foreground">
-                      <Play className="w-4 h-4" />
-                      Watch Video Instructions
-                    </Button>
-                  </Link>
-
-                  {/* Video Submission for AI Analysis */}
-                  {selectedAssignment.status !== "completed" && (
-                    <DrillSubmissionForm
-                      assignmentId={selectedAssignment.id}
-                      drillId={selectedAssignment.drillId}
-                      onSubmitSuccess={() => {
-                        utils.drillAssignments.getUserAssignments.invalidate();
-                      }}
-                    />
-                  )}
-
-                  {/* Optional Notes — Collapsible */}
-                  {selectedAssignment.status !== "completed" && (
-                    <DrillQuickNotes
-                      assignmentId={selectedAssignment.id}
-                      onComplete={() => {
-                        utils.drillAssignments.getUserAssignments.invalidate();
-                        setShowDrillModal(false);
-                        setShowCompletionModal(true);
-                      }}
-                    />
-                  )}
-
-                  {/* Already Completed */}
-                  {selectedAssignment.status === "completed" && (
-                    <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-6 text-center">
-                      <CheckCircle className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
-                      <p className="font-bold text-emerald-400 text-lg">Drill Completed!</p>
-                      {selectedAssignment.completedAt && (
-                        <p className="text-sm text-emerald-400/70 mt-1">
-                          {new Date(selectedAssignment.completedAt).toLocaleDateString()}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </>
-              );
-            })()}
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Redesigned Drill Modal */}
+      <DrillModalRedesigned
+        isOpen={showDrillModal}
+        onClose={() => setShowDrillModal(false)}
+        assignment={selectedAssignment}
+        drill={selectedAssignment ? getDrill(selectedAssignment.drillId) : undefined}
+        onComplete={() => {
+          setShowDrillModal(false);
+          setShowCompletionModal(true);
+        }}
+        getDifficultyStyles={getDifficultyStyles}
+      />
 
       {/* Completion Modal */}
       {selectedAssignment && (
