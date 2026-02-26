@@ -15,7 +15,7 @@ export function BlastMetricsBadge({ blastSessionId }: BlastMetricsBadgeProps) {
   if (isLoading || !data) return null;
 
   const metrics = [
-    { label: "Bat Speed", value: data.batSpeedMph, unit: "mph", color: "text-blue-400", icon: Zap },
+    { label: "Bat Speed", value: data.batSpeedMph, unit: "mph", color: "text-[#E8425A]", icon: Zap },
     { label: "Rot. Accel", value: data.rotationalAccelerationG, unit: "g", color: "text-violet-400", icon: Activity },
     { label: "Plane", value: data.planeScore, unit: "", color: "text-green-400", icon: Target },
     { label: "Connection", value: data.connectionScore, unit: "", color: "text-yellow-400", icon: Crosshair },

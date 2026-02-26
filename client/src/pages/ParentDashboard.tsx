@@ -74,7 +74,7 @@ export default function ParentDashboard() {
       case "in-progress":
         return "bg-yellow-100 text-yellow-800 border-yellow-200";
       default:
-        return "bg-blue-100 text-blue-800 border-blue-200";
+        return "bg-red-100 text-red-800 border-red-200";
     }
   };
 
@@ -217,8 +217,8 @@ export default function ParentDashboard() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-500/10 rounded-lg">
-                      <AlertCircle className="h-5 w-5 text-blue-500" />
+                    <div className="p-2 bg-[#DC143C]/10 rounded-lg">
+                      <AlertCircle className="h-5 w-5 text-[#DC143C]" />
                     </div>
                     <div>
                       <p className="text-2xl font-bold">{progressData.coreMetrics.completionRate}%</p>

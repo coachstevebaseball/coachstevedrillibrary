@@ -281,7 +281,7 @@ export function ImportBlastCSV({ open, onOpenChange, playerId, playerName, isLin
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) handleReset(); onOpenChange(o); }}>
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-[#0f1225] border-white/10 text-white">
+      <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-[#1a1a1a] border-white/10 text-white">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-white flex items-center gap-2">
             <FileSpreadsheet className="h-5 w-5 text-green-400" />
@@ -379,16 +379,16 @@ export function ImportBlastCSV({ open, onOpenChange, playerId, playerName, isLin
                 onClick={() => setCreateNotes(!createNotes)}
                 className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all duration-200 text-left ${
                   createNotes
-                    ? "bg-electric-blue/10 border-electric-blue/30 text-white"
+                    ? "bg-[#DC143C]/10 border-[#DC143C]/30 text-white"
                     : "bg-white/[0.02] border-white/[0.08] text-white/50"
                 }`}
               >
-                <Link2 className={`h-4 w-4 shrink-0 ${createNotes ? "text-electric-blue" : "text-white/30"}`} />
+                <Link2 className={`h-4 w-4 shrink-0 ${createNotes ? "text-[#DC143C]" : "text-white/30"}`} />
                 <span className="text-sm">
                   {createNotes ? "Session Notes will be auto-created for each imported session" : "No Session Notes will be created"}
                 </span>
                 <div className={`ml-auto h-5 w-9 rounded-full transition-colors shrink-0 relative ${
-                  createNotes ? "bg-electric-blue" : "bg-white/20"
+                  createNotes ? "bg-[#DC143C]" : "bg-white/20"
                 }`}>
                   <div className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${
                     createNotes ? "translate-x-4" : "translate-x-0.5"
@@ -400,7 +400,7 @@ export function ImportBlastCSV({ open, onOpenChange, playerId, playerName, isLin
             {/* Preview table */}
             <div className="overflow-x-auto max-h-[300px] overflow-y-auto rounded-lg border border-white/[0.08]">
               <table className="w-full text-xs">
-                <thead className="sticky top-0 bg-[#0f1225]">
+                <thead className="sticky top-0 bg-[#1a1a1a]">
                   <tr className="border-b border-white/[0.1]">
                     <th className="text-left py-2 px-3 text-white/50">#</th>
                     <th className="text-left py-2 px-3 text-white/50">Date</th>
@@ -424,7 +424,7 @@ export function ImportBlastCSV({ open, onOpenChange, playerId, playerName, isLin
                           {row.sessionType}
                         </Badge>
                       </td>
-                      <td className="text-center py-2 px-2 text-blue-400">{row.metrics.batSpeedMph || "—"}</td>
+                      <td className="text-center py-2 px-2 text-[#E8425A]">{row.metrics.batSpeedMph || "—"}</td>
                       <td className="text-center py-2 px-2 text-violet-400">{row.metrics.rotationalAccelerationG || "—"}</td>
                       <td className="text-center py-2 px-2 text-green-400">{row.metrics.planeScore ?? "—"}</td>
                       <td className="text-center py-2 px-2 text-yellow-400">{row.metrics.connectionScore ?? "—"}</td>
@@ -467,8 +467,8 @@ export function ImportBlastCSV({ open, onOpenChange, playerId, playerName, isLin
                 <p className="text-2xl font-bold text-green-400">{importResult.imported}</p>
                 <p className="text-xs text-white/50">Sessions Imported</p>
               </div>
-              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 text-center">
-                <p className="text-2xl font-bold text-blue-400">{importResult.notesCreated}</p>
+              <div className="bg-[#DC143C]/10 border border-[#DC143C]/20 rounded-lg p-3 text-center">
+                <p className="text-2xl font-bold text-[#E8425A]">{importResult.notesCreated}</p>
                 <p className="text-xs text-white/50">Notes Created</p>
               </div>
               <div className={`${importResult.errors.length > 0 ? "bg-red-500/10 border-red-500/20" : "bg-white/[0.04] border-white/[0.08]"} border rounded-lg p-3 text-center`}>

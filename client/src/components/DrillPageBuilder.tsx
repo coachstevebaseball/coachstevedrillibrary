@@ -388,9 +388,9 @@ export function DrillPageBuilder({ drillId, drillName, onClose }: DrillPageBuild
         );
       case "callout":
         return (
-          <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
+          <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-[#DC143C] p-4 rounded">
             <div className="flex items-start gap-2">
-              <AlertCircle className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="h-5 w-5 text-[#DC143C] flex-shrink-0 mt-0.5" />
               <p>{block.content}</p>
             </div>
           </div>

@@ -194,9 +194,9 @@ export default function AthleteMessaging() {
                             <p className="text-sm font-semibold mb-2">Coach Steve's Response</p>
                             <div className="space-y-2">
                               {question.answers.map((answer: any) => (
-                                <div key={answer.id} className="p-3 bg-blue-50 rounded border border-blue-200">
-                                  <p className="text-sm text-blue-900">{answer.answer}</p>
-                                  <p className="text-xs text-blue-700 mt-2">
+                                <div key={answer.id} className="p-3 bg-red-50 rounded border border-red-200">
+                                  <p className="text-sm text-red-900">{answer.answer}</p>
+                                  <p className="text-xs text-red-700 mt-2">
                                     {new Date(answer.createdAt).toLocaleString()}
                                   </p>
                                 </div>

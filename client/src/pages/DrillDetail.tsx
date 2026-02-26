@@ -1284,7 +1284,7 @@ export default function DrillDetail() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-12 w-12 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin" />
+          <div className="h-12 w-12 rounded-full border-2 border-[#DC143C]/30 border-t-[#DC143C] animate-spin" />
           <p className="text-muted-foreground animate-pulse">Loading drill...</p>
         </div>
       </div>
@@ -1353,7 +1353,7 @@ export default function DrillDetail() {
       {hasAccess && (
       <>
       <header className="relative overflow-hidden mb-6 md:mb-8">
-        <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.25_0.05_250)] via-[oklch(0.20_0.04_260)] to-[oklch(0.15_0.06_280)]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.18_0.01_25)] via-[oklch(0.15_0.005_0)] to-[oklch(0.12_0.01_20)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.45_0.15_250/0.15),transparent_60%)]" />
         <div className="container relative z-10 py-6 md:py-10">
           <Link href="/">
@@ -1454,12 +1454,12 @@ export default function DrillDetail() {
             )}
 
             {/* Coaching Cues - Above the Fold */}
-            <div className="glass-card rounded-xl border-l-4 border-l-blue-500 overflow-hidden">
+            <div className="glass-card rounded-xl border-l-4 border-l-[#DC143C] overflow-hidden">
               <div className="p-4 md:p-6">
                 <div className="flex items-center justify-between gap-2 mb-3">
                   <h3 className="flex items-center gap-2 text-xl md:text-2xl font-heading font-black">
-                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center">
-                      <Lightbulb className="h-4 w-4 text-blue-400" />
+                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center">
+                      <Lightbulb className="h-4 w-4 text-[#E8425A]" />
                     </div>
                     Goal of Drill
                   </h3>
@@ -1497,7 +1497,7 @@ export default function DrillDetail() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <div className="glass-card rounded-xl p-3 md:p-4">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <Clock className="h-3.5 w-3.5 text-blue-400" />
+                  <Clock className="h-3.5 w-3.5 text-[#E8425A]" />
                   <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Time</span>
                 </div>
                 <div className="font-bold text-foreground text-sm md:text-base">{details.time}</div>

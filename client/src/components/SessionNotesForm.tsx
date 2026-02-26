@@ -60,9 +60,9 @@ const SKILL_SHORT_LABELS: Record<string, string> = {
 
 // Skill category colors for visual distinction
 const SKILL_COLORS: Record<string, string> = {
-  "Swing Mechanics": "bg-blue-500/20 text-blue-300 border-blue-500/30",
+  "Swing Mechanics": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
   "Pitch Recognition": "bg-purple-500/20 text-purple-300 border-purple-500/30",
-  "Plate Approach": "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
+  "Plate Approach": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
   "Fielding Fundamentals": "bg-green-500/20 text-green-300 border-green-500/30",
   "Throwing Mechanics": "bg-orange-500/20 text-orange-300 border-orange-500/30",
   "Base Running": "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
@@ -222,7 +222,7 @@ function TemplatePicker({
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(!isOpen)}
-        className="h-7 px-2 text-xs text-electric-blue hover:text-electric-blue/80 hover:bg-electric-blue/10 gap-1"
+        className="h-7 px-2 text-xs text-[#DC143C] hover:text-[#DC143C]/80 hover:bg-[#DC143C]/10 gap-1"
       >
         <Sparkles className="h-3 w-3" />
         Quick Fill
@@ -239,7 +239,7 @@ function TemplatePicker({
               onClick={() => setFilter("relevant")}
               className={`px-2 py-0.5 rounded text-xs font-medium transition-colors ${
                 filter === "relevant"
-                  ? "bg-electric-blue/20 text-electric-blue"
+                  ? "bg-[#DC143C]/20 text-[#DC143C]"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -250,7 +250,7 @@ function TemplatePicker({
               onClick={() => setFilter("all")}
               className={`px-2 py-0.5 rounded text-xs font-medium transition-colors ${
                 filter === "all"
-                  ? "bg-electric-blue/20 text-electric-blue"
+                  ? "bg-[#DC143C]/20 text-[#DC143C]"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -266,7 +266,7 @@ function TemplatePicker({
                 <button
                   type="button"
                   onClick={() => setFilter("all")}
-                  className="text-electric-blue hover:underline mt-1 text-xs"
+                  className="text-[#DC143C] hover:underline mt-1 text-xs"
                 >
                   Show all templates
                 </button>
@@ -280,7 +280,7 @@ function TemplatePicker({
                   className="w-full text-left px-3 py-2.5 hover:bg-white/[0.06] transition-colors border-b border-white/[0.04] last:border-0 group"
                 >
                   <div className="flex items-start gap-2">
-                    <Zap className="h-3.5 w-3.5 text-electric-blue/60 mt-0.5 shrink-0 group-hover:text-electric-blue transition-colors" />
+                    <Zap className="h-3.5 w-3.5 text-[#DC143C]/60 mt-0.5 shrink-0 group-hover:text-[#DC143C] transition-colors" />
                     <div className="min-w-0">
                       <span className="text-sm font-medium text-foreground block">
                         {template.label}
@@ -553,14 +553,14 @@ export function SessionNotesForm({
                       }
                     }}
                     placeholder={displayLabel}
-                    className="h-6 w-40 text-sm bg-electric-blue/10 border-electric-blue/30 text-electric-blue px-2 py-0"
+                    className="h-6 w-40 text-sm bg-[#DC143C]/10 border-[#DC143C]/30 text-[#DC143C] px-2 py-0"
                   />
                 </div>
               ) : (
                 <button
                   type="button"
                   onClick={handleLabelEdit}
-                  className="flex items-center gap-1 text-sm text-electric-blue font-medium hover:text-electric-blue/80 transition-colors group"
+                  className="flex items-center gap-1 text-sm text-[#DC143C] font-medium hover:text-[#DC143C]/80 transition-colors group"
                 >
                   {displayLabel}
                   <Pencil className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -602,7 +602,7 @@ export function SessionNotesForm({
       <div>
         <label className="text-xs font-semibold text-muted-foreground mb-2 block uppercase tracking-wider">
           Skills Worked On
-          <span className="text-electric-blue ml-1">*</span>
+          <span className="text-[#DC143C] ml-1">*</span>
         </label>
         <div className="flex flex-wrap gap-2">
           {SKILL_CATEGORIES.map((skill) => {
@@ -641,7 +641,7 @@ export function SessionNotesForm({
         <div className="flex items-center justify-between mb-1.5">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             What Improved This Session
-            <span className="text-electric-blue ml-1">*</span>
+            <span className="text-[#DC143C] ml-1">*</span>
           </label>
           <TemplatePicker
             templates={IMPROVED_TEMPLATES}
@@ -665,7 +665,7 @@ export function SessionNotesForm({
         <div className="flex items-center justify-between mb-1.5">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             What Still Needs Work
-            <span className="text-electric-blue ml-1">*</span>
+            <span className="text-[#DC143C] ml-1">*</span>
           </label>
           <TemplatePicker
             templates={NEEDS_WORK_TEMPLATES}
@@ -697,7 +697,7 @@ export function SessionNotesForm({
               <Badge
                 key={d.drillId}
                 variant="secondary"
-                className="bg-electric-blue/15 text-electric-blue border-electric-blue/30 pr-1.5 gap-1"
+                className="bg-[#DC143C]/15 text-[#DC143C] border-[#DC143C]/30 pr-1.5 gap-1"
               >
                 <Dumbbell className="h-3 w-3" />
                 {d.drillName}
@@ -849,7 +849,7 @@ export function SessionNotesForm({
         <Button
           onClick={handleSubmit}
           disabled={isSaving || selectedSkills.length === 0 || !whatImproved.trim() || !whatNeedsWork.trim()}
-          className="flex-1 h-12 text-base bg-electric-blue hover:bg-electric-blue/90 font-semibold"
+          className="flex-1 h-12 text-base bg-[#DC143C] hover:bg-[#DC143C]/90 font-semibold"
         >
           {isSaving ? (
             <>

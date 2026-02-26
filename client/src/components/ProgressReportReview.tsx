@@ -167,8 +167,8 @@ export function ProgressReportReview({
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
         <div className="relative">
-          <div className="h-16 w-16 rounded-full bg-gradient-to-br from-electric-blue/20 to-cyan-500/20 flex items-center justify-center animate-pulse">
-            <Sparkles className="h-8 w-8 text-electric-blue animate-spin" />
+          <div className="h-16 w-16 rounded-full bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center animate-pulse">
+            <Sparkles className="h-8 w-8 text-[#DC143C] animate-spin" />
           </div>
         </div>
         <div className="text-center">
@@ -215,7 +215,7 @@ export function ProgressReportReview({
                   status === "sent"
                     ? "bg-green-500/10 text-green-400 border-green-500/30"
                     : status === "reviewed"
-                      ? "bg-blue-500/10 text-blue-400 border-blue-500/30"
+                      ? "bg-[#DC143C]/10 text-[#E8425A] border-[#DC143C]/30"
                       : "bg-yellow-500/10 text-yellow-400 border-yellow-500/30"
                 }
               >
@@ -247,7 +247,7 @@ export function ProgressReportReview({
               size="sm"
               onClick={handleSaveEdits}
               disabled={updateMutation.isPending}
-              className="h-8 bg-electric-blue hover:bg-electric-blue/90"
+              className="h-8 bg-[#DC143C] hover:bg-[#DC143C]/90"
             >
               {updateMutation.isPending ? (
                 <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
@@ -321,9 +321,9 @@ export function ProgressReportReview({
         /* Preview Mode — render the report as it would appear in email */
         <div className="glass-card rounded-xl overflow-hidden">
           {/* Branded Header */}
-          <div className="bg-gradient-to-r from-[#0a1628] to-[#1a2744] text-white p-8 text-center">
+          <div className="bg-gradient-to-r from-[#1a1a1a] to-[#2a2a2a] text-white p-8 text-center">
             <h3 className="font-heading font-bold text-xl mb-1">Coach Steve</h3>
-            <p className="text-xs text-blue-400 font-medium tracking-widest uppercase">
+            <p className="text-xs text-[#E8425A] font-medium tracking-widest uppercase">
               Elite Instruction. Measurable Growth.
             </p>
           </div>
@@ -362,7 +362,7 @@ export function ProgressReportReview({
             </div>
 
             <div>
-              <div className="text-[11px] font-bold uppercase tracking-widest text-blue-600 mb-2 pb-1 border-b-2 border-blue-200 dark:border-blue-900">
+              <div className="text-[11px] font-bold uppercase tracking-widest text-[#DC143C] mb-2 pb-1 border-b-2 border-red-200 dark:border-red-900">
                 Next Steps & Homework
               </div>
               <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
@@ -371,8 +371,8 @@ export function ProgressReportReview({
             </div>
 
             {/* Player Note */}
-            <div className="bg-blue-50 dark:bg-blue-950/30 border-l-4 border-blue-500 p-4 rounded-r-lg">
-              <p className="text-blue-800 dark:text-blue-300 italic leading-relaxed">
+            <div className="bg-red-50 dark:bg-red-950/30 border-l-4 border-[#DC143C] p-4 rounded-r-lg">
+              <p className="text-red-800 dark:text-[#E8425A] italic leading-relaxed">
                 {reportContent.playerNote}
               </p>
             </div>
@@ -383,8 +383,8 @@ export function ProgressReportReview({
           </div>
 
           {/* Branded Footer */}
-          <div className="bg-[#0a1628] text-center py-6 px-8">
-            <p className="text-blue-400 font-semibold text-sm">Coach Steve Goldstein</p>
+          <div className="bg-[#1a1a1a] text-center py-6 px-8">
+            <p className="text-[#E8425A] font-semibold text-sm">Coach Steve Goldstein</p>
             <p className="text-slate-500 text-[11px] tracking-widest uppercase mt-1">
               Elite Instruction. Measurable Growth.
             </p>
@@ -397,7 +397,7 @@ export function ProgressReportReview({
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Mail className="h-5 w-5 text-electric-blue" />
+              <Mail className="h-5 w-5 text-[#DC143C]" />
               Send Report to Parent
             </DialogTitle>
             <DialogDescription>

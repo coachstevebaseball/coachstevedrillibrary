@@ -279,7 +279,7 @@ export function AthleteProfilePanel({ userId, onClose, compact }: AthleteProfile
             size="sm"
             onClick={handleSave}
             disabled={updateMutation.isPending}
-            className="bg-electric-blue hover:bg-electric-blue/90 gap-1.5"
+            className="bg-[#DC143C] hover:bg-[#DC143C]/90 gap-1.5"
           >
             {updateMutation.isPending ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -397,7 +397,7 @@ export function AthleteProfilePanel({ userId, onClose, compact }: AthleteProfile
               onClick={() => toggleFocusArea(area)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border ${
                 focusAreas.includes(area)
-                  ? "bg-electric-blue/20 text-electric-blue border-electric-blue/40"
+                  ? "bg-[#DC143C]/20 text-[#DC143C] border-[#DC143C]/40"
                   : "bg-white/[0.04] text-muted-foreground border-white/[0.08] hover:bg-white/[0.08]"
               }`}
             >
@@ -470,7 +470,7 @@ export function AthleteProfilePanel({ userId, onClose, compact }: AthleteProfile
         <Button
           onClick={handleSave}
           disabled={updateMutation.isPending}
-          className="bg-electric-blue hover:bg-electric-blue/90 gap-1.5"
+          className="bg-[#DC143C] hover:bg-[#DC143C]/90 gap-1.5"
         >
           {updateMutation.isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" />

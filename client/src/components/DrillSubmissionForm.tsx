@@ -127,9 +127,9 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
 
   // Phase-specific colors and icons
   const phaseConfig: Record<UploadPhase, { color: string; bgColor: string; glowColor: string }> = {
-    idle: { color: "text-blue-400", bgColor: "bg-blue-500", glowColor: "shadow-blue-500/30" },
+    idle: { color: "text-[#E8425A]", bgColor: "bg-[#DC143C]", glowColor: "shadow-[#DC143C]/30" },
     compressing: { color: "text-amber-400", bgColor: "bg-amber-500", glowColor: "shadow-amber-500/30" },
-    uploading: { color: "text-blue-400", bgColor: "bg-blue-500", glowColor: "shadow-blue-500/30" },
+    uploading: { color: "text-[#E8425A]", bgColor: "bg-[#DC143C]", glowColor: "shadow-[#DC143C]/30" },
     done: { color: "text-emerald-400", bgColor: "bg-emerald-500", glowColor: "shadow-emerald-500/30" },
     error: { color: "text-red-400", bgColor: "bg-red-500", glowColor: "shadow-red-500/30" },
   };
@@ -161,7 +161,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
     <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl overflow-hidden">
       {/* Header */}
       <div className="px-4 py-3 border-b border-white/[0.06] bg-white/[0.02] flex items-center gap-2">
-        <Video className="w-4 h-4 text-blue-400" />
+        <Video className="w-4 h-4 text-[#E8425A]" />
         <h4 className="font-semibold text-foreground text-sm">Submit Your Work</h4>
       </div>
 
@@ -245,10 +245,10 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
             {!videoFile ? (
               <label
                 htmlFor={`video-input-${assignmentId}`}
-                className="flex flex-col items-center justify-center gap-2 w-full px-4 py-6 border-2 border-dashed border-white/[0.12] rounded-xl cursor-pointer hover:bg-white/[0.04] hover:border-blue-500/40 transition-all duration-200 active:scale-[0.98]"
+                className="flex flex-col items-center justify-center gap-2 w-full px-4 py-6 border-2 border-dashed border-white/[0.12] rounded-xl cursor-pointer hover:bg-white/[0.04] hover:border-[#DC143C]/40 transition-all duration-200 active:scale-[0.98]"
               >
-                <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center">
-                  <Upload className="h-5 w-5 text-blue-400" />
+                <div className="w-12 h-12 bg-[#DC143C]/20 rounded-full flex items-center justify-center">
+                  <Upload className="h-5 w-5 text-[#E8425A]" />
                 </div>
                 <span className="text-sm font-medium text-foreground">
                   Tap to upload video
@@ -256,7 +256,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
                 <span className="text-xs text-muted-foreground text-center">
                   Choose from library or record new — Max 500MB
                 </span>
-                <span className="text-xs text-blue-400/60 flex items-center gap-1">
+                <span className="text-xs text-[#E8425A]/60 flex items-center gap-1">
                   <Zap className="w-3 h-3" />
                   Auto-compressed before upload
                 </span>
@@ -278,7 +278,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
                 {/* File info + remove */}
                 <div className="flex items-center justify-between bg-white/[0.04] rounded-lg px-3 py-2">
                   <div className="flex items-center gap-2 min-w-0">
-                    <Video className="h-4 w-4 text-blue-400 shrink-0" />
+                    <Video className="h-4 w-4 text-[#E8425A] shrink-0" />
                     <span className="text-xs text-foreground truncate">{videoFile.name}</span>
                     <span className="text-xs text-muted-foreground shrink-0">
                       ({formatBytes(videoFile.size)})
@@ -319,7 +319,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="How did it feel? Any questions for Coach?"
-              className="w-full h-16 bg-white/[0.04] border border-white/[0.08] rounded-lg p-3 text-sm text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30"
+              className="w-full h-16 bg-white/[0.04] border border-white/[0.08] rounded-lg p-3 text-sm text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-[#DC143C]/50 focus:border-[#DC143C]/30"
               disabled={isSubmitting}
               maxLength={500}
             />
@@ -330,7 +330,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
         <Button
           type="submit"
           disabled={isSubmitting || (!notes.trim() && !videoFile)}
-          className="w-full h-12 gap-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-blue-600/20 hover:shadow-blue-500/30 active:scale-[0.98] disabled:opacity-40 disabled:shadow-none"
+          className="w-full h-12 gap-2 bg-[#DC143C] hover:bg-[#B91030] active:bg-[#B91030] text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-[#DC143C]/20 hover:shadow-[#DC143C]/30 active:scale-[0.98] disabled:opacity-40 disabled:shadow-none"
         >
           {isSubmitting ? (
             <>

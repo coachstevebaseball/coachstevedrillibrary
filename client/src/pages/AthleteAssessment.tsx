@@ -65,7 +65,7 @@ function WeeklyChart({ data }: { data: Array<{ week: string; completed: number }
           <span className="text-xs font-medium text-foreground">{d.completed}</span>
           <div className="w-full bg-white/[0.06] rounded-t-md overflow-hidden" style={{ height: "100%" }}>
             <div
-              className="w-full bg-gradient-to-t from-blue-600 to-blue-400 rounded-t-md transition-all duration-500"
+              className="w-full bg-gradient-to-t from-[#DC143C] to-[#E8425A] rounded-t-md transition-all duration-500"
               style={{
                 height: `${(d.completed / maxVal) * 100}%`,
                 marginTop: `${100 - (d.completed / maxVal) * 100}%`,
@@ -158,12 +158,12 @@ function AssessmentReport({ athleteId, athleteName }: { athleteId: number; athle
   return (
     <div ref={reportRef} className="space-y-6">
       {/* Report Header */}
-      <div className="glass-card rounded-xl border-l-4 border-l-blue-500 p-6">
+      <div className="glass-card rounded-xl border-l-4 border-l-[#DC143C] p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-white/[0.06] flex items-center justify-center">
-                <User className="h-5 w-5 text-blue-400" />
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#DC143C]/20 to-purple-500/20 border border-white/[0.06] flex items-center justify-center">
+                <User className="h-5 w-5 text-[#E8425A]" />
               </div>
               <h2 className="text-2xl font-heading font-bold">{athleteName}</h2>
             </div>
@@ -295,8 +295,8 @@ function AssessmentReport({ athleteId, athleteName }: { athleteId: number; athle
         <div className="glass-card rounded-xl">
           <div className="p-4 md:p-6 pb-3">
             <h3 className="text-lg font-heading font-bold flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center">
-                <Target className="h-4 w-4 text-blue-400" />
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center">
+                <Target className="h-4 w-4 text-[#E8425A]" />
               </div>
               Active Assignments
             </h3>
@@ -343,7 +343,7 @@ function AssessmentReport({ athleteId, athleteName }: { athleteId: number; athle
           <div className="p-4 md:p-6 pt-0">
             <div className="space-y-4">
               {coachNotes.slice(0, 3).map((note: any, i: number) => (
-                <div key={i} className="bg-white/[0.03] rounded-lg p-4 border-l-2 border-l-blue-500/50">
+                <div key={i} className="bg-white/[0.03] rounded-lg p-4 border-l-2 border-l-[#DC143C]/50">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs text-muted-foreground">
                       {note.meetingDate ? new Date(note.meetingDate).toLocaleDateString() : "N/A"}
@@ -358,11 +358,11 @@ function AssessmentReport({ athleteId, athleteName }: { athleteId: number; athle
       )}
 
       {/* Recommendations */}
-      <div className="glass-card rounded-xl border border-blue-500/20">
+      <div className="glass-card rounded-xl border border-[#DC143C]/20">
         <div className="p-4 md:p-6 pb-3">
           <h3 className="text-lg font-heading font-bold flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-indigo-500/20 flex items-center justify-center">
-              <TrendingUp className="h-4 w-4 text-blue-400" />
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center">
+              <TrendingUp className="h-4 w-4 text-[#E8425A]" />
             </div>
             Recommendations
           </h3>
@@ -408,7 +408,7 @@ export default function AthleteAssessment() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.25_0.05_250)] via-[oklch(0.20_0.04_260)] to-[oklch(0.15_0.06_280)]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.18_0.01_25)] via-[oklch(0.15_0.005_0)] to-[oklch(0.12_0.01_20)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.45_0.15_250/0.15),transparent_60%)]" />
         <div className="container relative z-10 py-6">
           <Link href="/coach-dashboard">
@@ -459,8 +459,8 @@ export default function AthleteAssessment() {
           />
         ) : (
           <div className="text-center py-20">
-            <div className="h-20 w-20 rounded-full bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-white/[0.06] flex items-center justify-center mx-auto mb-4">
-              <FileText className="h-10 w-10 text-blue-400/60" />
+            <div className="h-20 w-20 rounded-full bg-gradient-to-br from-[#DC143C]/10 to-purple-500/10 border border-white/[0.06] flex items-center justify-center mx-auto mb-4">
+              <FileText className="h-10 w-10 text-[#E8425A]/60" />
             </div>
             <h3 className="text-xl font-heading font-bold mb-2">Select an Athlete</h3>
             <p className="text-muted-foreground max-w-md mx-auto">

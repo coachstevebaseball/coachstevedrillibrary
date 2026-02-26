@@ -30,18 +30,18 @@ const SESSION_TYPES = [
 const SCORE_KEYS = new Set(["planeScore", "connectionScore", "rotationScore"]);
 
 const METRIC_FIELDS = [
-  { key: "batSpeedMph", label: "Bat Speed", unit: "mph", placeholder: "65.0", icon: Zap, color: "text-blue-400" },
+  { key: "batSpeedMph", label: "Bat Speed", unit: "mph", placeholder: "65.0", icon: Zap, color: "text-[#E8425A]" },
   { key: "rotationalAccelerationG", label: "Rotational Accel", unit: "g", placeholder: "12.5", icon: Activity, color: "text-violet-400" },
   { key: "planeScore", label: "Plane Score", unit: "", placeholder: "78", icon: Target, color: "text-green-400" },
   { key: "connectionScore", label: "Connection Score", unit: "", placeholder: "82", icon: Crosshair, color: "text-yellow-400" },
   { key: "rotationScore", label: "Rotation Score", unit: "", placeholder: "75", icon: Gauge, color: "text-red-400" },
   { key: "powerKw", label: "Power", unit: "kW", placeholder: "1.85", icon: Zap, color: "text-pink-400" },
-  { key: "peakHandSpeedMph", label: "Peak Hand Speed", unit: "mph", placeholder: "22.0", icon: Zap, color: "text-cyan-400" },
+  { key: "peakHandSpeedMph", label: "Peak Hand Speed", unit: "mph", placeholder: "22.0", icon: Zap, color: "text-[#E8425A]" },
   { key: "onPlaneEfficiencyPercent", label: "On-Plane Efficiency", unit: "%", placeholder: "85.0", icon: Target, color: "text-teal-400" },
   { key: "attackAngleDeg", label: "Attack Angle", unit: "deg", placeholder: "10.5", icon: Target, color: "text-lime-400" },
   { key: "earlyConnectionDeg", label: "Early Connection", unit: "deg", placeholder: "95.0", icon: Crosshair, color: "text-amber-400" },
   { key: "connectionAtImpactDeg", label: "Connection at Impact", unit: "deg", placeholder: "90.0", icon: Crosshair, color: "text-orange-400" },
-  { key: "verticalBatAngleDeg", label: "Vertical Bat Angle", unit: "deg", placeholder: "-25.0", icon: Gauge, color: "text-indigo-400" },
+  { key: "verticalBatAngleDeg", label: "Vertical Bat Angle", unit: "deg", placeholder: "-25.0", icon: Gauge, color: "text-[#E8425A]" },
   { key: "timeToContactSec", label: "Time to Contact", unit: "sec", placeholder: "0.150", icon: Timer, color: "text-rose-400" },
 ] as const;
 
@@ -163,7 +163,7 @@ export function EditBlastSession({ open, onOpenChange, session, playerName }: Ed
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto bg-[#0f1225] border-white/10 text-white">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto bg-[#1a1a1a] border-white/10 text-white">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-white flex items-center gap-2">
             <Pencil className="h-5 w-5 text-amber-400" />

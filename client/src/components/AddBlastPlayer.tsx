@@ -70,7 +70,7 @@ export function AddBlastPlayer({ open, onOpenChange }: AddBlastPlayerProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-[#0f1225] border-white/10 text-white">
+      <DialogContent className="sm:max-w-md bg-[#1a1a1a] border-white/10 text-white">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-white flex items-center gap-2">
             <UserPlus className="h-5 w-5 text-violet-400" />
@@ -98,7 +98,7 @@ export function AddBlastPlayer({ open, onOpenChange }: AddBlastPlayerProps) {
 
           <div className="space-y-2">
             <Label className="text-white/70 text-sm flex items-center gap-1.5">
-              <Link2 className="h-3.5 w-3.5 text-electric-blue" />
+              <Link2 className="h-3.5 w-3.5 text-[#DC143C]" />
               Link to Portal Account
               <span className="text-white/30 font-normal">(optional)</span>
             </Label>

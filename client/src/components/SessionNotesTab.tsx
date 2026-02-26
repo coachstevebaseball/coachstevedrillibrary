@@ -191,7 +191,7 @@ export function SessionNotesTab({ initialAthleteId }: SessionNotesTabProps) {
           <Button
             size="sm"
             onClick={handleNewNote}
-            className="bg-electric-blue hover:bg-electric-blue/90 ml-auto"
+            className="bg-[#DC143C] hover:bg-[#DC143C]/90 ml-auto"
           >
             <Plus className="h-4 w-4 mr-1" />
             <span className="hidden sm:inline">New Session Note</span>
@@ -249,11 +249,11 @@ function AthleteSessionOverview({
             className="glass-card rounded-xl p-4 text-left hover:bg-white/[0.04] transition-all duration-200 group"
           >
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-electric-blue/20 to-cyan-500/20 flex items-center justify-center shrink-0">
-                <Users className="h-5 w-5 text-electric-blue" />
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center shrink-0">
+                <Users className="h-5 w-5 text-[#DC143C]" />
               </div>
               <div className="min-w-0">
-                <p className="font-heading font-bold text-sm truncate group-hover:text-electric-blue transition-colors">
+                <p className="font-heading font-bold text-sm truncate group-hover:text-[#DC143C] transition-colors">
                   {a.athleteName ?? "Unknown"}
                 </p>
                 <p className="text-xs text-muted-foreground">

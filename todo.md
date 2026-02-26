@@ -1447,3 +1447,24 @@
 - [x] Display streaks, badges, and progress visually
 - [x] Reward athletes for completing drills with points/badges
 - [x] Write vitest tests for gamification system
+
+## Drill Videos Database Table
+- [ ] Review existing drill data to identify video URL sources
+- [ ] Create drillVideos table in schema with drillId and videoUrl columns
+- [ ] Push migration to database
+- [ ] Populate table with existing video URLs from drill data
+- [ ] Write vitest tests for the new table
+
+## Coach Steve Baseball Color Rebrand
+- [x] Update global CSS theme variables in index.css (backgrounds to #1a1a1a/#2a2a2a, primary to #DC143C)
+- [x] Update hero section gradient text and badges to crimson
+- [x] Update all primary action buttons to crimson #DC143C with hover #B91030
+- [x] Update active tab states in Coach Dashboard to crimson
+- [x] Update active filter button states to crimson
+- [x] Update toggle switches to crimson when enabled
+- [x] Update card hover borders to crimson
+- [x] Update card backgrounds to #2a2a2a with border-white/10
+- [x] Update table header rows to #2a2a2a
+- [x] Preserve functional colors (Active/Inactive badges, difficulty badges, progress bars)
+- [x] Update text colors: headlines white, body gray-400, hover states crimson
+- [x] Verify all pages visually after changes

@@ -28,7 +28,7 @@ function getStatusConfig(status: string) {
     case "pending":
       return { label: "Queued", icon: Clock, color: "text-yellow-400", bg: "bg-yellow-500/20 border-yellow-500/30" };
     case "analyzing":
-      return { label: "AI Analyzing", icon: Loader2, color: "text-blue-400", bg: "bg-blue-500/20 border-blue-500/30", spin: true };
+      return { label: "AI Analyzing", icon: Loader2, color: "text-[#E8425A]", bg: "bg-[#DC143C]/20 border-[#DC143C]/30", spin: true };
     case "analyzed":
     case "reviewed":
       return { label: "Under Review", icon: Clock, color: "text-orange-400", bg: "bg-orange-500/20 border-orange-500/30" };

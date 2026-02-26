@@ -178,9 +178,9 @@ export function AthleteTable() {
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return <ArrowUpDown className="h-3 w-3 opacity-30" />;
     return sortDirection === "asc" ? (
-      <ArrowUp className="h-3 w-3 text-electric-blue" />
+      <ArrowUp className="h-3 w-3 text-[#DC143C]" />
     ) : (
-      <ArrowDown className="h-3 w-3 text-electric-blue" />
+      <ArrowDown className="h-3 w-3 text-[#DC143C]" />
     );
   };
 
@@ -247,8 +247,8 @@ export function AthleteTable() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
           <div>
             <h2 className="text-xl font-heading font-bold flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-electric-blue/20 to-cyan-500/20 flex items-center justify-center">
-                <Users className="h-4 w-4 text-electric-blue" />
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center">
+                <Users className="h-4 w-4 text-[#DC143C]" />
               </div>
               Athlete Directory
             </h2>
@@ -290,7 +290,7 @@ export function AthleteTable() {
                   : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] border border-transparent"
               }`}
             >
-              <f.icon className={`h-3 w-3 ${statusFilter === f.key ? (f.color || "text-electric-blue") : ""}`} />
+              <f.icon className={`h-3 w-3 ${statusFilter === f.key ? (f.color || "text-[#DC143C]") : ""}`} />
               {f.label}
               <span className="bg-white/[0.08] px-1.5 py-0.5 rounded text-[10px]">{f.count}</span>
             </button>
@@ -358,7 +358,7 @@ export function AthleteTable() {
                         <div className="flex items-center gap-2">
                           <div className={`h-7 w-7 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
                             athlete.isActiveClient
-                              ? "bg-gradient-to-br from-electric-blue/30 to-cyan-500/30 text-electric-blue"
+                              ? "bg-gradient-to-br from-[#DC143C]/30 to-[#DC143C]/30 text-[#DC143C]"
                               : athlete.type === "invite"
                               ? "bg-gradient-to-br from-amber-500/30 to-orange-500/30 text-amber-400"
                               : "bg-white/[0.08] text-muted-foreground"
@@ -406,7 +406,7 @@ export function AthleteTable() {
                           {athlete.totalDrills > 0 && (
                             <div className="w-12 h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
                               <div
-                                className="h-full rounded-full bg-gradient-to-r from-electric-blue to-cyan-400"
+                                className="h-full rounded-full bg-gradient-to-r from-[#DC143C] to-[#E8425A]"
                                 style={{ width: `${athlete.totalDrills > 0 ? (athlete.completedDrills / athlete.totalDrills) * 100 : 0}%` }}
                               />
                             </div>
@@ -438,7 +438,7 @@ export function AthleteTable() {
 
                       {/* Expand */}
                       <td className="px-3 py-3">
-                        <Eye className={`h-3.5 w-3.5 transition-all duration-200 ${expandedRow === athlete.id ? "text-electric-blue" : "text-muted-foreground/30"}`} />
+                        <Eye className={`h-3.5 w-3.5 transition-all duration-200 ${expandedRow === athlete.id ? "text-[#DC143C]" : "text-muted-foreground/30"}`} />
                       </td>
                     </tr>
 

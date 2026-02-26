@@ -47,15 +47,15 @@ export function VideoUrlManager({ drillId, drillName, currentVideoUrl, onSave }:
   };
 
   return (
-    <Card className="border-l-4 border-l-blue-500">
+    <Card className="border-l-4 border-l-[#DC143C]">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
-          <Video className="h-5 w-5 text-blue-500" />
+          <Video className="h-5 w-5 text-[#DC143C]" />
           Add Video to {drillName}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800 flex gap-2">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-800 flex gap-2">
           <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
           <div>
             <p className="font-semibold mb-1">Supported Platforms:</p>

@@ -22,13 +22,13 @@ import { RetroactiveBlastNotes } from "./RetroactiveBlastNotes";
 
 // Metric display config
 const METRIC_CONFIGS = {
-  batSpeed: { label: "Bat Speed", unit: "mph", key: "batSpeedMph", color: "#3b82f6", icon: Zap },
+  batSpeed: { label: "Bat Speed", unit: "mph", key: "batSpeedMph", color: "#DC143C", icon: Zap },
   rotAccel: { label: "Rotational Accel", unit: "g", key: "rotationalAccelerationG", color: "#8b5cf6", icon: Activity },
   planeScore: { label: "Plane Score", unit: "", key: "planeScore", color: "#10b981", icon: Target },
   connectionScore: { label: "Connection Score", unit: "", key: "connectionScore", color: "#f59e0b", icon: Crosshair },
   rotationScore: { label: "Rotation Score", unit: "", key: "rotationScore", color: "#ef4444", icon: Gauge },
   power: { label: "Power", unit: "kW", key: "powerKw", color: "#ec4899", icon: Zap },
-  peakHandSpeed: { label: "Peak Hand Speed", unit: "mph", key: "peakHandSpeedMph", color: "#06b6d4", icon: TrendingUp },
+  peakHandSpeed: { label: "Peak Hand Speed", unit: "mph", key: "peakHandSpeedMph", color: "#DC143C", icon: TrendingUp },
   attackAngle: { label: "Attack Angle", unit: "deg", key: "attackAngleDeg", color: "#84cc16", icon: Target },
   onPlaneEff: { label: "On-Plane Efficiency", unit: "%", key: "onPlaneEfficiencyPercent", color: "#14b8a6", icon: BarChart3 },
   timeToContact: { label: "Time to Contact", unit: "sec", key: "timeToContactSec", color: "#f97316", icon: Timer },
@@ -40,7 +40,7 @@ type MetricKey = keyof typeof METRIC_CONFIGS;
 function getScoreColor(score: number | null): string {
   if (score === null) return "text-muted-foreground";
   if (score >= 85) return "text-green-400";
-  if (score >= 70) return "text-blue-400";
+  if (score >= 70) return "text-[#E8425A]";
   if (score >= 55) return "text-yellow-400";
   return "text-red-400";
 }
@@ -159,7 +159,7 @@ export function BlastMetricsTab() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-heading font-bold text-white flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 flex items-center justify-center border border-violet-500/20">
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#DC143C]/20 to-fuchsia-500/20 flex items-center justify-center border border-violet-500/20">
                 <Activity className="h-5 w-5 text-violet-400" />
               </div>
               Blast Motion Metrics
@@ -214,7 +214,7 @@ export function BlastMetricsTab() {
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500/20 to-violet-500/20 flex items-center justify-center border border-white/10 text-white font-bold text-sm">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center border border-white/10 text-white font-bold text-sm">
                       {p.fullName.split(" ").map((n: string) => n[0]).join("").slice(0, 2)}
                     </div>
                     <div>
@@ -304,7 +304,7 @@ export function BlastMetricsTab() {
               onClick={() => setRetroNotesOpen(true)}
               size="sm"
               variant="outline"
-              className="h-8 text-xs text-blue-400 border-blue-500/30 hover:bg-blue-500/10"
+              className="h-8 text-xs text-[#E8425A] border-[#DC143C]/30 hover:bg-[#B91030]/10"
             >
               <FileText className="h-3.5 w-3.5 mr-1" />
               Sync Notes
@@ -334,8 +334,8 @@ export function BlastMetricsTab() {
       {overallAvgs && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {[
-            { label: "Bat Speed", value: `${overallAvgs.batSpeed.toFixed(1)}`, unit: "mph", color: "from-blue-500/20 to-blue-600/20", borderColor: "border-blue-500/20" },
-            { label: "Rot. Accel", value: `${overallAvgs.rotAccel.toFixed(1)}`, unit: "g", color: "from-violet-500/20 to-violet-600/20", borderColor: "border-violet-500/20" },
+            { label: "Bat Speed", value: `${overallAvgs.batSpeed.toFixed(1)}`, unit: "mph", color: "from-[#DC143C]/20 to-[#B91030]/20", borderColor: "border-[#DC143C]/20" },
+            { label: "Rot. Accel", value: `${overallAvgs.rotAccel.toFixed(1)}`, unit: "g", color: "from-[#DC143C]/20 to-violet-600/20", borderColor: "border-violet-500/20" },
             { label: "Plane", value: `${overallAvgs.planeScore}`, unit: "", color: "from-green-500/20 to-green-600/20", borderColor: "border-green-500/20" },
             { label: "Connection", value: `${overallAvgs.connectionScore}`, unit: "", color: "from-yellow-500/20 to-yellow-600/20", borderColor: "border-yellow-500/20" },
             { label: "Rotation", value: `${overallAvgs.rotationScore}`, unit: "", color: "from-red-500/20 to-red-600/20", borderColor: "border-red-500/20" },
@@ -517,7 +517,7 @@ export function BlastMetricsTab() {
         <Card className="bg-white/[0.04] border-white/[0.08]">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg text-white flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-blue-400" />
+              <BarChart3 className="h-5 w-5 text-[#E8425A]" />
               Averages by Session Type
             </CardTitle>
           </CardHeader>
@@ -545,7 +545,7 @@ export function BlastMetricsTab() {
                         </Badge>
                       </td>
                       <td className="text-center py-3 px-2 text-white/60">{avg.sessionCount}</td>
-                      <td className="text-center py-3 px-2 text-blue-400 font-medium">{avg.avgBatSpeed} mph</td>
+                      <td className="text-center py-3 px-2 text-[#E8425A] font-medium">{avg.avgBatSpeed} mph</td>
                       <td className="text-center py-3 px-2 text-violet-400 font-medium">{avg.avgRotAccel} g</td>
                       <td className="text-center py-3 px-2">
                         <span className={getScoreColor(avg.avgPlaneScore)}>{avg.avgPlaneScore}</span>
@@ -636,7 +636,7 @@ export function BlastMetricsTab() {
                           {s.sessionType}
                         </Badge>
                       </td>
-                      <td className="text-center py-3 px-2 text-blue-400 font-medium">
+                      <td className="text-center py-3 px-2 text-[#E8425A] font-medium">
                         {s.batSpeedMph ? `${parseFloat(s.batSpeedMph).toFixed(1)}` : "—"}
                       </td>
                       <td className="text-center py-3 px-2 text-violet-400 font-medium">

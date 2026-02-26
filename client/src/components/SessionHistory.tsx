@@ -24,9 +24,9 @@ import { BlastMetricsBadge } from "./BlastMetricsBadge";
 
 // Skill category colors (matching SessionNotesForm)
 const SKILL_COLORS: Record<string, string> = {
-  "Swing Mechanics": "bg-blue-500/20 text-blue-300 border-blue-500/30",
+  "Swing Mechanics": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
   "Pitch Recognition": "bg-purple-500/20 text-purple-300 border-purple-500/30",
-  "Plate Approach": "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
+  "Plate Approach": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
   "Fielding Fundamentals": "bg-green-500/20 text-green-300 border-green-500/30",
   "Throwing Mechanics": "bg-orange-500/20 text-orange-300 border-orange-500/30",
   "Base Running": "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
@@ -132,7 +132,7 @@ export function SessionHistory({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-6 w-6 animate-spin text-electric-blue" />
+        <Loader2 className="h-6 w-6 animate-spin text-[#DC143C]" />
         <span className="ml-2 text-muted-foreground">Loading sessions...</span>
       </div>
     );
@@ -151,7 +151,7 @@ export function SessionHistory({
         {onNewNote && (
           <Button
             onClick={onNewNote}
-            className="bg-electric-blue hover:bg-electric-blue/90"
+            className="bg-[#DC143C] hover:bg-[#DC143C]/90"
           >
             <Plus className="h-4 w-4 mr-2" />
             Log First Session
@@ -205,7 +205,7 @@ export function SessionHistory({
             <Button
               onClick={onNewNote}
               size="sm"
-              className="bg-electric-blue hover:bg-electric-blue/90"
+              className="bg-[#DC143C] hover:bg-[#DC143C]/90"
             >
               <Plus className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">New Note</span>
@@ -232,7 +232,7 @@ export function SessionHistory({
               <div
                 className={`absolute left-2.5 top-3 h-3 w-3 rounded-full border-2 transition-colors ${
                   isExpanded
-                    ? "bg-electric-blue border-electric-blue"
+                    ? "bg-[#DC143C] border-[#DC143C]"
                     : "bg-background border-white/20"
                 }`}
               />
@@ -240,7 +240,7 @@ export function SessionHistory({
               {/* Card */}
               <div
                 className={`glass-card rounded-xl overflow-hidden transition-all duration-200 ${
-                  isExpanded ? "ring-1 ring-electric-blue/30" : ""
+                  isExpanded ? "ring-1 ring-[#DC143C]/30" : ""
                 }`}
               >
                 {/* Collapsed header — always visible */}
@@ -343,7 +343,7 @@ export function SessionHistory({
                     {/* Homework Drills */}
                     {homeworkDrills.length > 0 && (
                       <div>
-                        <h4 className="text-xs font-semibold text-electric-blue uppercase tracking-wider mb-1.5">
+                        <h4 className="text-xs font-semibold text-[#DC143C] uppercase tracking-wider mb-1.5">
                           Homework Drills
                         </h4>
                         <div className="flex flex-wrap gap-1.5">
@@ -351,7 +351,7 @@ export function SessionHistory({
                             <Badge
                               key={d.drillId}
                               variant="secondary"
-                              className="bg-electric-blue/10 text-electric-blue border-electric-blue/20 text-xs"
+                              className="bg-[#DC143C]/10 text-[#DC143C] border-[#DC143C]/20 text-xs"
                             >
                               <Dumbbell className="h-3 w-3 mr-1" />
                               {d.drillName}
@@ -412,7 +412,7 @@ export function SessionHistory({
                         <Button
                           size="sm"
                           onClick={() => onGenerateReport(note.id)}
-                          className="bg-electric-blue hover:bg-electric-blue/90 text-xs"
+                          className="bg-[#DC143C] hover:bg-[#DC143C]/90 text-xs"
                         >
                           <FileText className="h-3.5 w-3.5 mr-1.5" />
                           Generate Report

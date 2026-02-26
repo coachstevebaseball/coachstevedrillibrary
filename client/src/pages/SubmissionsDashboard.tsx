@@ -408,9 +408,9 @@ export default function SubmissionsDashboard() {
                       <p className="text-sm font-semibold mb-2">Previous Feedback</p>
                       <div className="space-y-2 max-h-32 overflow-y-auto">
                         {feedbackList.map((feedback: any) => (
-                          <div key={feedback.id} className="p-2 bg-blue-50 rounded border border-blue-200">
-                            <p className="text-xs text-blue-900">{feedback.feedback}</p>
-                            <p className="text-xs text-blue-700 mt-1">
+                          <div key={feedback.id} className="p-2 bg-red-50 rounded border border-red-200">
+                            <p className="text-xs text-red-900">{feedback.feedback}</p>
+                            <p className="text-xs text-red-700 mt-1">
                               {new Date(feedback.createdAt).toLocaleString()}
                             </p>
                           </div>
