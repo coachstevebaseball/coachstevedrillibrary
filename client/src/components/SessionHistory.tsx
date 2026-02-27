@@ -320,25 +320,43 @@ export function SessionHistory({
                 {/* Expanded content */}
                 {isExpanded && (
                   <div className="px-3 md:px-4 pb-3 md:pb-4 space-y-3 border-t border-white/[0.06] pt-3 animate-in slide-in-from-top-2 duration-200">
-                    {/* What Improved */}
-                    <div>
-                      <h4 className="text-xs font-semibold text-green-400 uppercase tracking-wider mb-1">
-                        What Improved
-                      </h4>
-                      <p className="text-sm text-foreground/80 leading-relaxed">
-                        {note.whatImproved}
-                      </p>
-                    </div>
+                    {/* Blast notes show metrics only; regular notes show improved/needs work */}
+                    {note.blastSessionId ? (
+                      <div>
+                        <h4 className="text-xs font-semibold text-[#DC143C] uppercase tracking-wider mb-1">
+                          Session Blast Metrics
+                        </h4>
+                        <p className="text-sm text-foreground/80 leading-relaxed">
+                          {note.whatImproved}
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        {/* What Improved */}
+                        {note.whatImproved && (
+                          <div>
+                            <h4 className="text-xs font-semibold text-green-400 uppercase tracking-wider mb-1">
+                              What Improved
+                            </h4>
+                            <p className="text-sm text-foreground/80 leading-relaxed">
+                              {note.whatImproved}
+                            </p>
+                          </div>
+                        )}
 
-                    {/* What Needs Work */}
-                    <div>
-                      <h4 className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-1">
-                        What Needs Work
-                      </h4>
-                      <p className="text-sm text-foreground/80 leading-relaxed">
-                        {note.whatNeedsWork}
-                      </p>
-                    </div>
+                        {/* What Needs Work */}
+                        {note.whatNeedsWork && (
+                          <div>
+                            <h4 className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-1">
+                              What Needs Work
+                            </h4>
+                            <p className="text-sm text-foreground/80 leading-relaxed">
+                              {note.whatNeedsWork}
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    )}
 
                     {/* Homework Drills */}
                     {homeworkDrills.length > 0 && (

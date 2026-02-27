@@ -372,7 +372,7 @@ export const blastMetricsRouter = router({
           if (input.metrics.peakHandSpeedMph) metricsSummary.push(`Peak Hand Speed: ${input.metrics.peakHandSpeedMph} mph`);
 
           const metricsText = metricsSummary.length > 0
-            ? `Blast Metrics: ${metricsSummary.join(", ")}`
+            ? `Session Blast Metrics: ${metricsSummary.join(", ")}`
             : "Blast session recorded (no metrics entered)";
 
           const note = await sessionNotesDb.createSessionNote({
@@ -384,7 +384,7 @@ export const blastMetricsRouter = router({
             duration: null,
             skillsWorked: ["Swing Mechanics"],
             whatImproved: metricsText,
-            whatNeedsWork: "See Blast Motion metrics for details",
+            whatNeedsWork: "",
             homeworkDrills: [],
             overallRating: null,
             privateNotes: null,
@@ -474,10 +474,11 @@ export const blastMetricsRouter = router({
           if (m.powerKw) metricsSummary.push(`Power: ${m.powerKw} kW`);
           if (m.peakHandSpeedMph) metricsSummary.push(`Peak Hand Speed: ${m.peakHandSpeedMph} mph`);
           const metricsText = metricsSummary.length > 0
-            ? `Blast Metrics: ${metricsSummary.join(", ")}`
+            ? `Session Blast Metrics: ${metricsSummary.join(", ")}`
             : "Blast session recorded (no metrics entered)";
           await db.update(sessionNotes).set({
             whatImproved: metricsText,
+            whatNeedsWork: "",
             sessionLabel: `Blast ${input.sessionType || ""} Session`.trim(),
           }).where(eq(sessionNotes.id, linkedNote.id));
         }
@@ -579,7 +580,7 @@ export const blastMetricsRouter = router({
               if (m.rotationScore != null) metricsSummary.push(`Rotation: ${m.rotationScore}`);
               if (m.powerKw) metricsSummary.push(`Power: ${m.powerKw} kW`);
               const metricsText = metricsSummary.length > 0
-                ? `Blast Metrics: ${metricsSummary.join(", ")}`
+                ? `Session Blast Metrics: ${metricsSummary.join(", ")}`
                 : "Blast session recorded (no metrics entered)";
               await sessionNotesDb.createSessionNote({
                 coachId: ctx.user.id,
@@ -590,7 +591,7 @@ export const blastMetricsRouter = router({
                 duration: null,
                 skillsWorked: ["Swing Mechanics"],
                 whatImproved: metricsText,
-                whatNeedsWork: "See Blast Motion metrics for details",
+                whatNeedsWork: "",
                 homeworkDrills: [],
                 overallRating: null,
                 privateNotes: null,
@@ -731,7 +732,7 @@ export const blastMetricsRouter = router({
           if (s.rotationScore != null) metricsSummary.push(`Rotation: ${s.rotationScore}`);
           if (s.powerKw) metricsSummary.push(`Power: ${s.powerKw} kW`);
           const metricsText = metricsSummary.length > 0
-            ? `Blast Metrics: ${metricsSummary.join(", ")}`
+            ? `Session Blast Metrics: ${metricsSummary.join(", ")}`
             : "Blast session recorded (no metrics entered)";
 
           await sessionNotesDb.createSessionNote({
@@ -743,7 +744,7 @@ export const blastMetricsRouter = router({
             duration: null,
             skillsWorked: ["Swing Mechanics"],
             whatImproved: metricsText,
-            whatNeedsWork: "See Blast Motion metrics for details",
+            whatNeedsWork: "",
             homeworkDrills: [],
             overallRating: null,
             privateNotes: null,

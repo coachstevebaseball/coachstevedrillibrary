@@ -1468,3 +1468,8 @@
 - [x] Preserve functional colors (Active/Inactive badges, difficulty badges, progress bars)
 - [x] Update text colors: headlines white, body gray-400, hover states crimson
 - [x] Verify all pages visually after changes
+
+## Fix Blast Session Note Template
+- [x] Change auto-generated Blast session notes from fake "WHAT IMPROVED" / "WHAT NEEDS WORK" to "SESSION BLAST METRICS" with raw metrics
+- [x] Update retroactive note creation to use the same fixed template
+- [x] Verify existing notes display correctly

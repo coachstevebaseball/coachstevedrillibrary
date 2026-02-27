@@ -133,23 +133,40 @@ export function AthleteSessionNotes() {
                     </div>
                   )}
 
-                  {/* What improved */}
-                  <div className="bg-emerald-500/5 border border-emerald-500/15 rounded-lg p-3">
-                    <div className="flex items-center gap-1.5 mb-1.5">
-                      <TrendingUp className="h-3.5 w-3.5 text-emerald-400" />
-                      <span className="text-xs font-semibold text-emerald-400">What Improved</span>
+                  {/* Blast notes show metrics only; regular notes show improved/needs work */}
+                  {note.blastSessionId ? (
+                    <div className="bg-[#DC143C]/5 border border-[#DC143C]/15 rounded-lg p-3">
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <Zap className="h-3.5 w-3.5 text-[#DC143C]" />
+                        <span className="text-xs font-semibold text-[#DC143C]">Session Blast Metrics</span>
+                      </div>
+                      <p className="text-xs text-white/70 leading-relaxed">{note.whatImproved}</p>
                     </div>
-                    <p className="text-xs text-white/70 leading-relaxed">{note.whatImproved}</p>
-                  </div>
+                  ) : (
+                    <>
+                      {/* What improved */}
+                      {note.whatImproved && (
+                        <div className="bg-emerald-500/5 border border-emerald-500/15 rounded-lg p-3">
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <TrendingUp className="h-3.5 w-3.5 text-emerald-400" />
+                            <span className="text-xs font-semibold text-emerald-400">What Improved</span>
+                          </div>
+                          <p className="text-xs text-white/70 leading-relaxed">{note.whatImproved}</p>
+                        </div>
+                      )}
 
-                  {/* What needs work */}
-                  <div className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
-                    <div className="flex items-center gap-1.5 mb-1.5">
-                      <TrendingDown className="h-3.5 w-3.5 text-amber-400" />
-                      <span className="text-xs font-semibold text-amber-400">What to Work On</span>
-                    </div>
-                    <p className="text-xs text-white/70 leading-relaxed">{note.whatNeedsWork}</p>
-                  </div>
+                      {/* What needs work */}
+                      {note.whatNeedsWork && (
+                        <div className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <TrendingDown className="h-3.5 w-3.5 text-amber-400" />
+                            <span className="text-xs font-semibold text-amber-400">What to Work On</span>
+                          </div>
+                          <p className="text-xs text-white/70 leading-relaxed">{note.whatNeedsWork}</p>
+                        </div>
+                      )}
+                    </>
+                  )}
 
                   {/* Homework drills */}
                   {homework.length > 0 && (
