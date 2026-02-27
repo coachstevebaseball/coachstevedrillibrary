@@ -1506,3 +1506,6 @@
 - [x] Create or reuse backend mutation to save goal text
 - [x] Restrict editing to admin/coach roles only
 - [x] Write vitest tests for goal editing
+
+## Remove Drill (4 Corners)
+- [x] Remove "4 Corners" from all data files
