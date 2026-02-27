@@ -1473,3 +1473,6 @@
 - [x] Change auto-generated Blast session notes from fake "WHAT IMPROVED" / "WHAT NEEDS WORK" to "SESSION BLAST METRICS" with raw metrics
 - [x] Update retroactive note creation to use the same fixed template
 - [x] Verify existing notes display correctly
+
+## Remove Drill
+- [x] Remove "Advanced Batting Practice" from drill library data

@@ -231,17 +231,6 @@
     "is_direct_link": false
   },
   {
-    "id": "advanced-batting-practice",
-    "name": "Advanced Batting Practice",
-    "difficulty": "Hard",
-    "categories": [
-      "Hitting"
-    ],
-    "duration": "60m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=advanced-batting-practice",
-    "is_direct_link": false
-  },
-  {
     "id": "angle-flips",
     "name": "Angle Flips",
     "difficulty": "Medium",
