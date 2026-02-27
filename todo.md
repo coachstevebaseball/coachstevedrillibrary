@@ -1489,3 +1489,13 @@
 - [x] Remove "Team Situations" from all data files
 - [x] Remove "Execute - On the Field" from all data files
 - [x] Remove "Whiffle Ball Toss" from all data files
+
+## Fix Drill Library Navigation State Persistence
+- [x] Store page/category/search/sort in URL query string
+- [x] Parse URL query params on list page load and apply to UI controls
+- [x] Update URL when user changes page, category, search, or sort
+- [x] Drill card links preserve query string in detail URL
+- [x] Back button restores full list state from URL params
+- [x] Scroll position saved to sessionStorage keyed by query string
+- [x] Scroll position restored after list renders on Back navigation
+- [x] Write vitest tests for URL state parsing and navigation

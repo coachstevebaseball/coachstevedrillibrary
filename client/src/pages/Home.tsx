@@ -5,13 +5,12 @@ import { Search, LogIn, LogOut, Shield, Users, Activity, ChevronRight, Sparkles,
 import { HomePageSkeleton } from "@/components/Skeleton";
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
-import { ScrollRestoreLink } from "@/components/ScrollRestoreLink";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { trpc } from "@/lib/trpc";
 import { useAllDrills } from "@/hooks/useAllDrills";
 import { DrillEditModal } from "@/components/DrillEditModal";
 import { Pencil } from "lucide-react";
-import { useScrollRestoration } from "@/hooks/useScrollRestoration";
+import { useDrillListParams } from "@/hooks/useDrillListParams";
 
 interface Drill {
   id: string;
@@ -34,16 +33,46 @@ const DIFFICULTY_CONFIG: Record<string, { label: string; class: string; dotClass
 // Category config with icons
 const CATEGORIES = ["All", "Hitting", "Bunting", "Pitching", "Infield", "Outfield", "Catching", "Base Running"];
 
+/**
+ * Save scroll position to sessionStorage keyed by the current query string.
+ */
+function saveScrollPosition(queryKey: string) {
+  sessionStorage.setItem(`drill-scroll-${queryKey}`, String(window.scrollY));
+}
+
+/**
+ * Restore scroll position from sessionStorage for the given query key.
+ */
+function restoreScrollPosition(queryKey: string) {
+  const saved = sessionStorage.getItem(`drill-scroll-${queryKey}`);
+  if (saved) {
+    window.scrollTo(0, parseInt(saved, 10));
+  }
+}
+
 export default function Home() {
   const { user, loading, isAuthenticated, logout } = useAuth();
-  useScrollRestoration();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [difficultyFilter, setDifficultyFilter] = useState("All");
-  const [categoryFilter, setCategoryFilter] = useState("All");
-  const [currentPage, setCurrentPage] = useState(1);
+
+  // URL-synced filter/pagination state
+  const {
+    page: currentPage,
+    category: categoryFilter,
+    difficulty: difficultyFilter,
+    search: searchQuery,
+    sort,
+    setPage: setCurrentPage,
+    setCategory: setCategoryFilter,
+    setDifficulty: setDifficultyFilter,
+    setSearch: setSearchQuery,
+    setSort,
+    resetAll,
+    currentQuery,
+  } = useDrillListParams();
+
   const [scrollY, setScrollY] = useState(0);
   const heroRef = useRef<HTMLDivElement>(null);
   const DRILLS_PER_PAGE = 21;
+  const hasRestoredScroll = useRef(false);
 
   // Edit modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -92,10 +121,17 @@ export default function Home() {
   const startIndex = (currentPage - 1) * DRILLS_PER_PAGE;
   const paginatedDrills = filteredDrills.slice(startIndex, startIndex + DRILLS_PER_PAGE);
 
-  const handleFilterChange = (setter: any, value: any) => {
-    setCurrentPage(1);
-    setter(value);
-  };
+  // Restore scroll position after drills render (on back navigation)
+  useEffect(() => {
+    if (hasRestoredScroll.current) return;
+    if (paginatedDrills.length === 0) return;
+    hasRestoredScroll.current = true;
+    // Small delay to ensure DOM is painted
+    const timer = setTimeout(() => {
+      restoreScrollPosition(currentQuery || '__default__');
+    }, 80);
+    return () => clearTimeout(timer);
+  }, [paginatedDrills.length, currentQuery]);
 
   if (loading) return <HomePageSkeleton />;
 
@@ -150,6 +186,11 @@ export default function Home() {
       </div>
     );
   }
+
+  /** Handle drill card click: save scroll position, then navigate */
+  const handleDrillClick = (drillId: string) => {
+    saveScrollPosition(currentQuery || '__default__');
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -314,7 +355,7 @@ export default function Home() {
               {["All", "Easy", "Medium", "Hard"].map((level) => (
                 <button
                   key={level}
-                  onClick={() => handleFilterChange(setDifficultyFilter, level)}
+                  onClick={() => setDifficultyFilter(level)}
                   className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${
                     difficultyFilter === level
                       ? level === "Easy" ? "badge-easy"
@@ -335,7 +376,7 @@ export default function Home() {
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat}
-                  onClick={() => handleFilterChange(setCategoryFilter, cat)}
+                  onClick={() => setCategoryFilter(cat)}
                   className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${
                     categoryFilter === cat
                       ? "bg-electric text-white shadow-lg shadow-electric/25"
@@ -373,6 +414,9 @@ export default function Home() {
                   : null);
               const diffConfig = DIFFICULTY_CONFIG[displayDifficulty] || DIFFICULTY_CONFIG.Easy;
 
+              // Build drill detail URL preserving current query params
+              const drillDetailHref = `/drill/${drill.id}${currentQuery}`;
+
               return (
                 <div 
                   key={drill.id}
@@ -395,7 +439,11 @@ export default function Home() {
                     </button>
                   )}
 
-                  <ScrollRestoreLink href={`/drill/${drill.id}`} className="block h-full">
+                  <Link
+                    href={drillDetailHref}
+                    className="block h-full"
+                    onClick={() => handleDrillClick(drill.id)}
+                  >
                     <div className="glass-card rounded-xl overflow-hidden drill-card-hover cursor-pointer h-full flex flex-col">
                       {/* Card Image */}
                       <div className="relative h-44 bg-gradient-to-br from-card to-accent overflow-hidden">
@@ -442,7 +490,7 @@ export default function Home() {
                         {/* Category */}
                         <div className="flex items-center gap-1.5 mb-2">
                           <div className={`w-1.5 h-1.5 rounded-full ${diffConfig.dotClass}`} />
-                          <span className="text-electric text-[10px] font-bold uppercase tracking-widest">
+                          <span className="text-electric text-[10px] font-bold uppercase tracking-wider">
                             {displayCategory}
                           </span>
                         </div>
@@ -464,7 +512,7 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                  </ScrollRestoreLink>
+                  </Link>
                 </div>
               );
             })}
@@ -479,11 +527,7 @@ export default function Home() {
               No drills match your current filters. Try adjusting your search or filters.
             </p>
             <Button 
-              onClick={() => {
-                setSearchQuery("");
-                setDifficultyFilter("All");
-                setCategoryFilter("All");
-              }}
+              onClick={() => resetAll()}
               className="btn-premium text-white text-sm"
             >
               Clear All Filters

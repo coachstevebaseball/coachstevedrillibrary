@@ -5,7 +5,7 @@ import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink, Lock, LogIn, C
 import { getCategoryConfig } from "@/lib/categoryColors";
 import { getLoginUrl, PREVIEW_MODE } from "@/const";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { Link, useRoute } from "wouter";
+import { Link, useRoute, useSearch } from "wouter";
 import { useState, useMemo, useEffect } from "react";
 import drillsData from "@/data/drills.json";
 import { VideoPlayer } from "@/components/VideoPlayer";
@@ -1156,6 +1156,11 @@ export default function DrillDetail() {
   const { user, loading } = useAuth();
   const [match, params] = useRoute("/drill/:id");
   const id = params?.id;
+
+  // Preserve query params for back navigation to drill list
+  // wouter's useSearch() strips the '?' prefix, returning e.g. 'page=2&category=Hitting'
+  const searchString = useSearch();
+  const backHref = searchString ? `/?${searchString}` : '/';
   
   // Fetch custom drills from database
   const { data: customDrills = [] } = trpc.drillDetails.getCustomDrills.useQuery();
@@ -1300,7 +1305,7 @@ export default function DrillDetail() {
           </div>
           <h2 className="text-2xl font-heading font-bold">Drill not found</h2>
           <p className="text-muted-foreground">The drill you're looking for doesn't exist or has been removed.</p>
-          <Link href="/">
+          <Link href={backHref}>
             <Button variant="outline" className="gap-2">
               <ArrowLeft className="h-4 w-4" />
               Back to Directory
@@ -1339,7 +1344,7 @@ export default function DrillDetail() {
                   <p className="text-sm text-muted-foreground">
                     Your account does not have active client access. Please contact the administrator.
                   </p>
-                  <Link href="/">
+                  <Link href={backHref}>
                     <Button variant="outline">Return to Directory</Button>
                   </Link>
                 </div>
@@ -1356,7 +1361,7 @@ export default function DrillDetail() {
         <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.18_0.01_25)] via-[oklch(0.15_0.005_0)] to-[oklch(0.12_0.01_20)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.45_0.15_250/0.15),transparent_60%)]" />
         <div className="container relative z-10 py-6 md:py-10">
-          <Link href="/">
+          <Link href={backHref}>
             <Button variant="ghost" className="text-white/70 hover:text-white hover:bg-white/10 mb-4 pl-0 gap-2 text-sm">
               <ArrowLeft className="h-4 w-4" />
               <span className="hidden sm:inline">Back to Directory</span>
