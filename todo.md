@@ -1499,3 +1499,10 @@
 - [x] Scroll position saved to sessionStorage keyed by query string
 - [x] Scroll position restored after list renders on Back navigation
 - [x] Write vitest tests for URL state parsing and navigation
+
+## Inline Goal Editing on Original Drill Template
+- [x] Add inline edit button to Goal section on original drill template
+- [x] Implement click-to-edit UI for goal text (textarea with save/cancel)
+- [x] Create or reuse backend mutation to save goal text
+- [x] Restrict editing to admin/coach roles only
+- [x] Write vitest tests for goal editing

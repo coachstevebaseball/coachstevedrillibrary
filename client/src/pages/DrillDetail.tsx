@@ -12,7 +12,7 @@ import { VideoPlayer } from "@/components/VideoPlayer";
 import { EditDrillDetailsModal } from "@/components/EditDrillDetailsModal";
 import { InstructionsEditor } from "@/components/InstructionsEditor";
 import { trpc } from "@/lib/trpc";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, Pencil, Check, X } from "lucide-react";
 import { DrillQAForm } from "@/components/DrillQAForm";
 import { DrillPageBuilderNotion } from "@/components/DrillPageBuilderNotion";
 import { CustomDrillLayout } from "@/components/CustomDrillLayout";
@@ -1197,6 +1197,8 @@ export default function DrillDetail() {
   const [customInstructions, setCustomInstructions] = useState('');
   const [isSavingInstructions, setIsSavingInstructions] = useState(false);
   const [showPageBuilder, setShowPageBuilder] = useState(false);
+  const [isEditingGoal, setIsEditingGoal] = useState(false);
+  const [editGoalText, setEditGoalText] = useState('');
   
   // Load video from database
   const { data: videoData } = trpc.videos.getVideo.useQuery(
@@ -1280,6 +1282,37 @@ export default function DrillDetail() {
     } catch (error) {
       console.error('Failed to save instructions:', error);
     }
+  };
+
+  // Save goal inline
+  const saveGoalMutation = trpc.drillDetails.saveDrillInstructions.useMutation({
+    onSuccess: () => {
+      trpcUtils.drillDetails.getDrillDetail.invalidate({ drillId: id || '' });
+    }
+  });
+
+  const handleStartEditGoal = () => {
+    const goalText = details && typeof details === 'object' && 'goal' in details ? details.goal : '';
+    setEditGoalText(goalText || '');
+    setIsEditingGoal(true);
+  };
+
+  const handleSaveGoal = async () => {
+    if (!id) return;
+    try {
+      await saveGoalMutation.mutateAsync({
+        drillId: id,
+        goal: editGoalText,
+      });
+      setIsEditingGoal(false);
+    } catch (error) {
+      console.error('Failed to save goal:', error);
+    }
+  };
+
+  const handleCancelEditGoal = () => {
+    setIsEditingGoal(false);
+    setEditGoalText('');
   };
 
   // Check if user has access (or if preview mode is enabled)
@@ -1494,7 +1527,47 @@ export default function DrillDetail() {
                     </div>
                   )}
                 </div>
-                <p className="text-base md:text-lg font-medium text-foreground/90 leading-relaxed">{details.goal}</p>
+                {isEditingGoal ? (
+                  <div className="space-y-3">
+                    <textarea
+                      value={editGoalText}
+                      onChange={(e) => setEditGoalText(e.target.value)}
+                      className="w-full min-h-[80px] p-3 rounded-lg bg-background/80 border border-border text-base md:text-lg font-medium text-foreground/90 leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-[#DC143C]/50 focus:border-[#DC143C]"
+                      placeholder="Enter the goal of this drill..."
+                      autoFocus
+                    />
+                    <div className="flex items-center gap-2 justify-end">
+                      <button
+                        onClick={handleCancelEditGoal}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-muted hover:bg-muted/80 text-muted-foreground transition-colors text-sm font-medium"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleSaveGoal}
+                        disabled={saveGoalMutation.isPending}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#DC143C] hover:bg-[#DC143C]/90 text-white transition-colors text-sm font-medium disabled:opacity-50"
+                      >
+                        <Check className="h-3.5 w-3.5" />
+                        {saveGoalMutation.isPending ? 'Saving...' : 'Save'}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="group/goal relative">
+                    <p className="text-base md:text-lg font-medium text-foreground/90 leading-relaxed pr-8">{details.goal}</p>
+                    {user && (user.role === 'admin' || user.role === 'coach') && (
+                      <button
+                        onClick={handleStartEditGoal}
+                        className="absolute top-0 right-0 p-1.5 rounded-md opacity-0 group-hover/goal:opacity-100 hover:bg-muted/60 text-muted-foreground hover:text-foreground transition-all"
+                        title="Edit goal"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
