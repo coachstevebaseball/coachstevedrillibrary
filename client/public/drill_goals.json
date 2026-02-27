@@ -12,10 +12,6 @@
     "goal": "To force \"active\" visual tracking, ensuring the hitter's eyes are locked onto the ball's details rather than just its general path."
   },
   {
-    "drillName": "Cup Ball Game",
-    "goal": "To gamify barrel precision, challenging the hitter to manipulate the bat head to achieve a specific ball placement."
-  },
-  {
     "drillName": "Decline Swings",
     "goal": "To prevent \"drifting\" by using gravity to force the hitter to keep their weight centered over their back leg during the stride."
   },
@@ -156,18 +152,6 @@
     "goal": "To train visual recognition of pitching cues, teaching the hitter to stay back when they see \"slow\" arm action."
   },
   {
-    "drillName": "Offensive Stations - Tee and Live Hitting",
-    "goal": "To create a feedback loop where players immediately test \"tee feels\" against live velocity."
-  },
-  {
-    "drillName": "Offensive Stations – Cage Work and Baserunning",
-    "goal": "To build conditioning and the habit of transitioning instantly from hitter to aggressive baserunner."
-  },
-  {
-    "drillName": "One Cut Competition",
-    "goal": "To introduce max effort and competitive focus, training the hitter to produce their best swing on demand."
-  },
-  {
     "drillName": "One-Handed Hitting",
     "goal": "To isolate and identify weak links in the hand path, ensuring both hands are doing their specific jobs correctly."
   },
@@ -278,10 +262,6 @@
   {
     "drillName": "Weighted Ball Front Toss",
     "goal": "To teach \"hitting through\" the ball, as the heavy ball penalizes weak or arm-only swings."
-  },
-  {
-    "drillName": "Whiffle Ball Toss",
-    "goal": "To sharpen visual tracking and accuracy by practicing on a smaller, moving target."
   },
   {
     "drillName": "Wrist Strength Tee",

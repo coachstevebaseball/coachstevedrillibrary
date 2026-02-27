@@ -462,17 +462,6 @@
     "is_direct_link": false
   },
   {
-    "id": "beginners-batting-practice",
-    "name": "Beginner's Batting Practice",
-    "difficulty": "Easy",
-    "categories": [
-      "Hitting"
-    ],
-    "duration": "30m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=beginner's-batting-practice",
-    "is_direct_link": false
-  },
-  {
     "id": "behind-the-hitter-toss-1-2-3",
     "name": "Behind the Hitter Toss 1-2-3",
     "difficulty": "Hard",
@@ -624,17 +613,6 @@
     ],
     "duration": "5m",
     "url": "https://usabdevelops.com/page/1363/drills?q=crow-hops",
-    "is_direct_link": false
-  },
-  {
-    "id": "cup-ball-game",
-    "name": "Cup Ball Game",
-    "difficulty": "Easy",
-    "categories": [
-      "Hitting"
-    ],
-    "duration": "35m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=cup-ball-game",
     "is_direct_link": false
   },
   {
@@ -833,17 +811,6 @@
     ],
     "duration": "5m",
     "url": "https://usabdevelops.com/page/1363/drills?q=drop-step-groundballs",
-    "is_direct_link": false
-  },
-  {
-    "id": "execute-on-the-field",
-    "name": "Execute - On the Field",
-    "difficulty": "Easy",
-    "categories": [
-      "Infield"
-    ],
-    "duration": "30m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=execute---on-the-field",
     "is_direct_link": false
   },
   {
@@ -1221,17 +1188,6 @@
     "is_direct_link": false
   },
   {
-    "id": "indoor-facility-defensive-stations",
-    "name": "Indoor Facility Defensive Stations",
-    "difficulty": "Easy",
-    "categories": [
-      "Infield"
-    ],
-    "duration": "60m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=indoor-facility-defensive-stations",
-    "is_direct_link": false
-  },
-  {
     "id": "infield-hands-routine",
     "name": "Infield Hands Routine",
     "difficulty": "Easy",
@@ -1397,28 +1353,6 @@
     "is_direct_link": false
   },
   {
-    "id": "offensive-stations-tee-and-live-hitting",
-    "name": "Offensive Stations - Tee and Live Hitting",
-    "difficulty": "Easy",
-    "categories": [
-      "Hitting"
-    ],
-    "duration": "30m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=offensive-stations---tee-and-live-hitting",
-    "is_direct_link": false
-  },
-  {
-    "id": "offensive-stations-cage-work-and-baserunning",
-    "name": "Offensive Stations \u2013 Cage Work and Baserunning",
-    "difficulty": "Easy",
-    "categories": [
-      "Hitting"
-    ],
-    "duration": "35m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=offensive-stations-\u2013-cage-work-and-baserunning",
-    "is_direct_link": false
-  },
-  {
     "id": "on-the-run",
     "name": "On the Run",
     "difficulty": "Medium",
@@ -1438,17 +1372,6 @@
     ],
     "duration": "10m",
     "url": "https://usabdevelops.com/page/1363/drills?q=on-the-run-fungo",
-    "is_direct_link": false
-  },
-  {
-    "id": "one-cut-competition",
-    "name": "One Cut Competition",
-    "difficulty": "Hard",
-    "categories": [
-      "Hitting"
-    ],
-    "duration": "15m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=one-cut-competition",
     "is_direct_link": false
   },
   {
@@ -2013,28 +1936,6 @@
     "is_direct_link": false
   },
   {
-    "id": "team-bunting-stations",
-    "name": "Team Bunting Stations",
-    "difficulty": "Medium",
-    "categories": [
-      "Bunting"
-    ],
-    "duration": "20m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=team-bunting-stations",
-    "is_direct_link": false
-  },
-  {
-    "id": "team-situations",
-    "name": "Team Situations",
-    "difficulty": "Medium",
-    "categories": [
-      "Infield"
-    ],
-    "duration": "20m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=team-situations",
-    "is_direct_link": false
-  },
-  {
     "id": "tees-with-timing",
     "name": "Tees with Timing",
     "difficulty": "Easy",
@@ -2153,17 +2054,6 @@
     ],
     "duration": "10m",
     "url": "https://usabdevelops.com/page/1363/drills?q=weighted-ball-front-toss",
-    "is_direct_link": false
-  },
-  {
-    "id": "whiffle-ball-toss",
-    "name": "Whiffle Ball Toss",
-    "difficulty": "Easy",
-    "categories": [
-      "Hitting"
-    ],
-    "duration": "10m",
-    "url": "https://usabdevelops.com/page/1363/drills?q=whiffle-ball-toss",
     "is_direct_link": false
   },
   {

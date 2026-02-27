@@ -1476,3 +1476,16 @@
 
 ## Remove Drill
 - [x] Remove "Advanced Batting Practice" from drill library data
+
+## Remove Drills (Batch 2)
+- [x] Remove "Beginner's Batting Practice" from all data files
+- [x] Remove "Cup Ball Game" from all data files
+- [x] Remove "Offensive Stations - Tee and Live Hitting" from all data files
+- [x] Remove "Offensive Stations – Cage Work and Baserunning" from all data files
+- [x] Remove "Execute - On the Field Whiffle Ball Toss" from all data files
+- [x] Remove "One Cut Competition" from all data files
+- [x] Remove "Team Bunting Stations" from all data files
+- [x] Remove "Indoor Facility Defensive Stations" from all data files
+- [x] Remove "Team Situations" from all data files
+- [x] Remove "Execute - On the Field" from all data files
+- [x] Remove "Whiffle Ball Toss" from all data files

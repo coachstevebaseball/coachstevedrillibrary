@@ -240,11 +240,6 @@
     "description": "From an athletic fielding position, the player initiates the drill by taking a quick drop step with the foot corresponding to the direction of the groundball. This action involves opening the hips and stepping back to create a better angle to approach the ball. After the drop step, the player aggressively attacks the ball, fields it cleanly, and simulates a throw to the appropriate base."
   },
   {
-    "drillId": "execute-on-the-field",
-    "drillName": "Execute - On the Field",
-    "description": "This drill simulates live game situations, requiring infielders to field ground balls hit by a coach and make accurate throws to the correct base. Players should focus on anticipating the play, maintaining proper defensive posture, and executing a clean exchange from glove to hand. The objective is to complete each defensive opportunity successfully, reinforcing the importance of making routine plays consistently."
-  },
-  {
     "drillId": "flat-ground",
     "drillName": "Flat Ground",
     "description": "From a set position on a flat surface, the pitcher simulates a full throwing motion, focusing on a clean and repeatable arm action without the strain of a mound. The pitcher should concentrate on maintaining balance, achieving good extension toward the target, and finishing with a smooth, controlled follow-through. This drill emphasizes consistent mechanics over velocity, making it ideal for warm-ups and reinforcing proper form."
@@ -308,11 +303,6 @@
     "drillId": "hook-ems",
     "drillName": "Hook 'Ems",
     "description": "From the peak of your leg lift, focus on setting the angle of your hips by driving your back glute toward the target. This initial move should be the catalyst for your entire throwing motion, ensuring your lower half leads the way. By properly sequencing this movement, you will create a more powerful and efficient energy transfer from the ground up, leading to increased velocity and better command."
-  },
-  {
-    "drillId": "indoor-facility-defensive-stations",
-    "drillName": "Indoor Facility Defensive Stations",
-    "description": "Set up several stations in an indoor space, each targeting a specific infield skill. For instance, one station could focus on fielding groundballs rolled by a coach, another on receiving throws at a base, and a third on quick footwork through an agility ladder. Players rotate through each station, allowing for focused repetition on a variety of defensive fundamentals in a controlled setting."
   },
   {
     "drillId": "infield-hands-routine",
@@ -518,16 +508,6 @@
     "drillId": "tandem",
     "drillName": "Tandem",
     "description": "Two outfielders line up in a tandem position, one directly behind the other, spaced about 15-20 feet apart. On a ball hit into the gap, the lead outfielder pursues and fields the ball while the trailing outfielder moves into a direct line between the lead outfielder and the intended base. The lead outfielder makes a strong, accurate throw to the trailing outfielder who then acts as a relay to make the final throw to the base."
-  },
-  {
-    "drillId": "team-bunting-stations",
-    "drillName": "Team Bunting Stations",
-    "description": "Set up multiple stations around the infield, each focused on a specific bunting objective like sacrifice bunts, bunts for a hit, or drag bunts. Players rotate through each station, receiving pitches from a coach or machine and executing the designated bunt. This drill allows for high-repetition practice of various bunting techniques in a controlled setting."
-  },
-  {
-    "drillId": "team-situations",
-    "drillName": "Team Situations",
-    "description": "With infielders at every position, coaches will hit a variety of ground balls to initiate live game scenarios. Players must read the play, communicate with teammates, and execute the proper defensive assignments, such as turning a double play or making a force out. This drill emphasizes quick decision-making and fluid teamwork across the entire infield."
   },
   {
     "drillId": "upper-body-throwing",
