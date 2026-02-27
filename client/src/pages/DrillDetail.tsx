@@ -17,6 +17,8 @@ import { DrillQAForm } from "@/components/DrillQAForm";
 import { DrillPageBuilderNotion } from "@/components/DrillPageBuilderNotion";
 import { CustomDrillLayout } from "@/components/CustomDrillLayout";
 import { Layout } from "lucide-react";
+import { usePreviewLimit, MAX_FREE_PREVIEWS } from "@/hooks/usePreviewLimit";
+import { DrillPreviewWall } from "@/components/DrillPreviewWall";
 
 // Collapsible section component
 function CollapsibleSection({ title, icon: Icon, children, defaultOpen = false }: { title: string; icon: any; children: React.ReactNode; defaultOpen?: boolean }) {
@@ -1157,6 +1159,9 @@ export default function DrillDetail() {
   const [match, params] = useRoute("/drill/:id");
   const id = params?.id;
 
+  // Free preview tracking for unauthenticated visitors
+  const { viewedSlugs, remaining, isLimitReached, recordView, hasViewed } = usePreviewLimit();
+
   // Preserve query params for back navigation to drill list
   // wouter's useSearch() strips the '?' prefix, returning e.g. 'page=2&category=Hitting'
   const searchString = useSearch();
@@ -1318,6 +1323,23 @@ export default function DrillDetail() {
   // Check if user has access (or if preview mode is enabled)
   const hasAccess = PREVIEW_MODE || (user && (user.role === 'admin' || user.isActiveClient === 1));
 
+  // Free preview logic: unauthenticated visitors get 2 free drill views
+  // If they're logged in (any role), bypass the preview limit entirely
+  const isAnonymous = !user && !loading;
+  const currentSlugAlreadyViewed = id ? hasViewed(id) : false;
+  const showPreviewWall = isAnonymous && isLimitReached && !currentSlugAlreadyViewed;
+
+  // Record this drill view for anonymous users (only if they haven't hit the wall)
+  useEffect(() => {
+    if (isAnonymous && id && drill && !isLimitReached) {
+      recordView(id);
+    }
+    // Also allow viewing if they already viewed this slug before hitting limit
+    if (isAnonymous && id && drill && currentSlugAlreadyViewed) {
+      // No-op: they can revisit drills they already saw
+    }
+  }, [isAnonymous, id, drill?.name, isLimitReached, currentSlugAlreadyViewed]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -1349,10 +1371,22 @@ export default function DrillDetail() {
     );
   }
 
+  // Show the preview wall for anonymous users who have hit their free limit
+  if (showPreviewWall) {
+    return (
+      <DrillPreviewWall
+        drillName={drill.name}
+        viewedCount={viewedSlugs.length}
+        maxPreviews={MAX_FREE_PREVIEWS}
+        backHref={backHref}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background pb-8 md:pb-12">
-      {/* Access Control Check */}
-      {!hasAccess && (
+      {/* Access Control Check - for logged-in users without active client status */}
+      {!hasAccess && !isAnonymous && (
         <div className="container py-12">
           <Card className="max-w-2xl mx-auto border-2">
             <CardHeader className="text-center">
@@ -1388,7 +1422,7 @@ export default function DrillDetail() {
       )}
 
       {/* Header */}
-      {hasAccess && (
+      {(hasAccess || isAnonymous) && (
       <>
       <header className="relative overflow-hidden mb-6 md:mb-8">
         <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.18_0.01_25)] via-[oklch(0.15_0.005_0)] to-[oklch(0.12_0.01_20)]" />

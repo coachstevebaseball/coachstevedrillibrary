@@ -1517,3 +1517,11 @@
 - [x] Make closing motivational quote editable
 - [x] Modernize email template with premium aesthetic design
 - [x] Write vitest tests for editable report fields
+
+## 2 Free Drill Preview (Teaser for Unauthenticated Visitors)
+- [x] Create usePreviewLimit hook with localStorage tracking of viewed drill slugs
+- [x] Build DrillPreviewWall component (signup prompt when limit reached)
+- [x] Integrate preview gate into DrillDetail - show wall after 2 views for non-logged-in users
+- [x] Logged-in users bypass the limit entirely
+- [x] Drill directory list remains fully browsable for everyone
+- [x] Write vitest tests for preview limit logic
