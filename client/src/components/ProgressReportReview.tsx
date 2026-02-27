@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,6 +24,7 @@ import {
   FileText,
   Sparkles,
   RefreshCw,
+  X,
 } from "lucide-react";
 
 interface ReportContent {
@@ -35,6 +36,19 @@ interface ReportContent {
   playerNote: string;
   signOff: string;
 }
+
+/** Section heading labels — editable by the coach */
+interface SectionHeadings {
+  strengths: string;
+  areasForImprovement: string;
+  homeworkAndNextSteps: string;
+}
+
+const DEFAULT_HEADINGS: SectionHeadings = {
+  strengths: "What Stood Out",
+  areasForImprovement: "What We're Building On",
+  homeworkAndNextSteps: "Next Steps & Homework",
+};
 
 interface ProgressReportReviewProps {
   sessionNoteId: number;
@@ -56,26 +70,32 @@ export function ProgressReportReview({
   onBack,
   existingReportId,
 }: ProgressReportReviewProps) {
-
-  const [mode, setMode] = useState<"preview" | "edit">("preview");
   const [reportId, setReportId] = useState<number | null>(existingReportId ?? null);
   const [reportContent, setReportContent] = useState<ReportContent | null>(null);
-  const [reportHtml, setReportHtml] = useState<string>("");
+  const [sectionHeadings, setSectionHeadings] = useState<SectionHeadings>({ ...DEFAULT_HEADINGS });
   const [reportTitle, setReportTitle] = useState<string>("");
   const [status, setStatus] = useState<"draft" | "reviewed" | "sent">("draft");
   const [showSendDialog, setShowSendDialog] = useState(false);
   const [sendEmail, setSendEmail] = useState(initialParentEmail ?? "");
   const [sendName, setSendName] = useState(initialParentName ?? "");
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  // Track which field is currently being edited
+  const [editingField, setEditingField] = useState<string | null>(null);
 
   // Generate report mutation
   const generateMutation = trpc.progressReports.generate.useMutation({
     onSuccess: (data: any) => {
       setReportId(data.id);
       setReportContent(data.reportContent as ReportContent);
-      setReportHtml(data.reportHtml);
       setReportTitle(data.title);
       setStatus(data.status);
-      toast.success("Report generated — review and edit before sending.");
+      // Extract custom headings if stored
+      if (data.reportContent?.sectionHeadings) {
+        setSectionHeadings(data.reportContent.sectionHeadings);
+      }
+      setHasUnsavedChanges(false);
+      toast.success("Report generated — click any section to edit.");
     },
     onError: (err: any) => {
       toast.error(`Generation failed: ${err.message}`);
@@ -92,7 +112,8 @@ export function ProgressReportReview({
   const updateMutation = trpc.progressReports.update.useMutation({
     onSuccess: () => {
       toast.success("Report saved");
-      setMode("preview");
+      setHasUnsavedChanges(false);
+      if (status === "draft") setStatus("reviewed");
     },
     onError: (err: any) => {
       toast.error(`Save failed: ${err.message}`);
@@ -127,19 +148,39 @@ export function ProgressReportReview({
     if (existingReport.data) {
       const data = existingReport.data as any;
       setReportContent(data.reportContent as ReportContent);
-      setReportHtml(data.reportHtml);
       setReportTitle(data.title);
       setStatus(data.status);
+      if (data.reportContent?.sectionHeadings) {
+        setSectionHeadings(data.reportContent.sectionHeadings);
+      }
     }
   }, [existingReport.data]);
 
   const isLoading = generateMutation.isPending || existingReport.isLoading;
 
-  const handleSaveEdits = () => {
+  const handleFieldChange = (field: keyof ReportContent, value: string) => {
+    if (!reportContent) return;
+    setReportContent({ ...reportContent, [field]: value });
+    setHasUnsavedChanges(true);
+  };
+
+  const handleHeadingChange = (field: keyof SectionHeadings, value: string) => {
+    setSectionHeadings({ ...sectionHeadings, [field]: value });
+    setHasUnsavedChanges(true);
+  };
+
+  const handleTitleChange = (value: string) => {
+    setReportTitle(value);
+    setHasUnsavedChanges(true);
+  };
+
+  const handleSave = () => {
     if (!reportId || !reportContent) return;
+    // Store headings alongside content so they persist
+    const contentWithHeadings = { ...reportContent, sectionHeadings };
     updateMutation.mutate({
       id: reportId,
-      reportContent: reportContent as unknown as Record<string, string>,
+      reportContent: contentWithHeadings as unknown as Record<string, string>,
       status: "reviewed",
     });
     setStatus("reviewed");
@@ -147,6 +188,15 @@ export function ProgressReportReview({
 
   const handleSend = () => {
     if (!reportId || !sendEmail) return;
+    // Save before sending to ensure latest edits are persisted
+    if (hasUnsavedChanges && reportContent) {
+      const contentWithHeadings = { ...reportContent, sectionHeadings };
+      updateMutation.mutate({
+        id: reportId,
+        reportContent: contentWithHeadings as unknown as Record<string, string>,
+        status: "reviewed",
+      });
+    }
     sendMutation.mutate({
       reportId,
       parentEmail: sendEmail,
@@ -222,6 +272,11 @@ export function ProgressReportReview({
                 {status === "sent" ? "Sent" : status === "reviewed" ? "Reviewed" : "Draft"}
               </Badge>
               <span className="text-xs text-muted-foreground">{athleteName}</span>
+              {hasUnsavedChanges && (
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 text-[10px]">
+                  Unsaved changes
+                </Badge>
+              )}
             </div>
           </div>
         </div>
@@ -237,15 +292,10 @@ export function ProgressReportReview({
             <RefreshCw className={`h-3.5 w-3.5 mr-1 ${generateMutation.isPending ? "animate-spin" : ""}`} />
             Regenerate
           </Button>
-          {mode === "preview" ? (
-            <Button variant="outline" size="sm" onClick={() => setMode("edit")} className="h-8">
-              <Pencil className="h-3.5 w-3.5 mr-1" />
-              Edit
-            </Button>
-          ) : (
+          {hasUnsavedChanges && (
             <Button
               size="sm"
-              onClick={handleSaveEdits}
+              onClick={handleSave}
               disabled={updateMutation.isPending}
               className="h-8 bg-[#DC143C] hover:bg-[#DC143C]/90"
             >
@@ -269,128 +319,184 @@ export function ProgressReportReview({
         </div>
       </div>
 
-      {/* Report Content */}
-      {mode === "edit" ? (
-        <div className="space-y-4 glass-card rounded-xl p-6">
-          <p className="text-xs text-muted-foreground mb-2">
-            Edit each section below. Changes are saved when you click "Save".
-          </p>
+      {/* Inline hint */}
+      <p className="text-xs text-muted-foreground/70 flex items-center gap-1.5">
+        <Pencil className="h-3 w-3" />
+        Click any text below to edit it directly. All sections, headings, and the title are editable.
+      </p>
 
-          <EditableSection
-            label="Greeting"
+      {/* Report Preview — All sections are inline-editable */}
+      <div className="rounded-xl overflow-hidden shadow-2xl border border-white/[0.06]">
+        {/* Branded Header */}
+        <div className="bg-gradient-to-br from-[#0a1628] via-[#0f1f3d] to-[#1a2744] text-white px-8 py-10 text-center relative">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(96,165,250,0.08),transparent_50%)]" />
+          <div className="relative">
+            <h3 className="font-heading font-bold text-2xl mb-2 tracking-tight">Coach Steve</h3>
+            <p className="text-[11px] text-blue-400/80 font-semibold tracking-[0.2em] uppercase">
+              Division 1 All-American | Elite Player Development
+            </p>
+          </div>
+        </div>
+
+        {/* Meta bar — editable title */}
+        <div className="bg-gradient-to-r from-[#1e3a5f] to-[#1a3050] text-slate-400 px-8 py-3 flex justify-between items-center text-xs">
+          <InlineEditableText
+            value={reportTitle.split("—")[0]?.trim() || `${athleteName} — Session`}
+            onChange={(v) => handleTitleChange(v + (reportTitle.includes("—") ? " — " + reportTitle.split("—")[1]?.trim() : ""))}
+            className="text-slate-300 text-xs"
+            editingField={editingField}
+            setEditingField={setEditingField}
+            fieldId="meta-left"
+          />
+          <InlineEditableText
+            value={reportTitle.split("—")[1]?.trim() || ""}
+            onChange={(v) => handleTitleChange((reportTitle.split("—")[0]?.trim() || "") + " — " + v)}
+            className="text-slate-400 text-xs"
+            editingField={editingField}
+            setEditingField={setEditingField}
+            fieldId="meta-right"
+          />
+        </div>
+
+        {/* Report Body */}
+        <div className="px-8 py-8 space-y-5 bg-white dark:bg-[#0d1117]">
+          {/* Greeting */}
+          <InlineEditableText
             value={reportContent.greeting}
-            onChange={(v) => setReportContent({ ...reportContent, greeting: v })}
+            onChange={(v) => handleFieldChange("greeting", v)}
+            className="text-slate-700 dark:text-slate-300 leading-relaxed text-[15px]"
+            multiline
+            editingField={editingField}
+            setEditingField={setEditingField}
+            fieldId="greeting"
           />
-          <EditableSection
-            label="Session Summary"
+
+          {/* Session Summary */}
+          <InlineEditableText
             value={reportContent.sessionSummary}
-            onChange={(v) => setReportContent({ ...reportContent, sessionSummary: v })}
+            onChange={(v) => handleFieldChange("sessionSummary", v)}
+            className="text-slate-700 dark:text-slate-300 leading-relaxed text-[15px]"
             multiline
+            editingField={editingField}
+            setEditingField={setEditingField}
+            fieldId="sessionSummary"
           />
-          <EditableSection
-            label="What Stood Out (Strengths)"
-            value={reportContent.strengths}
-            onChange={(v) => setReportContent({ ...reportContent, strengths: v })}
-            multiline
-          />
-          <EditableSection
-            label="What We're Building On (Areas for Improvement)"
-            value={reportContent.areasForImprovement}
-            onChange={(v) => setReportContent({ ...reportContent, areasForImprovement: v })}
-            multiline
-          />
-          <EditableSection
-            label="Next Steps & Homework"
-            value={reportContent.homeworkAndNextSteps}
-            onChange={(v) => setReportContent({ ...reportContent, homeworkAndNextSteps: v })}
-            multiline
-          />
-          <EditableSection
-            label="Note to Player"
-            value={reportContent.playerNote}
-            onChange={(v) => setReportContent({ ...reportContent, playerNote: v })}
-            multiline
-          />
-          <EditableSection
-            label="Sign-Off"
-            value={reportContent.signOff}
-            onChange={(v) => setReportContent({ ...reportContent, signOff: v })}
-          />
+
+          {/* What Stood Out */}
+          <div className="pt-2">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="h-1 w-1 rounded-full bg-emerald-500" />
+              <InlineEditableText
+                value={sectionHeadings.strengths}
+                onChange={(v) => handleHeadingChange("strengths", v)}
+                className="text-[11px] font-bold uppercase tracking-[0.15em] text-emerald-600 dark:text-emerald-400"
+                editingField={editingField}
+                setEditingField={setEditingField}
+                fieldId="heading-strengths"
+              />
+            </div>
+            <div className="pl-3 border-l-2 border-emerald-200 dark:border-emerald-900/50">
+              <InlineEditableText
+                value={reportContent.strengths}
+                onChange={(v) => handleFieldChange("strengths", v)}
+                className="text-slate-700 dark:text-slate-300 leading-relaxed text-[15px]"
+                multiline
+                editingField={editingField}
+                setEditingField={setEditingField}
+                fieldId="strengths"
+              />
+            </div>
+          </div>
+
+          {/* What We're Building On */}
+          <div className="pt-2">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="h-1 w-1 rounded-full bg-amber-500" />
+              <InlineEditableText
+                value={sectionHeadings.areasForImprovement}
+                onChange={(v) => handleHeadingChange("areasForImprovement", v)}
+                className="text-[11px] font-bold uppercase tracking-[0.15em] text-amber-600 dark:text-amber-400"
+                editingField={editingField}
+                setEditingField={setEditingField}
+                fieldId="heading-improvement"
+              />
+            </div>
+            <div className="pl-3 border-l-2 border-amber-200 dark:border-amber-900/50">
+              <InlineEditableText
+                value={reportContent.areasForImprovement}
+                onChange={(v) => handleFieldChange("areasForImprovement", v)}
+                className="text-slate-700 dark:text-slate-300 leading-relaxed text-[15px]"
+                multiline
+                editingField={editingField}
+                setEditingField={setEditingField}
+                fieldId="areasForImprovement"
+              />
+            </div>
+          </div>
+
+          {/* Next Steps & Homework */}
+          <div className="pt-2">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="h-1 w-1 rounded-full bg-blue-500" />
+              <InlineEditableText
+                value={sectionHeadings.homeworkAndNextSteps}
+                onChange={(v) => handleHeadingChange("homeworkAndNextSteps", v)}
+                className="text-[11px] font-bold uppercase tracking-[0.15em] text-blue-600 dark:text-blue-400"
+                editingField={editingField}
+                setEditingField={setEditingField}
+                fieldId="heading-homework"
+              />
+            </div>
+            <div className="pl-3 border-l-2 border-blue-200 dark:border-blue-900/50">
+              <InlineEditableText
+                value={reportContent.homeworkAndNextSteps}
+                onChange={(v) => handleFieldChange("homeworkAndNextSteps", v)}
+                className="text-slate-700 dark:text-slate-300 leading-relaxed text-[15px]"
+                multiline
+                editingField={editingField}
+                setEditingField={setEditingField}
+                fieldId="homeworkAndNextSteps"
+              />
+            </div>
+          </div>
+
+          {/* Player Note */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border-l-4 border-blue-500 dark:border-blue-400 p-5 rounded-r-lg mt-6">
+            <InlineEditableText
+              value={reportContent.playerNote}
+              onChange={(v) => handleFieldChange("playerNote", v)}
+              className="text-blue-900 dark:text-blue-300 italic leading-relaxed text-[15px]"
+              multiline
+              editingField={editingField}
+              setEditingField={setEditingField}
+              fieldId="playerNote"
+            />
+          </div>
+
+          {/* Sign-Off */}
+          <div className="pt-4 mt-2 border-t border-slate-100 dark:border-slate-800">
+            <InlineEditableText
+              value={reportContent.signOff}
+              onChange={(v) => handleFieldChange("signOff", v)}
+              className="font-semibold text-slate-900 dark:text-slate-100 text-[15px]"
+              editingField={editingField}
+              setEditingField={setEditingField}
+              fieldId="signOff"
+            />
+            <p className="text-xs text-slate-500 dark:text-slate-500 mt-2 italic">
+              Coach Steve — Elite private hitting instruction in Westbury, NY. Building powerful, confident players through professional mechanics and mental preparation.
+            </p>
+          </div>
         </div>
-      ) : (
-        /* Preview Mode — render the report as it would appear in email */
-        <div className="glass-card rounded-xl overflow-hidden">
-          {/* Branded Header */}
-          <div className="bg-gradient-to-r from-[#1a1a1a] to-[#2a2a2a] text-white p-8 text-center">
-            <h3 className="font-heading font-bold text-xl mb-1">Coach Steve</h3>
-            <p className="text-xs text-[#E8425A] font-medium tracking-widest uppercase">
-              Elite Instruction. Measurable Growth.
-            </p>
-          </div>
 
-          {/* Meta bar */}
-          <div className="bg-[#1e3a5f] text-slate-400 px-8 py-3 flex justify-between text-xs">
-            <span>{athleteName} — {reportTitle.split("—")[0]?.trim()}</span>
-            <span>{reportTitle.split("—")[1]?.trim()}</span>
-          </div>
-
-          {/* Report Body */}
-          <div className="p-8 space-y-4 bg-white dark:bg-slate-950">
-            <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
-              {reportContent.greeting}
-            </p>
-            <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
-              {reportContent.sessionSummary}
-            </p>
-
-            <div>
-              <div className="text-[11px] font-bold uppercase tracking-widest text-green-600 mb-2 pb-1 border-b-2 border-green-200 dark:border-green-900">
-                What Stood Out
-              </div>
-              <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
-                {reportContent.strengths}
-              </p>
-            </div>
-
-            <div>
-              <div className="text-[11px] font-bold uppercase tracking-widest text-amber-600 mb-2 pb-1 border-b-2 border-amber-200 dark:border-amber-900">
-                What We're Building On
-              </div>
-              <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
-                {reportContent.areasForImprovement}
-              </p>
-            </div>
-
-            <div>
-              <div className="text-[11px] font-bold uppercase tracking-widest text-[#DC143C] mb-2 pb-1 border-b-2 border-red-200 dark:border-red-900">
-                Next Steps & Homework
-              </div>
-              <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
-                {reportContent.homeworkAndNextSteps}
-              </p>
-            </div>
-
-            {/* Player Note */}
-            <div className="bg-red-50 dark:bg-red-950/30 border-l-4 border-[#DC143C] p-4 rounded-r-lg">
-              <p className="text-red-800 dark:text-[#E8425A] italic leading-relaxed">
-                {reportContent.playerNote}
-              </p>
-            </div>
-
-            <p className="font-semibold text-slate-900 dark:text-slate-100 mt-6">
-              {reportContent.signOff}
-            </p>
-          </div>
-
-          {/* Branded Footer */}
-          <div className="bg-[#1a1a1a] text-center py-6 px-8">
-            <p className="text-[#E8425A] font-semibold text-sm">Coach Steve Goldstein</p>
-            <p className="text-slate-500 text-[11px] tracking-widest uppercase mt-1">
-              Elite Instruction. Measurable Growth.
-            </p>
-          </div>
+        {/* Branded Footer */}
+        <div className="bg-gradient-to-br from-[#0a1628] to-[#0f1f3d] text-center py-8 px-8">
+          <p className="text-blue-400 font-semibold text-sm tracking-wide">Coach Steve Goldstein</p>
+          <p className="text-slate-600 text-[10px] tracking-[0.2em] uppercase mt-1.5">
+            Elite Instruction. Measurable Growth.
+          </p>
         </div>
-      )}
+      </div>
 
       {/* Send Dialog */}
       <Dialog open={showSendDialog} onOpenChange={setShowSendDialog}>
@@ -454,37 +560,91 @@ export function ProgressReportReview({
   );
 }
 
-/** Editable section for inline editing mode */
-function EditableSection({
-  label,
+/** Inline editable text — click to edit, click away to stop editing */
+function InlineEditableText({
   value,
   onChange,
+  className = "",
   multiline = false,
+  editingField,
+  setEditingField,
+  fieldId,
 }: {
-  label: string;
   value: string;
   onChange: (v: string) => void;
+  className?: string;
   multiline?: boolean;
+  editingField: string | null;
+  setEditingField: (field: string | null) => void;
+  fieldId: string;
 }) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const isEditing = editingField === fieldId;
+
+  useEffect(() => {
+    if (isEditing) {
+      if (multiline && textareaRef.current) {
+        textareaRef.current.focus();
+        textareaRef.current.selectionStart = textareaRef.current.value.length;
+      } else if (!multiline && inputRef.current) {
+        inputRef.current.focus();
+        inputRef.current.selectionStart = inputRef.current.value.length;
+      }
+    }
+  }, [isEditing]);
+
+  // Auto-resize textarea
+  useEffect(() => {
+    if (isEditing && multiline && textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
+    }
+  }, [isEditing, value]);
+
+  if (isEditing) {
+    if (multiline) {
+      return (
+        <textarea
+          ref={textareaRef}
+          value={value}
+          onChange={(e) => {
+            onChange(e.target.value);
+            // Auto-resize
+            e.target.style.height = "auto";
+            e.target.style.height = e.target.scrollHeight + "px";
+          }}
+          onBlur={() => setEditingField(null)}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") setEditingField(null);
+          }}
+          className={`w-full bg-transparent border border-blue-400/40 dark:border-blue-500/30 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/30 resize-none ${className}`}
+          style={{ minHeight: "60px" }}
+        />
+      );
+    }
+    return (
+      <input
+        ref={inputRef}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onBlur={() => setEditingField(null)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === "Escape") setEditingField(null);
+        }}
+        className={`bg-transparent border border-blue-400/40 dark:border-blue-500/30 rounded-md px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500/30 ${className}`}
+      />
+    );
+  }
+
   return (
-    <div>
-      <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">
-        {label}
-      </label>
-      {multiline ? (
-        <Textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          rows={4}
-          className="bg-white/[0.04] border-white/[0.08] resize-y text-sm leading-relaxed"
-        />
-      ) : (
-        <Input
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="bg-white/[0.04] border-white/[0.08] text-sm"
-        />
-      )}
+    <div
+      onClick={() => setEditingField(fieldId)}
+      className={`cursor-pointer rounded-md px-2 py-1 -mx-2 -my-1 transition-all duration-150 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 hover:ring-1 hover:ring-blue-300/30 dark:hover:ring-blue-500/20 group relative ${className}`}
+      title="Click to edit"
+    >
+      {value || <span className="text-muted-foreground italic">Click to add text...</span>}
+      <Pencil className="h-3 w-3 absolute top-1 right-1 opacity-0 group-hover:opacity-60 text-blue-500 transition-opacity" />
     </div>
   );
 }
