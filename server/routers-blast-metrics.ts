@@ -90,19 +90,10 @@ export const blastMetricsRouter = router({
           id: blastSessions.id,
           sessionDate: blastSessions.sessionDate,
           sessionType: blastSessions.sessionType,
-          planeScore: blastMetrics.planeScore,
-          connectionScore: blastMetrics.connectionScore,
-          rotationScore: blastMetrics.rotationScore,
           batSpeedMph: blastMetrics.batSpeedMph,
-          rotationalAccelerationG: blastMetrics.rotationalAccelerationG,
           onPlaneEfficiencyPercent: blastMetrics.onPlaneEfficiencyPercent,
           attackAngleDeg: blastMetrics.attackAngleDeg,
-          earlyConnectionDeg: blastMetrics.earlyConnectionDeg,
-          connectionAtImpactDeg: blastMetrics.connectionAtImpactDeg,
-          verticalBatAngleDeg: blastMetrics.verticalBatAngleDeg,
-          powerKw: blastMetrics.powerKw,
-          timeToContactSec: blastMetrics.timeToContactSec,
-          peakHandSpeedMph: blastMetrics.peakHandSpeedMph,
+          exitVelocityMph: blastMetrics.exitVelocityMph,
           linkedNoteId: sessionNotes.id,
         })
         .from(blastSessions)
@@ -139,7 +130,6 @@ export const blastMetricsRouter = router({
       z.object({
         playerId: z.string(),
         sessionType: z.string().optional(),
-        metric: z.enum(["batSpeed", "rotationalAcceleration", "planeScore", "connectionScore", "rotationScore", "power"]).optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -158,14 +148,9 @@ export const blastMetricsRouter = router({
           sessionDate: blastSessions.sessionDate,
           sessionType: blastSessions.sessionType,
           batSpeedMph: blastMetrics.batSpeedMph,
-          rotationalAccelerationG: blastMetrics.rotationalAccelerationG,
-          planeScore: blastMetrics.planeScore,
-          connectionScore: blastMetrics.connectionScore,
-          rotationScore: blastMetrics.rotationScore,
-          powerKw: blastMetrics.powerKw,
           onPlaneEfficiencyPercent: blastMetrics.onPlaneEfficiencyPercent,
           attackAngleDeg: blastMetrics.attackAngleDeg,
-          peakHandSpeedMph: blastMetrics.peakHandSpeedMph,
+          exitVelocityMph: blastMetrics.exitVelocityMph,
         })
         .from(blastSessions)
         .leftJoin(blastMetrics, eq(blastMetrics.sessionId, blastSessions.id))
@@ -188,11 +173,9 @@ export const blastMetricsRouter = router({
         .select({
           sessionType: blastSessions.sessionType,
           avgBatSpeed: sql<string>`ROUND(AVG(CAST(${blastMetrics.batSpeedMph} AS DECIMAL(5,2))), 2)`,
-          avgRotAccel: sql<string>`ROUND(AVG(CAST(${blastMetrics.rotationalAccelerationG} AS DECIMAL(5,2))), 2)`,
-          avgPlaneScore: sql<number>`ROUND(AVG(${blastMetrics.planeScore}), 0)`,
-          avgConnectionScore: sql<number>`ROUND(AVG(${blastMetrics.connectionScore}), 0)`,
-          avgRotationScore: sql<number>`ROUND(AVG(${blastMetrics.rotationScore}), 0)`,
-          avgPower: sql<string>`ROUND(AVG(CAST(${blastMetrics.powerKw} AS DECIMAL(5,2))), 2)`,
+          avgOnPlaneEfficiency: sql<string>`ROUND(AVG(CAST(${blastMetrics.onPlaneEfficiencyPercent} AS DECIMAL(5,2))), 2)`,
+          avgAttackAngle: sql<string>`ROUND(AVG(CAST(${blastMetrics.attackAngleDeg} AS DECIMAL(5,2))), 2)`,
+          avgExitVelocity: sql<string>`ROUND(AVG(CAST(${blastMetrics.exitVelocityMph} AS DECIMAL(5,2))), 2)`,
           sessionCount: sql<number>`COUNT(*)`,
         })
         .from(blastSessions)
@@ -274,19 +257,10 @@ export const blastMetricsRouter = router({
           id: blastSessions.id,
           sessionDate: blastSessions.sessionDate,
           sessionType: blastSessions.sessionType,
-          planeScore: blastMetrics.planeScore,
-          connectionScore: blastMetrics.connectionScore,
-          rotationScore: blastMetrics.rotationScore,
           batSpeedMph: blastMetrics.batSpeedMph,
-          rotationalAccelerationG: blastMetrics.rotationalAccelerationG,
           onPlaneEfficiencyPercent: blastMetrics.onPlaneEfficiencyPercent,
           attackAngleDeg: blastMetrics.attackAngleDeg,
-          earlyConnectionDeg: blastMetrics.earlyConnectionDeg,
-          connectionAtImpactDeg: blastMetrics.connectionAtImpactDeg,
-          verticalBatAngleDeg: blastMetrics.verticalBatAngleDeg,
-          powerKw: blastMetrics.powerKw,
-          timeToContactSec: blastMetrics.timeToContactSec,
-          peakHandSpeedMph: blastMetrics.peakHandSpeedMph,
+          exitVelocityMph: blastMetrics.exitVelocityMph,
         })
         .from(blastSessions)
         .leftJoin(blastMetrics, eq(blastMetrics.sessionId, blastSessions.id))
@@ -304,19 +278,10 @@ export const blastMetricsRouter = router({
         sessionType: z.string(),
         createSessionNote: z.boolean().optional(), // explicitly opt-in/out
         metrics: z.object({
-          planeScore: z.number().optional(),
-          connectionScore: z.number().optional(),
-          rotationScore: z.number().optional(),
           batSpeedMph: z.string().optional(),
-          rotationalAccelerationG: z.string().optional(),
           onPlaneEfficiencyPercent: z.string().optional(),
           attackAngleDeg: z.string().optional(),
-          earlyConnectionDeg: z.string().optional(),
-          connectionAtImpactDeg: z.string().optional(),
-          verticalBatAngleDeg: z.string().optional(),
-          powerKw: z.string().optional(),
-          timeToContactSec: z.string().optional(),
-          peakHandSpeedMph: z.string().optional(),
+          exitVelocityMph: z.string().optional(),
         }),
       })
     )
@@ -334,19 +299,10 @@ export const blastMetricsRouter = router({
       });
       await db.insert(blastMetrics).values({
         sessionId,
-        planeScore: input.metrics.planeScore ?? null,
-        connectionScore: input.metrics.connectionScore ?? null,
-        rotationScore: input.metrics.rotationScore ?? null,
         batSpeedMph: input.metrics.batSpeedMph ?? null,
-        rotationalAccelerationG: input.metrics.rotationalAccelerationG ?? null,
         onPlaneEfficiencyPercent: input.metrics.onPlaneEfficiencyPercent ?? null,
         attackAngleDeg: input.metrics.attackAngleDeg ?? null,
-        earlyConnectionDeg: input.metrics.earlyConnectionDeg ?? null,
-        connectionAtImpactDeg: input.metrics.connectionAtImpactDeg ?? null,
-        verticalBatAngleDeg: input.metrics.verticalBatAngleDeg ?? null,
-        powerKw: input.metrics.powerKw ?? null,
-        timeToContactSec: input.metrics.timeToContactSec ?? null,
-        peakHandSpeedMph: input.metrics.peakHandSpeedMph ?? null,
+        exitVelocityMph: input.metrics.exitVelocityMph ?? null,
       });
 
       // Auto-create a linked session note if the player is linked to a portal user
@@ -364,13 +320,9 @@ export const blastMetricsRouter = router({
           // Build a summary of metrics for the session note
           const metricsSummary: string[] = [];
           if (input.metrics.batSpeedMph) metricsSummary.push(`Bat Speed: ${input.metrics.batSpeedMph} mph`);
-          if (input.metrics.rotationalAccelerationG) metricsSummary.push(`Rot. Accel: ${input.metrics.rotationalAccelerationG} g`);
-          if (input.metrics.planeScore != null) metricsSummary.push(`Plane: ${input.metrics.planeScore}`);
-          if (input.metrics.connectionScore != null) metricsSummary.push(`Connection: ${input.metrics.connectionScore}`);
-          if (input.metrics.rotationScore != null) metricsSummary.push(`Rotation: ${input.metrics.rotationScore}`);
-          if (input.metrics.powerKw) metricsSummary.push(`Power: ${input.metrics.powerKw} kW`);
-          if (input.metrics.peakHandSpeedMph) metricsSummary.push(`Peak Hand Speed: ${input.metrics.peakHandSpeedMph} mph`);
-
+          if (input.metrics.onPlaneEfficiencyPercent) metricsSummary.push(`OPE: ${input.metrics.onPlaneEfficiencyPercent}%`);
+          if (input.metrics.attackAngleDeg) metricsSummary.push(`Attack Angle: ${input.metrics.attackAngleDeg}°`);
+          if (input.metrics.exitVelocityMph) metricsSummary.push(`Exit Velo: ${input.metrics.exitVelocityMph} mph`);
           const metricsText = metricsSummary.length > 0
             ? `Session Blast Metrics: ${metricsSummary.join(", ")}`
             : "Blast session recorded (no metrics entered)";
@@ -406,19 +358,10 @@ export const blastMetricsRouter = router({
         sessionDate: z.string().optional(),
         sessionType: z.string().optional(),
         metrics: z.object({
-          planeScore: z.number().nullable().optional(),
-          connectionScore: z.number().nullable().optional(),
-          rotationScore: z.number().nullable().optional(),
           batSpeedMph: z.string().nullable().optional(),
-          rotationalAccelerationG: z.string().nullable().optional(),
           onPlaneEfficiencyPercent: z.string().nullable().optional(),
           attackAngleDeg: z.string().nullable().optional(),
-          earlyConnectionDeg: z.string().nullable().optional(),
-          connectionAtImpactDeg: z.string().nullable().optional(),
-          verticalBatAngleDeg: z.string().nullable().optional(),
-          powerKw: z.string().nullable().optional(),
-          timeToContactSec: z.string().nullable().optional(),
-          peakHandSpeedMph: z.string().nullable().optional(),
+          exitVelocityMph: z.string().nullable().optional(),
         }).optional(),
       })
     )
@@ -440,19 +383,10 @@ export const blastMetricsRouter = router({
       if (input.metrics) {
         const m = input.metrics;
         await db.update(blastMetrics).set({
-          planeScore: m.planeScore ?? null,
-          connectionScore: m.connectionScore ?? null,
-          rotationScore: m.rotationScore ?? null,
           batSpeedMph: m.batSpeedMph ?? null,
-          rotationalAccelerationG: m.rotationalAccelerationG ?? null,
           onPlaneEfficiencyPercent: m.onPlaneEfficiencyPercent ?? null,
           attackAngleDeg: m.attackAngleDeg ?? null,
-          earlyConnectionDeg: m.earlyConnectionDeg ?? null,
-          connectionAtImpactDeg: m.connectionAtImpactDeg ?? null,
-          verticalBatAngleDeg: m.verticalBatAngleDeg ?? null,
-          powerKw: m.powerKw ?? null,
-          timeToContactSec: m.timeToContactSec ?? null,
-          peakHandSpeedMph: m.peakHandSpeedMph ?? null,
+          exitVelocityMph: m.exitVelocityMph ?? null,
         }).where(eq(blastMetrics.sessionId, input.sessionId));
       }
 
@@ -467,12 +401,9 @@ export const blastMetricsRouter = router({
           const m = input.metrics;
           const metricsSummary: string[] = [];
           if (m.batSpeedMph) metricsSummary.push(`Bat Speed: ${m.batSpeedMph} mph`);
-          if (m.rotationalAccelerationG) metricsSummary.push(`Rot. Accel: ${m.rotationalAccelerationG} g`);
-          if (m.planeScore != null) metricsSummary.push(`Plane: ${m.planeScore}`);
-          if (m.connectionScore != null) metricsSummary.push(`Connection: ${m.connectionScore}`);
-          if (m.rotationScore != null) metricsSummary.push(`Rotation: ${m.rotationScore}`);
-          if (m.powerKw) metricsSummary.push(`Power: ${m.powerKw} kW`);
-          if (m.peakHandSpeedMph) metricsSummary.push(`Peak Hand Speed: ${m.peakHandSpeedMph} mph`);
+          if (m.onPlaneEfficiencyPercent) metricsSummary.push(`OPE: ${m.onPlaneEfficiencyPercent}%`);
+          if (m.attackAngleDeg) metricsSummary.push(`Attack Angle: ${m.attackAngleDeg}°`);
+          if (m.exitVelocityMph) metricsSummary.push(`Exit Velo: ${m.exitVelocityMph} mph`);
           const metricsText = metricsSummary.length > 0
             ? `Session Blast Metrics: ${metricsSummary.join(", ")}`
             : "Blast session recorded (no metrics entered)";
@@ -498,19 +429,10 @@ export const blastMetricsRouter = router({
             sessionDate: z.string(),
             sessionType: z.string(),
             metrics: z.object({
-              planeScore: z.number().optional(),
-              connectionScore: z.number().optional(),
-              rotationScore: z.number().optional(),
               batSpeedMph: z.string().optional(),
-              rotationalAccelerationG: z.string().optional(),
               onPlaneEfficiencyPercent: z.string().optional(),
               attackAngleDeg: z.string().optional(),
-              earlyConnectionDeg: z.string().optional(),
-              connectionAtImpactDeg: z.string().optional(),
-              verticalBatAngleDeg: z.string().optional(),
-              powerKw: z.string().optional(),
-              timeToContactSec: z.string().optional(),
-              peakHandSpeedMph: z.string().optional(),
+              exitVelocityMph: z.string().optional(),
             }),
           })
         ),
@@ -551,19 +473,10 @@ export const blastMetricsRouter = router({
           });
           await db.insert(blastMetrics).values({
             sessionId,
-            planeScore: s.metrics.planeScore ?? null,
-            connectionScore: s.metrics.connectionScore ?? null,
-            rotationScore: s.metrics.rotationScore ?? null,
             batSpeedMph: s.metrics.batSpeedMph ?? null,
-            rotationalAccelerationG: s.metrics.rotationalAccelerationG ?? null,
             onPlaneEfficiencyPercent: s.metrics.onPlaneEfficiencyPercent ?? null,
             attackAngleDeg: s.metrics.attackAngleDeg ?? null,
-            earlyConnectionDeg: s.metrics.earlyConnectionDeg ?? null,
-            connectionAtImpactDeg: s.metrics.connectionAtImpactDeg ?? null,
-            verticalBatAngleDeg: s.metrics.verticalBatAngleDeg ?? null,
-            powerKw: s.metrics.powerKw ?? null,
-            timeToContactSec: s.metrics.timeToContactSec ?? null,
-            peakHandSpeedMph: s.metrics.peakHandSpeedMph ?? null,
+            exitVelocityMph: s.metrics.exitVelocityMph ?? null,
           });
           imported++;
 
@@ -574,11 +487,9 @@ export const blastMetricsRouter = router({
               const m = s.metrics;
               const metricsSummary: string[] = [];
               if (m.batSpeedMph) metricsSummary.push(`Bat Speed: ${m.batSpeedMph} mph`);
-              if (m.rotationalAccelerationG) metricsSummary.push(`Rot. Accel: ${m.rotationalAccelerationG} g`);
-              if (m.planeScore != null) metricsSummary.push(`Plane: ${m.planeScore}`);
-              if (m.connectionScore != null) metricsSummary.push(`Connection: ${m.connectionScore}`);
-              if (m.rotationScore != null) metricsSummary.push(`Rotation: ${m.rotationScore}`);
-              if (m.powerKw) metricsSummary.push(`Power: ${m.powerKw} kW`);
+              if (m.onPlaneEfficiencyPercent) metricsSummary.push(`OPE: ${m.onPlaneEfficiencyPercent}%`);
+              if (m.attackAngleDeg) metricsSummary.push(`Attack Angle: ${m.attackAngleDeg}°`);
+              if (m.exitVelocityMph) metricsSummary.push(`Exit Velo: ${m.exitVelocityMph} mph`);
               const metricsText = metricsSummary.length > 0
                 ? `Session Blast Metrics: ${metricsSummary.join(", ")}`
                 : "Blast session recorded (no metrics entered)";
@@ -633,19 +544,10 @@ export const blastMetricsRouter = router({
         id: blastSessions.id,
         sessionDate: blastSessions.sessionDate,
         sessionType: blastSessions.sessionType,
-        planeScore: blastMetrics.planeScore,
-        connectionScore: blastMetrics.connectionScore,
-        rotationScore: blastMetrics.rotationScore,
         batSpeedMph: blastMetrics.batSpeedMph,
-        rotationalAccelerationG: blastMetrics.rotationalAccelerationG,
         onPlaneEfficiencyPercent: blastMetrics.onPlaneEfficiencyPercent,
         attackAngleDeg: blastMetrics.attackAngleDeg,
-        earlyConnectionDeg: blastMetrics.earlyConnectionDeg,
-        connectionAtImpactDeg: blastMetrics.connectionAtImpactDeg,
-        verticalBatAngleDeg: blastMetrics.verticalBatAngleDeg,
-        powerKw: blastMetrics.powerKw,
-        timeToContactSec: blastMetrics.timeToContactSec,
-        peakHandSpeedMph: blastMetrics.peakHandSpeedMph,
+        exitVelocityMph: blastMetrics.exitVelocityMph,
       })
       .from(blastSessions)
       .leftJoin(blastMetrics, eq(blastMetrics.sessionId, blastSessions.id))
@@ -685,18 +587,9 @@ export const blastMetricsRouter = router({
           sessionDate: blastSessions.sessionDate,
           sessionType: blastSessions.sessionType,
           batSpeedMph: blastMetrics.batSpeedMph,
-          rotationalAccelerationG: blastMetrics.rotationalAccelerationG,
-          planeScore: blastMetrics.planeScore,
-          connectionScore: blastMetrics.connectionScore,
-          rotationScore: blastMetrics.rotationScore,
-          powerKw: blastMetrics.powerKw,
-          peakHandSpeedMph: blastMetrics.peakHandSpeedMph,
           onPlaneEfficiencyPercent: blastMetrics.onPlaneEfficiencyPercent,
           attackAngleDeg: blastMetrics.attackAngleDeg,
-          earlyConnectionDeg: blastMetrics.earlyConnectionDeg,
-          connectionAtImpactDeg: blastMetrics.connectionAtImpactDeg,
-          verticalBatAngleDeg: blastMetrics.verticalBatAngleDeg,
-          timeToContactSec: blastMetrics.timeToContactSec,
+          exitVelocityMph: blastMetrics.exitVelocityMph,
         })
         .from(blastSessions)
         .leftJoin(blastMetrics, eq(blastMetrics.sessionId, blastSessions.id))
@@ -726,11 +619,9 @@ export const blastMetricsRouter = router({
           const sessionNumber = await sessionNotesDb.getNextSessionNumber(player.userId);
           const metricsSummary: string[] = [];
           if (s.batSpeedMph) metricsSummary.push(`Bat Speed: ${s.batSpeedMph} mph`);
-          if (s.rotationalAccelerationG) metricsSummary.push(`Rot. Accel: ${s.rotationalAccelerationG} g`);
-          if (s.planeScore != null) metricsSummary.push(`Plane: ${s.planeScore}`);
-          if (s.connectionScore != null) metricsSummary.push(`Connection: ${s.connectionScore}`);
-          if (s.rotationScore != null) metricsSummary.push(`Rotation: ${s.rotationScore}`);
-          if (s.powerKw) metricsSummary.push(`Power: ${s.powerKw} kW`);
+          if (s.onPlaneEfficiencyPercent) metricsSummary.push(`OPE: ${s.onPlaneEfficiencyPercent}%`);
+          if (s.attackAngleDeg) metricsSummary.push(`Attack Angle: ${s.attackAngleDeg}°`);
+          if (s.exitVelocityMph) metricsSummary.push(`Exit Velo: ${s.exitVelocityMph} mph`);
           const metricsText = metricsSummary.length > 0
             ? `Session Blast Metrics: ${metricsSummary.join(", ")}`
             : "Blast session recorded (no metrics entered)";

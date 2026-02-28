@@ -1531,3 +1531,11 @@
 - [x] Ensure anonymous users see content for first 2 drills then hit the wall on 3rd
 - [x] Ensure recordView fires correctly for anonymous visitors
 - [x] Browser test as anonymous user to verify wall appears (verified code logic; server session prevents full browser test)
+
+## Remove Unwanted Blast Metrics
+- [x] Keep only: Bat Speed, On Plane Efficiency, Attack Angle, Exit Velocity
+- [x] Remove all other metrics from DB schema (drizzle/schema.ts)
+- [x] Remove from server routers (input validation, queries)
+- [x] Remove from client UI (session forms, display components, Averages by Session Type table, CSV import help text)
+- [x] Push DB migration (dropped 10 columns, added exitVelocityMph)
+- [x] Run tests to verify (397 pass, 2 pre-existing failures unrelated to blast metrics)
