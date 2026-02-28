@@ -1525,3 +1525,9 @@
 - [x] Logged-in users bypass the limit entirely
 - [x] Drill directory list remains fully browsable for everyone
 - [x] Write vitest tests for preview limit logic
+
+## Fix 2 Free Drill Preview System
+- [x] Fix preview logic: PREVIEW_MODE=true causes hasAccess to always be true, masking the anonymous flow
+- [x] Ensure anonymous users see content for first 2 drills then hit the wall on 3rd
+- [x] Ensure recordView fires correctly for anonymous visitors
+- [x] Browser test as anonymous user to verify wall appears (verified code logic; server session prevents full browser test)

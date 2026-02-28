@@ -428,7 +428,7 @@ export const appRouter = router({
 
   // Drill details router
   drillDetails: router({
-    getDrillDetail: protectedProcedure
+    getDrillDetail: publicProcedure
       .input(z.object({ drillId: z.string() }))
       .query(async ({ input }) => {
         return await db.getDrillDetail(input.drillId);
@@ -566,7 +566,7 @@ export const appRouter = router({
 
   // Videos router
   videos: router({
-    getVideo: protectedProcedure
+    getVideo: publicProcedure
       .input(z.object({ drillId: z.string() }))
       .query(async ({ input }) => {
         return await db.getDrillVideo(input.drillId);
