@@ -26,6 +26,7 @@ import { BulkImportDrills } from "@/components/BulkImportDrills";
 import { SingleVideoUpload } from "@/components/SingleVideoUpload";
 import { AddNewDrill } from "@/components/AddNewDrill";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { InlineEdit } from "@/components/InlineEdit";
 
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
@@ -156,20 +157,18 @@ export default function AdminDashboard() {
         <div className="container py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-heading font-bold mb-2">Admin Dashboard</h1>
-              <p className="text-primary-foreground/80">
-                Manage client access to the drills directory
-              </p>
+              <InlineEdit contentKey="admin.title" defaultValue="Admin Dashboard" as="h1" className="text-3xl font-heading font-bold mb-2" />
+              <InlineEdit contentKey="admin.subtitle" defaultValue="Manage client access to the drills directory" as="p" className="text-primary-foreground/80" />
             </div>
             <div className="flex gap-3 flex-wrap">
               <AddNewDrill />
               <SingleVideoUpload />
               <BulkImportDrills />
               <Link href="/coach">
-                <Button variant="secondary">Coach Dashboard</Button>
+                <Button variant="secondary"><InlineEdit contentKey="admin.btn.coachDashboard" defaultValue="Coach Dashboard" as="span" /></Button>
               </Link>
               <Link href="/drills">
-                <Button variant="secondary">View Drills</Button>
+                <Button variant="secondary"><InlineEdit contentKey="admin.btn.viewDrills" defaultValue="View Drills" as="span" /></Button>
               </Link>
             </div>
           </div>
@@ -181,7 +180,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>Total Users</CardDescription>
+              <CardDescription><InlineEdit contentKey="admin.stat.totalUsers" defaultValue="Total Users" as="span" /></CardDescription>
               <CardTitle className="text-3xl flex items-center gap-2">
                 <Users className="h-6 w-6 text-muted-foreground" />
                 {totalUsers}
@@ -191,7 +190,7 @@ export default function AdminDashboard() {
 
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>Active Clients</CardDescription>
+              <CardDescription><InlineEdit contentKey="admin.stat.activeClients" defaultValue="Active Clients" as="span" /></CardDescription>
               <CardTitle className="text-3xl flex items-center gap-2 text-green-600">
                 <CheckCircle2 className="h-6 w-6" />
                 {activeClients}
@@ -201,7 +200,7 @@ export default function AdminDashboard() {
 
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>Inactive Clients</CardDescription>
+              <CardDescription><InlineEdit contentKey="admin.stat.inactiveClients" defaultValue="Inactive Clients" as="span" /></CardDescription>
               <CardTitle className="text-3xl flex items-center gap-2 text-muted-foreground">
                 <XCircle className="h-6 w-6" />
                 {totalUsers - activeClients}
@@ -213,21 +212,21 @@ export default function AdminDashboard() {
         {/* Users Table */}
         <Card>
           <CardHeader>
-            <CardTitle>Client Access Management</CardTitle>
+            <CardTitle><InlineEdit contentKey="admin.table.title" defaultValue="Client Access Management" as="span" /></CardTitle>
             <CardDescription>
-              Toggle client access to the drills directory. Only active clients can view drill content.
+              <InlineEdit contentKey="admin.table.desc" defaultValue="Toggle client access to the drills directory. Only active clients can view drill content." as="span" />
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Last Sign In</TableHead>
-                  <TableHead className="text-right">Access Control</TableHead>
+                  <TableHead><InlineEdit contentKey="admin.col.name" defaultValue="Name" as="span" /></TableHead>
+                  <TableHead><InlineEdit contentKey="admin.col.email" defaultValue="Email" as="span" /></TableHead>
+                  <TableHead><InlineEdit contentKey="admin.col.role" defaultValue="Role" as="span" /></TableHead>
+                  <TableHead><InlineEdit contentKey="admin.col.status" defaultValue="Status" as="span" /></TableHead>
+                  <TableHead><InlineEdit contentKey="admin.col.lastSignIn" defaultValue="Last Sign In" as="span" /></TableHead>
+                  <TableHead className="text-right"><InlineEdit contentKey="admin.col.accessControl" defaultValue="Access Control" as="span" /></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -287,9 +286,9 @@ export default function AdminDashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Mail className="h-5 w-5" />
-            Invite Athletes
+            <InlineEdit contentKey="admin.invite.title" defaultValue="Invite Athletes" as="span" />
           </CardTitle>
-          <CardDescription>Generate and manage athlete invitations</CardDescription>
+          <CardDescription><InlineEdit contentKey="admin.invite.desc" defaultValue="Generate and manage athlete invitations" as="span" /></CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Create Invite Form */}

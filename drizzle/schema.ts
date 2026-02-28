@@ -702,3 +702,21 @@ export const blastMetrics = mysqlTable("blastMetrics", {
 });
 export type BlastMetric = typeof blastMetrics.$inferSelect;
 export type InsertBlastMetric = typeof blastMetrics.$inferInsert;
+
+
+// ============================================================
+// Site Content — Inline-editable text overrides for the entire site
+// ============================================================
+export const siteContent = mysqlTable("siteContent", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Unique key identifying the text element, e.g. "home.hero.badge" or "coach.tab.blastMetrics" */
+  contentKey: varchar("contentKey", { length: 500 }).notNull().unique(),
+  /** The overridden text value */
+  value: text("value").notNull(),
+  /** Who last edited this content */
+  updatedBy: int("updatedBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type SiteContent = typeof siteContent.$inferSelect;
+export type InsertSiteContent = typeof siteContent.$inferInsert;

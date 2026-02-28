@@ -1,0 +1,87 @@
+import { createContext, useContext, useCallback, useMemo, type ReactNode } from "react";
+import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
+
+interface SiteContentContextValue {
+  /** Get the current value for a content key, falling back to the default */
+  get: (key: string, defaultValue: string) => string;
+  /** Update a content key (triggers optimistic update + server save) */
+  set: (key: string, value: string) => void;
+  /** Whether the current user can edit content */
+  canEdit: boolean;
+  /** Whether content is still loading */
+  isLoading: boolean;
+}
+
+const SiteContentContext = createContext<SiteContentContextValue>({
+  get: (_key, defaultValue) => defaultValue,
+  set: () => {},
+  canEdit: false,
+  isLoading: true,
+});
+
+export function SiteContentProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+  const canEdit = user?.role === "admin";
+
+  const utils = trpc.useUtils();
+  const { data: contentMap, isLoading } = trpc.siteContent.getAll.useQuery(undefined, {
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
+  });
+
+  const updateMutation = trpc.siteContent.update.useMutation({
+    onMutate: async ({ contentKey, value }) => {
+      // Cancel outgoing refetches
+      await utils.siteContent.getAll.cancel();
+      // Snapshot previous value
+      const prev = utils.siteContent.getAll.getData();
+      // Optimistically update
+      utils.siteContent.getAll.setData(undefined, (old) => ({
+        ...old,
+        [contentKey]: value,
+      }));
+      return { prev };
+    },
+    onError: (_err, _vars, context) => {
+      // Rollback on error
+      if (context?.prev) {
+        utils.siteContent.getAll.setData(undefined, context.prev);
+      }
+    },
+    onSettled: () => {
+      utils.siteContent.getAll.invalidate();
+    },
+  });
+
+  const get = useCallback(
+    (key: string, defaultValue: string): string => {
+      if (!contentMap) return defaultValue;
+      return contentMap[key] ?? defaultValue;
+    },
+    [contentMap]
+  );
+
+  const set = useCallback(
+    (key: string, value: string) => {
+      if (!canEdit) return;
+      updateMutation.mutate({ contentKey: key, value });
+    },
+    [canEdit, updateMutation]
+  );
+
+  const value = useMemo(
+    () => ({ get, set, canEdit, isLoading }),
+    [get, set, canEdit, isLoading]
+  );
+
+  return (
+    <SiteContentContext.Provider value={value}>
+      {children}
+    </SiteContentContext.Provider>
+  );
+}
+
+export function useSiteContent() {
+  return useContext(SiteContentContext);
+}

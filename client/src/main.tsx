@@ -8,6 +8,7 @@ import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
 import "./styles/mobile-optimizations.css";
+import { SiteContentProvider } from "@/contexts/SiteContentContext";
 
 const queryClient = new QueryClient();
 
@@ -56,7 +57,9 @@ const trpcClient = trpc.createClient({
 createRoot(document.getElementById("root")!).render(
   <trpc.Provider client={trpcClient} queryClient={queryClient}>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <SiteContentProvider>
+        <App />
+      </SiteContentProvider>
     </QueryClientProvider>
   </trpc.Provider>
 );

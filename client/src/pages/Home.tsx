@@ -11,6 +11,7 @@ import { useAllDrills } from "@/hooks/useAllDrills";
 import { DrillEditModal } from "@/components/DrillEditModal";
 import { Pencil } from "lucide-react";
 import { useDrillListParams } from "@/hooks/useDrillListParams";
+import { InlineEdit } from "@/components/InlineEdit";
 
 interface Drill {
   id: string;
@@ -281,42 +282,33 @@ export default function Home() {
             <div className="flex justify-center mb-6 animate-fade-in-down stagger-1">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-electric/20 bg-electric/5 backdrop-blur-sm">
                 <div className="w-1.5 h-1.5 rounded-full bg-electric animate-pulse-glow" />
-                <span className="text-electric text-xs font-semibold tracking-wider uppercase">Player Development Platform</span>
+                <InlineEdit contentKey="home.hero.badge" defaultValue="Player Development Platform" as="span" className="text-electric text-xs font-semibold tracking-wider uppercase" />
               </div>
             </div>
             
             {/* Main heading */}
             <div className="animate-fade-in-up stagger-2">
               <h1 className="font-heading font-black tracking-tight leading-none">
-                <span className="block text-foreground text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
-                  UNLEASH YOUR
-                </span>
-                <span className="block text-6xl sm:text-7xl md:text-8xl lg:text-9xl mt-1 text-gradient">
-                  POTENTIAL
-                </span>
+                <InlineEdit contentKey="home.hero.headline1" defaultValue="UNLEASH YOUR" as="span" className="block text-foreground text-5xl sm:text-6xl md:text-7xl lg:text-8xl" />
+                <InlineEdit contentKey="home.hero.headline2" defaultValue="POTENTIAL" as="span" className="block text-6xl sm:text-7xl md:text-8xl lg:text-9xl mt-1 text-gradient" />
               </h1>
             </div>
             
-            <h2 className="text-sm md:text-lg text-muted-foreground mt-6 mb-8 max-w-xl mx-auto leading-relaxed animate-fade-in-up stagger-3 font-normal">
-              Professional training drills designed to build{" "}
-              <span className="text-foreground font-semibold">elite mechanics</span>,{" "}
-              <span className="text-foreground font-semibold">explosive power</span>, and{" "}
-              <span className="text-foreground font-semibold">game-ready confidence</span>.
-            </h2>
+            <InlineEdit contentKey="home.hero.tagline" defaultValue="Professional training drills designed to build elite mechanics, explosive power, and game-ready confidence." as="h2" className="text-sm md:text-lg text-muted-foreground mt-6 mb-8 max-w-xl mx-auto leading-relaxed animate-fade-in-up stagger-3 font-normal" />
             
             {/* Stats row */}
             <div className="flex justify-center gap-8 md:gap-12 animate-fade-in-up stagger-4">
               {[
-                { value: `${allDrills.length}+`, label: "Drills", icon: Target },
-                { value: "8", label: "Categories", icon: Sparkles },
-                { value: "3", label: "Levels", icon: TrendingUp },
+                { valueKey: "home.stat.drills.value", valueDefault: `${allDrills.length}+`, labelKey: "home.stat.drills.label", labelDefault: "Drills", icon: Target },
+                { valueKey: "home.stat.categories.value", valueDefault: "8", labelKey: "home.stat.categories.label", labelDefault: "Categories", icon: Sparkles },
+                { valueKey: "home.stat.levels.value", valueDefault: "3", labelKey: "home.stat.levels.label", labelDefault: "Levels", icon: TrendingUp },
               ].map((stat, i) => (
                 <div key={i} className="text-center">
                   <div className="flex items-center justify-center gap-1.5 mb-1">
                     <stat.icon className="h-4 w-4 text-electric" />
-                    <span className="text-2xl md:text-3xl font-heading font-bold text-foreground">{stat.value}</span>
+                    <InlineEdit contentKey={stat.valueKey} defaultValue={stat.valueDefault} as="span" className="text-2xl md:text-3xl font-heading font-bold text-foreground" />
                   </div>
-                  <span className="text-xs text-muted-foreground uppercase tracking-wider">{stat.label}</span>
+                  <InlineEdit contentKey={stat.labelKey} defaultValue={stat.labelDefault} as="span" className="text-xs text-muted-foreground uppercase tracking-wider" />
                 </div>
               ))}
             </div>
@@ -393,7 +385,7 @@ export default function Home() {
         {/* Results Header */}
         <div className="flex items-center justify-between mb-6 max-w-5xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
           <div className="flex items-center gap-3">
-            <h2 className="text-xl font-heading font-bold text-foreground">Training Library</h2>
+            <InlineEdit contentKey="home.section.trainingLibrary" defaultValue="Training Library" as="h2" className="text-xl font-heading font-bold text-foreground" />
             <span className="text-xs font-semibold text-electric bg-electric/10 px-2.5 py-1 rounded-full">
               {filteredDrills.length} drills
             </span>
@@ -469,9 +461,7 @@ export default function Home() {
                         
                         {/* Difficulty Badge */}
                         <div className="absolute top-3 right-3">
-                          <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${diffConfig.class}`}>
-                            {displayDifficulty}
-                          </span>
+                          <InlineEdit contentKey={`drill.card.${drill.id}.difficulty`} defaultValue={displayDifficulty} as="span" className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${diffConfig.class}`} />
                         </div>
                         
                         {/* Duration badge */}
@@ -479,7 +469,7 @@ export default function Home() {
                           <div className="absolute bottom-3 right-3">
                             <span className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium bg-black/50 text-white/80 backdrop-blur-sm">
                               <Clock className="h-2.5 w-2.5" />
-                              {drill.duration}
+                              <InlineEdit contentKey={`drill.card.${drill.id}.duration`} defaultValue={drill.duration} as="span" />
                             </span>
                           </div>
                         )}
@@ -490,25 +480,19 @@ export default function Home() {
                         {/* Category */}
                         <div className="flex items-center gap-1.5 mb-2">
                           <div className={`w-1.5 h-1.5 rounded-full ${diffConfig.dotClass}`} />
-                          <span className="text-electric text-[10px] font-bold uppercase tracking-wider">
-                            {displayCategory}
-                          </span>
+                          <InlineEdit contentKey={`drill.card.${drill.id}.category`} defaultValue={displayCategory} as="span" className="text-electric text-[10px] font-bold uppercase tracking-wider" />
                         </div>
                         
                         {/* Title */}
-                        <h3 className="text-base font-heading font-bold text-foreground mb-2 group-hover:text-electric transition-colors duration-300 leading-tight">
-                          {drill.name}
-                        </h3>
+                        <InlineEdit contentKey={`drill.card.${drill.id}.title`} defaultValue={drill.name} as="h3" className="text-base font-heading font-bold text-foreground mb-2 group-hover:text-electric transition-colors duration-300 leading-tight" />
                         
                         {/* Description */}
-                        <p className="text-xs text-muted-foreground mb-3 flex-1 line-clamp-2 leading-relaxed">
-                          {displayDescription}
-                        </p>
+                        <InlineEdit contentKey={`drill.card.${drill.id}.description`} defaultValue={displayDescription} as="p" className="text-xs text-muted-foreground mb-3 flex-1 line-clamp-2 leading-relaxed" />
                         
                         {/* Footer */}
                         <div className="flex items-center text-muted-foreground group-hover:text-electric transition-all duration-300 pt-2 border-t border-border/30">
-                          <span className="text-xs font-semibold">View Details</span>
-                          <ChevronRight className="h-3.5 w-3.5 ml-auto group-hover:translate-x-1 transition-transform duration-300" />
+                          <InlineEdit contentKey="home.card.viewDetails" defaultValue="View Details" as="span" className="text-xs font-semibold" />
+                          <ChevronRight className="h-3.5 w-3.5 ml-auto group-hover:translate-x-1 transition-transform duration-300" />  
                         </div>
                       </div>
                     </div>
@@ -599,12 +583,12 @@ export default function Home() {
                 CS
               </div>
               <div>
-                <h3 className="font-heading font-bold text-sm text-foreground">USA Baseball Drills Directory</h3>
-                <p className="text-xs text-muted-foreground">Coach Steve Baseball — Player Drill Library</p>
+                <InlineEdit contentKey="home.footer.title" defaultValue="USA Baseball Drills Directory" as="h3" className="font-heading font-bold text-sm text-foreground" />
+                <InlineEdit contentKey="home.footer.subtitle" defaultValue="Coach Steve Baseball — Player Drill Library" as="p" className="text-xs text-muted-foreground" />
               </div>
             </div>
             <div className="text-xs text-muted-foreground text-center md:text-right">
-              <p>Data sourced from USA Baseball Mobile Coach.</p>
+              <InlineEdit contentKey="home.footer.source" defaultValue="Data sourced from USA Baseball Mobile Coach." as="p" />
               <p className="mt-0.5">&copy; {new Date().getFullYear()} All rights reserved.</p>
             </div>
           </div>

@@ -19,6 +19,7 @@ import { CustomDrillLayout } from "@/components/CustomDrillLayout";
 import { Layout } from "lucide-react";
 import { usePreviewLimit, MAX_FREE_PREVIEWS } from "@/hooks/usePreviewLimit";
 import { DrillPreviewWall } from "@/components/DrillPreviewWall";
+import { InlineEdit } from "@/components/InlineEdit";
 
 // Collapsible section component
 function CollapsibleSection({ title, icon: Icon, children, defaultOpen = false }: { title: string; icon: any; children: React.ReactNode; defaultOpen?: boolean }) {
@@ -1451,7 +1452,7 @@ export default function DrillDetail() {
                   </Badge>
                 ))}
               </div>
-              <h1 className="text-3xl md:text-5xl font-heading font-black text-white leading-tight tracking-tight">{drill.name}</h1>
+              <InlineEdit contentKey={`drill.detail.${id}.title`} defaultValue={drill.name} as="h1" className="text-3xl md:text-5xl font-heading font-black text-white leading-tight tracking-tight" />
             </div>
             
             <div className="flex gap-2 w-full md:w-auto">
@@ -1533,7 +1534,7 @@ export default function DrillDetail() {
                     <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center">
                       <Lightbulb className="h-4 w-4 text-[#E8425A]" />
                     </div>
-                    Goal of Drill
+                    <InlineEdit contentKey={`drill.detail.${id}.goalHeading`} defaultValue="Goal of Drill" as="span" />
                   </h3>
                   {user && (user.role === 'admin' || user.role === 'coach') && (
                     <div className="flex gap-2">
@@ -1610,30 +1611,30 @@ export default function DrillDetail() {
               <div className="glass-card rounded-xl p-3 md:p-4">
                 <div className="flex items-center gap-1.5 mb-1">
                   <Clock className="h-3.5 w-3.5 text-[#E8425A]" />
-                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Time</span>
+                  <InlineEdit contentKey={`drill.detail.${id}.label.time`} defaultValue="Time" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
                 </div>
-                <div className="font-bold text-foreground text-sm md:text-base">{details.time}</div>
+                <InlineEdit contentKey={`drill.detail.${id}.value.time`} defaultValue={details.time} as="div" className="font-bold text-foreground text-sm md:text-base" />
               </div>
               <div className="glass-card rounded-xl p-3 md:p-4">
                 <div className="flex items-center gap-1.5 mb-1">
                   <Users className="h-3.5 w-3.5 text-purple-400" />
-                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Athletes</span>
+                  <InlineEdit contentKey={`drill.detail.${id}.label.athletes`} defaultValue="Athletes" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
                 </div>
-                <div className="font-bold text-foreground text-xs md:text-sm">{details.athletes.split(',')[0]}</div>
+                <InlineEdit contentKey={`drill.detail.${id}.value.athletes`} defaultValue={details.athletes.split(',')[0]} as="div" className="font-bold text-foreground text-xs md:text-sm" />
               </div>
               <div className="glass-card rounded-xl p-3 md:p-4">
                 <div className="flex items-center gap-1.5 mb-1">
                   <Dumbbell className="h-3.5 w-3.5 text-amber-400" />
-                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Equipment</span>
+                  <InlineEdit contentKey={`drill.detail.${id}.label.equipment`} defaultValue="Equipment" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
                 </div>
-                <div className="font-bold text-foreground text-xs md:text-sm">{details.equipment.split(',')[0]}</div>
+                <InlineEdit contentKey={`drill.detail.${id}.value.equipment`} defaultValue={details.equipment.split(',')[0]} as="div" className="font-bold text-foreground text-xs md:text-sm" />
               </div>
               <div className="glass-card rounded-xl p-3 md:p-4">
                 <div className="flex items-center gap-1.5 mb-1">
                   <Target className="h-3.5 w-3.5 text-green-400" />
-                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Skill Set</span>
+                  <InlineEdit contentKey={`drill.detail.${id}.label.skillSet`} defaultValue="Skill Set" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
                 </div>
-                <div className="font-bold text-foreground text-xs md:text-sm">{details.skillSet}</div>
+                <InlineEdit contentKey={`drill.detail.${id}.value.skillSet`} defaultValue={details.skillSet} as="div" className="font-bold text-foreground text-xs md:text-sm" />
               </div>
             </div>
 
@@ -1643,7 +1644,7 @@ export default function DrillDetail() {
                 <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center">
                   <Target className="h-4 w-4 text-green-400" />
                 </div>
-                Instructions
+                <InlineEdit contentKey={`drill.detail.${id}.instructionsHeading`} defaultValue="Instructions" as="span" />
               </h2>
               <div className="glass-card rounded-xl p-4 md:p-6">
                 {user && (user.role === 'admin' || user.role === 'coach') ? (

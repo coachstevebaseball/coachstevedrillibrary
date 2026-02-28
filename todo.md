@@ -1539,3 +1539,15 @@
 - [x] Remove from client UI (session forms, display components, Averages by Session Type table, CSV import help text)
 - [x] Push DB migration (dropped 10 columns, added exitVelocityMph)
 - [x] Run tests to verify (397 pass, 2 pre-existing failures unrelated to blast metrics)
+
+## Universal Inline Text Editing System
+- [x] Create siteContent database table for persisted inline edits
+- [x] Create tRPC routes for getting/setting site content
+- [x] Build reusable InlineEdit component (click-to-edit, save on blur/Enter)
+- [x] Apply inline editing to Home page (hero badge, headline, tagline, stats, section headings, drill cards)
+- [x] Apply inline editing to Drill Detail page (title, goal, info cards, instructions)
+- [x] Apply inline editing to Coach Dashboard - all 8 tabs (titles, subtitles, tab names, button labels, stat cards, section headings, table headers, metric labels, chart titles, status badges)
+- [x] Apply inline editing to Admin Dashboard (title, subtitle, buttons, stat cards, table headers)
+- [x] Restrict inline editing to admin/coach role only (athletes see read-only)
+- [x] Write tests for inline edit backend routes (6 tests pass)
+- [x] Browser verify all pages and tabs

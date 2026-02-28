@@ -302,6 +302,13 @@
       "when": 1772259605735,
       "tag": "0042_violet_power_pack",
       "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "5",
+      "when": 1772291846195,
+      "tag": "0043_legal_impossible_man",
+      "breakpoints": true
     }
   ]
 }
