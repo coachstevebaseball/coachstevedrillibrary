@@ -1551,3 +1551,16 @@
 - [x] Restrict inline editing to admin/coach role only (athletes see read-only)
 - [x] Write tests for inline edit backend routes (6 tests pass)
 - [x] Browser verify all pages and tabs
+
+## Inline Edit: Session Note Form
+- [x] Apply InlineEdit to form title "Edit Session Note" and header elements (athlete name, session #)
+- [x] Apply InlineEdit to all field labels (DATE, DURATION, SKILLS WORKED ON, etc.)
+- [x] Apply InlineEdit to skill pills (each pill label editable on click)
+- [x] Add custom skill pill creation ("+ Add Skill" button to create new skill pills)
+- [x] Apply InlineEdit to Quick Fill button labels, SHOW label, suggestion titles
+- [x] Add ability to manually add custom quick fill text ("+ Add Custom Quick Fill" in dropdown)
+- [x] Apply InlineEdit to bottom action buttons (Cancel, Update Session Note)
+- [x] Apply InlineEdit to SESSION RATING sublabel and Private Coach Notes label
+- [x] Apply InlineEdit to selection count text ("1 skill selected")
+- [x] Apply InlineEdit to Close button in Quick Fill dropdown
+- [x] TypeScript check (0 errors), browser verify (all elements confirmed), save checkpoint
