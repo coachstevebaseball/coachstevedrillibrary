@@ -1573,3 +1573,9 @@
 - [x] Add inline editing to AthleteSessionNotes component (athlete-facing view)
 - [x] Add reset/delete tRPC procedure + 2 new tests (8 total siteContent tests pass)
 - [x] TypeScript check (0 errors), tests (405 pass), browser verify (all elements confirmed)
+
+## Bug Fix: Session Note Submit Returns HTML Instead of JSON
+- [x] Fix "Unexpected token '<', '<!doctype'... is not valid JSON" error when saving a new session note
+- [x] Root cause: transient database ECONNRESET errors causing HTML fallback response
+- [x] Added custom fetch wrapper to detect HTML responses and show user-friendly error
+- [x] Added retry logic (queries: 2 retries, mutations: 1 retry) with exponential backoff
