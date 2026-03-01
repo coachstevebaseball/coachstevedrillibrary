@@ -1579,3 +1579,9 @@
 - [x] Root cause: transient database ECONNRESET errors causing HTML fallback response
 - [x] Added custom fetch wrapper to detect HTML responses and show user-friendly error
 - [x] Added retry logic (queries: 2 retries, mutations: 1 retry) with exponential backoff
+
+## Bug Fix: Progress Report Save - sectionHeadings type mismatch
+- [x] Fix "expected string, received object" error on reportContent.sectionHeadings when saving/sending progress report
+- [x] Root cause: update mutation used z.record(string, string) which rejects nested sectionHeadings object
+- [x] Fixed server schema to use proper z.object() with nested sectionHeadings
+- [x] Removed unsafe `as unknown as Record<string, string>` casts from client
