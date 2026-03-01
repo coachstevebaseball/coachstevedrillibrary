@@ -48,13 +48,12 @@ const FOCUS_AREAS = [
   "Swing Mechanics",
   "Pitch Recognition",
   "Plate Approach",
-  "Fielding Fundamentals",
-  "Throwing Mechanics",
-  "Base Running",
-  "Bunting",
+  "Bat Speed Development",
+  "Exit Velocity",
+  "Timing & Rhythm",
   "Game IQ / Situational Awareness",
   "Confidence / Mindset",
-  "Arm Care / Body Mechanics",
+  "Contact Quality",
 ];
 
 interface AthleteProfilePanelProps {

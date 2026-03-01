@@ -720,3 +720,32 @@ export const siteContent = mysqlTable("siteContent", {
 });
 export type SiteContent = typeof siteContent.$inferSelect;
 export type InsertSiteContent = typeof siteContent.$inferInsert;
+
+// Archived drills — non-hitting drills removed from the active library, preserved for future restoration
+export const archivedDrills = mysqlTable("archivedDrills", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Original drill ID from drills.json (slug format like '1-2-3-drill') */
+  originalDrillId: varchar("originalDrillId", { length: 500 }).notNull(),
+  /** Drill name */
+  name: varchar("name", { length: 500 }).notNull(),
+  /** Difficulty level */
+  difficulty: varchar("difficulty", { length: 50 }).notNull(),
+  /** Categories (JSON array) */
+  categories: json("categories").notNull(),
+  /** Duration */
+  duration: varchar("duration", { length: 100 }).notNull(),
+  /** Original URL */
+  url: text("url"),
+  /** Whether it was a direct link */
+  isDirectLink: boolean("isDirectLink").default(false),
+  /** Full drill JSON data for complete restoration */
+  fullData: json("fullData").notNull(),
+  /** Reason for archival */
+  archiveReason: varchar("archiveReason", { length: 255 }).default("non-hitting-category-removal"),
+  /** When the drill was archived */
+  archivedAt: timestamp("archivedAt").defaultNow().notNull(),
+  /** Who archived it */
+  archivedBy: int("archivedBy"),
+});
+export type ArchivedDrill = typeof archivedDrills.$inferSelect;
+export type InsertArchivedDrill = typeof archivedDrills.$inferInsert;

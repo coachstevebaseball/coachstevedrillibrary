@@ -1585,3 +1585,20 @@
 - [x] Root cause: update mutation used z.record(string, string) which rejects nested sectionHeadings object
 - [x] Fixed server schema to use proper z.object() with nested sectionHeadings
 - [x] Removed unsafe `as unknown as Record<string, string>` casts from client
+
+## Make Platform Hitting-Dominant: Remove Non-Hitting Drills
+- [x] Archive all non-hitting drills to database table for future restoration (103 static + 1 custom archived)
+- [x] Remove Bunting drills from all JSON data files
+- [x] Remove Pitching drills from all JSON data files
+- [x] Remove Infield drills from all JSON data files
+- [x] Remove Outfield drills from all JSON data files
+- [x] Remove Catching drills from all JSON data files
+- [x] Remove Base Running drills from all JSON data files
+- [x] Update category filters to only show Hitting-related categories
+- [x] Update hero stats to reflect hitting-only drill count
+- [x] Update all hardcoded category references in frontend components (Home, DrillEditModal, AddNewDrill, SessionNotesForm, AthleteSessionNotes, SessionHistory, PracticePlanner, AthleteProfilePanel, categoryColors, EditDrillDetailsModal, CreateDrillDetails)
+- [x] Remove 18 non-hitting drill detail entries from DrillDetail.tsx
+- [x] Update session notes skill categories to hitting-focused (Bat Speed Development, Exit Velocity, Timing & Rhythm, Contact Quality)
+- [x] Update drill generator prompt to focus on Hitting
+- [x] Filter custom drills in useAllDrills hook to only show Hitting
+- [x] Write and pass 12 vitest tests verifying hitting-only platform (all pass)

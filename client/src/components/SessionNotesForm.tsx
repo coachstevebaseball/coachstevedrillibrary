@@ -37,13 +37,12 @@ const SKILL_CATEGORIES = [
   "Swing Mechanics",
   "Pitch Recognition",
   "Plate Approach",
-  "Fielding Fundamentals",
-  "Throwing Mechanics",
-  "Base Running",
-  "Bunting",
+  "Bat Speed Development",
+  "Exit Velocity",
+  "Timing & Rhythm",
   "Game IQ / Situational Awareness",
   "Confidence / Mindset",
-  "Arm Care / Body Mechanics",
+  "Contact Quality",
 ] as const;
 
 // Short labels for mobile display
@@ -51,13 +50,12 @@ const SKILL_SHORT_LABELS: Record<string, string> = {
   "Swing Mechanics": "Swing",
   "Pitch Recognition": "Pitch Rec",
   "Plate Approach": "Approach",
-  "Fielding Fundamentals": "Fielding",
-  "Throwing Mechanics": "Throwing",
-  "Base Running": "Baserunning",
-  "Bunting": "Bunting",
+  "Bat Speed Development": "Bat Speed",
+  "Exit Velocity": "Exit Velo",
+  "Timing & Rhythm": "Timing",
   "Game IQ / Situational Awareness": "Game IQ",
   "Confidence / Mindset": "Mindset",
-  "Arm Care / Body Mechanics": "Arm Care",
+  "Contact Quality": "Contact",
 };
 
 // Skill category colors for visual distinction
@@ -65,13 +63,12 @@ const SKILL_COLORS: Record<string, string> = {
   "Swing Mechanics": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
   "Pitch Recognition": "bg-purple-500/20 text-purple-300 border-purple-500/30",
   "Plate Approach": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
-  "Fielding Fundamentals": "bg-green-500/20 text-green-300 border-green-500/30",
-  "Throwing Mechanics": "bg-orange-500/20 text-orange-300 border-orange-500/30",
-  "Base Running": "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
-  "Bunting": "bg-lime-500/20 text-lime-300 border-lime-500/30",
+  "Bat Speed Development": "bg-orange-500/20 text-orange-300 border-orange-500/30",
+  "Exit Velocity": "bg-green-500/20 text-green-300 border-green-500/30",
+  "Timing & Rhythm": "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
   "Game IQ / Situational Awareness": "bg-rose-500/20 text-rose-300 border-rose-500/30",
   "Confidence / Mindset": "bg-pink-500/20 text-pink-300 border-pink-500/30",
-  "Arm Care / Body Mechanics": "bg-teal-500/20 text-teal-300 border-teal-500/30",
+  "Contact Quality": "bg-teal-500/20 text-teal-300 border-teal-500/30",
 };
 
 // ============================================================
@@ -102,26 +99,23 @@ const IMPROVED_TEMPLATES: TemplateOption[] = [
   { label: "Hunting fastball early", text: "Doing a great job hunting the fastball early in the count and being aggressive on hittable pitches.", category: "Plate Approach" },
   { label: "Two-strike approach", text: "Two-strike approach is improving. Shortening up and putting the ball in play instead of expanding the zone.", category: "Plate Approach" },
   { label: "Zone awareness", text: "Better understanding of the strike zone. Laying off borderline pitches and attacking pitches in the hitting zone.", category: "Plate Approach" },
-  // Fielding Fundamentals
-  { label: "Ground ball footwork", text: "Ground ball footwork is much cleaner. Getting into a good fielding position with feet active through the ball.", category: "Fielding Fundamentals" },
-  { label: "Glove work improvement", text: "Glove work is softer and more relaxed. Receiving the ball out front with better hand-eye coordination.", category: "Fielding Fundamentals" },
-  { label: "Throwing accuracy", text: "Throws are more accurate and on-line. Getting a good four-seam grip and following through to the target.", category: "Fielding Fundamentals" },
-  // Throwing Mechanics
-  { label: "Arm action cleanup", text: "Arm action is getting cleaner and more efficient. Less wasted motion in the arm circle.", category: "Throwing Mechanics" },
-  { label: "Lower half engagement", text: "Better engagement of the lower half in the throwing motion. Getting more drive from the back leg.", category: "Throwing Mechanics" },
-  // Base Running
-  { label: "First-step quickness", text: "First-step quickness off the base is improving. Reading the pitcher's move better and getting better jumps.", category: "Base Running" },
-  { label: "Rounding bases", text: "Rounding bases more efficiently. Taking better angles and maintaining speed through the turn.", category: "Base Running" },
-  // Bunting
-  { label: "Bunt technique", text: "Bunt technique is solid. Getting the bat angle right and placing the ball effectively.", category: "Bunting" },
+  // Bat Speed Development
+  { label: "Bat speed gains", text: "Bat speed is trending up. The overload/underload work is paying off with more explosive swings.", category: "Bat Speed Development" },
+  { label: "Hand speed improvement", text: "Hand speed through the zone is noticeably quicker. Getting the barrel to the ball faster.", category: "Bat Speed Development" },
+  // Exit Velocity
+  { label: "Hard contact rate", text: "Hard contact rate is improving. Consistently squaring balls up and driving them with authority.", category: "Exit Velocity" },
+  { label: "Barrel accuracy", text: "Finding the barrel more consistently. Exit velocities are climbing as a result of better contact quality.", category: "Exit Velocity" },
+  // Timing & Rhythm
+  { label: "Timing mechanism", text: "Timing mechanism is becoming more consistent and repeatable. Getting on time for different pitch speeds.", category: "Timing & Rhythm" },
+  { label: "Rhythm in the box", text: "Much better rhythm and flow in the batter's box. Not as stiff or mechanical — the swing is starting to feel natural.", category: "Timing & Rhythm" },
   // Game IQ
   { label: "Situational awareness", text: "Much better situational awareness. Making smart decisions based on the game situation, count, and runners.", category: "Game IQ / Situational Awareness" },
   { label: "In-game adjustments", text: "Making quality in-game adjustments after seeing a pitcher for the second time through the order.", category: "Game IQ / Situational Awareness" },
   // Confidence / Mindset
   { label: "Competitive confidence", text: "Confidence is growing. Competing with a more aggressive mindset and trusting the work put in during practice.", category: "Confidence / Mindset" },
   { label: "Bounce-back mentality", text: "Showing great bounce-back mentality. Not letting a bad at-bat carry over to the next one.", category: "Confidence / Mindset" },
-  // Arm Care
-  { label: "Arm care routine", text: "Arm care routine is becoming more consistent. Doing a great job with band work and recovery protocols.", category: "Arm Care / Body Mechanics" },
+  // Contact Quality
+  { label: "Consistent contact", text: "Making more consistent, quality contact. Barreling the ball up and driving it to all fields.", category: "Contact Quality" },
   // General
   { label: "Overall effort & focus", text: "Great effort and focus throughout the entire session. Locked in and coachable.", category: undefined },
   { label: "Applying drill work to live", text: "Successfully transferring drill work into live reps. The training is translating.", category: undefined },
@@ -143,24 +137,23 @@ const NEEDS_WORK_TEMPLATES: TemplateOption[] = [
   { label: "Expanding the zone", text: "Expanding the zone too much with two strikes. Need to tighten up the chase rate on pitcher's pitches.", category: "Plate Approach" },
   { label: "Count leverage", text: "Not taking advantage of hitter's counts. Need to be more aggressive when ahead in the count.", category: "Plate Approach" },
   { label: "Pitch selection", text: "Pitch selection needs work. Swinging at too many pitcher's pitches instead of waiting for something in the zone.", category: "Plate Approach" },
-  // Fielding Fundamentals
-  { label: "Backhand plays", text: "Backhand plays need more work. Not getting low enough and the glove isn't out front on the ball.", category: "Fielding Fundamentals" },
-  { label: "Double play feeds", text: "Double play feeds need to be quicker and more accurate. Working on getting rid of the ball faster.", category: "Fielding Fundamentals" },
-  { label: "Slow roller charging", text: "Needs to be more aggressive charging slow rollers. Getting to the ball on time but not attacking it.", category: "Fielding Fundamentals" },
-  // Throwing Mechanics
-  { label: "Arm slot consistency", text: "Arm slot is inconsistent. Dropping down at times which causes the ball to tail and lose accuracy.", category: "Throwing Mechanics" },
-  { label: "Follow-through", text: "Not finishing throws with a complete follow-through. Cutting the throw short which reduces velocity and accuracy.", category: "Throwing Mechanics" },
-  // Base Running
-  { label: "Reading pitcher's move", text: "Needs to study pitcher's pickoff move more. Getting picked off or hesitating on steal attempts.", category: "Base Running" },
-  { label: "Secondary leads", text: "Secondary leads are too passive. Need to be more aggressive getting into scoring position.", category: "Base Running" },
+  // Bat Speed Development
+  { label: "Bat speed plateau", text: "Bat speed has plateaued. Need to incorporate more overload/underload training and focus on explosive hip rotation.", category: "Bat Speed Development" },
+  { label: "Swing efficiency", text: "Swing is too long to generate consistent bat speed. Need to tighten the path and let the speed come from rotation.", category: "Bat Speed Development" },
+  // Exit Velocity
+  { label: "Weak contact", text: "Too many weak groundballs and pop-ups. Need to focus on hitting the ball on the barrel with a slight upward plane.", category: "Exit Velocity" },
+  { label: "Mishits on inner half", text: "Getting jammed on inside pitches. Need to work on getting hands inside the ball for better exit velocity.", category: "Exit Velocity" },
+  // Timing & Rhythm
+  { label: "Timing inconsistency", text: "Timing is inconsistent pitch to pitch. Need a more reliable load and stride mechanism to stay on time.", category: "Timing & Rhythm" },
+  { label: "Rushing the swing", text: "Rushing the swing and getting out front on off-speed. Need to trust the process and let the ball travel deeper.", category: "Timing & Rhythm" },
   // Game IQ
   { label: "Situational hitting", text: "Situational hitting needs improvement. Not adjusting approach based on game situation (runner on 3rd, less than 2 outs).", category: "Game IQ / Situational Awareness" },
   { label: "Between-pitch routine", text: "Between-pitch routine needs to be more consistent. Losing focus between pitches and not resetting properly.", category: "Game IQ / Situational Awareness" },
   // Confidence / Mindset
   { label: "Body language after mistakes", text: "Body language drops after mistakes. Need to work on maintaining a confident presence regardless of results.", category: "Confidence / Mindset" },
   { label: "Competing in pressure moments", text: "Tightening up in pressure situations. Need to trust the training and compete freely when the game is on the line.", category: "Confidence / Mindset" },
-  // Arm Care
-  { label: "Pre-throwing routine", text: "Pre-throwing routine needs to be more consistent. Skipping warm-up steps which increases injury risk.", category: "Arm Care / Body Mechanics" },
+  // Contact Quality
+  { label: "Inconsistent barrel", text: "Not finding the barrel consistently. Too many foul balls and mishits. Need more tee work focusing on center contact.", category: "Contact Quality" },
   // General
   { label: "Consistency between sessions", text: "Need more consistency between sessions. Good days are really good but the off days show regression in fundamentals.", category: undefined },
   { label: "Drill-to-live transfer", text: "Drill work looks great in isolation but not fully transferring to live at-bats yet. Need more bridge work between drills and game speed.", category: undefined },

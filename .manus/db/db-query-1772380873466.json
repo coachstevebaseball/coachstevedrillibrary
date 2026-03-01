@@ -1,0 +1,21 @@
+{
+  "query": "SELECT * FROM customDrills WHERE category NOT IN ('Hitting');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT * FROM customDrills WHERE category NOT IN ('Hitting');",
+  "rows": [
+    {
+      "id": "360001",
+      "drillId": "43-drill",
+      "name": "4.3 Drill",
+      "difficulty": "Hard",
+      "category": "Infield",
+      "duration": "10m",
+      "createdBy": "1",
+      "createdAt": "2026-02-27 15:32:33",
+      "updatedAt": "2026-02-27 15:32:33"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdrillId\tname\tdifficulty\tcategory\tduration\tcreatedBy\tcreatedAt\tupdatedAt\n360001\t43-drill\t4.3 Drill\tHard\tInfield\t10m\t1\t2026-02-27 15:32:33\t2026-02-27 15:32:33\n",
+  "stderr": "",
+  "execution_time_ms": 64
+}

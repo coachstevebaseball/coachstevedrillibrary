@@ -212,22 +212,6 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/sgRnq_8G2XI"
   },
-  "defense-stance": {
-    skillSet: "Infield",
-    difficulty: "Easy",
-    athletes: "1+ athletes",
-    time: "5 minutes",
-    equipment: "Glove",
-    goal: "Develop proper defensive ready position",
-    description: [
-      "Feet shoulder-width apart, knees bent",
-      "Weight on the balls of the feet",
-      "Glove out in front, ready position",
-      "Practice getting into stance quickly from standing",
-      "Hold position for 5-10 seconds at a time"
-    ],
-    videoUrl: "https://www.youtube.com/embed/l62xR2rGWrA"
-  },
   "double-tee": {
     skillSet: "Hitting",
     difficulty: "Medium",
@@ -448,74 +432,6 @@ const drillDetails: Record<string, {
       "Partners switch after 5 swings"
     ],
     videoUrl: "https://www.youtube.com/embed/BHfyJQLujhs"
-  },
-  "1st-base-flip-to-pitcher": {
-    skillSet: "Infield",
-    difficulty: "Medium",
-    athletes: "1 athlete and 1 coach, or 2 athletes as partners",
-    time: "5 minutes",
-    equipment: "Baseballs, glove, base",
-    goal: "Develop proper footwork and hand positioning for flipping to pitcher",
-    description: [
-      "1st baseman positions on the bag",
-      "Coach or partner rolls ground balls to the right of 1st base",
-      "1st baseman fields the ball and flips it to the pitcher covering the bag",
-      "Focus on quick footwork and accurate flip",
-      "Flip should be chest-high and on the inside of the bag",
-      "Repeat for multiple ground balls"
-    ],
-    videoUrl: "https://www.youtube.com/embed/ks7qctrCuHg"
-  },
-  "2nd-baseman-forehand-spin": {
-    skillSet: "Infield",
-    difficulty: "Medium",
-    athletes: "1 athlete and 1 coach, or 2 athletes as partners",
-    time: "5 minutes",
-    equipment: "Baseballs, glove, base",
-    goal: "Develop proper footwork for backhand flips from the 2nd base position",
-    description: [
-      "2nd baseman positions in the field",
-      "Coach or partner rolls ground balls to the left of 2nd base",
-      "2nd baseman fields the ball with a backhand and flips to the pitcher",
-      "Focus on quick footwork and accurate backhand flip",
-      "Flip should be chest-high and on the inside of the bag",
-      "Repeat for multiple ground balls"
-    ],
-    videoUrl: "https://www.youtube.com/embed/nRKx7jcbnIU"
-  },
-  "advanced-batting-practice": {
-    skillSet: "Infield",
-    difficulty: "Easy",
-    athletes: "4+ athletes",
-    time: "10 minutes",
-    equipment: "Baseballs, gloves, bases or cones",
-    goal: "Develop footwork and communication in a four-corner drill",
-    description: [
-      "Set up four bases or cones in a square pattern",
-      "Players position at each corner",
-      "Coach or partner hits or throws ground balls to each position",
-      "Players field the ball and throw to the next corner",
-      "Rotate positions after each round",
-      "Focus on proper footwork, throwing mechanics, and communication"
-    ],
-    videoUrl: "https://www.youtube.com/embed/ZbZSe6N_BXs"
-  },
-  "arm-path-drill": {
-    skillSet: "Infield",
-    difficulty: "Easy",
-    athletes: "1 athlete and 1 coach",
-    time: "1 minute",
-    equipment: "Baseballs, glove",
-    goal: "Develop quick reflexes and hand-eye coordination for quick tosses",
-    description: [
-      "Player stands in ready position",
-      "Coach stands 10-15 feet away",
-      "Coach tosses the ball quickly to the player",
-      "Player fields the ball and throws it back",
-      "Focus on quick reaction time and accuracy",
-      "Complete as many tosses as possible in 30 seconds"
-    ],
-    videoUrl: "https://www.youtube.com/embed/aqz-KE-bpKQ"
   },
   "no-stride-tee": {
     skillSet: "Hitting",
@@ -846,56 +762,6 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/Hdw8h4y4eS0"
   },
-  "30-second-backhand": {
-    skillSet: "Infield",
-    difficulty: "Easy",
-    athletes: "1 athlete and 1 coach",
-    time: "5 minutes",
-    equipment: "Baseballs, glove",
-    goal: "Develop quick reflexes and hand-eye coordination with rapid backhand ground balls",
-    description: [
-      "Player stands in ready position at shortstop or second base",
-      "Coach or partner rolls ground balls to the backhand side",
-      "Player fields the ball with proper backhand technique",
-      "Focus on quick footwork and smooth fielding motion",
-      "Complete as many ground balls as possible in 30 seconds",
-      "Rest and repeat for multiple sets",
-      "Emphasize proper glove positioning and body alignment"
-    ],
-    videoUrl: null
-  },
-  "ball-in-the-sun": {
-    skillSet: "Outfield",
-    difficulty: "Easy",
-    athletes: "1 athlete and 1 coach",
-    time: "5 minutes",
-    equipment: "Baseballs, glove",
-    goal: "Develop ability to track and catch fly balls in difficult lighting conditions",
-    description: [
-      "Athlete positions in outfield facing the sun or bright light",
-      "Coach throws or hits fly balls at varying heights and distances",
-      "Athlete must track the ball while dealing with sun glare",
-      "Focus on proper positioning and glove placement",
-      "Practice calling for the ball and communicating with teammates",
-      "Repeat for multiple sets"
-    ],
-    videoUrl: null
-  },
-  "1st-base-inside-receiving": {
-    skillSet: "Infield",
-    difficulty: "Medium",
-    athletes: "Varies",
-    time: "5m",
-    equipment: "Varies",
-    goal: "1st Base Inside Receiving",
-    description: [
-      "Step 1: Set up the drill",
-      "Step 2: Execute the drill",
-      "Step 3: Focus on proper technique",
-      "Step 4: Repeat for multiple sets"
-    ],
-    videoUrl: null
-  },
   "backside-angle-toss": {
     skillSet: "Hitting",
     difficulty: "Hard",
@@ -911,36 +777,6 @@ const drillDetails: Record<string, {
       "Practice for multiple sets with focus on consistency"
     ],
     videoUrl: "https://www.youtube.com/embed/OmgHRRPompU"
-  },
-  "1st-base-off-bag": {
-    skillSet: "Infield",
-    difficulty: "Medium",
-    athletes: "Varies",
-    time: "5m",
-    equipment: "Varies",
-    goal: "1st Base Off Bag",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
-  "30-second-backhand-cross": {
-    skillSet: "Infield",
-    difficulty: "Medium",
-    athletes: "Varies",
-    time: "5m",
-    equipment: "Varies",
-    goal: "30 Second Backhand Cross",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
-  "30-second-crow-hops": {
-    skillSet: "Outfield",
-    difficulty: "Easy",
-    athletes: "Varies",
-    time: "5m",
-    equipment: "Varies",
-    goal: "30 Second Crow Hops",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
   },
   "7-ball-front-toss": {
     skillSet: "Hitting",
@@ -972,16 +808,6 @@ const drillDetails: Record<string, {
     description: ["Watch the video for detailed instructions"],
     videoUrl: null
   },
-  "backhand-cross-and-throw": {
-    skillSet: "Infield",
-    difficulty: "Medium",
-    athletes: "Varies",
-    time: "5m",
-    equipment: "Varies",
-    goal: "Backhand Cross and Throw",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
   "ball-hit-front-toss": {
     skillSet: "Hitting",
     difficulty: "Medium",
@@ -989,16 +815,6 @@ const drillDetails: Record<string, {
     time: "10m",
     equipment: "Varies",
     goal: "Ball-Hit Front Toss",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
-  "box-drill-2nd-baseman-double-play-feeds": {
-    skillSet: "Infield",
-    difficulty: "Hard",
-    athletes: "Varies",
-    time: "15m",
-    equipment: "Varies",
-    goal: "Box Drill- 2nd Baseman Double Play Feeds",
     description: ["Watch the video for detailed instructions"],
     videoUrl: null
   },
@@ -1063,16 +879,6 @@ const drillDetails: Record<string, {
     description: ["Watch the video for detailed instructions"],
     videoUrl: null
   },
-  "fly-balls": {
-    skillSet: "Outfield",
-    difficulty: "Easy",
-    athletes: "Varies",
-    time: "5m",
-    equipment: "Varies",
-    goal: "Fly Balls",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
   "offensive-stations-tee-and-live-hitting": {
     skillSet: "Hitting",
     difficulty: "Easy",
@@ -1093,26 +899,6 @@ const drillDetails: Record<string, {
     description: ["Watch the video for detailed instructions"],
     videoUrl: null
   },
-  "rapid-fire-fungo": {
-    skillSet: "Infield",
-    difficulty: "Medium",
-    athletes: "Varies",
-    time: "10m",
-    equipment: "Varies",
-    goal: "Rapid Fire Fungo",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
-  "read-and-react": {
-    skillSet: "Outfield",
-    difficulty: "Easy",
-    athletes: "Varies",
-    time: "5m",
-    equipment: "Varies",
-    goal: "Read and React",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
   "rhythm-tee": {
     skillSet: "Hitting",
     difficulty: "Easy",
@@ -1120,26 +906,6 @@ const drillDetails: Record<string, {
     time: "5m",
     equipment: "Varies",
     goal: "Rhythm Tee",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
-  "short-base-team-bunt-drill": {
-    skillSet: "Bunting",
-    difficulty: "Hard",
-    athletes: "Varies",
-    time: "20m",
-    equipment: "Varies",
-    goal: "Short Base Team Bunt Drill",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
-  "stride-to-spot": {
-    skillSet: "Pitching",
-    difficulty: "Easy",
-    athletes: "Varies",
-    time: "3m",
-    equipment: "Varies",
-    goal: "Stride to Spot",
     description: ["Watch the video for detailed instructions"],
     videoUrl: null
   },

@@ -32,7 +32,7 @@ const DIFFICULTY_CONFIG: Record<string, { label: string; class: string; dotClass
 };
 
 // Category config with icons
-const CATEGORIES = ["All", "Hitting", "Bunting", "Pitching", "Infield", "Outfield", "Catching", "Base Running"];
+const CATEGORIES = ["All", "Hitting"];
 
 /**
  * Save scroll position to sessionStorage keyed by the current query string.
@@ -300,7 +300,7 @@ export default function Home() {
             <div className="flex justify-center gap-8 md:gap-12 animate-fade-in-up stagger-4">
               {[
                 { valueKey: "home.stat.drills.value", valueDefault: `${allDrills.length}+`, labelKey: "home.stat.drills.label", labelDefault: "Drills", icon: Target },
-                { valueKey: "home.stat.categories.value", valueDefault: "8", labelKey: "home.stat.categories.label", labelDefault: "Categories", icon: Sparkles },
+                { valueKey: "home.stat.categories.value", valueDefault: "1", labelKey: "home.stat.categories.label", labelDefault: "Focus", icon: Sparkles },
                 { valueKey: "home.stat.levels.value", valueDefault: "3", labelKey: "home.stat.levels.label", labelDefault: "Levels", icon: TrendingUp },
               ].map((stat, i) => (
                 <div key={i} className="text-center">
