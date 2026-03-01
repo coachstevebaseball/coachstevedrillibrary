@@ -1607,3 +1607,11 @@
 - [x] Remove "All Skills" from CATEGORIES array on homepage
 - [x] Default skill filter to "Hitting" instead of "All"
 - [x] Ensure drills always display on page load
+
+## Add Name Column to Invites Table
+- [x] Add name column to invites table in database schema
+- [x] Push database migration
+- [x] Update server-side invite creation/query logic to include name
+- [x] Update frontend invite form to include name input
+- [x] Update invite list display to show name
+- [x] Write tests to verify name column works (14 tests pass)

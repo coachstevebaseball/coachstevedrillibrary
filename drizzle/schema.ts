@@ -64,6 +64,7 @@ export type AssignmentProgress = typeof assignmentProgress.$inferSelect;
 export type InsertAssignmentProgress = typeof assignmentProgress.$inferInsert;
 export const invites = mysqlTable("invites", {
   id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 255 }),
   email: varchar("email", { length: 320 }).notNull(),
   inviteToken: varchar("inviteToken", { length: 255 }).notNull().unique(),
   role: mysqlEnum("role", ["user", "admin", "athlete", "coach"]).default("user").notNull(),
