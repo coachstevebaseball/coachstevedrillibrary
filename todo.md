@@ -1602,3 +1602,8 @@
 - [x] Update drill generator prompt to focus on Hitting
 - [x] Filter custom drills in useAllDrills hook to only show Hitting
 - [x] Write and pass 12 vitest tests verifying hitting-only platform (all pass)
+
+## Fix: Remove All Skills Button and Default to Hitting
+- [x] Remove "All Skills" from CATEGORIES array on homepage
+- [x] Default skill filter to "Hitting" instead of "All"
+- [x] Ensure drills always display on page load

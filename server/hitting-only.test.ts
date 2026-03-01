@@ -61,7 +61,7 @@ describe("Hitting-Only Platform: DrillDetail.tsx", () => {
 });
 
 describe("Hitting-Only Platform: Category Configuration", () => {
-  it("Home page CATEGORIES should only include All and Hitting", () => {
+  it("Home page CATEGORIES should only include Hitting (no All Skills)", () => {
     const filePath = path.join(__dirname, "../client/src/pages/Home.tsx");
     const content = fs.readFileSync(filePath, "utf-8");
 
@@ -72,7 +72,8 @@ describe("Hitting-Only Platform: Category Configuration", () => {
     for (const cat of NON_HITTING_CATEGORIES) {
       expect(categoriesStr).not.toContain(`"${cat}"`);
     }
-    expect(categoriesStr).toContain('"All"');
+    // "All" should NOT be in CATEGORIES anymore
+    expect(categoriesStr).not.toContain('"All"');
     expect(categoriesStr).toContain('"Hitting"');
   });
 

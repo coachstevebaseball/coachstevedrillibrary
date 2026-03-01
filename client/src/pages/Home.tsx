@@ -32,7 +32,7 @@ const DIFFICULTY_CONFIG: Record<string, { label: string; class: string; dotClass
 };
 
 // Category config with icons
-const CATEGORIES = ["All", "Hitting"];
+const CATEGORIES = ["Hitting"];
 
 /**
  * Save scroll position to sessionStorage keyed by the current query string.
@@ -363,22 +363,7 @@ export default function Home() {
             </div>
 
             {/* Category */}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-1">Skill</span>
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setCategoryFilter(cat)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${
-                    categoryFilter === cat
-                      ? "bg-electric text-white shadow-lg shadow-electric/25"
-                      : "bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/50"
-                  }`}
-                >
-                  {cat === "All" ? "All Skills" : cat}
-                </button>
-              ))}
-            </div>
+            {/* Single category: Hitting — no skill filter needed */}
           </div>
         </div>
 
