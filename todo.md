@@ -1564,3 +1564,12 @@
 - [x] Apply InlineEdit to selection count text ("1 skill selected")
 - [x] Apply InlineEdit to Close button in Quick Fill dropdown
 - [x] TypeScript check (0 errors), browser verify (all elements confirmed), save checkpoint
+
+## Persist Custom Skills & Quick Fills + Reset to Default + Session History Inline Edit
+- [x] Persist custom skills to siteContent DB (survive page reload)
+- [x] Persist custom quick fills to siteContent DB (survive page reload)
+- [x] Add "Reset to Default" option on any inline-edited text (amber RotateCcw icon with confirmation popover)
+- [x] Add inline editing to Session History expanded cards (WHAT IMPROVED, WHAT NEEDS WORK, HOMEWORK DRILLS, Private Notes headings + all action buttons)
+- [x] Add inline editing to AthleteSessionNotes component (athlete-facing view)
+- [x] Add reset/delete tRPC procedure + 2 new tests (8 total siteContent tests pass)
+- [x] TypeScript check (0 errors), tests (405 pass), browser verify (all elements confirmed)

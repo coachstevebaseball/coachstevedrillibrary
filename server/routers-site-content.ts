@@ -24,6 +24,18 @@ export const siteContentRouter = router({
     }),
 
   /**
+   * Delete a content key (reset to default) — admin only.
+   */
+  reset: adminProcedure
+    .input(z.object({
+      contentKey: z.string().min(1).max(500),
+    }))
+    .mutation(async ({ input }) => {
+      await siteContentDb.deleteSiteContent(input.contentKey);
+      return { success: true };
+    }),
+
+  /**
    * Bulk update multiple content keys (admin only).
    */
   bulkUpdate: adminProcedure

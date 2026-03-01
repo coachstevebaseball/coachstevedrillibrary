@@ -116,4 +116,29 @@ describe("siteContent", () => {
       publicCaller.siteContent.update({ contentKey: "test.forbidden", value: "nope" })
     ).rejects.toThrow();
   });
+
+  it("reset deletes a content override (admin only)", async () => {
+    const adminCaller = appRouter.createCaller(createAdminContext());
+    const testKey = `test.reset.${Date.now()}`;
+
+    // Create an override
+    await adminCaller.siteContent.update({ contentKey: testKey, value: "Override" });
+    let all = await adminCaller.siteContent.getAll();
+    expect(all[testKey]).toBe("Override");
+
+    // Reset it
+    const result = await adminCaller.siteContent.reset({ contentKey: testKey });
+    expect(result).toEqual({ success: true });
+
+    // Verify it's gone
+    all = await adminCaller.siteContent.getAll();
+    expect(all[testKey]).toBeUndefined();
+  });
+
+  it("rejects reset from non-admin user", async () => {
+    const userCaller = appRouter.createCaller(createUserContext());
+    await expect(
+      userCaller.siteContent.reset({ contentKey: "test.forbidden" })
+    ).rejects.toThrow();
+  });
 });

@@ -45,6 +45,15 @@ export async function upsertSiteContent(contentKey: string, value: string, updat
 }
 
 /**
+ * Delete a single site content override (reset to default).
+ */
+export async function deleteSiteContent(contentKey: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.delete(siteContent).where(eq(siteContent.contentKey, contentKey));
+}
+
+/**
  * Bulk upsert multiple site content values.
  */
 export async function bulkUpsertSiteContent(entries: { contentKey: string; value: string }[], updatedBy: number): Promise<void> {

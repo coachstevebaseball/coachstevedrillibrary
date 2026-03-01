@@ -7,6 +7,10 @@ interface SiteContentContextValue {
   get: (key: string, defaultValue: string) => string;
   /** Update a content key (triggers optimistic update + server save) */
   set: (key: string, value: string) => void;
+  /** Reset a content key to its default (delete the override) */
+  reset: (key: string) => void;
+  /** Check if a content key has been overridden from its default */
+  hasOverride: (key: string) => boolean;
   /** Whether the current user can edit content */
   canEdit: boolean;
   /** Whether content is still loading */
@@ -16,6 +20,8 @@ interface SiteContentContextValue {
 const SiteContentContext = createContext<SiteContentContextValue>({
   get: (_key, defaultValue) => defaultValue,
   set: () => {},
+  reset: () => {},
+  hasOverride: () => false,
   canEdit: false,
   isLoading: true,
 });
@@ -70,9 +76,47 @@ export function SiteContentProvider({ children }: { children: ReactNode }) {
     [canEdit, updateMutation]
   );
 
+  const resetMutation = trpc.siteContent.reset.useMutation({
+    onMutate: async ({ contentKey }) => {
+      await utils.siteContent.getAll.cancel();
+      const prev = utils.siteContent.getAll.getData();
+      utils.siteContent.getAll.setData(undefined, (old) => {
+        if (!old) return old;
+        const next = { ...old };
+        delete next[contentKey];
+        return next;
+      });
+      return { prev };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.prev) {
+        utils.siteContent.getAll.setData(undefined, context.prev);
+      }
+    },
+    onSettled: () => {
+      utils.siteContent.getAll.invalidate();
+    },
+  });
+
+  const reset = useCallback(
+    (key: string) => {
+      if (!canEdit) return;
+      resetMutation.mutate({ contentKey: key });
+    },
+    [canEdit, resetMutation]
+  );
+
+  const hasOverride = useCallback(
+    (key: string): boolean => {
+      if (!contentMap) return false;
+      return key in contentMap;
+    },
+    [contentMap]
+  );
+
   const value = useMemo(
-    () => ({ get, set, canEdit, isLoading }),
-    [get, set, canEdit, isLoading]
+    () => ({ get, set, reset, hasOverride, canEdit, isLoading }),
+    [get, set, reset, hasOverride, canEdit, isLoading]
   );
 
   return (

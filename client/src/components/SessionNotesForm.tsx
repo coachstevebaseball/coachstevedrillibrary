@@ -31,6 +31,7 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useAllDrills } from "@/hooks/useAllDrills";
 import { InlineEdit } from "@/components/InlineEdit";
+import { useSiteContent } from "@/contexts/SiteContentContext";
 
 const SKILL_CATEGORIES = [
   "Swing Mechanics",
@@ -184,9 +185,13 @@ function TemplatePicker({
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState<string>("relevant");
   const pickerRef = useRef<HTMLDivElement>(null);
+  const { get, set: setContent } = useSiteContent();
 
-  // Custom quick fill templates
-  const [customTemplates, setCustomTemplates] = useState<TemplateOption[]>([]);
+  // Persisted custom quick fill templates
+  const customTemplates: TemplateOption[] = useMemo(() => {
+    const raw = get(`custom.quickFills.${label}`, "[]");
+    try { return JSON.parse(raw); } catch { return []; }
+  }, [get, label]);
   const [isAddingTemplate, setIsAddingTemplate] = useState(false);
   const [newTemplateLabel, setNewTemplateLabel] = useState("");
   const [newTemplateText, setNewTemplateText] = useState("");
@@ -196,7 +201,8 @@ function TemplatePicker({
     const tLabel = newTemplateLabel.trim();
     const tText = newTemplateText.trim();
     if (tLabel && tText) {
-      setCustomTemplates(prev => [...prev, { label: tLabel, text: tText, category: undefined }]);
+      const updated = [...customTemplates, { label: tLabel, text: tText, category: undefined }];
+      setContent(`custom.quickFills.${label}`, JSON.stringify(updated));
       setNewTemplateLabel("");
       setNewTemplateText("");
       setIsAddingTemplate(false);
@@ -468,8 +474,12 @@ export function SessionNotesForm({
   const [drillSearch, setDrillSearch] = useState("");
   const [showDrillPicker, setShowDrillPicker] = useState(false);
 
-  // Custom skill pills
-  const [customSkills, setCustomSkills] = useState<string[]>([]);
+  // Custom skill pills — persisted to siteContent DB
+  const { get: getSiteContent, set: setSiteContent } = useSiteContent();
+  const customSkills: string[] = useMemo(() => {
+    const raw = getSiteContent("custom.skills", "[]");
+    try { return JSON.parse(raw); } catch { return []; }
+  }, [getSiteContent]);
   const [isAddingSkill, setIsAddingSkill] = useState(false);
   const [newSkillName, setNewSkillName] = useState("");
   const newSkillRef = useRef<HTMLInputElement>(null);
@@ -483,7 +493,8 @@ export function SessionNotesForm({
   const addCustomSkill = () => {
     const name = newSkillName.trim();
     if (name && !allSkillCategories.includes(name)) {
-      setCustomSkills(prev => [...prev, name]);
+      const updated = [...customSkills, name];
+      setSiteContent("custom.skills", JSON.stringify(updated));
       setNewSkillName("");
       setIsAddingSkill(false);
     }
