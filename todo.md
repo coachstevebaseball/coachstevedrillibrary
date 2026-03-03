@@ -1615,3 +1615,6 @@
 - [x] Update frontend invite form to include name input
 - [x] Update invite list display to show name
 - [x] Write tests to verify name column works (14 tests pass)
+
+## Change Hero Stat Label
+- [x] Change label under '1,000+ Reps Logged' stat from 'FOCUS' to 'TRACKED'
