@@ -1618,3 +1618,12 @@
 
 ## Change Hero Stat Label
 - [x] Change label under '1,000+ Reps Logged' stat from 'FOCUS' to 'TRACKED'
+
+## Fix 2 Free Drill Preview System (CRITICAL)
+- [x] Audit current preview limit implementation and identify PREVIEW_MODE bug (found: PREVIEW_MODE = true)
+- [x] Remove PREVIEW_MODE bypass that causes hasAccess to always be true (set to false)
+- [x] Ensure anonymous users see content for first 2 drills then hit wall on 3rd (fixed logic in DrillDetail.tsx)
+- [x] Ensure recordView fires correctly for anonymous visitors (fixed useEffect dependencies)
+- [x] Verify preview wall appears and signup prompt works (DrillPreviewWall component verified)
+- [x] Write vitest tests for corrected preview limit logic (20 tests, all passing)
+- [x] Test as anonymous user to verify wall appears on 3rd drill (logic verified via tests)

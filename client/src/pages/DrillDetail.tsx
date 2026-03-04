@@ -1087,25 +1087,23 @@ export default function DrillDetail() {
     setEditGoalText('');
   };
 
-  // Check if user has access (or if preview mode is enabled)
-  const hasAccess = PREVIEW_MODE || (user && (user.role === 'admin' || user.isActiveClient === 1));
-
   // Free preview logic: unauthenticated visitors get 2 free drill views
   // If they're logged in (any role), bypass the preview limit entirely
   const isAnonymous = !user && !loading;
   const currentSlugAlreadyViewed = id ? hasViewed(id) : false;
-  const showPreviewWall = isAnonymous && isLimitReached && !currentSlugAlreadyViewed;
 
-  // Record this drill view for anonymous users (only if they haven't hit the wall)
+  // Check if user has access (or if preview mode is enabled)
+  // For logged-in users: allow access if they're admin or active client
+  // For anonymous users: allow access only if they haven't hit the preview limit
+  const isLoggedInWithAccess = user && (user.role === 'admin' || user.isActiveClient === 1);
+  const hasAccess = isLoggedInWithAccess || (isAnonymous && !isLimitReached);
+
+  // Record this drill view for anonymous users on first visit
   useEffect(() => {
-    if (isAnonymous && id && drill && !isLimitReached) {
+    if (isAnonymous && id && drill && !currentSlugAlreadyViewed && !isLimitReached) {
       recordView(id);
     }
-    // Also allow viewing if they already viewed this slug before hitting limit
-    if (isAnonymous && id && drill && currentSlugAlreadyViewed) {
-      // No-op: they can revisit drills they already saw
-    }
-  }, [isAnonymous, id, drill?.name, isLimitReached, currentSlugAlreadyViewed]);
+  }, [isAnonymous, id, drill?.name, isLimitReached, currentSlugAlreadyViewed, recordView]);
 
   if (loading) {
     return (
@@ -1139,7 +1137,8 @@ export default function DrillDetail() {
   }
 
   // Show the preview wall for anonymous users who have hit their free limit
-  if (showPreviewWall) {
+  // and are trying to view a new drill they haven't seen before
+  if (isAnonymous && isLimitReached && !currentSlugAlreadyViewed && drill) {
     return (
       <DrillPreviewWall
         drillName={drill.name}
