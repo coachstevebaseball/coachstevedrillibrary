@@ -30,19 +30,18 @@ import {
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useAllDrills } from "@/hooks/useAllDrills";
-import { InlineEdit } from "@/components/InlineEdit";
-import { useSiteContent } from "@/contexts/SiteContentContext";
 
 const SKILL_CATEGORIES = [
   "Swing Mechanics",
   "Pitch Recognition",
   "Plate Approach",
-  "Bat Speed Development",
-  "Exit Velocity",
-  "Timing & Rhythm",
+  "Fielding Fundamentals",
+  "Throwing Mechanics",
+  "Base Running",
+  "Bunting",
   "Game IQ / Situational Awareness",
   "Confidence / Mindset",
-  "Contact Quality",
+  "Arm Care / Body Mechanics",
 ] as const;
 
 // Short labels for mobile display
@@ -50,12 +49,13 @@ const SKILL_SHORT_LABELS: Record<string, string> = {
   "Swing Mechanics": "Swing",
   "Pitch Recognition": "Pitch Rec",
   "Plate Approach": "Approach",
-  "Bat Speed Development": "Bat Speed",
-  "Exit Velocity": "Exit Velo",
-  "Timing & Rhythm": "Timing",
+  "Fielding Fundamentals": "Fielding",
+  "Throwing Mechanics": "Throwing",
+  "Base Running": "Baserunning",
+  "Bunting": "Bunting",
   "Game IQ / Situational Awareness": "Game IQ",
   "Confidence / Mindset": "Mindset",
-  "Contact Quality": "Contact",
+  "Arm Care / Body Mechanics": "Arm Care",
 };
 
 // Skill category colors for visual distinction
@@ -63,12 +63,13 @@ const SKILL_COLORS: Record<string, string> = {
   "Swing Mechanics": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
   "Pitch Recognition": "bg-purple-500/20 text-purple-300 border-purple-500/30",
   "Plate Approach": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
-  "Bat Speed Development": "bg-orange-500/20 text-orange-300 border-orange-500/30",
-  "Exit Velocity": "bg-green-500/20 text-green-300 border-green-500/30",
-  "Timing & Rhythm": "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
+  "Fielding Fundamentals": "bg-green-500/20 text-green-300 border-green-500/30",
+  "Throwing Mechanics": "bg-orange-500/20 text-orange-300 border-orange-500/30",
+  "Base Running": "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
+  "Bunting": "bg-lime-500/20 text-lime-300 border-lime-500/30",
   "Game IQ / Situational Awareness": "bg-rose-500/20 text-rose-300 border-rose-500/30",
   "Confidence / Mindset": "bg-pink-500/20 text-pink-300 border-pink-500/30",
-  "Contact Quality": "bg-teal-500/20 text-teal-300 border-teal-500/30",
+  "Arm Care / Body Mechanics": "bg-teal-500/20 text-teal-300 border-teal-500/30",
 };
 
 // ============================================================
@@ -99,23 +100,26 @@ const IMPROVED_TEMPLATES: TemplateOption[] = [
   { label: "Hunting fastball early", text: "Doing a great job hunting the fastball early in the count and being aggressive on hittable pitches.", category: "Plate Approach" },
   { label: "Two-strike approach", text: "Two-strike approach is improving. Shortening up and putting the ball in play instead of expanding the zone.", category: "Plate Approach" },
   { label: "Zone awareness", text: "Better understanding of the strike zone. Laying off borderline pitches and attacking pitches in the hitting zone.", category: "Plate Approach" },
-  // Bat Speed Development
-  { label: "Bat speed gains", text: "Bat speed is trending up. The overload/underload work is paying off with more explosive swings.", category: "Bat Speed Development" },
-  { label: "Hand speed improvement", text: "Hand speed through the zone is noticeably quicker. Getting the barrel to the ball faster.", category: "Bat Speed Development" },
-  // Exit Velocity
-  { label: "Hard contact rate", text: "Hard contact rate is improving. Consistently squaring balls up and driving them with authority.", category: "Exit Velocity" },
-  { label: "Barrel accuracy", text: "Finding the barrel more consistently. Exit velocities are climbing as a result of better contact quality.", category: "Exit Velocity" },
-  // Timing & Rhythm
-  { label: "Timing mechanism", text: "Timing mechanism is becoming more consistent and repeatable. Getting on time for different pitch speeds.", category: "Timing & Rhythm" },
-  { label: "Rhythm in the box", text: "Much better rhythm and flow in the batter's box. Not as stiff or mechanical — the swing is starting to feel natural.", category: "Timing & Rhythm" },
+  // Fielding Fundamentals
+  { label: "Ground ball footwork", text: "Ground ball footwork is much cleaner. Getting into a good fielding position with feet active through the ball.", category: "Fielding Fundamentals" },
+  { label: "Glove work improvement", text: "Glove work is softer and more relaxed. Receiving the ball out front with better hand-eye coordination.", category: "Fielding Fundamentals" },
+  { label: "Throwing accuracy", text: "Throws are more accurate and on-line. Getting a good four-seam grip and following through to the target.", category: "Fielding Fundamentals" },
+  // Throwing Mechanics
+  { label: "Arm action cleanup", text: "Arm action is getting cleaner and more efficient. Less wasted motion in the arm circle.", category: "Throwing Mechanics" },
+  { label: "Lower half engagement", text: "Better engagement of the lower half in the throwing motion. Getting more drive from the back leg.", category: "Throwing Mechanics" },
+  // Base Running
+  { label: "First-step quickness", text: "First-step quickness off the base is improving. Reading the pitcher's move better and getting better jumps.", category: "Base Running" },
+  { label: "Rounding bases", text: "Rounding bases more efficiently. Taking better angles and maintaining speed through the turn.", category: "Base Running" },
+  // Bunting
+  { label: "Bunt technique", text: "Bunt technique is solid. Getting the bat angle right and placing the ball effectively.", category: "Bunting" },
   // Game IQ
   { label: "Situational awareness", text: "Much better situational awareness. Making smart decisions based on the game situation, count, and runners.", category: "Game IQ / Situational Awareness" },
   { label: "In-game adjustments", text: "Making quality in-game adjustments after seeing a pitcher for the second time through the order.", category: "Game IQ / Situational Awareness" },
   // Confidence / Mindset
   { label: "Competitive confidence", text: "Confidence is growing. Competing with a more aggressive mindset and trusting the work put in during practice.", category: "Confidence / Mindset" },
   { label: "Bounce-back mentality", text: "Showing great bounce-back mentality. Not letting a bad at-bat carry over to the next one.", category: "Confidence / Mindset" },
-  // Contact Quality
-  { label: "Consistent contact", text: "Making more consistent, quality contact. Barreling the ball up and driving it to all fields.", category: "Contact Quality" },
+  // Arm Care
+  { label: "Arm care routine", text: "Arm care routine is becoming more consistent. Doing a great job with band work and recovery protocols.", category: "Arm Care / Body Mechanics" },
   // General
   { label: "Overall effort & focus", text: "Great effort and focus throughout the entire session. Locked in and coachable.", category: undefined },
   { label: "Applying drill work to live", text: "Successfully transferring drill work into live reps. The training is translating.", category: undefined },
@@ -137,23 +141,24 @@ const NEEDS_WORK_TEMPLATES: TemplateOption[] = [
   { label: "Expanding the zone", text: "Expanding the zone too much with two strikes. Need to tighten up the chase rate on pitcher's pitches.", category: "Plate Approach" },
   { label: "Count leverage", text: "Not taking advantage of hitter's counts. Need to be more aggressive when ahead in the count.", category: "Plate Approach" },
   { label: "Pitch selection", text: "Pitch selection needs work. Swinging at too many pitcher's pitches instead of waiting for something in the zone.", category: "Plate Approach" },
-  // Bat Speed Development
-  { label: "Bat speed plateau", text: "Bat speed has plateaued. Need to incorporate more overload/underload training and focus on explosive hip rotation.", category: "Bat Speed Development" },
-  { label: "Swing efficiency", text: "Swing is too long to generate consistent bat speed. Need to tighten the path and let the speed come from rotation.", category: "Bat Speed Development" },
-  // Exit Velocity
-  { label: "Weak contact", text: "Too many weak groundballs and pop-ups. Need to focus on hitting the ball on the barrel with a slight upward plane.", category: "Exit Velocity" },
-  { label: "Mishits on inner half", text: "Getting jammed on inside pitches. Need to work on getting hands inside the ball for better exit velocity.", category: "Exit Velocity" },
-  // Timing & Rhythm
-  { label: "Timing inconsistency", text: "Timing is inconsistent pitch to pitch. Need a more reliable load and stride mechanism to stay on time.", category: "Timing & Rhythm" },
-  { label: "Rushing the swing", text: "Rushing the swing and getting out front on off-speed. Need to trust the process and let the ball travel deeper.", category: "Timing & Rhythm" },
+  // Fielding Fundamentals
+  { label: "Backhand plays", text: "Backhand plays need more work. Not getting low enough and the glove isn't out front on the ball.", category: "Fielding Fundamentals" },
+  { label: "Double play feeds", text: "Double play feeds need to be quicker and more accurate. Working on getting rid of the ball faster.", category: "Fielding Fundamentals" },
+  { label: "Slow roller charging", text: "Needs to be more aggressive charging slow rollers. Getting to the ball on time but not attacking it.", category: "Fielding Fundamentals" },
+  // Throwing Mechanics
+  { label: "Arm slot consistency", text: "Arm slot is inconsistent. Dropping down at times which causes the ball to tail and lose accuracy.", category: "Throwing Mechanics" },
+  { label: "Follow-through", text: "Not finishing throws with a complete follow-through. Cutting the throw short which reduces velocity and accuracy.", category: "Throwing Mechanics" },
+  // Base Running
+  { label: "Reading pitcher's move", text: "Needs to study pitcher's pickoff move more. Getting picked off or hesitating on steal attempts.", category: "Base Running" },
+  { label: "Secondary leads", text: "Secondary leads are too passive. Need to be more aggressive getting into scoring position.", category: "Base Running" },
   // Game IQ
   { label: "Situational hitting", text: "Situational hitting needs improvement. Not adjusting approach based on game situation (runner on 3rd, less than 2 outs).", category: "Game IQ / Situational Awareness" },
   { label: "Between-pitch routine", text: "Between-pitch routine needs to be more consistent. Losing focus between pitches and not resetting properly.", category: "Game IQ / Situational Awareness" },
   // Confidence / Mindset
   { label: "Body language after mistakes", text: "Body language drops after mistakes. Need to work on maintaining a confident presence regardless of results.", category: "Confidence / Mindset" },
   { label: "Competing in pressure moments", text: "Tightening up in pressure situations. Need to trust the training and compete freely when the game is on the line.", category: "Confidence / Mindset" },
-  // Contact Quality
-  { label: "Inconsistent barrel", text: "Not finding the barrel consistently. Too many foul balls and mishits. Need more tee work focusing on center contact.", category: "Contact Quality" },
+  // Arm Care
+  { label: "Pre-throwing routine", text: "Pre-throwing routine needs to be more consistent. Skipping warm-up steps which increases injury risk.", category: "Arm Care / Body Mechanics" },
   // General
   { label: "Consistency between sessions", text: "Need more consistency between sessions. Good days are really good but the off days show regression in fundamentals.", category: undefined },
   { label: "Drill-to-live transfer", text: "Drill work looks great in isolation but not fully transferring to live at-bats yet. Need more bridge work between drills and game speed.", category: undefined },
@@ -178,32 +183,6 @@ function TemplatePicker({
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState<string>("relevant");
   const pickerRef = useRef<HTMLDivElement>(null);
-  const { get, set: setContent } = useSiteContent();
-
-  // Persisted custom quick fill templates
-  const customTemplates: TemplateOption[] = useMemo(() => {
-    const raw = get(`custom.quickFills.${label}`, "[]");
-    try { return JSON.parse(raw); } catch { return []; }
-  }, [get, label]);
-  const [isAddingTemplate, setIsAddingTemplate] = useState(false);
-  const [newTemplateLabel, setNewTemplateLabel] = useState("");
-  const [newTemplateText, setNewTemplateText] = useState("");
-  const newTemplateLabelRef = useRef<HTMLInputElement>(null);
-
-  const addCustomTemplate = () => {
-    const tLabel = newTemplateLabel.trim();
-    const tText = newTemplateText.trim();
-    if (tLabel && tText) {
-      const updated = [...customTemplates, { label: tLabel, text: tText, category: undefined }];
-      setContent(`custom.quickFills.${label}`, JSON.stringify(updated));
-      setNewTemplateLabel("");
-      setNewTemplateText("");
-      setIsAddingTemplate(false);
-    }
-  };
-
-  // Combine built-in + custom templates
-  const allTemplates = useMemo(() => [...templates, ...customTemplates], [templates, customTemplates]);
 
   // Close picker when clicking outside
   useEffect(() => {
@@ -219,12 +198,12 @@ function TemplatePicker({
 
   // Filter templates based on selected skills
   const filteredTemplates = useMemo(() => {
-    if (filter === "all") return allTemplates;
+    if (filter === "all") return templates;
     // Show templates matching selected skills + general ones
-    return allTemplates.filter(
+    return templates.filter(
       (t) => !t.category || selectedSkills.includes(t.category)
     );
-  }, [allTemplates, selectedSkills, filter]);
+  }, [templates, selectedSkills, filter]);
 
   const handleSelect = (template: TemplateOption) => {
     if (currentText.trim()) {
@@ -246,7 +225,7 @@ function TemplatePicker({
         className="h-7 px-2 text-xs text-[#DC143C] hover:text-[#DC143C]/80 hover:bg-[#DC143C]/10 gap-1"
       >
         <Sparkles className="h-3 w-3" />
-        <InlineEdit contentKey={`sessionNote.quickFill.${label}.btnLabel`} defaultValue="Quick Fill" />
+        Quick Fill
         <ChevronDown className={`h-3 w-3 transition-transform ${isOpen ? "rotate-180" : ""}`} />
       </Button>
 
@@ -254,9 +233,7 @@ function TemplatePicker({
         <div className="absolute z-30 top-full mt-1 left-0 right-0 min-w-[320px] max-w-[calc(100vw-2rem)] bg-card/95 backdrop-blur-xl border border-white/[0.12] rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
           {/* Filter tabs */}
           <div className="flex items-center gap-1 px-3 py-2 border-b border-white/[0.08] bg-white/[0.02]">
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mr-1">
-              <InlineEdit contentKey="sessionNote.quickFill.showLabel" defaultValue="Show:" />
-            </span>
+            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mr-1">Show:</span>
             <button
               type="button"
               onClick={() => setFilter("relevant")}
@@ -306,7 +283,7 @@ function TemplatePicker({
                     <Zap className="h-3.5 w-3.5 text-[#DC143C]/60 mt-0.5 shrink-0 group-hover:text-[#DC143C] transition-colors" />
                     <div className="min-w-0">
                       <span className="text-sm font-medium text-foreground block">
-                        <InlineEdit contentKey={`sessionNote.template.${label}.${idx}`} defaultValue={template.label} />
+                        {template.label}
                       </span>
                       <span className="text-xs text-muted-foreground line-clamp-2 mt-0.5 block">
                         {template.text}
@@ -323,69 +300,13 @@ function TemplatePicker({
             )}
           </div>
 
-          {/* Add custom quick fill */}
-          <div className="border-t border-white/[0.08]">
-            {isAddingTemplate ? (
-              <div className="p-3 space-y-2">
-                <input
-                  ref={newTemplateLabelRef}
-                  value={newTemplateLabel}
-                  onChange={(e) => setNewTemplateLabel(e.target.value)}
-                  placeholder="Template title..."
-                  className="w-full text-sm bg-white/[0.06] border border-white/[0.15] rounded px-2 py-1.5 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-[#DC143C]/40"
-                  autoFocus
-                  onKeyDown={(e) => {
-                    if (e.key === "Escape") { setIsAddingTemplate(false); setNewTemplateLabel(""); setNewTemplateText(""); }
-                  }}
-                />
-                <textarea
-                  value={newTemplateText}
-                  onChange={(e) => setNewTemplateText(e.target.value)}
-                  placeholder="Template text to insert..."
-                  rows={2}
-                  className="w-full text-sm bg-white/[0.06] border border-white/[0.15] rounded px-2 py-1.5 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-[#DC143C]/40 resize-none"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); addCustomTemplate(); }
-                    if (e.key === "Escape") { setIsAddingTemplate(false); setNewTemplateLabel(""); setNewTemplateText(""); }
-                  }}
-                />
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={addCustomTemplate}
-                    disabled={!newTemplateLabel.trim() || !newTemplateText.trim()}
-                    className="flex-1 text-xs font-medium py-1.5 rounded bg-[#DC143C]/20 text-[#DC143C] hover:bg-[#DC143C]/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                  >
-                    Add Template
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setIsAddingTemplate(false); setNewTemplateLabel(""); setNewTemplateText(""); }}
-                    className="flex-1 text-xs font-medium py-1.5 rounded text-muted-foreground hover:bg-white/[0.06] transition-colors"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => { setIsAddingTemplate(true); setTimeout(() => newTemplateLabelRef.current?.focus(), 50); }}
-                className="w-full text-left px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-white/[0.06] transition-colors flex items-center gap-2"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                Add Custom Quick Fill
-              </button>
-            )}
-          </div>
-
           {/* Close button */}
           <button
             type="button"
             onClick={() => setIsOpen(false)}
             className="w-full text-center py-2 text-xs text-muted-foreground hover:bg-white/[0.04] border-t border-white/[0.08]"
           >
-            <InlineEdit contentKey={`sessionNote.quickFill.${label}.closeLabel`} defaultValue="Close" />
+            Close
           </button>
         </div>
       )}
@@ -466,32 +387,6 @@ export function SessionNotesForm({
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [drillSearch, setDrillSearch] = useState("");
   const [showDrillPicker, setShowDrillPicker] = useState(false);
-
-  // Custom skill pills — persisted to siteContent DB
-  const { get: getSiteContent, set: setSiteContent } = useSiteContent();
-  const customSkills: string[] = useMemo(() => {
-    const raw = getSiteContent("custom.skills", "[]");
-    try { return JSON.parse(raw); } catch { return []; }
-  }, [getSiteContent]);
-  const [isAddingSkill, setIsAddingSkill] = useState(false);
-  const [newSkillName, setNewSkillName] = useState("");
-  const newSkillRef = useRef<HTMLInputElement>(null);
-
-  // All skills = built-in + custom
-  const allSkillCategories = useMemo(() => [
-    ...SKILL_CATEGORIES,
-    ...customSkills,
-  ], [customSkills]);
-
-  const addCustomSkill = () => {
-    const name = newSkillName.trim();
-    if (name && !allSkillCategories.includes(name)) {
-      const updated = [...customSkills, name];
-      setSiteContent("custom.skills", JSON.stringify(updated));
-      setNewSkillName("");
-      setIsAddingSkill(false);
-    }
-  };
 
   // Get next session number
   const { data: nextSessionNumber } = trpc.sessionNotes.getNextSessionNumber.useQuery(
@@ -638,15 +533,10 @@ export function SessionNotesForm({
           )}
           <div>
             <h2 className="font-heading font-bold text-lg md:text-xl">
-              <InlineEdit
-                contentKey={isEditing ? "sessionNote.form.editTitle" : "sessionNote.form.newTitle"}
-                defaultValue={isEditing ? "Edit Session Note" : "New Session Note"}
-              />
+              {isEditing ? "Edit Session Note" : "New Session Note"}
             </h2>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-sm text-muted-foreground">
-                <InlineEdit contentKey={`sessionNote.athleteName.${athleteId}`} defaultValue={athleteName} />
-              </span>
+              <span className="text-sm text-muted-foreground">{athleteName}</span>
               <span className="text-muted-foreground/40">·</span>
               {isEditingLabel ? (
                 <div className="flex items-center gap-1">
@@ -685,7 +575,7 @@ export function SessionNotesForm({
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">
-            <InlineEdit contentKey="sessionNote.label.date" defaultValue="Date" />
+            Date
           </label>
           <Input
             type="date"
@@ -696,7 +586,7 @@ export function SessionNotesForm({
         </div>
         <div>
           <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">
-            <InlineEdit contentKey="sessionNote.label.duration" defaultValue="Duration (min)" />
+            Duration (min)
           </label>
           <Input
             type="number"
@@ -711,15 +601,12 @@ export function SessionNotesForm({
       {/* Skills Worked — Quick-tap chips */}
       <div>
         <label className="text-xs font-semibold text-muted-foreground mb-2 block uppercase tracking-wider">
-          <InlineEdit contentKey="sessionNote.label.skillsWorkedOn" defaultValue="Skills Worked On" />
+          Skills Worked On
           <span className="text-[#DC143C] ml-1">*</span>
         </label>
         <div className="flex flex-wrap gap-2">
-          {allSkillCategories.map((skill) => {
+          {SKILL_CATEGORIES.map((skill) => {
             const isSelected = selectedSkills.includes(skill);
-            const isCustom = customSkills.includes(skill);
-            const colorClass = SKILL_COLORS[skill] || "bg-blue-500/20 text-blue-300 border-blue-500/30";
-            const shortLabel = SKILL_SHORT_LABELS[skill] || skill;
             return (
               <button
                 key={skill}
@@ -730,55 +617,21 @@ export function SessionNotesForm({
                   touch-manipulation select-none active:scale-95
                   ${
                     isSelected
-                      ? colorClass + " ring-1 ring-white/20"
+                      ? SKILL_COLORS[skill] + " ring-1 ring-white/20"
                       : "bg-white/[0.04] text-white/50 border-white/[0.08] hover:bg-white/[0.08] hover:text-white/70"
                   }
                 `}
               >
                 {isSelected && <Check className="h-3 w-3 inline mr-1.5" />}
-                <span className="sm:hidden">
-                  <InlineEdit contentKey={`sessionNote.skill.short.${skill}`} defaultValue={shortLabel} />
-                </span>
-                <span className="hidden sm:inline">
-                  <InlineEdit contentKey={`sessionNote.skill.${skill}`} defaultValue={skill} />
-                </span>
+                <span className="sm:hidden">{SKILL_SHORT_LABELS[skill]}</span>
+                <span className="hidden sm:inline">{skill}</span>
               </button>
             );
           })}
-          {/* Add custom skill pill button */}
-          {isAddingSkill ? (
-            <div className="flex items-center gap-1">
-              <Input
-                ref={newSkillRef}
-                value={newSkillName}
-                onChange={(e) => setNewSkillName(e.target.value)}
-                onBlur={() => {
-                  if (newSkillName.trim()) addCustomSkill();
-                  else setIsAddingSkill(false);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") { e.preventDefault(); addCustomSkill(); }
-                  if (e.key === "Escape") { setNewSkillName(""); setIsAddingSkill(false); }
-                }}
-                placeholder="Skill name..."
-                className="h-9 w-40 text-sm bg-white/[0.06] border-white/[0.15] px-2"
-                autoFocus
-              />
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => { setIsAddingSkill(true); setTimeout(() => newSkillRef.current?.focus(), 50); }}
-              className="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-dashed border-white/[0.15] text-white/40 hover:text-white/70 hover:border-white/[0.25] hover:bg-white/[0.04] touch-manipulation"
-            >
-              <Plus className="h-3.5 w-3.5 inline mr-1" />
-              Add Skill
-            </button>
-          )}
         </div>
         {selectedSkills.length > 0 && (
           <p className="text-xs text-muted-foreground mt-1.5">
-            {selectedSkills.length} <InlineEdit contentKey="sessionNote.label.skillSelected" defaultValue={selectedSkills.length !== 1 ? "skills selected" : "skill selected"} />
+            {selectedSkills.length} skill{selectedSkills.length !== 1 ? "s" : ""} selected
           </p>
         )}
       </div>
@@ -787,7 +640,7 @@ export function SessionNotesForm({
       <div>
         <div className="flex items-center justify-between mb-1.5">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            <InlineEdit contentKey="sessionNote.label.whatImproved" defaultValue="What Improved This Session" />
+            What Improved This Session
             <span className="text-[#DC143C] ml-1">*</span>
           </label>
           <TemplatePicker
@@ -811,7 +664,7 @@ export function SessionNotesForm({
       <div>
         <div className="flex items-center justify-between mb-1.5">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            <InlineEdit contentKey="sessionNote.label.whatNeedsWork" defaultValue="What Still Needs Work" />
+            What Still Needs Work
             <span className="text-[#DC143C] ml-1">*</span>
           </label>
           <TemplatePicker
@@ -834,7 +687,7 @@ export function SessionNotesForm({
       {/* Homework Drills — Quick search + add */}
       <div>
         <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">
-          <InlineEdit contentKey="sessionNote.label.homeworkDrills" defaultValue="Homework Drills Assigned" />
+          Homework Drills Assigned
         </label>
 
         {/* Selected drills */}
@@ -927,10 +780,8 @@ export function SessionNotesForm({
       {/* Overall Rating — Star rating */}
       <div>
         <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">
-          <InlineEdit contentKey="sessionNote.label.sessionRating" defaultValue="Session Rating" />
-          <span className="text-muted-foreground/60 ml-1 normal-case">
-            <InlineEdit contentKey="sessionNote.label.ratingSubtext" defaultValue="(private — not in reports)" />
-          </span>
+          Session Rating
+          <span className="text-muted-foreground/60 ml-1 normal-case">(private — not in reports)</span>
         </label>
         <div className="flex gap-1">
           {[1, 2, 3, 4, 5].map((n) => (
@@ -968,7 +819,7 @@ export function SessionNotesForm({
         ) : (
           <ChevronDown className="h-4 w-4" />
         )}
-        <InlineEdit contentKey="sessionNote.label.privateNotes" defaultValue="Private Coach Notes" />
+        Private Coach Notes
       </button>
 
       {showAdvanced && (
@@ -992,7 +843,7 @@ export function SessionNotesForm({
             className="flex-1 h-12 text-base"
             disabled={isSaving}
           >
-            <InlineEdit contentKey="sessionNote.btn.cancel" defaultValue="Cancel" />
+            Cancel
           </Button>
         )}
         <Button
@@ -1006,11 +857,11 @@ export function SessionNotesForm({
               Saving...
             </>
           ) : isEditing ? (
-            <InlineEdit contentKey="sessionNote.btn.update" defaultValue="Update Session Note" />
+            "Update Session Note"
           ) : (
             <>
               <Check className="h-4 w-4 mr-2" />
-              <InlineEdit contentKey="sessionNote.btn.save" defaultValue="Save Session Note" />
+              Save Session Note
             </>
           )}
         </Button>

@@ -33,7 +33,6 @@ import {
 import { trpc } from "@/lib/trpc";
 import { useAllDrills, type UnifiedDrill } from "@/hooks/useAllDrills";
 import { toast } from "sonner";
-import { InlineEdit } from "./InlineEdit";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -65,8 +64,8 @@ interface PlanBlock {
 type ViewMode = "list" | "calendar" | "create" | "edit" | "detail" | "session";
 
 const FOCUS_AREAS = [
-  "Hitting", "Swing Mechanics", "Bat Speed", "Pitch Recognition",
-  "Plate Approach", "Exit Velocity", "Mental Game", "Conditioning",
+  "Hitting", "Pitching", "Fielding", "Catching",
+  "Baserunning", "Throwing", "Mental Game", "Conditioning",
   "Warm-Up", "Cool-Down",
 ];
 
@@ -173,7 +172,7 @@ export default function PracticePlanner() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <InlineEdit contentKey="coach.planner.title" defaultValue="Practice Plans" as="h2" className="text-2xl font-heading font-bold text-white" />
+          <h2 className="text-2xl font-heading font-bold text-white">Practice Plans</h2>
           <p className="text-sm text-white/40 mt-1">{plans?.length || 0} plans created</p>
         </div>
         <div className="flex items-center gap-2">
@@ -195,7 +194,7 @@ export default function PracticePlanner() {
             </button>
           </div>
           <Button onClick={() => setView("create")} className="bg-[#DC143C] hover:bg-[#B91030] text-white gap-2 shadow-lg shadow-[#DC143C]/20">
-            <Plus className="h-4 w-4" /> <InlineEdit contentKey="coach.planner.newPlan" defaultValue="New Plan" as="span" />
+            <Plus className="h-4 w-4" /> New Plan
           </Button>
         </div>
       </div>
@@ -1465,7 +1464,7 @@ function CalendarView({ plans, onBack, onViewPlan, onCreatePlan, onStartSession 
             <ArrowLeft className="h-5 w-5" />
           </button>
           <div>
-            <InlineEdit contentKey="coach.planner.schedule" defaultValue="Schedule" as="h2" className="text-2xl font-heading font-bold text-white" />
+            <h2 className="text-2xl font-heading font-bold text-white">Schedule</h2>
             <p className="text-sm text-white/40">{monthNames[month]} {year}</p>
           </div>
         </div>

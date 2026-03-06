@@ -31,7 +31,7 @@ Create a specific, practical drill to address this issue: "${issue}"
 The drill should be appropriate for ${skillLevelText} level players.
 
 Format your response EXACTLY as follows (use | as separator):
-Drill Name | The Goal | Difficulty (Easy/Medium/Hard) | Duration (e.g., 15 minutes) | Skill Set (Hitting) | Equipment Needed | Step-by-step instructions (numbered, detailed) | Coach Tips and Common Mistakes
+Drill Name | The Goal | Difficulty (Easy/Medium/Hard) | Duration (e.g., 15 minutes) | Skill Set (e.g., Batting, Fielding, Pitching) | Equipment Needed | Step-by-step instructions (numbered, detailed) | Coach Tips and Common Mistakes
 
 Example format:
 Hand Position Drill | Fix dropped hands in swing | Medium | 15 minutes | Batting | Baseball bat, tee, baseballs | 1. Set up tee at waist height... | Tip 1: Watch for elbow drop... Mistake: Players often rush...

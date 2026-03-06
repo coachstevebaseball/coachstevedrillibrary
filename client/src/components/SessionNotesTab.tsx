@@ -12,7 +12,6 @@ import { trpc } from "@/lib/trpc";
 import { SessionNotesForm } from "./SessionNotesForm";
 import { SessionHistory } from "./SessionHistory";
 import { ProgressReportReview } from "./ProgressReportReview";
-import { InlineEdit } from "./InlineEdit";
 
 interface SessionNotesTabProps {
   /** Pre-select an athlete by ID */
@@ -94,7 +93,9 @@ export function SessionNotesTab({ initialAthleteId }: SessionNotesTabProps) {
     return (
       <div className="space-y-6">
         <div>
-          <InlineEdit contentKey="coach.sessionNotes.title" defaultValue="Session Notes" as="h2" className="font-heading font-bold text-xl md:text-2xl mb-2" />
+          <h2 className="font-heading font-bold text-xl md:text-2xl mb-2">
+            Session Notes
+          </h2>
           <p className="text-muted-foreground text-sm">
             Select an athlete to log session notes and track progress.
           </p>
@@ -193,7 +194,7 @@ export function SessionNotesTab({ initialAthleteId }: SessionNotesTabProps) {
             className="bg-[#DC143C] hover:bg-[#DC143C]/90 ml-auto"
           >
             <Plus className="h-4 w-4 mr-1" />
-            <span className="hidden sm:inline"><InlineEdit contentKey="coach.sessionNotes.newBtn" defaultValue="New Session Note" as="span" /></span>
+            <span className="hidden sm:inline">New Session Note</span>
             <span className="sm:hidden">Add</span>
           </Button>
         )}

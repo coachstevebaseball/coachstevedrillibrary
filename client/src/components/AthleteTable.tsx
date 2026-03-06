@@ -27,7 +27,6 @@ import {
   TrendingUp,
   Eye,
 } from "lucide-react";
-import { InlineEdit } from "./InlineEdit";
 
 type SortField = "id" | "name" | "email" | "status" | "role" | "totalDrills" | "completedDrills" | "lastActivity" | "createdAt" | "lastSignedIn";
 type SortDirection = "asc" | "desc";
@@ -251,7 +250,7 @@ export function AthleteTable() {
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center">
                 <Users className="h-4 w-4 text-[#DC143C]" />
               </div>
-              <InlineEdit contentKey="coach.athletes.title" defaultValue="Athlete Directory" as="span" />
+              Athlete Directory
             </h2>
             <p className="text-sm text-muted-foreground mt-1">
               {athletes.length} total athletes · {filteredAthletes.length} shown
@@ -323,7 +322,7 @@ export function AthleteTable() {
                   >
                     <div className="flex items-center gap-1.5">
                       <col.icon className="h-3 w-3 opacity-50" />
-                      <InlineEdit contentKey={`coach.athletes.col.${col.field}`} defaultValue={col.label} as="span" />
+                      <span>{col.label}</span>
                       <SortIcon field={col.field} />
                     </div>
                   </th>

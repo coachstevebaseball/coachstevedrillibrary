@@ -20,7 +20,6 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 import { AthleteProfilePanel } from "./AthleteProfilePanel";
-import { InlineEdit } from "./InlineEdit";
 
 interface AthleteAssignmentOverviewProps {
   onSelectAthlete?: (athleteId: string) => void;
@@ -120,7 +119,7 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
               </div>
               <div>
                 <p className="text-2xl font-bold">{summary.totalAthletes}</p>
-                <InlineEdit contentKey="coach.overview.stat.totalAthletes" defaultValue="Total Athletes" as="p" className="text-xs text-muted-foreground" />
+                <p className="text-xs text-muted-foreground">Total Athletes</p>
               </div>
             </div>
           </CardContent>
@@ -134,7 +133,7 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
               </div>
               <div>
                 <p className="text-2xl font-bold">{summary.athletesWithDrills}</p>
-                <InlineEdit contentKey="coach.overview.stat.withDrills" defaultValue="With Drills" as="p" className="text-xs text-muted-foreground" />
+                <p className="text-xs text-muted-foreground">With Drills</p>
               </div>
             </div>
           </CardContent>
@@ -148,7 +147,7 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
               </div>
               <div>
                 <p className="text-2xl font-bold">{summary.athletesWithoutDrills}</p>
-                <InlineEdit contentKey="coach.overview.stat.needDrills" defaultValue="Need Drills" as="p" className="text-xs text-muted-foreground" />
+                <p className="text-xs text-muted-foreground">Need Drills</p>
               </div>
             </div>
           </CardContent>
@@ -162,7 +161,7 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
               </div>
               <div>
                 <p className="text-2xl font-bold">{summary.completionRate}%</p>
-                <InlineEdit contentKey="coach.overview.stat.completionRate" defaultValue="Completion Rate" as="p" className="text-xs text-muted-foreground" />
+                <p className="text-xs text-muted-foreground">Completion Rate</p>
               </div>
             </div>
           </CardContent>
@@ -175,7 +174,7 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <CardTitle className="text-lg flex items-center gap-2">
               <Target className="h-5 w-5 text-secondary" />
-              <InlineEdit contentKey="coach.overview.listTitle" defaultValue="Athlete Assignment Status" as="span" />
+              Athlete Assignment Status
             </CardTitle>
             <div className="flex items-center gap-2">
               <div className="relative flex-1 md:w-48">

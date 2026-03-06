@@ -21,19 +21,19 @@ import { Switch } from "@/components/ui/switch";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { BlastMetricsBadge } from "./BlastMetricsBadge";
-import { InlineEdit } from "@/components/InlineEdit";
 
 // Skill category colors (matching SessionNotesForm)
 const SKILL_COLORS: Record<string, string> = {
   "Swing Mechanics": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
   "Pitch Recognition": "bg-purple-500/20 text-purple-300 border-purple-500/30",
   "Plate Approach": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
-  "Bat Speed Development": "bg-orange-500/20 text-orange-300 border-orange-500/30",
-  "Exit Velocity": "bg-green-500/20 text-green-300 border-green-500/30",
-  "Timing & Rhythm": "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
+  "Fielding Fundamentals": "bg-green-500/20 text-green-300 border-green-500/30",
+  "Throwing Mechanics": "bg-orange-500/20 text-orange-300 border-orange-500/30",
+  "Base Running": "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
+  "Bunting": "bg-lime-500/20 text-lime-300 border-lime-500/30",
   "Game IQ / Situational Awareness": "bg-rose-500/20 text-rose-300 border-rose-500/30",
   "Confidence / Mindset": "bg-pink-500/20 text-pink-300 border-pink-500/30",
-  "Contact Quality": "bg-teal-500/20 text-teal-300 border-teal-500/30",
+  "Arm Care / Body Mechanics": "bg-teal-500/20 text-teal-300 border-teal-500/30",
 };
 
 interface SessionHistoryProps {
@@ -166,7 +166,7 @@ export function SessionHistory({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="font-heading font-bold text-lg"><InlineEdit contentKey="sessionHistory.heading" defaultValue="Session History" /></h3>
+          <h3 className="font-heading font-bold text-lg">Session History</h3>
           <p className="text-sm text-muted-foreground">
             {notes.length} session{notes.length !== 1 ? "s" : ""} logged for {athleteName}
           </p>
@@ -185,7 +185,7 @@ export function SessionHistory({
                 className="text-xs gap-1 border-green-500/30 text-green-400 hover:bg-green-500/10 hover:text-green-300"
               >
                 <Eye className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline"><InlineEdit contentKey="sessionHistory.btn.shareAll" defaultValue="Share All" /></span>
+                <span className="hidden sm:inline">Share All</span>
               </Button>
               <Button
                 size="sm"
@@ -197,7 +197,7 @@ export function SessionHistory({
                 className="text-xs gap-1 border-orange-500/30 text-orange-400 hover:bg-orange-500/10 hover:text-orange-300"
               >
                 <EyeOff className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline"><InlineEdit contentKey="sessionHistory.btn.hideAll" defaultValue="Hide All" /></span>
+                <span className="hidden sm:inline">Hide All</span>
               </Button>
             </div>
           )}
@@ -208,8 +208,8 @@ export function SessionHistory({
               className="bg-[#DC143C] hover:bg-[#DC143C]/90"
             >
               <Plus className="h-4 w-4 mr-1" />
-              <span className="hidden sm:inline"><InlineEdit contentKey="sessionHistory.btn.newNote" defaultValue="New Note" /></span>
-              <span className="sm:hidden"><InlineEdit contentKey="sessionHistory.btn.newNoteMobile" defaultValue="Add" /></span>
+              <span className="hidden sm:inline">New Note</span>
+              <span className="sm:hidden">Add</span>
             </Button>
           )}
         </div>
@@ -324,7 +324,7 @@ export function SessionHistory({
                     {note.blastSessionId ? (
                       <div>
                         <h4 className="text-xs font-semibold text-[#DC143C] uppercase tracking-wider mb-1">
-                          <InlineEdit contentKey="sessionHistory.heading.blastMetrics" defaultValue="Session Blast Metrics" />
+                          Session Blast Metrics
                         </h4>
                         <p className="text-sm text-foreground/80 leading-relaxed">
                           {note.whatImproved}
@@ -336,7 +336,7 @@ export function SessionHistory({
                         {note.whatImproved && (
                           <div>
                             <h4 className="text-xs font-semibold text-green-400 uppercase tracking-wider mb-1">
-                              <InlineEdit contentKey="sessionHistory.heading.whatImproved" defaultValue="What Improved" />
+                              What Improved
                             </h4>
                             <p className="text-sm text-foreground/80 leading-relaxed">
                               {note.whatImproved}
@@ -348,7 +348,7 @@ export function SessionHistory({
                         {note.whatNeedsWork && (
                           <div>
                             <h4 className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-1">
-                              <InlineEdit contentKey="sessionHistory.heading.whatNeedsWork" defaultValue="What Needs Work" />
+                              What Needs Work
                             </h4>
                             <p className="text-sm text-foreground/80 leading-relaxed">
                               {note.whatNeedsWork}
@@ -362,7 +362,7 @@ export function SessionHistory({
                     {homeworkDrills.length > 0 && (
                       <div>
                         <h4 className="text-xs font-semibold text-[#DC143C] uppercase tracking-wider mb-1.5">
-                          <InlineEdit contentKey="sessionHistory.heading.homeworkDrills" defaultValue="Homework Drills" />
+                          Homework Drills
                         </h4>
                         <div className="flex flex-wrap gap-1.5">
                           {homeworkDrills.map((d: any) => (
@@ -388,7 +388,7 @@ export function SessionHistory({
                     {note.privateNotes && (
                       <div className="bg-white/[0.03] rounded-lg p-3 border border-white/[0.06]">
                         <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
-                          <InlineEdit contentKey="sessionHistory.heading.privateNotes" defaultValue="Private Notes" />
+                          Private Notes
                         </h4>
                         <p className="text-sm text-foreground/60 italic">
                           {note.privateNotes}
@@ -433,7 +433,7 @@ export function SessionHistory({
                           className="bg-[#DC143C] hover:bg-[#DC143C]/90 text-xs"
                         >
                           <FileText className="h-3.5 w-3.5 mr-1.5" />
-                          <InlineEdit contentKey="sessionHistory.btn.generateReport" defaultValue="Generate Report" />
+                          Generate Report
                         </Button>
                       )}
                       {onEditNote && (
@@ -444,7 +444,7 @@ export function SessionHistory({
                           className="text-xs"
                         >
                           <Edit3 className="h-3.5 w-3.5 mr-1.5" />
-                          <InlineEdit contentKey="sessionHistory.btn.edit" defaultValue="Edit" />
+                          Edit
                         </Button>
                       )}
                       <Button
@@ -459,7 +459,7 @@ export function SessionHistory({
                         className="text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10"
                       >
                         <Trash2 className="h-3.5 w-3.5 mr-1.5" />
-                        <InlineEdit contentKey="sessionHistory.btn.delete" defaultValue="Delete" />
+                        Delete
                       </Button>
                     </div>
                   </div>

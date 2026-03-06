@@ -201,20 +201,7 @@ Generate the progress report in your voice. Return it as structured JSON.`;
     .input(
       z.object({
         id: z.number(),
-        reportContent: z.object({
-          greeting: z.string().optional(),
-          sessionSummary: z.string().optional(),
-          strengths: z.string().optional(),
-          areasForImprovement: z.string().optional(),
-          homeworkAndNextSteps: z.string().optional(),
-          playerNote: z.string().optional(),
-          signOff: z.string().optional(),
-          sectionHeadings: z.object({
-            strengths: z.string().optional(),
-            areasForImprovement: z.string().optional(),
-            homeworkAndNextSteps: z.string().optional(),
-          }).optional(),
-        }).optional(),
+        reportContent: z.record(z.string(), z.string()).optional(),
         reportHtml: z.string().optional(),
         status: z.enum(["draft", "reviewed", "sent"]).optional(),
       })

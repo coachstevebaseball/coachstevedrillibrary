@@ -35,7 +35,7 @@ export async function assignDrill(
     const inviteResult = await db.select().from(invites).where(eq(invites.id, inviteId)).limit(1);
     const invite = inviteResult.length > 0 ? inviteResult[0] : null;
     email = invite?.email || null;
-    name = invite?.name || invite?.email?.split('@')[0] || null;
+    name = invite?.email?.split('@')[0] || null;
   }
 
   const assignment: InsertDrillAssignment = {
@@ -302,7 +302,7 @@ export async function getAthleteAssignmentOverview() {
 
     athletesWithStatus.push({
       id: `invite-${invite.id}`,
-      name: invite.name || invite.email.split('@')[0],
+      name: invite.email.split('@')[0],
       email: invite.email,
       type: 'invite',
       status: 'pending',

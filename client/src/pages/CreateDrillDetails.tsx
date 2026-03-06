@@ -167,7 +167,7 @@ export default function CreateDrillDetails() {
                       id="skillSet"
                       value={formData.skillSet}
                       onChange={(e) => setFormData({ ...formData, skillSet: e.target.value })}
-                      placeholder="e.g., Hitting"
+                      placeholder="e.g., Hitting, Infield, Pitching"
                     />
                   </div>
                 </div>

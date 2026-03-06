@@ -26,7 +26,6 @@ import { BulkImportDrills } from "@/components/BulkImportDrills";
 import { SingleVideoUpload } from "@/components/SingleVideoUpload";
 import { AddNewDrill } from "@/components/AddNewDrill";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { InlineEdit } from "@/components/InlineEdit";
 
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
@@ -64,7 +63,6 @@ export default function AdminDashboard() {
       utils.invites.getAllInvites.invalidate();
       toast.success("Invite created successfully!");
       setNewInviteEmail("");
-      setNewInviteName("");
     },
     onError: (error) => {
       toast.error(error.message || "Failed to create invite");
@@ -102,14 +100,13 @@ export default function AdminDashboard() {
   });
 
   const [newInviteEmail, setNewInviteEmail] = React.useState("");
-  const [newInviteName, setNewInviteName] = React.useState("");
 
   const handleCreateInvite = () => {
     if (!newInviteEmail) {
       toast.error("Please enter an email address");
       return;
     }
-    createInviteMutation.mutate({ email: newInviteEmail, name: newInviteName || undefined });
+    createInviteMutation.mutate({ email: newInviteEmail });
   };
 
   const copyInviteLink = (token: string) => {
@@ -159,18 +156,20 @@ export default function AdminDashboard() {
         <div className="container py-6">
           <div className="flex items-center justify-between">
             <div>
-              <InlineEdit contentKey="admin.title" defaultValue="Admin Dashboard" as="h1" className="text-3xl font-heading font-bold mb-2" />
-              <InlineEdit contentKey="admin.subtitle" defaultValue="Manage client access to the drills directory" as="p" className="text-primary-foreground/80" />
+              <h1 className="text-3xl font-heading font-bold mb-2">Admin Dashboard</h1>
+              <p className="text-primary-foreground/80">
+                Manage client access to the drills directory
+              </p>
             </div>
             <div className="flex gap-3 flex-wrap">
               <AddNewDrill />
               <SingleVideoUpload />
               <BulkImportDrills />
               <Link href="/coach">
-                <Button variant="secondary"><InlineEdit contentKey="admin.btn.coachDashboard" defaultValue="Coach Dashboard" as="span" /></Button>
+                <Button variant="secondary">Coach Dashboard</Button>
               </Link>
               <Link href="/drills">
-                <Button variant="secondary"><InlineEdit contentKey="admin.btn.viewDrills" defaultValue="View Drills" as="span" /></Button>
+                <Button variant="secondary">View Drills</Button>
               </Link>
             </div>
           </div>
@@ -182,7 +181,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription><InlineEdit contentKey="admin.stat.totalUsers" defaultValue="Total Users" as="span" /></CardDescription>
+              <CardDescription>Total Users</CardDescription>
               <CardTitle className="text-3xl flex items-center gap-2">
                 <Users className="h-6 w-6 text-muted-foreground" />
                 {totalUsers}
@@ -192,7 +191,7 @@ export default function AdminDashboard() {
 
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription><InlineEdit contentKey="admin.stat.activeClients" defaultValue="Active Clients" as="span" /></CardDescription>
+              <CardDescription>Active Clients</CardDescription>
               <CardTitle className="text-3xl flex items-center gap-2 text-green-600">
                 <CheckCircle2 className="h-6 w-6" />
                 {activeClients}
@@ -202,7 +201,7 @@ export default function AdminDashboard() {
 
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription><InlineEdit contentKey="admin.stat.inactiveClients" defaultValue="Inactive Clients" as="span" /></CardDescription>
+              <CardDescription>Inactive Clients</CardDescription>
               <CardTitle className="text-3xl flex items-center gap-2 text-muted-foreground">
                 <XCircle className="h-6 w-6" />
                 {totalUsers - activeClients}
@@ -214,21 +213,21 @@ export default function AdminDashboard() {
         {/* Users Table */}
         <Card>
           <CardHeader>
-            <CardTitle><InlineEdit contentKey="admin.table.title" defaultValue="Client Access Management" as="span" /></CardTitle>
+            <CardTitle>Client Access Management</CardTitle>
             <CardDescription>
-              <InlineEdit contentKey="admin.table.desc" defaultValue="Toggle client access to the drills directory. Only active clients can view drill content." as="span" />
+              Toggle client access to the drills directory. Only active clients can view drill content.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead><InlineEdit contentKey="admin.col.name" defaultValue="Name" as="span" /></TableHead>
-                  <TableHead><InlineEdit contentKey="admin.col.email" defaultValue="Email" as="span" /></TableHead>
-                  <TableHead><InlineEdit contentKey="admin.col.role" defaultValue="Role" as="span" /></TableHead>
-                  <TableHead><InlineEdit contentKey="admin.col.status" defaultValue="Status" as="span" /></TableHead>
-                  <TableHead><InlineEdit contentKey="admin.col.lastSignIn" defaultValue="Last Sign In" as="span" /></TableHead>
-                  <TableHead className="text-right"><InlineEdit contentKey="admin.col.accessControl" defaultValue="Access Control" as="span" /></TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Last Sign In</TableHead>
+                  <TableHead className="text-right">Access Control</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -288,22 +287,15 @@ export default function AdminDashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Mail className="h-5 w-5" />
-            <InlineEdit contentKey="admin.invite.title" defaultValue="Invite Athletes" as="span" />
+            Invite Athletes
           </CardTitle>
-          <CardDescription><InlineEdit contentKey="admin.invite.desc" defaultValue="Generate and manage athlete invitations" as="span" /></CardDescription>
+          <CardDescription>Generate and manage athlete invitations</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Create Invite Form */}
           <div className="space-y-3">
             <label className="text-sm font-semibold">Create New Invite</label>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <input
-                type="text"
-                placeholder="Athlete name (optional)"
-                value={newInviteName}
-                onChange={(e) => setNewInviteName(e.target.value)}
-                className="sm:w-48 px-3 py-2 border rounded-md border-input bg-background text-sm"
-              />
+            <div className="flex gap-2">
               <input
                 type="email"
                 placeholder="athlete@example.com"
@@ -350,13 +342,7 @@ export default function AdminDashboard() {
                     className="flex items-center justify-between gap-4 p-3 border rounded-lg bg-muted/30"
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">
-                        {invite.name ? (
-                          <><span>{invite.name}</span> <span className="text-muted-foreground font-normal">({invite.email})</span></>
-                        ) : (
-                          invite.email
-                        )}
-                      </p>
+                      <p className="font-medium text-sm truncate">{invite.email}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <Badge
                           variant={
@@ -418,7 +404,7 @@ export default function AdminDashboard() {
                         size="sm"
                         variant="ghost"
                         onClick={() => {
-                          if (confirm(`Are you sure you want to permanently delete the invite for ${invite.name || invite.email}? This action cannot be undone.`)) {
+                          if (confirm(`Are you sure you want to permanently delete the invite for ${invite.email}? This action cannot be undone.`)) {
                             deleteInviteMutation.mutate({ inviteId: invite.id });
                           }
                         }}
