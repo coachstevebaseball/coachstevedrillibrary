@@ -64,7 +64,6 @@ export default function AdminDashboard() {
       utils.invites.getAllInvites.invalidate();
       toast.success("Invite created successfully!");
       setNewInviteEmail("");
-      setNewInviteName("");
     },
     onError: (error) => {
       toast.error(error.message || "Failed to create invite");
@@ -102,14 +101,13 @@ export default function AdminDashboard() {
   });
 
   const [newInviteEmail, setNewInviteEmail] = React.useState("");
-  const [newInviteName, setNewInviteName] = React.useState("");
 
   const handleCreateInvite = () => {
     if (!newInviteEmail) {
       toast.error("Please enter an email address");
       return;
     }
-    createInviteMutation.mutate({ email: newInviteEmail, name: newInviteName || undefined });
+    createInviteMutation.mutate({ email: newInviteEmail });
   };
 
   const copyInviteLink = (token: string) => {
@@ -296,14 +294,7 @@ export default function AdminDashboard() {
           {/* Create Invite Form */}
           <div className="space-y-3">
             <label className="text-sm font-semibold">Create New Invite</label>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <input
-                type="text"
-                placeholder="Athlete name (optional)"
-                value={newInviteName}
-                onChange={(e) => setNewInviteName(e.target.value)}
-                className="sm:w-48 px-3 py-2 border rounded-md border-input bg-background text-sm"
-              />
+            <div className="flex gap-2">
               <input
                 type="email"
                 placeholder="athlete@example.com"
@@ -350,13 +341,7 @@ export default function AdminDashboard() {
                     className="flex items-center justify-between gap-4 p-3 border rounded-lg bg-muted/30"
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">
-                        {invite.name ? (
-                          <><span>{invite.name}</span> <span className="text-muted-foreground font-normal">({invite.email})</span></>
-                        ) : (
-                          invite.email
-                        )}
-                      </p>
+                      <p className="font-medium text-sm truncate">{invite.email}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <Badge
                           variant={
@@ -418,7 +403,7 @@ export default function AdminDashboard() {
                         size="sm"
                         variant="ghost"
                         onClick={() => {
-                          if (confirm(`Are you sure you want to permanently delete the invite for ${invite.name || invite.email}? This action cannot be undone.`)) {
+                          if (confirm(`Are you sure you want to permanently delete the invite for ${invite.email}? This action cannot be undone.`)) {
                             deleteInviteMutation.mutate({ inviteId: invite.id });
                           }
                         }}

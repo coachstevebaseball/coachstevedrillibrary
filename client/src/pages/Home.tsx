@@ -32,7 +32,7 @@ const DIFFICULTY_CONFIG: Record<string, { label: string; class: string; dotClass
 };
 
 // Category config with icons
-const CATEGORIES = ["Hitting"];
+const CATEGORIES = ["All", "Hitting", "Bunting", "Pitching", "Infield", "Outfield", "Catching", "Base Running"];
 
 /**
  * Save scroll position to sessionStorage keyed by the current query string.
@@ -300,7 +300,7 @@ export default function Home() {
             <div className="flex justify-center gap-8 md:gap-12 animate-fade-in-up stagger-4">
               {[
                 { valueKey: "home.stat.drills.value", valueDefault: `${allDrills.length}+`, labelKey: "home.stat.drills.label", labelDefault: "Drills", icon: Target },
-                { valueKey: "home.stat.categories.value", valueDefault: "1", labelKey: "home.stat.categories.label", labelDefault: "Focus", icon: Sparkles },
+                { valueKey: "home.stat.categories.value", valueDefault: "8", labelKey: "home.stat.categories.label", labelDefault: "Categories", icon: Sparkles },
                 { valueKey: "home.stat.levels.value", valueDefault: "3", labelKey: "home.stat.levels.label", labelDefault: "Levels", icon: TrendingUp },
               ].map((stat, i) => (
                 <div key={i} className="text-center">
@@ -363,7 +363,22 @@ export default function Home() {
             </div>
 
             {/* Category */}
-            {/* Single category: Hitting — no skill filter needed */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-1">Skill</span>
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setCategoryFilter(cat)}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${
+                    categoryFilter === cat
+                      ? "bg-electric text-white shadow-lg shadow-electric/25"
+                      : "bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/50"
+                  }`}
+                >
+                  {cat === "All" ? "All Skills" : cat}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

@@ -20,12 +20,13 @@ const SKILL_COLORS: Record<string, string> = {
   "Swing Mechanics": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
   "Pitch Recognition": "bg-purple-500/20 text-purple-400 border-purple-500/30",
   "Plate Approach": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
-  "Bat Speed Development": "bg-orange-500/20 text-orange-400 border-orange-500/30",
-  "Exit Velocity": "bg-green-500/20 text-green-400 border-green-500/30",
-  "Timing & Rhythm": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+  "Fielding Fundamentals": "bg-green-500/20 text-green-400 border-green-500/30",
+  "Throwing Mechanics": "bg-orange-500/20 text-orange-400 border-orange-500/30",
+  "Base Running": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+  "Bunting": "bg-lime-500/20 text-lime-400 border-lime-500/30",
   "Game IQ / Situational Awareness": "bg-rose-500/20 text-rose-400 border-rose-500/30",
   "Confidence / Mindset": "bg-pink-500/20 text-pink-400 border-pink-500/30",
-  "Contact Quality": "bg-teal-500/20 text-teal-400 border-teal-500/30",
+  "Arm Care / Body Mechanics": "bg-teal-500/20 text-teal-400 border-teal-500/30",
 };
 
 export function AthleteSessionNotes() {

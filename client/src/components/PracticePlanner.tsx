@@ -65,8 +65,8 @@ interface PlanBlock {
 type ViewMode = "list" | "calendar" | "create" | "edit" | "detail" | "session";
 
 const FOCUS_AREAS = [
-  "Hitting", "Swing Mechanics", "Bat Speed", "Pitch Recognition",
-  "Plate Approach", "Exit Velocity", "Mental Game", "Conditioning",
+  "Hitting", "Pitching", "Fielding", "Catching",
+  "Baserunning", "Throwing", "Mental Game", "Conditioning",
   "Warm-Up", "Cool-Down",
 ];
 

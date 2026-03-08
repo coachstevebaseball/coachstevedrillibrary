@@ -602,12 +602,12 @@ export const appRouter = router({
   // Invite management router
   invites: router({
     createInvite: protectedProcedure
-      .input(z.object({ email: z.string().email(), name: z.string().optional() }))
+      .input(z.object({ email: z.string().email() }))
       .mutation(async ({ ctx, input }) => {
         if (ctx.user.role !== 'admin') {
           throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
         }
-        return await inviteDb.createInvite(input.email, ctx.user.id, "athlete", 7, true, input.name);
+        return await inviteDb.createInvite(input.email, ctx.user.id);
       }),
     
     getAllInvites: protectedProcedure.query(async ({ ctx }) => {
