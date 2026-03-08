@@ -130,10 +130,6 @@ export function AddNewDrill() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Hitting">Hitting</SelectItem>
-                  <SelectItem value="Pitching">Pitching</SelectItem>
-                  <SelectItem value="Infield">Infield</SelectItem>
-                  <SelectItem value="Outfield">Outfield</SelectItem>
-                  <SelectItem value="Bunting">Bunting</SelectItem>
                 </SelectContent>
               </Select>
             </div>

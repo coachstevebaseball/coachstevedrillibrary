@@ -137,7 +137,7 @@ export function EditDrillDetailsModal({
                 id="skillSet"
                 value={formData.skillSet}
                 onChange={(e) => setFormData({ ...formData, skillSet: e.target.value })}
-                placeholder="e.g., Hitting, Infield, Pitching"
+                placeholder="e.g., Hitting"
               />
             </div>
           </div>

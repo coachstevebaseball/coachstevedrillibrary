@@ -1,0 +1,1 @@
+ALTER TABLE `invites` ADD `name` varchar(255);

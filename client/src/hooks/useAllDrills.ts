@@ -35,7 +35,10 @@ export function useAllDrills(): UnifiedDrill[] {
       isCustom: false,
     }));
 
-    const customDrillsFormatted: UnifiedDrill[] = customDrills.map((cd: any) => ({
+    // Only include Hitting custom drills (platform is hitting-focused)
+    const hittingCustomDrills = customDrills.filter((cd: any) => cd.category === "Hitting");
+
+    const customDrillsFormatted: UnifiedDrill[] = hittingCustomDrills.map((cd: any) => ({
       id: cd.drillId,
       name: cd.name,
       difficulty: cd.difficulty,

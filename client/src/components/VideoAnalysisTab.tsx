@@ -32,6 +32,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Streamdown } from "streamdown";
+import { InlineEdit } from "./InlineEdit";
 
 type AnalysisStatus = "pending" | "analyzing" | "analyzed" | "reviewed" | "approved" | "sent" | "failed";
 
@@ -537,27 +538,25 @@ export function VideoAnalysisTab() {
         <div>
           <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-purple-400" />
-            AI Video Analysis
+            <InlineEdit contentKey="coach.videoAnalysis.title" defaultValue="AI Video Analysis" as="span" />
           </h2>
-          <p className="text-muted-foreground mt-1">
-            Review AI-generated feedback on athlete video submissions
-          </p>
+          <InlineEdit contentKey="coach.videoAnalysis.desc" defaultValue="Review AI-generated feedback on athlete video submissions" as="p" className="text-muted-foreground mt-1" />
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
-          { label: "Total", value: stats.total, color: "text-foreground" },
-          { label: "Pending", value: stats.pending, color: "text-yellow-400" },
-          { label: "Needs Review", value: stats.needsReview, color: "text-purple-400" },
-          { label: "Sent", value: stats.sent, color: "text-emerald-400" },
-          { label: "Failed", value: stats.failed, color: "text-red-400" },
+          { key: "total", label: "Total", value: stats.total, color: "text-foreground" },
+          { key: "pending", label: "Pending", value: stats.pending, color: "text-yellow-400" },
+          { key: "needsReview", label: "Needs Review", value: stats.needsReview, color: "text-purple-400" },
+          { key: "sent", label: "Sent", value: stats.sent, color: "text-emerald-400" },
+          { key: "failed", label: "Failed", value: stats.failed, color: "text-red-400" },
         ].map((stat) => (
-          <Card key={stat.label} className="bg-card border-border">
+          <Card key={stat.key} className="bg-card border-border">
             <CardContent className="p-4 text-center">
               <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
-              <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
+              <InlineEdit contentKey={`coach.videoAnalysis.stat.${stat.key}`} defaultValue={stat.label} as="p" className="text-xs text-muted-foreground mt-1" />
             </CardContent>
           </Card>
         ))}

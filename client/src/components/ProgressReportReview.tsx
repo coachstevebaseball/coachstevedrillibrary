@@ -180,7 +180,7 @@ export function ProgressReportReview({
     const contentWithHeadings = { ...reportContent, sectionHeadings };
     updateMutation.mutate({
       id: reportId,
-      reportContent: contentWithHeadings as unknown as Record<string, string>,
+      reportContent: contentWithHeadings,
       status: "reviewed",
     });
     setStatus("reviewed");
@@ -193,7 +193,7 @@ export function ProgressReportReview({
       const contentWithHeadings = { ...reportContent, sectionHeadings };
       updateMutation.mutate({
         id: reportId,
-        reportContent: contentWithHeadings as unknown as Record<string, string>,
+        reportContent: contentWithHeadings,
         status: "reviewed",
       });
     }

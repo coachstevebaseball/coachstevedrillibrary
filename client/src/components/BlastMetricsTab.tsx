@@ -19,6 +19,7 @@ import { LinkBlastPlayer } from "./LinkBlastPlayer";
 import { EditBlastSession, type SessionData } from "./EditBlastSession";
 import { ImportBlastCSV } from "./ImportBlastCSV";
 import { RetroactiveBlastNotes } from "./RetroactiveBlastNotes";
+import { InlineEdit } from "./InlineEdit";
 
 // Metric display config
 const METRIC_CONFIGS = {
@@ -139,9 +140,9 @@ export function BlastMetricsTab() {
               <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#DC143C]/20 to-fuchsia-500/20 flex items-center justify-center border border-violet-500/20">
                 <Zap className="h-5 w-5 text-violet-400" />
               </div>
-              Blast Motion Metrics
+              <InlineEdit contentKey="coach.blast.title" defaultValue="Blast Motion Metrics" as="span" />
             </h2>
-            <p className="text-white/50 mt-1">Track swing metrics and identify trends across your players</p>
+            <InlineEdit contentKey="coach.blast.desc" defaultValue="Track swing metrics and identify trends across your players" as="p" className="text-white/50 mt-1" />
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -150,7 +151,7 @@ export function BlastMetricsTab() {
               className="bg-violet-600 hover:bg-violet-700 text-white"
             >
               <UserPlus className="h-4 w-4 mr-1.5" />
-              Add Player
+              <InlineEdit contentKey="coach.blast.addPlayer" defaultValue="Add Player" as="span" />
             </Button>
             <Badge variant="outline" className="text-white/60 border-white/10">
               {players.length} Players
@@ -302,7 +303,7 @@ export function BlastMetricsTab() {
             className="bg-violet-600 hover:bg-violet-700 text-white"
           >
             <Plus className="h-4 w-4 mr-1.5" />
-            Add Session
+            <InlineEdit contentKey="coach.blast.addSession" defaultValue="Add Session" as="span" />
           </Button>
         </div>
       </div>
@@ -311,16 +312,16 @@ export function BlastMetricsTab() {
       {overallAvgs && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
-            { label: "Bat Speed", value: `${overallAvgs.batSpeed.toFixed(1)}`, unit: "mph", color: "from-[#DC143C]/20 to-[#B91030]/20", borderColor: "border-[#DC143C]/20" },
-            { label: "On-Plane Eff.", value: `${overallAvgs.onPlaneEff.toFixed(1)}`, unit: "%", color: "from-teal-500/20 to-teal-600/20", borderColor: "border-teal-500/20" },
-            { label: "Attack Angle", value: `${overallAvgs.attackAngle.toFixed(1)}`, unit: "deg", color: "from-lime-500/20 to-lime-600/20", borderColor: "border-lime-500/20" },
-            { label: "Exit Velo", value: `${overallAvgs.exitVelocity.toFixed(1)}`, unit: "mph", color: "from-violet-500/20 to-violet-600/20", borderColor: "border-violet-500/20" },
+            { key: "batSpeed", label: "Bat Speed", value: `${overallAvgs.batSpeed.toFixed(1)}`, unit: "mph", color: "from-[#DC143C]/20 to-[#B91030]/20", borderColor: "border-[#DC143C]/20" },
+            { key: "onPlaneEff", label: "On-Plane Eff.", value: `${overallAvgs.onPlaneEff.toFixed(1)}`, unit: "%", color: "from-teal-500/20 to-teal-600/20", borderColor: "border-teal-500/20" },
+            { key: "attackAngle", label: "Attack Angle", value: `${overallAvgs.attackAngle.toFixed(1)}`, unit: "deg", color: "from-lime-500/20 to-lime-600/20", borderColor: "border-lime-500/20" },
+            { key: "exitVelo", label: "Exit Velo", value: `${overallAvgs.exitVelocity.toFixed(1)}`, unit: "mph", color: "from-violet-500/20 to-violet-600/20", borderColor: "border-violet-500/20" },
           ].map((card) => (
             <div
-              key={card.label}
+              key={card.key}
               className={`rounded-xl bg-gradient-to-br ${card.color} border ${card.borderColor} p-4 text-center`}
             >
-              <p className="text-xs text-white/50 font-medium uppercase tracking-wider mb-1">{card.label}</p>
+              <InlineEdit contentKey={`coach.blast.metric.${card.key}`} defaultValue={card.label} as="p" className="text-xs text-white/50 font-medium uppercase tracking-wider mb-1" />
               <p className="text-2xl font-bold text-white">
                 {card.value}
                 {card.unit && <span className="text-sm font-normal text-white/40 ml-1">{card.unit}</span>}

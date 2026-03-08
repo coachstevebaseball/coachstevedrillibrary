@@ -302,6 +302,34 @@
       "when": 1772259605735,
       "tag": "0042_violet_power_pack",
       "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "5",
+      "when": 1772291846195,
+      "tag": "0043_legal_impossible_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "5",
+      "when": 1772380825522,
+      "tag": "0044_big_gladiator",
+      "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "5",
+      "when": 1772380943309,
+      "tag": "0045_square_thunderbolts",
+      "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "5",
+      "when": 1772405211274,
+      "tag": "0046_watery_malcolm_colcord",
+      "breakpoints": true
     }
   ]
 }

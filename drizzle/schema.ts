@@ -64,6 +64,7 @@ export type AssignmentProgress = typeof assignmentProgress.$inferSelect;
 export type InsertAssignmentProgress = typeof assignmentProgress.$inferInsert;
 export const invites = mysqlTable("invites", {
   id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 255 }),
   email: varchar("email", { length: 320 }).notNull(),
   inviteToken: varchar("inviteToken", { length: 255 }).notNull().unique(),
   role: mysqlEnum("role", ["user", "admin", "athlete", "coach"]).default("user").notNull(),
@@ -702,3 +703,50 @@ export const blastMetrics = mysqlTable("blastMetrics", {
 });
 export type BlastMetric = typeof blastMetrics.$inferSelect;
 export type InsertBlastMetric = typeof blastMetrics.$inferInsert;
+
+
+// ============================================================
+// Site Content — Inline-editable text overrides for the entire site
+// ============================================================
+export const siteContent = mysqlTable("siteContent", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Unique key identifying the text element, e.g. "home.hero.badge" or "coach.tab.blastMetrics" */
+  contentKey: varchar("contentKey", { length: 500 }).notNull().unique(),
+  /** The overridden text value */
+  value: text("value").notNull(),
+  /** Who last edited this content */
+  updatedBy: int("updatedBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type SiteContent = typeof siteContent.$inferSelect;
+export type InsertSiteContent = typeof siteContent.$inferInsert;
+
+// Archived drills — non-hitting drills removed from the active library, preserved for future restoration
+export const archivedDrills = mysqlTable("archivedDrills", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Original drill ID from drills.json (slug format like '1-2-3-drill') */
+  originalDrillId: varchar("originalDrillId", { length: 500 }).notNull(),
+  /** Drill name */
+  name: varchar("name", { length: 500 }).notNull(),
+  /** Difficulty level */
+  difficulty: varchar("difficulty", { length: 50 }).notNull(),
+  /** Categories (JSON array) */
+  categories: json("categories").notNull(),
+  /** Duration */
+  duration: varchar("duration", { length: 100 }).notNull(),
+  /** Original URL */
+  url: text("url"),
+  /** Whether it was a direct link */
+  isDirectLink: boolean("isDirectLink").default(false),
+  /** Full drill JSON data for complete restoration */
+  fullData: json("fullData").notNull(),
+  /** Reason for archival */
+  archiveReason: varchar("archiveReason", { length: 255 }).default("non-hitting-category-removal"),
+  /** When the drill was archived */
+  archivedAt: timestamp("archivedAt").defaultNow().notNull(),
+  /** Who archived it */
+  archivedBy: int("archivedBy"),
+});
+export type ArchivedDrill = typeof archivedDrills.$inferSelect;
+export type InsertArchivedDrill = typeof archivedDrills.$inferInsert;

@@ -1,0 +1,202 @@
+{
+  "query": "SELECT id, drillId, name, category FROM customDrills ORDER BY name;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT id, drillId, name, category FROM customDrills ORDER BY name;",
+  "rows": [
+    {
+      "id": "360001",
+      "drillId": "43-drill",
+      "name": "4.3 Drill",
+      "category": "Infield"
+    },
+    {
+      "id": "210001",
+      "drillId": "airplane-drill",
+      "name": "Airplane Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "300001",
+      "drillId": "anti-rotation-resistance-drill",
+      "name": "Anti Rotation Resistance Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "180001",
+      "drillId": "bounce-drill",
+      "name": "Bounce Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "120001",
+      "drillId": "bow-and-arrow-drill",
+      "name": "Bow and Arrow Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "4",
+      "drillId": "crossover-drill",
+      "name": "Crossover Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "5",
+      "drillId": "elevated-front-toss-drill",
+      "name": "Elevated Front Toss Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "270001",
+      "drillId": "extension-and-direction-drill",
+      "name": "Extension and Direction Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "90001",
+      "drillId": "flamingo-one-leg-balanced-drill",
+      "name": "Flamingo (One Leg Balanced) Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "180004",
+      "drillId": "gain-ground-drill",
+      "name": "Gain Ground Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "180003",
+      "drillId": "happy-gilmore-drill",
+      "name": "Happy Gilmore Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "120004",
+      "drillId": "heavy-bat-drill",
+      "name": "Heavy Bat Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "120002",
+      "drillId": "hips-fire-first-tee-drill",
+      "name": "Hips Fire First Tee Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "60001",
+      "drillId": "jump-back-drill",
+      "name": "Jump Back Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "150002",
+      "drillId": "kaboom-drill",
+      "name": "KaBoom Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "180005",
+      "drillId": "kneel-to-hip-hinge-drill",
+      "name": "Kneel to Hip Hinge Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "180002",
+      "drillId": "mirror-drill",
+      "name": "Mirror Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "360002",
+      "drillId": "net-drill",
+      "name": "Net Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "210002",
+      "drillId": "one-handed-load-drill",
+      "name": "One Handed Load Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "3",
+      "drillId": "one-handed-drills",
+      "name": "One handed drills",
+      "category": "Hitting"
+    },
+    {
+      "id": "390001",
+      "drillId": "pvc-stride-separation-drill",
+      "name": "PVC Stride Separation Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "180006",
+      "drillId": "reverse-flamingo-drill",
+      "name": "Reverse Flamingo Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "150001",
+      "drillId": "rhythm-drill-1-2-step",
+      "name": "Rhythm Drill 1-2 Step",
+      "category": "Hitting"
+    },
+    {
+      "id": "330001",
+      "drillId": "rock-the-baby-drill",
+      "name": "Rock The Baby Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "270002",
+      "drillId": "see-saw-to-contact-drill",
+      "name": "SEE SAW TO CONTACT DRILL",
+      "category": "Hitting"
+    },
+    {
+      "id": "240001",
+      "drillId": "seesaw-drill",
+      "name": "Seesaw Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "210003",
+      "drillId": "separation-drill",
+      "name": "Separation Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "1",
+      "drillId": "slow---controlled---explode-drill",
+      "name": "Slow - Controlled - Explode Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "2",
+      "drillId": "slow-controlled-explode",
+      "name": "Slow-Controlled-Explode",
+      "category": "Hitting"
+    },
+    {
+      "id": "30001",
+      "drillId": "step-back-drill",
+      "name": "Step-back Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "120003",
+      "drillId": "test-video-url-drill",
+      "name": "Test Video URL Drill",
+      "category": "Hitting"
+    },
+    {
+      "id": "150003",
+      "drillId": "track-and-catch-drill",
+      "name": "Track and Catch Drill",
+      "category": "Hitting"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdrillId\tname\tcategory\n360001\t43-drill\t4.3 Drill\tInfield\n210001\tairplane-drill\tAirplane Drill\tHitting\n300001\tanti-rotation-resistance-drill\tAnti Rotation Resistance Drill\tHitting\n180001\tbounce-drill\tBounce Drill\tHitting\n120001\tbow-and-arrow-drill\tBow and Arrow Drill\tHitting\n4\tcrossover-drill\tCrossover Drill\tHitting\n5\televated-front-toss-drill\tElevated Front Toss Drill\tHitting\n270001\textension-and-direction-drill\tExtension and Direction Drill\tHitting\n90001\tflamingo-one-leg-balanced-drill\tFlamingo (One Leg Balanced) Drill\tHitting\n180004\tgain-ground-drill\tGain Ground Drill\tHitting\n180003\thappy-gilmore-drill\tHappy Gilmore Drill\tHitting\n120004\theavy-bat-drill\tHeavy Bat Drill\tHitting\n120002\thips-fire-first-tee-drill\tHips Fire First Tee Drill\tHitting\n60001\tjump-back-drill\tJump Back Drill\tHitting\n150002\tkaboom-drill\tKaBoom Drill\tHitting\n180005\tkneel-to-hip-hinge-drill\tKneel to Hip Hinge Drill\tHitting\n180002\tmirror-drill\tMirror Drill\tHitting\n360002\tnet-drill\tNet Drill\tHitting\n210002\tone-handed-load-drill\tOne Handed Load Drill\tHitting\n3\tone-handed-drills\tOne handed drills\tHitting\n390001\tpvc-stride-separation-drill\tPVC Stride Separation Drill\tHitting\n180006\treverse-flamingo-drill\tReverse Flamingo Drill\tHitting\n150001\trhythm-drill-1-2-step\tRhythm Drill 1-2 Step\tHitting\n330001\trock-the-baby-drill\tRock The Baby Drill\tHitting\n270002\tsee-saw-to-contact-drill\tSEE SAW TO CONTACT DRILL\tHitting\n240001\tseesaw-drill\tSeesaw Drill\tHitting\n210003\tseparation-drill\tSeparation Drill\tHitting\n1\tslow---controlled---explode-drill\tSlow - Controlled - Explode Drill\tHitting\n2\tslow-controlled-explode\tSlow-Controlled-Explode\tHitting\n30001\tstep-back-drill\tStep-back Drill\tHitting\n120003\ttest-video-url-drill\tTest Video URL Drill\tHitting\n150003\ttrack-and-catch-drill\tTrack and Catch Drill\tHitting\n",
+  "stderr": "",
+  "execution_time_ms": 424
+}

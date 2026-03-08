@@ -11,7 +11,7 @@ export interface DrillListParams {
 
 const DEFAULTS: DrillListParams = {
   page: 1,
-  category: 'All',
+  category: 'Hitting',
   difficulty: 'All',
   search: '',
   sort: 'alpha',

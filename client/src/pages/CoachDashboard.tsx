@@ -25,6 +25,7 @@ import { SessionNotesTab } from "@/components/SessionNotesTab";
 import { VideoAnalysisTab } from "@/components/VideoAnalysisTab";
 import { BlastMetricsTab } from "@/components/BlastMetricsTab";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
+import { InlineEdit } from "@/components/InlineEdit";
 
 interface Drill {
   id: string;
@@ -76,13 +77,13 @@ export default function CoachDashboard() {
       if (inv.status === 'pending') {
         const existingUser = allUsers.find((u: any) => u.email === inv.email);
         if (!existingUser) {
-          options.push({ id: `invite-${inv.id}`, name: inv.email.split('@')[0], email: inv.email, type: 'invite', status: 'pending' });
+          options.push({ id: `invite-${inv.id}`, name: inv.name || inv.email.split('@')[0], email: inv.email, type: 'invite', status: 'pending' });
         }
       }
       if (inv.status === 'accepted') {
         const existingUser = allUsers.find((u: any) => u.email === inv.email);
         if (!existingUser) {
-          options.push({ id: `invite-${inv.id}`, name: inv.email.split('@')[0], email: inv.email, type: 'invite', status: 'accepted' });
+          options.push({ id: `invite-${inv.id}`, name: inv.name || inv.email.split('@')[0], email: inv.email, type: 'invite', status: 'accepted' });
         }
       }
     });
@@ -225,7 +226,7 @@ export default function CoachDashboard() {
                 className="text-white/70 hover:text-white hover:bg-white/10 gap-2 text-sm"
               >
                 <Zap className="h-4 w-4" />
-                <span className="hidden sm:inline">Quick Actions</span>
+                <span className="hidden sm:inline"><InlineEdit contentKey="coach.btn.quickActions" defaultValue="Quick Actions" as="span" /></span>
               </Button>
               <Button
                 onClick={() => setIsBulkGoalOpen(true)}
@@ -233,7 +234,7 @@ export default function CoachDashboard() {
                 className="text-white/70 hover:text-white hover:bg-white/10 gap-2 text-sm"
               >
                 <Upload className="h-4 w-4" />
-                <span className="hidden sm:inline">Bulk Goals</span>
+                <span className="hidden sm:inline"><InlineEdit contentKey="coach.btn.bulkGoals" defaultValue="Bulk Goals" as="span" /></span>
               </Button>
               <Button
                 onClick={() => setActiveTab(activeTab === "bulk-import" ? "overview" : "bulk-import")}
@@ -241,33 +242,29 @@ export default function CoachDashboard() {
                 className="text-white/70 hover:text-white hover:bg-white/10 gap-2 text-sm"
               >
                 <Upload className="h-4 w-4" />
-                <span className="hidden sm:inline">Bulk Import</span>
+                <span className="hidden sm:inline"><InlineEdit contentKey="coach.btn.bulkImport" defaultValue="Bulk Import" as="span" /></span>
               </Button>
             </div>
           </div>
 
           {/* Title */}
           <div className="mb-8">
-            <h1 className="text-3xl md:text-5xl font-heading font-black text-white tracking-tight">
-              Coach Dashboard
-            </h1>
-            <p className="text-white/60 mt-2 text-sm md:text-base max-w-lg">
-              Manage your athletes, assign drills, and track progress all in one place.
-            </p>
+            <InlineEdit contentKey="coach.title" defaultValue="Coach Dashboard" as="h1" className="text-3xl md:text-5xl font-heading font-black text-white tracking-tight" />
+            <InlineEdit contentKey="coach.subtitle" defaultValue="Manage your athletes, assign drills, and track progress all in one place." as="p" className="text-white/60 mt-2 text-sm md:text-base max-w-lg" />
           </div>
 
           {/* Stats Row */}
           <section aria-label="Dashboard Statistics" className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
             {[
-              { label: "Athletes", value: totalAthletes, icon: Users, color: "text-[#E8425A]" },
-              { label: "Assigned", value: totalAssignments, icon: Target, color: "text-amber-400" },
-              { label: "In Progress", value: inProgressAssignments, icon: Clock, color: "text-purple-400" },
-              { label: "Completed", value: completedAssignments, icon: TrendingUp, color: "text-green-400" },
+              { key: "athletes", label: "Athletes", value: totalAthletes, icon: Users, color: "text-[#E8425A]" },
+              { key: "assigned", label: "Assigned", value: totalAssignments, icon: Target, color: "text-amber-400" },
+              { key: "inProgress", label: "In Progress", value: inProgressAssignments, icon: Clock, color: "text-purple-400" },
+              { key: "completed", label: "Completed", value: completedAssignments, icon: TrendingUp, color: "text-green-400" },
             ].map((stat) => (
-              <div key={stat.label} className="bg-white/[0.06] backdrop-blur-sm border border-white/[0.08] rounded-xl p-3 md:p-4" role="status" aria-label={`${stat.label}: ${stat.value}`}>
+              <div key={stat.key} className="bg-white/[0.06] backdrop-blur-sm border border-white/[0.08] rounded-xl p-3 md:p-4" role="status" aria-label={`${stat.label}: ${stat.value}`}>
                 <div className="flex items-center gap-2 mb-1">
                   <stat.icon className={`h-4 w-4 ${stat.color}`} aria-hidden="true" />
-                  <span className="text-white/50 text-xs font-medium uppercase tracking-wider">{stat.label}</span>
+                  <InlineEdit contentKey={`coach.stat.${stat.key}.label`} defaultValue={stat.label} as="span" className="text-white/50 text-xs font-medium uppercase tracking-wider" />
                 </div>
                 <p className="text-2xl md:text-3xl font-heading font-black text-white">{stat.value}</p>
               </div>
@@ -320,8 +317,8 @@ export default function CoachDashboard() {
                   }`}
                 >
                   <tab.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-                  <span className="hidden sm:inline">{tab.label}</span>
-                  <span className="sm:hidden">{tab.shortLabel}</span>
+                  <span className="hidden sm:inline"><InlineEdit contentKey={`coach.tab.${tab.key}.label`} defaultValue={tab.label} as="span" /></span>
+                  <span className="sm:hidden"><InlineEdit contentKey={`coach.tab.${tab.key}.short`} defaultValue={tab.shortLabel} as="span" /></span>
                 </button>
               ))}
             </nav>
@@ -362,8 +359,8 @@ export default function CoachDashboard() {
               <>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <h2 className="text-2xl font-heading font-bold">Drill Page Layouts</h2>
-                    <p className="text-muted-foreground mt-1 text-sm">Pick a drill to create or edit its page layout with the block editor.</p>
+                    <InlineEdit contentKey="coach.pageLayouts.title" defaultValue="Drill Page Layouts" as="h2" className="text-2xl font-heading font-bold" />
+                    <InlineEdit contentKey="coach.pageLayouts.desc" defaultValue="Pick a drill to create or edit its page layout with the block editor." as="p" className="text-muted-foreground mt-1 text-sm" />
                   </div>
                   <div className="relative w-full sm:w-72">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -421,7 +418,7 @@ export default function CoachDashboard() {
                     <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center">
                       <Plus className="h-4 w-4 text-[#DC143C]" />
                     </div>
-                    Assign Drill
+                    <InlineEdit contentKey="coach.assign.title" defaultValue="Assign Drill" as="span" />
                   </h3>
                 </div>
                 <div className="p-4 md:p-5 space-y-4">

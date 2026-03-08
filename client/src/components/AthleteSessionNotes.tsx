@@ -2,6 +2,7 @@ import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { Badge } from "@/components/ui/badge";
 import { BlastMetricsBadge } from "./BlastMetricsBadge";
+import { InlineEdit } from "@/components/InlineEdit";
 import {
   FileText,
   Calendar,
@@ -19,13 +20,12 @@ const SKILL_COLORS: Record<string, string> = {
   "Swing Mechanics": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
   "Pitch Recognition": "bg-purple-500/20 text-purple-400 border-purple-500/30",
   "Plate Approach": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
-  "Fielding Fundamentals": "bg-green-500/20 text-green-400 border-green-500/30",
-  "Throwing Mechanics": "bg-orange-500/20 text-orange-400 border-orange-500/30",
-  "Base Running": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  "Bunting": "bg-lime-500/20 text-lime-400 border-lime-500/30",
+  "Bat Speed Development": "bg-orange-500/20 text-orange-400 border-orange-500/30",
+  "Exit Velocity": "bg-green-500/20 text-green-400 border-green-500/30",
+  "Timing & Rhythm": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
   "Game IQ / Situational Awareness": "bg-rose-500/20 text-rose-400 border-rose-500/30",
   "Confidence / Mindset": "bg-pink-500/20 text-pink-400 border-pink-500/30",
-  "Arm Care / Body Mechanics": "bg-teal-500/20 text-teal-400 border-teal-500/30",
+  "Contact Quality": "bg-teal-500/20 text-teal-400 border-teal-500/30",
 };
 
 export function AthleteSessionNotes() {
@@ -138,7 +138,7 @@ export function AthleteSessionNotes() {
                     <div className="bg-[#DC143C]/5 border border-[#DC143C]/15 rounded-lg p-3">
                       <div className="flex items-center gap-1.5 mb-1.5">
                         <Zap className="h-3.5 w-3.5 text-[#DC143C]" />
-                        <span className="text-xs font-semibold text-[#DC143C]">Session Blast Metrics</span>
+                        <span className="text-xs font-semibold text-[#DC143C]"><InlineEdit contentKey="sessionHistory.heading.blastMetrics" defaultValue="Session Blast Metrics" /></span>
                       </div>
                       <p className="text-xs text-white/70 leading-relaxed">{note.whatImproved}</p>
                     </div>
@@ -149,7 +149,7 @@ export function AthleteSessionNotes() {
                         <div className="bg-emerald-500/5 border border-emerald-500/15 rounded-lg p-3">
                           <div className="flex items-center gap-1.5 mb-1.5">
                             <TrendingUp className="h-3.5 w-3.5 text-emerald-400" />
-                            <span className="text-xs font-semibold text-emerald-400">What Improved</span>
+                            <span className="text-xs font-semibold text-emerald-400"><InlineEdit contentKey="sessionHistory.heading.whatImproved" defaultValue="What Improved" /></span>
                           </div>
                           <p className="text-xs text-white/70 leading-relaxed">{note.whatImproved}</p>
                         </div>
@@ -160,7 +160,7 @@ export function AthleteSessionNotes() {
                         <div className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
                           <div className="flex items-center gap-1.5 mb-1.5">
                             <TrendingDown className="h-3.5 w-3.5 text-amber-400" />
-                            <span className="text-xs font-semibold text-amber-400">What to Work On</span>
+                            <span className="text-xs font-semibold text-amber-400"><InlineEdit contentKey="sessionHistory.heading.whatNeedsWork" defaultValue="What to Work On" /></span>
                           </div>
                           <p className="text-xs text-white/70 leading-relaxed">{note.whatNeedsWork}</p>
                         </div>
@@ -173,7 +173,7 @@ export function AthleteSessionNotes() {
                     <div className="bg-white/[0.03] border border-white/[0.06] rounded-lg p-3">
                       <div className="flex items-center gap-1.5 mb-2">
                         <Dumbbell className="h-3.5 w-3.5 text-electric" />
-                        <span className="text-xs font-semibold text-electric">Homework Drills</span>
+                        <span className="text-xs font-semibold text-electric"><InlineEdit contentKey="sessionHistory.heading.homeworkDrills" defaultValue="Homework Drills" /></span>
                       </div>
                       <div className="space-y-1">
                         {homework.map((drill, i) => (
