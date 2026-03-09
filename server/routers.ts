@@ -26,6 +26,7 @@ import { blastMetricsRouter } from "./routers-blast-metrics";
 import { badgesRouter } from "./routers-badges";
 import { siteContentRouter } from "./routers-site-content";
 import * as drillCustomizationsDb from "./drillCustomizations";
+import * as drillStatCardsDb from "./drillStatCards";
 import { storagePut } from "./storage";
 
 export const appRouter = router({
@@ -563,6 +564,28 @@ export const appRouter = router({
           throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
         }
         return await drillPageLayoutDb.deleteDrillPageLayout(input.drillId);
+      }),
+    getStatCards: publicProcedure
+      .input(z.object({ drillId: z.string() }))
+      .query(async ({ input }) => {
+        return await drillStatCardsDb.getStatCards(input.drillId);
+      }),
+    saveStatCards: protectedProcedure
+      .input(z.object({
+        drillId: z.string(),
+        cards: z.array(z.object({
+          label: z.string(),
+          value: z.string(),
+          icon: z.string().optional(),
+          position: z.number(),
+          isVisible: z.number(),
+        })),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
+        }
+        return await drillStatCardsDb.upsertStatCards(input.drillId, input.cards);
       }),
   }),
 

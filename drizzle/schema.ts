@@ -720,3 +720,18 @@ export const siteContent = mysqlTable("siteContent", {
 });
 export type SiteContent = typeof siteContent.$inferSelect;
 export type InsertSiteContent = typeof siteContent.$inferInsert;
+
+export const drillStatCards = mysqlTable("drillStatCards", {
+  id: int("id").autoincrement().primaryKey(),
+  drillId: varchar("drillId", { length: 128 }).notNull(),
+  label: varchar("label", { length: 128 }).notNull(),
+  value: varchar("value", { length: 512 }).notNull().default(""),
+  icon: varchar("icon", { length: 64 }).default("info"),
+  position: int("position").notNull().default(0),
+  isVisible: int("isVisible").notNull().default(1),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type DrillStatCard = typeof drillStatCards.$inferSelect;
+export type InsertDrillStatCard = typeof drillStatCards.$inferInsert;
