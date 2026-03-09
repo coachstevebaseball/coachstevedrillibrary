@@ -42,7 +42,7 @@ export default function DrillsDirectory() {
   const [goalFilter, setGoalFilter] = useState("all-goals");
   const [tagFilter, setTagFilter] = useState("all-tags");
   const [currentPage, setCurrentPage] = useState(1);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(true);
   const DRILLS_PER_PAGE = 20;
 
   const allDrills = useAllDrills();

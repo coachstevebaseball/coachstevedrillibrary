@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Video, Search } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo, useEffect } from "react";
-import drillsData from "@/data/drills.json";
+import drillsData from "@/data/drills";
 import { VideoUrlManager } from "@/components/VideoUrlManager";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";

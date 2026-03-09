@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Search, ArrowLeftRight, X, Clock, Activity, BarChart3, Video, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
-import drillsData from "@/data/drills.json";
+import drillsData from "@/data/drills";
 
 interface Drill {
   id: string;
