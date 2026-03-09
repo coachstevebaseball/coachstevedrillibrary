@@ -12,6 +12,8 @@ import { filterOptions } from "@/data/drills";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { EditDrillDetailsModal } from "@/components/EditDrillDetailsModal";
 import { InstructionsEditor } from "@/components/InstructionsEditor";
+import { TiptapEditor, TiptapRenderer } from "@/components/TiptapEditor";
+import { EditableStatBar, type StatCard } from "@/components/EditableStatBar";
 import { trpc } from "@/lib/trpc";
 import { Edit, Trash2, Pencil, Check, X } from "lucide-react";
 import { DrillQAForm } from "@/components/DrillQAForm";
@@ -1507,7 +1509,50 @@ export default function DrillDetail() {
             )}
             {/* Render the custom page layout */}
             <CustomDrillLayout blocks={pageLayout.blocks as any[]} />
-            
+
+            {/* Editable Stat Cards Bar - shown on custom layouts too */}
+            {details && (
+              <EditableStatBar
+                drillId={id || "unknown"}
+                isCoach={!!(user && (user.role === 'admin' || user.role === 'coach'))}
+                defaultCards={[
+                  { id: `${id}-time`, label: "Time", value: details.time, icon: "clock" },
+                  { id: `${id}-athletes`, label: "Athletes", value: details.athletes.split(',')[0], icon: "users" },
+                  { id: `${id}-equipment`, label: "Equipment", value: details.equipment.split(',')[0], icon: "dumbbell" },
+                  { id: `${id}-skill`, label: "Skill Set", value: details.skillSet, icon: "target" },
+                ]}
+              />
+            )}
+
+            {/* Instructions Editor - shown on custom layouts too */}
+            <section>
+              <h2 className="text-2xl md:text-3xl font-heading font-black mb-3 md:mb-4 flex items-center gap-2">
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center">
+                  <Target className="h-4 w-4 text-green-400" />
+                </div>
+                <InlineEdit contentKey={`drill.detail.${id}.instructionsHeading`} defaultValue="Instructions" as="span" />
+              </h2>
+              <div className="glass-card rounded-xl p-4 md:p-6">
+                {user && (user.role === 'admin' || user.role === 'coach') ? (
+                  <TiptapEditor
+                    value={customInstructions}
+                    onChange={setCustomInstructions}
+                    onSave={saveCustomInstructions}
+                    isSaving={saveInstructionsMutation.isPending}
+                    placeholder="Write drill instructions here..."
+                  />
+                ) : (
+                  <div className="min-h-[60px]">
+                    {customInstructions ? (
+                      <TiptapRenderer content={customInstructions} />
+                    ) : (
+                      <p className="text-muted-foreground italic">No instructions provided for this drill yet.</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </section>
+
             {/* Q&A Section for Athletes - also show on custom layouts */}
             {user?.role === 'athlete' && (
               <DrillQAForm drillId={id || ''} drillName={drill?.name || ''} />
@@ -1607,37 +1652,17 @@ export default function DrillDetail() {
               </div>
             </div>
 
-            {/* Quick Info Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="glass-card rounded-xl p-3 md:p-4">
-                <div className="flex items-center gap-1.5 mb-1">
-                  <Clock className="h-3.5 w-3.5 text-[#E8425A]" />
-                  <InlineEdit contentKey={`drill.detail.${id}.label.time`} defaultValue="Time" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
-                </div>
-                <InlineEdit contentKey={`drill.detail.${id}.value.time`} defaultValue={details.time} as="div" className="font-bold text-foreground text-sm md:text-base" />
-              </div>
-              <div className="glass-card rounded-xl p-3 md:p-4">
-                <div className="flex items-center gap-1.5 mb-1">
-                  <Users className="h-3.5 w-3.5 text-purple-400" />
-                  <InlineEdit contentKey={`drill.detail.${id}.label.athletes`} defaultValue="Athletes" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
-                </div>
-                <InlineEdit contentKey={`drill.detail.${id}.value.athletes`} defaultValue={details.athletes.split(',')[0]} as="div" className="font-bold text-foreground text-xs md:text-sm" />
-              </div>
-              <div className="glass-card rounded-xl p-3 md:p-4">
-                <div className="flex items-center gap-1.5 mb-1">
-                  <Dumbbell className="h-3.5 w-3.5 text-amber-400" />
-                  <InlineEdit contentKey={`drill.detail.${id}.label.equipment`} defaultValue="Equipment" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
-                </div>
-                <InlineEdit contentKey={`drill.detail.${id}.value.equipment`} defaultValue={details.equipment.split(',')[0]} as="div" className="font-bold text-foreground text-xs md:text-sm" />
-              </div>
-              <div className="glass-card rounded-xl p-3 md:p-4">
-                <div className="flex items-center gap-1.5 mb-1">
-                  <Target className="h-3.5 w-3.5 text-green-400" />
-                  <InlineEdit contentKey={`drill.detail.${id}.label.skillSet`} defaultValue="Skill Set" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
-                </div>
-                <InlineEdit contentKey={`drill.detail.${id}.value.skillSet`} defaultValue={details.skillSet} as="div" className="font-bold text-foreground text-xs md:text-sm" />
-              </div>
-            </div>
+            {/* Editable Stat Cards Bar */}
+            <EditableStatBar
+              drillId={id || "unknown"}
+              isCoach={!!(user && (user.role === 'admin' || user.role === 'coach'))}
+              defaultCards={[
+                { id: `${id}-time`, label: "Time", value: details.time, icon: "clock" },
+                { id: `${id}-athletes`, label: "Athletes", value: details.athletes.split(',')[0], icon: "users" },
+                { id: `${id}-equipment`, label: "Equipment", value: details.equipment.split(',')[0], icon: "dumbbell" },
+                { id: `${id}-skill`, label: "Skill Set", value: details.skillSet, icon: "target" },
+              ]}
+            />
 
             {/* Custom Instructions */}
             <section>
@@ -1649,18 +1674,17 @@ export default function DrillDetail() {
               </h2>
               <div className="glass-card rounded-xl p-4 md:p-6">
                 {user && (user.role === 'admin' || user.role === 'coach') ? (
-                  <InstructionsEditor
+                  <TiptapEditor
                     value={customInstructions}
                     onChange={setCustomInstructions}
                     onSave={saveCustomInstructions}
                     isSaving={saveInstructionsMutation.isPending}
+                    placeholder="Write drill instructions here... Use the toolbar for bold, headings, lists, and more. Toggle &lt;/&gt; to paste raw HTML."
                   />
                 ) : (
-                  <div className="prose prose-sm max-w-none">
+                  <div className="min-h-[60px]">
                     {customInstructions ? (
-                      <div className="whitespace-pre-wrap text-foreground leading-relaxed">
-                        {customInstructions}
-                      </div>
+                      <TiptapRenderer content={customInstructions} />
                     ) : (
                       <p className="text-muted-foreground italic">No instructions provided for this drill yet.</p>
                     )}
