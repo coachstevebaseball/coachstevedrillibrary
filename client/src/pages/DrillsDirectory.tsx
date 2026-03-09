@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, LogIn, LogOut, Shield, X, Users, Activity, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, Filter, LogIn, LogOut, Shield, X, Users, Activity } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
@@ -42,7 +42,7 @@ export default function DrillsDirectory() {
   const [goalFilter, setGoalFilter] = useState("all-goals");
   const [tagFilter, setTagFilter] = useState("all-tags");
   const [currentPage, setCurrentPage] = useState(1);
-  const [showFilters, setShowFilters] = useState(true);
+
   const DRILLS_PER_PAGE = 20;
 
   const allDrills = useAllDrills();
@@ -244,22 +244,17 @@ export default function DrillsDirectory() {
       {/* Main Content */}
       <main className="flex-1 container py-6 md:py-12">
 
-        {/* Filter Toggle Button */}
-        <div className="flex items-center gap-3 mb-6">
-          <Button
-            variant="outline"
-            onClick={() => setShowFilters(!showFilters)}
-            className="gap-2 font-semibold"
-          >
+        {/* Filter Controls Header */}
+        <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
             <Filter className="h-4 w-4" />
             Filters
             {activeFilterCount > 0 && (
-              <Badge className="bg-secondary text-secondary-foreground ml-1 h-5 w-5 p-0 flex items-center justify-center text-xs rounded-full">
+              <Badge className="bg-secondary text-secondary-foreground h-5 w-5 p-0 flex items-center justify-center text-xs rounded-full">
                 {activeFilterCount}
               </Badge>
             )}
-            {showFilters ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          </Button>
+          </div>
           {hasActiveFilters && (
             <Button variant="ghost" size="sm" onClick={clearAllFilters} className="gap-1 text-muted-foreground hover:text-foreground">
               <X className="h-3.5 w-3.5" />
@@ -268,9 +263,8 @@ export default function DrillsDirectory() {
           )}
         </div>
 
-        {/* Filters Panel */}
-        {showFilters && (
-          <div className="bg-card border rounded-xl p-5 md:p-6 shadow-sm mb-8 space-y-5">
+        {/* Filters Panel - always visible */}
+        <div className="bg-card border rounded-xl p-5 md:p-6 shadow-sm mb-8 space-y-5">
 
             {/* Row 1: Difficulty, Skill Set, Age Level */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -390,8 +384,7 @@ export default function DrillsDirectory() {
               </div>
             </div>
 
-          </div>
-        )}
+        </div>
 
         {/* Active Filter Pills */}
         {hasActiveFilters && (
