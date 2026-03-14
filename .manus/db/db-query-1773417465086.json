@@ -1,0 +1,89 @@
+{
+  "query": "\nSELECT id, fullName, blastEmail, userId FROM blastPlayers ORDER BY fullName;\n\nSELECT DISTINCT s.playerId as orphaned_player_id, COUNT(*) as session_count\nFROM blastSessions s\nLEFT JOIN blastPlayers p ON s.playerId = p.id\nWHERE p.id IS NULL\nGROUP BY s.playerId\nORDER BY session_count DESC;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute \nSELECT id, fullName, blastEmail, userId FROM blastPlayers ORDER BY fullName;\n\nSELECT DISTINCT s.playerId as orphaned_player_id, COUNT(*) as session_count\nFROM blastSessions s\nLEFT JOIN blastPlayers p ON s.playerId = p.id\nWHERE p.id IS NULL\nGROUP BY s.playerId\nORDER BY session_count DESC;\n",
+  "rows": [
+    {
+      "id": "11",
+      "fullName": "Emmet Reilly",
+      "blastEmail": "NULL",
+      "userId": "11"
+    },
+    {
+      "id": "a4c94299-f273-4d52-b2c7-9f4e1d72ffc8",
+      "fullName": "Gavin Goldstein",
+      "blastEmail": "adgold77@yahoo.com",
+      "userId": "4"
+    },
+    {
+      "id": "5",
+      "fullName": "Gunnar Nelson",
+      "blastEmail": "NULL",
+      "userId": "5"
+    },
+    {
+      "id": "8",
+      "fullName": "Jaden Belone",
+      "blastEmail": "NULL",
+      "userId": "8"
+    },
+    {
+      "id": "7",
+      "fullName": "Jake Sosnay",
+      "blastEmail": "NULL",
+      "userId": "7"
+    },
+    {
+      "id": "2",
+      "fullName": "Liam Mack",
+      "blastEmail": "NULL",
+      "userId": "2"
+    },
+    {
+      "id": "9",
+      "fullName": "Nathan Ocampo",
+      "blastEmail": "NULL",
+      "userId": "9"
+    },
+    {
+      "id": "6",
+      "fullName": "Sean Jaeger",
+      "blastEmail": "JKrichever@gmail.com",
+      "userId": "2"
+    },
+    {
+      "id": "4",
+      "fullName": "Sean Mack",
+      "blastEmail": "NULL",
+      "userId": "4"
+    },
+    {
+      "id": "1",
+      "fullName": "Shannon Caputo ",
+      "blastEmail": "NULL",
+      "userId": "1"
+    },
+    {
+      "id": "10",
+      "fullName": "Steven G",
+      "blastEmail": "NULL",
+      "userId": "10"
+    }
+  ],
+  "messages": [
+    "orphaned_player_id\tsession_count",
+    "66666666-6666-6666-6666-666666666666\t8",
+    "33333333-3333-3333-3333-333333333333\t6",
+    "3c3dd039-c6a2-44d8-99fa-2645afb22b80\t5",
+    "34bebcd4-3cf9-440e-bab4-ac65c367bf16\t4",
+    "9576f8a9-6704-498d-bedf-e7b3cb2ab486\t4",
+    "22fb39d2-5181-4895-a71a-26b7cd8f8c95\t3",
+    "8c07f8fe-0854-4e04-9181-43bf0449b794\t3",
+    "6bf6ac0b-0e23-4255-8af5-f88fe68c8e7d\t3",
+    "37b987e2-5d65-4fe5-92f5-1470670bc715\t1",
+    "cd8c5d6d-8645-42f5-a869-2768bfb086e3\t1",
+    "e886ff50-4a23-4a2f-85ff-c305f1f2cdf8\t1"
+  ],
+  "stdout": "id\tfullName\tblastEmail\tuserId\n11\tEmmet Reilly\tNULL\t11\na4c94299-f273-4d52-b2c7-9f4e1d72ffc8\tGavin Goldstein\tadgold77@yahoo.com\t4\n5\tGunnar Nelson\tNULL\t5\n8\tJaden Belone\tNULL\t8\n7\tJake Sosnay\tNULL\t7\n2\tLiam Mack\tNULL\t2\n9\tNathan Ocampo\tNULL\t9\n6\tSean Jaeger\tJKrichever@gmail.com\t2\n4\tSean Mack\tNULL\t4\n1\tShannon Caputo \tNULL\t1\n10\tSteven G\tNULL\t10\norphaned_player_id\tsession_count\n66666666-6666-6666-6666-666666666666\t8\n33333333-3333-3333-3333-333333333333\t6\n3c3dd039-c6a2-44d8-99fa-2645afb22b80\t5\n34bebcd4-3cf9-440e-bab4-ac65c367bf16\t4\n9576f8a9-6704-498d-bedf-e7b3cb2ab486\t4\n22fb39d2-5181-4895-a71a-26b7cd8f8c95\t3\n8c07f8fe-0854-4e04-9181-43bf0449b794\t3\n6bf6ac0b-0e23-4255-8af5-f88fe68c8e7d\t3\n37b987e2-5d65-4fe5-92f5-1470670bc715\t1\ncd8c5d6d-8645-42f5-a869-2768bfb086e3\t1\ne886ff50-4a23-4a2f-85ff-c305f1f2cdf8\t1\n",
+  "stderr": "",
+  "execution_time_ms": 411
+}

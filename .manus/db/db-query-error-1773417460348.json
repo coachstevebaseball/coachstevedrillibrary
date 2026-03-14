@@ -1,0 +1,32 @@
+{
+  "query": "\n-- Current valid players\nSELECT id, fullName, blastEmail, userId FROM blastPlayers ORDER BY fullName;\n\n-- All distinct orphaned playerIds (old UUIDs with no matching player)\nSELECT DISTINCT s.playerId as orphaned_player_id, COUNT(*) as session_count\nFROM blastSessions s\nLEFT JOIN blastPlayers p ON s.playerId = p.id\nWHERE p.id IS NULL\nGROUP BY s.playerId\nORDER BY session_count DESC;\n\n-- Also check sessionNotes for orphaned playerIds\nSELECT DISTINCT playerId, COUNT(*) as note_count\nFROM sessionNotes\nGROUP BY playerId\nORDER BY note_count DESC\nLIMIT 20;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute \n-- Current valid players\nSELECT id, fullName, blastEmail, userId FROM blastPlayers ORDER BY fullName;\n\n-- All distinct orphaned playerIds (old UUIDs with no matching player)\nSELECT DISTINCT s.playerId as orphaned_player_id, COUNT(*) as session_count\nFROM blastSessions s\nLEFT JOIN blastPlayers p ON s.playerId = p.id\nWHERE p.id IS NULL\nGROUP BY s.playerId\nORDER BY session_count DESC;\n\n-- Also check sessionNotes for orphaned playerIds\nSELECT DISTINCT playerId, COUNT(*) as note_count\nFROM sessionNotes\nGROUP BY playerId\nORDER BY note_count DESC\nLIMIT 20;\n",
+  "returncode": 1,
+  "logs": [
+    "id\tfullName\tblastEmail\tuserId",
+    "11\tEmmet Reilly\tNULL\t11",
+    "a4c94299-f273-4d52-b2c7-9f4e1d72ffc8\tGavin Goldstein\tadgold77@yahoo.com\t4",
+    "5\tGunnar Nelson\tNULL\t5",
+    "8\tJaden Belone\tNULL\t8",
+    "7\tJake Sosnay\tNULL\t7",
+    "2\tLiam Mack\tNULL\t2",
+    "9\tNathan Ocampo\tNULL\t9",
+    "6\tSean Jaeger\tJKrichever@gmail.com\t2",
+    "4\tSean Mack\tNULL\t4",
+    "1\tShannon Caputo \tNULL\t1",
+    "10\tSteven G\tNULL\t10",
+    "orphaned_player_id\tsession_count",
+    "66666666-6666-6666-6666-666666666666\t8",
+    "33333333-3333-3333-3333-333333333333\t6",
+    "3c3dd039-c6a2-44d8-99fa-2645afb22b80\t5",
+    "34bebcd4-3cf9-440e-bab4-ac65c367bf16\t4",
+    "9576f8a9-6704-498d-bedf-e7b3cb2ab486\t4",
+    "22fb39d2-5181-4895-a71a-26b7cd8f8c95\t3",
+    "8c07f8fe-0854-4e04-9181-43bf0449b794\t3",
+    "6bf6ac0b-0e23-4255-8af5-f88fe68c8e7d\t3",
+    "e886ff50-4a23-4a2f-85ff-c305f1f2cdf8\t1",
+    "37b987e2-5d65-4fe5-92f5-1470670bc715\t1",
+    "cd8c5d6d-8645-42f5-a869-2768bfb086e3\t1",
+    "ERROR 1054 (42S22) at line 14: Unknown column 'playerid' in 'group statement'"
+  ]
+}

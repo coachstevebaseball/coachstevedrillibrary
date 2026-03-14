@@ -49,7 +49,7 @@ function registerServiceWorker() {
 function Router() {
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
+      <Route path={"/"} component={DrillsDirectory} />
       <Route path={"/drills"} component={DrillsDirectory} />
       <Route path={"/accept-invite/:token"} component={AcceptInvite} />
       <Route path={"/verify-email/:token"} component={VerifyEmail} />
