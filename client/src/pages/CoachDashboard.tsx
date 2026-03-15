@@ -77,13 +77,13 @@ export default function CoachDashboard() {
       if (inv.status === 'pending') {
         const existingUser = allUsers.find((u: any) => u.email === inv.email);
         if (!existingUser) {
-          options.push({ id: `invite-${inv.id}`, name: inv.email.split('@')[0], email: inv.email, type: 'invite', status: 'pending' });
+          options.push({ id: `invite-${inv.id}`, name: inv.name || inv.email.split('@')[0], email: inv.email, type: 'invite', status: 'pending' });
         }
       }
       if (inv.status === 'accepted') {
         const existingUser = allUsers.find((u: any) => u.email === inv.email);
         if (!existingUser) {
-          options.push({ id: `invite-${inv.id}`, name: inv.email.split('@')[0], email: inv.email, type: 'invite', status: 'accepted' });
+          options.push({ id: `invite-${inv.id}`, name: inv.name || inv.email.split('@')[0], email: inv.email, type: 'invite', status: 'accepted' });
         }
       }
     });

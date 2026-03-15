@@ -1573,3 +1573,57 @@
 - [x] Add inline editing to AthleteSessionNotes component (athlete-facing view)
 - [x] Add reset/delete tRPC procedure + 2 new tests (8 total siteContent tests pass)
 - [x] TypeScript check (0 errors), tests (405 pass), browser verify (all elements confirmed)
+
+## Bug Fix: Session Note Submit Returns HTML Instead of JSON
+- [x] Fix "Unexpected token '<', '<!doctype'... is not valid JSON" error when saving a new session note
+- [x] Root cause: transient database ECONNRESET errors causing HTML fallback response
+- [x] Added custom fetch wrapper to detect HTML responses and show user-friendly error
+- [x] Added retry logic (queries: 2 retries, mutations: 1 retry) with exponential backoff
+
+## Bug Fix: Progress Report Save - sectionHeadings type mismatch
+- [x] Fix "expected string, received object" error on reportContent.sectionHeadings when saving/sending progress report
+- [x] Root cause: update mutation used z.record(string, string) which rejects nested sectionHeadings object
+- [x] Fixed server schema to use proper z.object() with nested sectionHeadings
+- [x] Removed unsafe `as unknown as Record<string, string>` casts from client
+
+## Make Platform Hitting-Dominant: Remove Non-Hitting Drills
+- [x] Archive all non-hitting drills to database table for future restoration (103 static + 1 custom archived)
+- [x] Remove Bunting drills from all JSON data files
+- [x] Remove Pitching drills from all JSON data files
+- [x] Remove Infield drills from all JSON data files
+- [x] Remove Outfield drills from all JSON data files
+- [x] Remove Catching drills from all JSON data files
+- [x] Remove Base Running drills from all JSON data files
+- [x] Update category filters to only show Hitting-related categories
+- [x] Update hero stats to reflect hitting-only drill count
+- [x] Update all hardcoded category references in frontend components (Home, DrillEditModal, AddNewDrill, SessionNotesForm, AthleteSessionNotes, SessionHistory, PracticePlanner, AthleteProfilePanel, categoryColors, EditDrillDetailsModal, CreateDrillDetails)
+- [x] Remove 18 non-hitting drill detail entries from DrillDetail.tsx
+- [x] Update session notes skill categories to hitting-focused (Bat Speed Development, Exit Velocity, Timing & Rhythm, Contact Quality)
+- [x] Update drill generator prompt to focus on Hitting
+- [x] Filter custom drills in useAllDrills hook to only show Hitting
+- [x] Write and pass 12 vitest tests verifying hitting-only platform (all pass)
+
+## Fix: Remove All Skills Button and Default to Hitting
+- [x] Remove "All Skills" from CATEGORIES array on homepage
+- [x] Default skill filter to "Hitting" instead of "All"
+- [x] Ensure drills always display on page load
+
+## Add Name Column to Invites Table
+- [x] Add name column to invites table in database schema
+- [x] Push database migration
+- [x] Update server-side invite creation/query logic to include name
+- [x] Update frontend invite form to include name input
+- [x] Update invite list display to show name
+- [x] Write tests to verify name column works (14 tests pass)
+
+## Change Hero Stat Label
+- [x] Change label under '1,000+ Reps Logged' stat from 'FOCUS' to 'TRACKED'
+
+## Fix 2 Free Drill Preview System (CRITICAL)
+- [x] Audit current preview limit implementation and identify PREVIEW_MODE bug (found: PREVIEW_MODE = true)
+- [x] Remove PREVIEW_MODE bypass that causes hasAccess to always be true (set to false)
+- [x] Ensure anonymous users see content for first 2 drills then hit wall on 3rd (fixed logic in DrillDetail.tsx)
+- [x] Ensure recordView fires correctly for anonymous visitors (fixed useEffect dependencies)
+- [x] Verify preview wall appears and signup prompt works (DrillPreviewWall component verified)
+- [x] Write vitest tests for corrected preview limit logic (20 tests, all passing)
+- [x] Test as anonymous user to verify wall appears on 3rd drill (logic verified via tests)

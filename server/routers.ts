@@ -26,7 +26,6 @@ import { blastMetricsRouter } from "./routers-blast-metrics";
 import { badgesRouter } from "./routers-badges";
 import { siteContentRouter } from "./routers-site-content";
 import * as drillCustomizationsDb from "./drillCustomizations";
-import * as drillStatCardsDb from "./drillStatCards";
 import { storagePut } from "./storage";
 
 export const appRouter = router({
@@ -565,28 +564,6 @@ export const appRouter = router({
         }
         return await drillPageLayoutDb.deleteDrillPageLayout(input.drillId);
       }),
-    getStatCards: publicProcedure
-      .input(z.object({ drillId: z.string() }))
-      .query(async ({ input }) => {
-        return await drillStatCardsDb.getStatCards(input.drillId);
-      }),
-    saveStatCards: protectedProcedure
-      .input(z.object({
-        drillId: z.string(),
-        cards: z.array(z.object({
-          label: z.string(),
-          value: z.string(),
-          icon: z.string().optional(),
-          position: z.number(),
-          isVisible: z.number(),
-        })),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
-        }
-        return await drillStatCardsDb.upsertStatCards(input.drillId, input.cards);
-      }),
   }),
 
   // Videos router
@@ -625,12 +602,12 @@ export const appRouter = router({
   // Invite management router
   invites: router({
     createInvite: protectedProcedure
-      .input(z.object({ email: z.string().email() }))
+      .input(z.object({ email: z.string().email(), name: z.string().optional() }))
       .mutation(async ({ ctx, input }) => {
         if (ctx.user.role !== 'admin') {
           throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
         }
-        return await inviteDb.createInvite(input.email, ctx.user.id);
+        return await inviteDb.createInvite(input.email, ctx.user.id, "athlete", 7, true, input.name);
       }),
     
     getAllInvites: protectedProcedure.query(async ({ ctx }) => {

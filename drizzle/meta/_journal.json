@@ -330,34 +330,6 @@
       "when": 1772405211274,
       "tag": "0046_watery_malcolm_colcord",
       "breakpoints": true
-    },
-    {
-      "idx": 47,
-      "version": "5",
-      "when": 1772802530492,
-      "tag": "0047_furry_triton",
-      "breakpoints": true
-    },
-    {
-      "idx": 48,
-      "version": "5",
-      "when": 1773003426113,
-      "tag": "0048_loose_miek",
-      "breakpoints": true
-    },
-    {
-      "idx": 49,
-      "version": "5",
-      "when": 1773003556666,
-      "tag": "0049_good_bruce_banner",
-      "breakpoints": true
-    },
-    {
-      "idx": 50,
-      "version": "5",
-      "when": 1773080197224,
-      "tag": "0050_superb_hardball",
-      "breakpoints": true
     }
   ]
 }

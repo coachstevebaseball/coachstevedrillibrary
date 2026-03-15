@@ -30,13 +30,6 @@ interface DrillEditModalProps {
 
 const CATEGORIES = [
   "Hitting",
-  "Bunting",
-  "Pitching",
-  "Infield",
-  "Outfield",
-  "Catching",
-  "Base Running",
-  "General",
 ];
 
 const DIFFICULTIES = ["Easy", "Medium", "Hard"];

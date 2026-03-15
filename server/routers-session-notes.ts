@@ -8,13 +8,12 @@ export const SKILL_CATEGORIES = [
   "Swing Mechanics",
   "Pitch Recognition",
   "Plate Approach",
-  "Fielding Fundamentals",
-  "Throwing Mechanics",
-  "Base Running",
-  "Bunting",
+  "Bat Speed Development",
+  "Exit Velocity",
+  "Timing & Rhythm",
   "Game IQ / Situational Awareness",
   "Confidence / Mindset",
-  "Arm Care / Body Mechanics",
+  "Contact Quality",
 ] as const;
 
 const homeworkDrillSchema = z.object({

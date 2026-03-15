@@ -7,13 +7,10 @@ import { getLoginUrl, PREVIEW_MODE } from "@/const";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Link, useRoute, useSearch } from "wouter";
 import { useState, useMemo, useEffect } from "react";
-import drillsData from "@/data/drills";
-import { filterOptions } from "@/data/drills";
+import drillsData from "@/data/drills.json";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { EditDrillDetailsModal } from "@/components/EditDrillDetailsModal";
 import { InstructionsEditor } from "@/components/InstructionsEditor";
-import { TiptapEditor, TiptapRenderer } from "@/components/TiptapEditor";
-import { EditableStatBar, type StatCard } from "@/components/EditableStatBar";
 import { trpc } from "@/lib/trpc";
 import { Edit, Trash2, Pencil, Check, X } from "lucide-react";
 import { DrillQAForm } from "@/components/DrillQAForm";
@@ -214,22 +211,6 @@ const drillDetails: Record<string, {
       "Usage: Best used as a mechanical reinforcement or early cage drill"
     ],
     videoUrl: "https://www.youtube.com/embed/sgRnq_8G2XI"
-  },
-  "defense-stance": {
-    skillSet: "Infield",
-    difficulty: "Easy",
-    athletes: "1+ athletes",
-    time: "5 minutes",
-    equipment: "Glove",
-    goal: "Develop proper defensive ready position",
-    description: [
-      "Feet shoulder-width apart, knees bent",
-      "Weight on the balls of the feet",
-      "Glove out in front, ready position",
-      "Practice getting into stance quickly from standing",
-      "Hold position for 5-10 seconds at a time"
-    ],
-    videoUrl: "https://www.youtube.com/embed/l62xR2rGWrA"
   },
   "double-tee": {
     skillSet: "Hitting",
@@ -451,74 +432,6 @@ const drillDetails: Record<string, {
       "Partners switch after 5 swings"
     ],
     videoUrl: "https://www.youtube.com/embed/BHfyJQLujhs"
-  },
-  "1st-base-flip-to-pitcher": {
-    skillSet: "Infield",
-    difficulty: "Medium",
-    athletes: "1 athlete and 1 coach, or 2 athletes as partners",
-    time: "5 minutes",
-    equipment: "Baseballs, glove, base",
-    goal: "Develop proper footwork and hand positioning for flipping to pitcher",
-    description: [
-      "1st baseman positions on the bag",
-      "Coach or partner rolls ground balls to the right of 1st base",
-      "1st baseman fields the ball and flips it to the pitcher covering the bag",
-      "Focus on quick footwork and accurate flip",
-      "Flip should be chest-high and on the inside of the bag",
-      "Repeat for multiple ground balls"
-    ],
-    videoUrl: "https://www.youtube.com/embed/ks7qctrCuHg"
-  },
-  "2nd-baseman-forehand-spin": {
-    skillSet: "Infield",
-    difficulty: "Medium",
-    athletes: "1 athlete and 1 coach, or 2 athletes as partners",
-    time: "5 minutes",
-    equipment: "Baseballs, glove, base",
-    goal: "Develop proper footwork for backhand flips from the 2nd base position",
-    description: [
-      "2nd baseman positions in the field",
-      "Coach or partner rolls ground balls to the left of 2nd base",
-      "2nd baseman fields the ball with a backhand and flips to the pitcher",
-      "Focus on quick footwork and accurate backhand flip",
-      "Flip should be chest-high and on the inside of the bag",
-      "Repeat for multiple ground balls"
-    ],
-    videoUrl: "https://www.youtube.com/embed/nRKx7jcbnIU"
-  },
-  "advanced-batting-practice": {
-    skillSet: "Infield",
-    difficulty: "Easy",
-    athletes: "4+ athletes",
-    time: "10 minutes",
-    equipment: "Baseballs, gloves, bases or cones",
-    goal: "Develop footwork and communication in a four-corner drill",
-    description: [
-      "Set up four bases or cones in a square pattern",
-      "Players position at each corner",
-      "Coach or partner hits or throws ground balls to each position",
-      "Players field the ball and throw to the next corner",
-      "Rotate positions after each round",
-      "Focus on proper footwork, throwing mechanics, and communication"
-    ],
-    videoUrl: "https://www.youtube.com/embed/ZbZSe6N_BXs"
-  },
-  "arm-path-drill": {
-    skillSet: "Infield",
-    difficulty: "Easy",
-    athletes: "1 athlete and 1 coach",
-    time: "1 minute",
-    equipment: "Baseballs, glove",
-    goal: "Develop quick reflexes and hand-eye coordination for quick tosses",
-    description: [
-      "Player stands in ready position",
-      "Coach stands 10-15 feet away",
-      "Coach tosses the ball quickly to the player",
-      "Player fields the ball and throws it back",
-      "Focus on quick reaction time and accuracy",
-      "Complete as many tosses as possible in 30 seconds"
-    ],
-    videoUrl: "https://www.youtube.com/embed/aqz-KE-bpKQ"
   },
   "no-stride-tee": {
     skillSet: "Hitting",
@@ -849,56 +762,6 @@ const drillDetails: Record<string, {
     ],
     videoUrl: "https://www.youtube.com/embed/Hdw8h4y4eS0"
   },
-  "30-second-backhand": {
-    skillSet: "Infield",
-    difficulty: "Easy",
-    athletes: "1 athlete and 1 coach",
-    time: "5 minutes",
-    equipment: "Baseballs, glove",
-    goal: "Develop quick reflexes and hand-eye coordination with rapid backhand ground balls",
-    description: [
-      "Player stands in ready position at shortstop or second base",
-      "Coach or partner rolls ground balls to the backhand side",
-      "Player fields the ball with proper backhand technique",
-      "Focus on quick footwork and smooth fielding motion",
-      "Complete as many ground balls as possible in 30 seconds",
-      "Rest and repeat for multiple sets",
-      "Emphasize proper glove positioning and body alignment"
-    ],
-    videoUrl: null
-  },
-  "ball-in-the-sun": {
-    skillSet: "Outfield",
-    difficulty: "Easy",
-    athletes: "1 athlete and 1 coach",
-    time: "5 minutes",
-    equipment: "Baseballs, glove",
-    goal: "Develop ability to track and catch fly balls in difficult lighting conditions",
-    description: [
-      "Athlete positions in outfield facing the sun or bright light",
-      "Coach throws or hits fly balls at varying heights and distances",
-      "Athlete must track the ball while dealing with sun glare",
-      "Focus on proper positioning and glove placement",
-      "Practice calling for the ball and communicating with teammates",
-      "Repeat for multiple sets"
-    ],
-    videoUrl: null
-  },
-  "1st-base-inside-receiving": {
-    skillSet: "Infield",
-    difficulty: "Medium",
-    athletes: "Varies",
-    time: "5m",
-    equipment: "Varies",
-    goal: "1st Base Inside Receiving",
-    description: [
-      "Step 1: Set up the drill",
-      "Step 2: Execute the drill",
-      "Step 3: Focus on proper technique",
-      "Step 4: Repeat for multiple sets"
-    ],
-    videoUrl: null
-  },
   "backside-angle-toss": {
     skillSet: "Hitting",
     difficulty: "Hard",
@@ -914,36 +777,6 @@ const drillDetails: Record<string, {
       "Practice for multiple sets with focus on consistency"
     ],
     videoUrl: "https://www.youtube.com/embed/OmgHRRPompU"
-  },
-  "1st-base-off-bag": {
-    skillSet: "Infield",
-    difficulty: "Medium",
-    athletes: "Varies",
-    time: "5m",
-    equipment: "Varies",
-    goal: "1st Base Off Bag",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
-  "30-second-backhand-cross": {
-    skillSet: "Infield",
-    difficulty: "Medium",
-    athletes: "Varies",
-    time: "5m",
-    equipment: "Varies",
-    goal: "30 Second Backhand Cross",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
-  "30-second-crow-hops": {
-    skillSet: "Outfield",
-    difficulty: "Easy",
-    athletes: "Varies",
-    time: "5m",
-    equipment: "Varies",
-    goal: "30 Second Crow Hops",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
   },
   "7-ball-front-toss": {
     skillSet: "Hitting",
@@ -975,16 +808,6 @@ const drillDetails: Record<string, {
     description: ["Watch the video for detailed instructions"],
     videoUrl: null
   },
-  "backhand-cross-and-throw": {
-    skillSet: "Infield",
-    difficulty: "Medium",
-    athletes: "Varies",
-    time: "5m",
-    equipment: "Varies",
-    goal: "Backhand Cross and Throw",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
   "ball-hit-front-toss": {
     skillSet: "Hitting",
     difficulty: "Medium",
@@ -992,16 +815,6 @@ const drillDetails: Record<string, {
     time: "10m",
     equipment: "Varies",
     goal: "Ball-Hit Front Toss",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
-  "box-drill-2nd-baseman-double-play-feeds": {
-    skillSet: "Infield",
-    difficulty: "Hard",
-    athletes: "Varies",
-    time: "15m",
-    equipment: "Varies",
-    goal: "Box Drill- 2nd Baseman Double Play Feeds",
     description: ["Watch the video for detailed instructions"],
     videoUrl: null
   },
@@ -1066,16 +879,6 @@ const drillDetails: Record<string, {
     description: ["Watch the video for detailed instructions"],
     videoUrl: null
   },
-  "fly-balls": {
-    skillSet: "Outfield",
-    difficulty: "Easy",
-    athletes: "Varies",
-    time: "5m",
-    equipment: "Varies",
-    goal: "Fly Balls",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
   "offensive-stations-tee-and-live-hitting": {
     skillSet: "Hitting",
     difficulty: "Easy",
@@ -1096,26 +899,6 @@ const drillDetails: Record<string, {
     description: ["Watch the video for detailed instructions"],
     videoUrl: null
   },
-  "rapid-fire-fungo": {
-    skillSet: "Infield",
-    difficulty: "Medium",
-    athletes: "Varies",
-    time: "10m",
-    equipment: "Varies",
-    goal: "Rapid Fire Fungo",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
-  "read-and-react": {
-    skillSet: "Outfield",
-    difficulty: "Easy",
-    athletes: "Varies",
-    time: "5m",
-    equipment: "Varies",
-    goal: "Read and React",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
   "rhythm-tee": {
     skillSet: "Hitting",
     difficulty: "Easy",
@@ -1123,26 +906,6 @@ const drillDetails: Record<string, {
     time: "5m",
     equipment: "Varies",
     goal: "Rhythm Tee",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
-  "short-base-team-bunt-drill": {
-    skillSet: "Bunting",
-    difficulty: "Hard",
-    athletes: "Varies",
-    time: "20m",
-    equipment: "Varies",
-    goal: "Short Base Team Bunt Drill",
-    description: ["Watch the video for detailed instructions"],
-    videoUrl: null
-  },
-  "stride-to-spot": {
-    skillSet: "Pitching",
-    difficulty: "Easy",
-    athletes: "Varies",
-    time: "3m",
-    equipment: "Varies",
-    goal: "Stride to Spot",
     description: ["Watch the video for detailed instructions"],
     videoUrl: null
   },
@@ -1324,25 +1087,23 @@ export default function DrillDetail() {
     setEditGoalText('');
   };
 
-  // Check if user has access (or if preview mode is enabled)
-  const hasAccess = PREVIEW_MODE || (user && (user.role === 'admin' || user.isActiveClient === 1));
-
   // Free preview logic: unauthenticated visitors get 2 free drill views
   // If they're logged in (any role), bypass the preview limit entirely
   const isAnonymous = !user && !loading;
   const currentSlugAlreadyViewed = id ? hasViewed(id) : false;
-  const showPreviewWall = isAnonymous && isLimitReached && !currentSlugAlreadyViewed;
 
-  // Record this drill view for anonymous users (only if they haven't hit the wall)
+  // Check if user has access (or if preview mode is enabled)
+  // For logged-in users: allow access if they're admin or active client
+  // For anonymous users: allow access only if they haven't hit the preview limit
+  const isLoggedInWithAccess = user && (user.role === 'admin' || user.isActiveClient === 1);
+  const hasAccess = isLoggedInWithAccess || (isAnonymous && !isLimitReached);
+
+  // Record this drill view for anonymous users on first visit
   useEffect(() => {
-    if (isAnonymous && id && drill && !isLimitReached) {
+    if (isAnonymous && id && drill && !currentSlugAlreadyViewed && !isLimitReached) {
       recordView(id);
     }
-    // Also allow viewing if they already viewed this slug before hitting limit
-    if (isAnonymous && id && drill && currentSlugAlreadyViewed) {
-      // No-op: they can revisit drills they already saw
-    }
-  }, [isAnonymous, id, drill?.name, isLimitReached, currentSlugAlreadyViewed]);
+  }, [isAnonymous, id, drill?.name, isLimitReached, currentSlugAlreadyViewed, recordView]);
 
   if (loading) {
     return (
@@ -1376,7 +1137,8 @@ export default function DrillDetail() {
   }
 
   // Show the preview wall for anonymous users who have hit their free limit
-  if (showPreviewWall) {
+  // and are trying to view a new drill they haven't seen before
+  if (isAnonymous && isLimitReached && !currentSlugAlreadyViewed && drill) {
     return (
       <DrillPreviewWall
         drillName={drill.name}
@@ -1509,50 +1271,7 @@ export default function DrillDetail() {
             )}
             {/* Render the custom page layout */}
             <CustomDrillLayout blocks={pageLayout.blocks as any[]} />
-
-            {/* Editable Stat Cards Bar - shown on custom layouts too */}
-            {details && (
-              <EditableStatBar
-                drillId={id || "unknown"}
-                isCoach={!!(user && (user.role === 'admin' || user.role === 'coach'))}
-                defaultCards={[
-                  { id: `${id}-time`, label: "Time", value: details.time, icon: "clock" },
-                  { id: `${id}-athletes`, label: "Athletes", value: details.athletes.split(',')[0], icon: "users" },
-                  { id: `${id}-equipment`, label: "Equipment", value: details.equipment.split(',')[0], icon: "dumbbell" },
-                  { id: `${id}-skill`, label: "Skill Set", value: details.skillSet, icon: "target" },
-                ]}
-              />
-            )}
-
-            {/* Instructions Editor - shown on custom layouts too */}
-            <section>
-              <h2 className="text-2xl md:text-3xl font-heading font-black mb-3 md:mb-4 flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center">
-                  <Target className="h-4 w-4 text-green-400" />
-                </div>
-                <InlineEdit contentKey={`drill.detail.${id}.instructionsHeading`} defaultValue="Instructions" as="span" />
-              </h2>
-              <div className="glass-card rounded-xl p-4 md:p-6">
-                {user && (user.role === 'admin' || user.role === 'coach') ? (
-                  <TiptapEditor
-                    value={customInstructions}
-                    onChange={setCustomInstructions}
-                    onSave={saveCustomInstructions}
-                    isSaving={saveInstructionsMutation.isPending}
-                    placeholder="Write drill instructions here..."
-                  />
-                ) : (
-                  <div className="min-h-[60px]">
-                    {customInstructions ? (
-                      <TiptapRenderer content={customInstructions} />
-                    ) : (
-                      <p className="text-muted-foreground italic">No instructions provided for this drill yet.</p>
-                    )}
-                  </div>
-                )}
-              </div>
-            </section>
-
+            
             {/* Q&A Section for Athletes - also show on custom layouts */}
             {user?.role === 'athlete' && (
               <DrillQAForm drillId={id || ''} drillName={drill?.name || ''} />
@@ -1652,17 +1371,37 @@ export default function DrillDetail() {
               </div>
             </div>
 
-            {/* Editable Stat Cards Bar */}
-            <EditableStatBar
-              drillId={id || "unknown"}
-              isCoach={!!(user && (user.role === 'admin' || user.role === 'coach'))}
-              defaultCards={[
-                { id: `${id}-time`, label: "Time", value: details.time, icon: "clock" },
-                { id: `${id}-athletes`, label: "Athletes", value: details.athletes.split(',')[0], icon: "users" },
-                { id: `${id}-equipment`, label: "Equipment", value: details.equipment.split(',')[0], icon: "dumbbell" },
-                { id: `${id}-skill`, label: "Skill Set", value: details.skillSet, icon: "target" },
-              ]}
-            />
+            {/* Quick Info Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="glass-card rounded-xl p-3 md:p-4">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Clock className="h-3.5 w-3.5 text-[#E8425A]" />
+                  <InlineEdit contentKey={`drill.detail.${id}.label.time`} defaultValue="Time" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
+                </div>
+                <InlineEdit contentKey={`drill.detail.${id}.value.time`} defaultValue={details.time} as="div" className="font-bold text-foreground text-sm md:text-base" />
+              </div>
+              <div className="glass-card rounded-xl p-3 md:p-4">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Users className="h-3.5 w-3.5 text-purple-400" />
+                  <InlineEdit contentKey={`drill.detail.${id}.label.athletes`} defaultValue="Athletes" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
+                </div>
+                <InlineEdit contentKey={`drill.detail.${id}.value.athletes`} defaultValue={details.athletes.split(',')[0]} as="div" className="font-bold text-foreground text-xs md:text-sm" />
+              </div>
+              <div className="glass-card rounded-xl p-3 md:p-4">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Dumbbell className="h-3.5 w-3.5 text-amber-400" />
+                  <InlineEdit contentKey={`drill.detail.${id}.label.equipment`} defaultValue="Equipment" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
+                </div>
+                <InlineEdit contentKey={`drill.detail.${id}.value.equipment`} defaultValue={details.equipment.split(',')[0]} as="div" className="font-bold text-foreground text-xs md:text-sm" />
+              </div>
+              <div className="glass-card rounded-xl p-3 md:p-4">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Target className="h-3.5 w-3.5 text-green-400" />
+                  <InlineEdit contentKey={`drill.detail.${id}.label.skillSet`} defaultValue="Skill Set" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
+                </div>
+                <InlineEdit contentKey={`drill.detail.${id}.value.skillSet`} defaultValue={details.skillSet} as="div" className="font-bold text-foreground text-xs md:text-sm" />
+              </div>
+            </div>
 
             {/* Custom Instructions */}
             <section>
@@ -1674,17 +1413,18 @@ export default function DrillDetail() {
               </h2>
               <div className="glass-card rounded-xl p-4 md:p-6">
                 {user && (user.role === 'admin' || user.role === 'coach') ? (
-                  <TiptapEditor
+                  <InstructionsEditor
                     value={customInstructions}
                     onChange={setCustomInstructions}
                     onSave={saveCustomInstructions}
                     isSaving={saveInstructionsMutation.isPending}
-                    placeholder="Write drill instructions here... Use the toolbar for bold, headings, lists, and more. Toggle &lt;/&gt; to paste raw HTML."
                   />
                 ) : (
-                  <div className="min-h-[60px]">
+                  <div className="prose prose-sm max-w-none">
                     {customInstructions ? (
-                      <TiptapRenderer content={customInstructions} />
+                      <div className="whitespace-pre-wrap text-foreground leading-relaxed">
+                        {customInstructions}
+                      </div>
                     ) : (
                       <p className="text-muted-foreground italic">No instructions provided for this drill yet.</p>
                     )}
@@ -1708,89 +1448,6 @@ export default function DrillDetail() {
             </a>
           </div>
         )}
-
-        {/* ── New Metadata Fields: always shown for static drills ── */}
-        {staticDrill && (staticDrill.drillType || (staticDrill.ageLevel?.length ?? 0) > 0 || (staticDrill.tags?.length ?? 0) > 0 || (staticDrill.problem?.length ?? 0) > 0 || (staticDrill.goal?.length ?? 0) > 0) && (
-          <div className="grid gap-4 mt-6">
-
-            {/* Drill Type + Age Level */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {staticDrill.drillType && (
-                <div className="glass-card rounded-xl p-4">
-                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Drill Type</div>
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                    {staticDrill.drillType}
-                  </span>
-                </div>
-              )}
-              {(staticDrill.ageLevel?.length ?? 0) > 0 && (
-                <div className="glass-card rounded-xl p-4">
-                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Age / Level</div>
-                  <div className="flex flex-wrap gap-2">
-                    {(staticDrill.ageLevel ?? []).filter((v: string) => v !== 'all').map((level: string) => {
-                      const label = filterOptions.ageLevel.find(o => o.value === level)?.label ?? level;
-                      return (
-                        <span key={level} className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-teal-500/20 text-teal-300 border border-teal-500/30">
-                          {label}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Focus Area Tags */}
-            {(staticDrill.tags?.length ?? 0) > 0 && (
-              <div className="glass-card rounded-xl p-4">
-                <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Focus Areas</div>
-                <div className="flex flex-wrap gap-2">
-                  {(staticDrill.tags ?? []).map((tag: string) => (
-                    <span key={tag} className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/[0.06] text-white/70 border border-white/[0.12]">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Problems + Goals */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {(staticDrill.problem?.length ?? 0) > 0 && (
-                <div className="glass-card rounded-xl p-4">
-                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Fixes These Problems</div>
-                  <div className="flex flex-wrap gap-2">
-                    {(staticDrill.problem ?? []).map((p: string) => {
-                      const label = filterOptions.problem.find(o => o.value === p)?.label ?? p;
-                      return (
-                        <span key={p} className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-500/15 text-red-300 border border-red-500/25">
-                          {label}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-              {(staticDrill.goal?.length ?? 0) > 0 && (
-                <div className="glass-card rounded-xl p-4">
-                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Helps You</div>
-                  <div className="flex flex-wrap gap-2">
-                    {(staticDrill.goal ?? []).map((g: string) => {
-                      const label = filterOptions.goal.find(o => o.value === g)?.label ?? g;
-                      return (
-                        <span key={g} className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-500/15 text-green-300 border border-green-500/25">
-                          {label}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-
-          </div>
-        )}
-
       </div>
       </>
       )}

@@ -9,7 +9,7 @@ import { Link } from "wouter";
 import { ArrowLeft, Plus, X } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
-import drillsData from "@/data/drills";
+import drillsData from "@/data/drills.json";
 
 export default function CreateDrillDetails() {
   const [selectedDrill, setSelectedDrill] = useState<string>("");
@@ -167,7 +167,7 @@ export default function CreateDrillDetails() {
                       id="skillSet"
                       value={formData.skillSet}
                       onChange={(e) => setFormData({ ...formData, skillSet: e.target.value })}
-                      placeholder="e.g., Hitting, Infield, Pitching"
+                      placeholder="e.g., Hitting"
                     />
                   </div>
                 </div>
