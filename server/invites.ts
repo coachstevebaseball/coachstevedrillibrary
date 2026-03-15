@@ -19,8 +19,7 @@ export async function createInvite(
   createdByUserId: number,
   role: "user" | "admin" | "athlete" | "coach" = "athlete",
   expirationDays: number = 7,
-  sendEmail: boolean = true,
-  name?: string
+  sendEmail: boolean = true
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -30,7 +29,6 @@ export async function createInvite(
   expiresAt.setDate(expiresAt.getDate() + expirationDays);
 
   await db.insert(invites).values({
-    name: name || null,
     email,
     inviteToken,
     role,
@@ -53,7 +51,6 @@ export async function createInvite(
   }
 
   return {
-    name: name || null,
     email,
     inviteToken,
     expiresAt,
@@ -204,10 +201,7 @@ export async function resendInvite(inviteId: number) {
   return await createInvite(
     oldInvite.email,
     oldInvite.createdByUserId,
-    oldInvite.role as any,
-    7,
-    true,
-    oldInvite.name || undefined
+    oldInvite.role as any
   );
 }
 
@@ -382,7 +376,7 @@ export async function sendExpirationReminder(inviteId: number) {
   // Send reminder email
   await sendInviteExpirationReminderEmail({
     toEmail: invite.email,
-    athleteName: invite.name || invite.email.split("@")[0], // Use name if available, otherwise email prefix
+    athleteName: invite.email.split("@")[0], // Use email prefix as name if not available
     inviteLink: inviteUrl,
     expiresAt: invite.expiresAt,
   });

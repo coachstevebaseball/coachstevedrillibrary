@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import drillsData from "@/data/drills.json";
+import drillsData from "@/data/drills";
 
 export interface UnifiedDrill {
   id: string;
@@ -11,10 +11,15 @@ export interface UnifiedDrill {
   url?: string;
   is_direct_link?: boolean;
   isCustom?: boolean;
+  ageLevel?: string[];
+  tags?: string[];
+  problem?: string[];
+  goal?: string[];
+  drillType?: string;
 }
 
 /**
- * Shared hook that merges static drills (from drills.json) with custom drills
+ * Shared hook that merges static drills (from drills.ts) with custom drills
  * (from the database) and returns them sorted alphabetically by name.
  *
  * Use this everywhere drills are listed to ensure custom drills are interleaved
@@ -33,12 +38,14 @@ export function useAllDrills(): UnifiedDrill[] {
       url: d.url,
       is_direct_link: d.is_direct_link,
       isCustom: false,
+      ageLevel: d.ageLevel,
+      tags: d.tags,
+      problem: d.problem,
+      goal: d.goal,
+      drillType: d.drillType,
     }));
 
-    // Only include Hitting custom drills (platform is hitting-focused)
-    const hittingCustomDrills = customDrills.filter((cd: any) => cd.category === "Hitting");
-
-    const customDrillsFormatted: UnifiedDrill[] = hittingCustomDrills.map((cd: any) => ({
+    const customDrillsFormatted: UnifiedDrill[] = customDrills.map((cd: any) => ({
       id: cd.drillId,
       name: cd.name,
       difficulty: cd.difficulty,
@@ -47,6 +54,11 @@ export function useAllDrills(): UnifiedDrill[] {
       url: `/drill/${cd.drillId}`,
       is_direct_link: true,
       isCustom: true,
+      ageLevel: [],
+      tags: [],
+      problem: [],
+      goal: [],
+      drillType: cd.drillType || "Game Simulation",
     }));
 
     // Merge and sort alphabetically by name (case-insensitive)
