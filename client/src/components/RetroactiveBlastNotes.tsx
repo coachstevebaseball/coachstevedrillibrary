@@ -66,10 +66,10 @@ export function RetroactiveBlastNotes({ open, onOpenChange, playerId, playerName
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md bg-[#1a1a1a] border-white/10 text-white">
+      <DialogContent className="sm:max-w-md bg-[#0f1225] border-white/10 text-white">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-white flex items-center gap-2">
-            <FileText className="h-5 w-5 text-[#E8425A]" />
+            <FileText className="h-5 w-5 text-blue-400" />
             Create Retroactive Notes
           </DialogTitle>
           <DialogDescription className="text-white/50">
@@ -79,7 +79,7 @@ export function RetroactiveBlastNotes({ open, onOpenChange, playerId, playerName
 
         {!result && !processing && (
           <div className="py-4 space-y-4">
-            <div className="bg-[#DC143C]/5 border border-[#DC143C]/15 rounded-lg p-4 text-sm text-white/60">
+            <div className="bg-blue-500/5 border border-blue-500/15 rounded-lg p-4 text-sm text-white/60">
               <p>This will scan all of {playerName}'s Blast sessions and create a Session Note for each one that doesn't already have one.</p>
               <p className="mt-2 text-white/40">Each note will include the Blast metrics summary and be visible in the Session Notes timeline.</p>
             </div>
@@ -88,7 +88,7 @@ export function RetroactiveBlastNotes({ open, onOpenChange, playerId, playerName
 
         {processing && (
           <div className="py-8 text-center space-y-3">
-            <Loader2 className="h-8 w-8 text-[#E8425A] animate-spin mx-auto" />
+            <Loader2 className="h-8 w-8 text-blue-400 animate-spin mx-auto" />
             <p className="text-white/50">Creating session notes...</p>
           </div>
         )}
@@ -137,7 +137,7 @@ export function RetroactiveBlastNotes({ open, onOpenChange, playerId, playerName
               </Button>
               <Button
                 onClick={handleCreate}
-                className="bg-[#DC143C] hover:bg-[#B91030] text-white"
+                className="bg-blue-600 hover:bg-blue-700 text-white"
               >
                 <FileText className="h-4 w-4 mr-2" />
                 Create Notes

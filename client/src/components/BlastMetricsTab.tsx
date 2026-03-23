@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  ArrowLeft, Users, TrendingUp, Zap, Target,
-  ChevronRight, BarChart3, Gauge, Crosshair, Plus, UserPlus, Trash2, Link2, FileText, Pencil, FileSpreadsheet
+  ArrowLeft, Users, Activity, TrendingUp, Zap, Target,
+  ChevronRight, BarChart3, Gauge, Timer, Crosshair, Plus, UserPlus, Trash2, Link2, FileText, Pencil, FileSpreadsheet
 } from "lucide-react";
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -19,17 +19,31 @@ import { LinkBlastPlayer } from "./LinkBlastPlayer";
 import { EditBlastSession, type SessionData } from "./EditBlastSession";
 import { ImportBlastCSV } from "./ImportBlastCSV";
 import { RetroactiveBlastNotes } from "./RetroactiveBlastNotes";
-import { InlineEdit } from "./InlineEdit";
 
 // Metric display config
 const METRIC_CONFIGS = {
-  batSpeed: { label: "Bat Speed", unit: "mph", key: "batSpeedMph", color: "#DC143C", icon: Zap },
-  onPlaneEff: { label: "On-Plane Efficiency", unit: "%", key: "onPlaneEfficiencyPercent", color: "#14b8a6", icon: Target },
-  attackAngle: { label: "Attack Angle", unit: "deg", key: "attackAngleDeg", color: "#84cc16", icon: Crosshair },
-  exitVelocity: { label: "Exit Velocity", unit: "mph", key: "exitVelocityMph", color: "#8b5cf6", icon: Gauge },
+  batSpeed: { label: "Bat Speed", unit: "mph", key: "batSpeedMph", color: "#3b82f6", icon: Zap },
+  rotAccel: { label: "Rotational Accel", unit: "g", key: "rotationalAccelerationG", color: "#8b5cf6", icon: Activity },
+  planeScore: { label: "Plane Score", unit: "", key: "planeScore", color: "#10b981", icon: Target },
+  connectionScore: { label: "Connection Score", unit: "", key: "connectionScore", color: "#f59e0b", icon: Crosshair },
+  rotationScore: { label: "Rotation Score", unit: "", key: "rotationScore", color: "#ef4444", icon: Gauge },
+  power: { label: "Power", unit: "kW", key: "powerKw", color: "#ec4899", icon: Zap },
+  peakHandSpeed: { label: "Peak Hand Speed", unit: "mph", key: "peakHandSpeedMph", color: "#06b6d4", icon: TrendingUp },
+  attackAngle: { label: "Attack Angle", unit: "deg", key: "attackAngleDeg", color: "#84cc16", icon: Target },
+  onPlaneEff: { label: "On-Plane Efficiency", unit: "%", key: "onPlaneEfficiencyPercent", color: "#14b8a6", icon: BarChart3 },
+  timeToContact: { label: "Time to Contact", unit: "sec", key: "timeToContactSec", color: "#f97316", icon: Timer },
 } as const;
 
 type MetricKey = keyof typeof METRIC_CONFIGS;
+
+// Score color helper
+function getScoreColor(score: number | null): string {
+  if (score === null) return "text-muted-foreground";
+  if (score >= 85) return "text-green-400";
+  if (score >= 70) return "text-blue-400";
+  if (score >= 55) return "text-yellow-400";
+  return "text-red-400";
+}
 
 function formatDate(date: Date | string | null): string {
   if (!date) return "N/A";
@@ -60,7 +74,7 @@ export function BlastMetricsTab() {
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
   const [sessionTypeFilter, setSessionTypeFilter] = useState("All");
   const [chartMetric1, setChartMetric1] = useState<MetricKey>("batSpeed");
-  const [chartMetric2, setChartMetric2] = useState<MetricKey>("onPlaneEff");
+  const [chartMetric2, setChartMetric2] = useState<MetricKey>("rotAccel");
   const [chartView, setChartView] = useState<"line" | "bar">("line");
 
   // Dialog states
@@ -109,9 +123,15 @@ export function BlastMetricsTab() {
       date: formatShortDate(t.sessionDate),
       sessionType: t.sessionType,
       batSpeedMph: t.batSpeedMph ? parseFloat(t.batSpeedMph) : null,
-      onPlaneEfficiencyPercent: t.onPlaneEfficiencyPercent ? parseFloat(t.onPlaneEfficiencyPercent) : null,
+      rotationalAccelerationG: t.rotationalAccelerationG ? parseFloat(t.rotationalAccelerationG) : null,
+      planeScore: t.planeScore,
+      connectionScore: t.connectionScore,
+      rotationScore: t.rotationScore,
+      powerKw: t.powerKw ? parseFloat(t.powerKw) : null,
+      peakHandSpeedMph: t.peakHandSpeedMph ? parseFloat(t.peakHandSpeedMph) : null,
       attackAngleDeg: t.attackAngleDeg ? parseFloat(t.attackAngleDeg) : null,
-      exitVelocityMph: t.exitVelocityMph ? parseFloat(t.exitVelocityMph) : null,
+      onPlaneEfficiencyPercent: t.onPlaneEfficiencyPercent ? parseFloat(t.onPlaneEfficiencyPercent) : null,
+      timeToContactSec: t.timeToContactSec ? parseFloat(t.timeToContactSec) : null,
     }));
   }, [trends]);
 
@@ -124,9 +144,11 @@ export function BlastMetricsTab() {
     const avg = (key: string) => sum(key) / validSessions.length;
     return {
       batSpeed: avg("batSpeedMph"),
-      onPlaneEff: avg("onPlaneEfficiencyPercent"),
-      attackAngle: avg("attackAngleDeg"),
-      exitVelocity: avg("exitVelocityMph"),
+      rotAccel: avg("rotationalAccelerationG"),
+      planeScore: Math.round(avg("planeScore")),
+      connectionScore: Math.round(avg("connectionScore")),
+      rotationScore: Math.round(avg("rotationScore")),
+      power: avg("powerKw"),
     };
   }, [sessions]);
 
@@ -137,12 +159,12 @@ export function BlastMetricsTab() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-heading font-bold text-white flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#DC143C]/20 to-fuchsia-500/20 flex items-center justify-center border border-violet-500/20">
-                <Zap className="h-5 w-5 text-violet-400" />
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 flex items-center justify-center border border-violet-500/20">
+                <Activity className="h-5 w-5 text-violet-400" />
               </div>
-              <InlineEdit contentKey="coach.blast.title" defaultValue="Blast Motion Metrics" as="span" />
+              Blast Motion Metrics
             </h2>
-            <InlineEdit contentKey="coach.blast.desc" defaultValue="Track swing metrics and identify trends across your players" as="p" className="text-white/50 mt-1" />
+            <p className="text-white/50 mt-1">Track swing metrics and identify trends across your players</p>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -151,7 +173,7 @@ export function BlastMetricsTab() {
               className="bg-violet-600 hover:bg-violet-700 text-white"
             >
               <UserPlus className="h-4 w-4 mr-1.5" />
-              <InlineEdit contentKey="coach.blast.addPlayer" defaultValue="Add Player" as="span" />
+              Add Player
             </Button>
             <Badge variant="outline" className="text-white/60 border-white/10">
               {players.length} Players
@@ -192,7 +214,7 @@ export function BlastMetricsTab() {
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center border border-white/10 text-white font-bold text-sm">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500/20 to-violet-500/20 flex items-center justify-center border border-white/10 text-white font-bold text-sm">
                       {p.fullName.split(" ").map((n: string) => n[0]).join("").slice(0, 2)}
                     </div>
                     <div>
@@ -282,7 +304,7 @@ export function BlastMetricsTab() {
               onClick={() => setRetroNotesOpen(true)}
               size="sm"
               variant="outline"
-              className="h-8 text-xs text-[#E8425A] border-[#DC143C]/30 hover:bg-[#B91030]/10"
+              className="h-8 text-xs text-blue-400 border-blue-500/30 hover:bg-blue-500/10"
             >
               <FileText className="h-3.5 w-3.5 mr-1" />
               Sync Notes
@@ -303,25 +325,27 @@ export function BlastMetricsTab() {
             className="bg-violet-600 hover:bg-violet-700 text-white"
           >
             <Plus className="h-4 w-4 mr-1.5" />
-            <InlineEdit contentKey="coach.blast.addSession" defaultValue="Add Session" as="span" />
+            Add Session
           </Button>
         </div>
       </div>
 
       {/* Summary Score Cards */}
       {overallAvgs && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {[
-            { key: "batSpeed", label: "Bat Speed", value: `${overallAvgs.batSpeed.toFixed(1)}`, unit: "mph", color: "from-[#DC143C]/20 to-[#B91030]/20", borderColor: "border-[#DC143C]/20" },
-            { key: "onPlaneEff", label: "On-Plane Eff.", value: `${overallAvgs.onPlaneEff.toFixed(1)}`, unit: "%", color: "from-teal-500/20 to-teal-600/20", borderColor: "border-teal-500/20" },
-            { key: "attackAngle", label: "Attack Angle", value: `${overallAvgs.attackAngle.toFixed(1)}`, unit: "deg", color: "from-lime-500/20 to-lime-600/20", borderColor: "border-lime-500/20" },
-            { key: "exitVelo", label: "Exit Velo", value: `${overallAvgs.exitVelocity.toFixed(1)}`, unit: "mph", color: "from-violet-500/20 to-violet-600/20", borderColor: "border-violet-500/20" },
+            { label: "Bat Speed", value: `${overallAvgs.batSpeed.toFixed(1)}`, unit: "mph", color: "from-blue-500/20 to-blue-600/20", borderColor: "border-blue-500/20" },
+            { label: "Rot. Accel", value: `${overallAvgs.rotAccel.toFixed(1)}`, unit: "g", color: "from-violet-500/20 to-violet-600/20", borderColor: "border-violet-500/20" },
+            { label: "Plane", value: `${overallAvgs.planeScore}`, unit: "", color: "from-green-500/20 to-green-600/20", borderColor: "border-green-500/20" },
+            { label: "Connection", value: `${overallAvgs.connectionScore}`, unit: "", color: "from-yellow-500/20 to-yellow-600/20", borderColor: "border-yellow-500/20" },
+            { label: "Rotation", value: `${overallAvgs.rotationScore}`, unit: "", color: "from-red-500/20 to-red-600/20", borderColor: "border-red-500/20" },
+            { label: "Power", value: `${overallAvgs.power.toFixed(2)}`, unit: "kW", color: "from-pink-500/20 to-pink-600/20", borderColor: "border-pink-500/20" },
           ].map((card) => (
             <div
-              key={card.key}
+              key={card.label}
               className={`rounded-xl bg-gradient-to-br ${card.color} border ${card.borderColor} p-4 text-center`}
             >
-              <InlineEdit contentKey={`coach.blast.metric.${card.key}`} defaultValue={card.label} as="p" className="text-xs text-white/50 font-medium uppercase tracking-wider mb-1" />
+              <p className="text-xs text-white/50 font-medium uppercase tracking-wider mb-1">{card.label}</p>
               <p className="text-2xl font-bold text-white">
                 {card.value}
                 {card.unit && <span className="text-sm font-normal text-white/40 ml-1">{card.unit}</span>}
@@ -493,7 +517,7 @@ export function BlastMetricsTab() {
         <Card className="bg-white/[0.04] border-white/[0.08]">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg text-white flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-[#E8425A]" />
+              <BarChart3 className="h-5 w-5 text-blue-400" />
               Averages by Session Type
             </CardTitle>
           </CardHeader>
@@ -505,9 +529,11 @@ export function BlastMetricsTab() {
                     <th className="text-left py-3 px-3 text-white/50 font-medium">Session Type</th>
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Sessions</th>
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Bat Speed</th>
-                    <th className="text-center py-3 px-2 text-white/50 font-medium">On-Plane Eff.</th>
-                    <th className="text-center py-3 px-2 text-white/50 font-medium">Attack Angle</th>
-                    <th className="text-center py-3 px-2 text-white/50 font-medium">Exit Velo</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Rot. Accel</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Plane</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Connection</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Rotation</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Power</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -519,10 +545,18 @@ export function BlastMetricsTab() {
                         </Badge>
                       </td>
                       <td className="text-center py-3 px-2 text-white/60">{avg.sessionCount}</td>
-                      <td className="text-center py-3 px-2 text-[#E8425A] font-medium">{avg.avgBatSpeed} mph</td>
-                      <td className="text-center py-3 px-2 text-teal-400 font-medium">{avg.avgOnPlaneEfficiency}%</td>
-                      <td className="text-center py-3 px-2 text-lime-400 font-medium">{avg.avgAttackAngle}°</td>
-                      <td className="text-center py-3 px-2 text-violet-400 font-medium">{avg.avgExitVelocity} mph</td>
+                      <td className="text-center py-3 px-2 text-blue-400 font-medium">{avg.avgBatSpeed} mph</td>
+                      <td className="text-center py-3 px-2 text-violet-400 font-medium">{avg.avgRotAccel} g</td>
+                      <td className="text-center py-3 px-2">
+                        <span className={getScoreColor(avg.avgPlaneScore)}>{avg.avgPlaneScore}</span>
+                      </td>
+                      <td className="text-center py-3 px-2">
+                        <span className={getScoreColor(avg.avgConnectionScore)}>{avg.avgConnectionScore}</span>
+                      </td>
+                      <td className="text-center py-3 px-2">
+                        <span className={getScoreColor(avg.avgRotationScore)}>{avg.avgRotationScore}</span>
+                      </td>
+                      <td className="text-center py-3 px-2 text-pink-400 font-medium">{avg.avgPower} kW</td>
                     </tr>
                   ))}
                 </tbody>
@@ -537,7 +571,7 @@ export function BlastMetricsTab() {
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg text-white flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-green-400" />
+              <Activity className="h-5 w-5 text-green-400" />
               Session History
               <Badge variant="outline" className="text-white/40 border-white/10 ml-2 font-normal">
                 {sessions.length} sessions
@@ -582,9 +616,13 @@ export function BlastMetricsTab() {
                     <th className="text-left py-3 px-3 text-white/50 font-medium">Date</th>
                     <th className="text-left py-3 px-2 text-white/50 font-medium">Type</th>
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Bat Speed</th>
-                    <th className="text-center py-3 px-2 text-white/50 font-medium">On-Plane Eff.</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Rot. Accel</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Plane</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Connection</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Rotation</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Power</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Efficiency</th>
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Attack Angle</th>
-                    <th className="text-center py-3 px-2 text-white/50 font-medium">Exit Velo</th>
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Note</th>
                     <th className="w-10"></th>
                   </tr>
@@ -598,17 +636,29 @@ export function BlastMetricsTab() {
                           {s.sessionType}
                         </Badge>
                       </td>
-                      <td className="text-center py-3 px-2 text-[#E8425A] font-medium">
+                      <td className="text-center py-3 px-2 text-blue-400 font-medium">
                         {s.batSpeedMph ? `${parseFloat(s.batSpeedMph).toFixed(1)}` : "—"}
                       </td>
-                      <td className="text-center py-3 px-2 text-teal-400 font-medium">
+                      <td className="text-center py-3 px-2 text-violet-400 font-medium">
+                        {s.rotationalAccelerationG ? `${parseFloat(s.rotationalAccelerationG).toFixed(1)}` : "—"}
+                      </td>
+                      <td className="text-center py-3 px-2">
+                        <span className={getScoreColor(s.planeScore)}>{s.planeScore ?? "—"}</span>
+                      </td>
+                      <td className="text-center py-3 px-2">
+                        <span className={getScoreColor(s.connectionScore)}>{s.connectionScore ?? "—"}</span>
+                      </td>
+                      <td className="text-center py-3 px-2">
+                        <span className={getScoreColor(s.rotationScore)}>{s.rotationScore ?? "—"}</span>
+                      </td>
+                      <td className="text-center py-3 px-2 text-pink-400 font-medium">
+                        {s.powerKw ? `${parseFloat(s.powerKw).toFixed(2)}` : "—"}
+                      </td>
+                      <td className="text-center py-3 px-2 text-teal-400">
                         {s.onPlaneEfficiencyPercent ? `${parseFloat(s.onPlaneEfficiencyPercent).toFixed(1)}%` : "—"}
                       </td>
-                      <td className="text-center py-3 px-2 text-lime-400 font-medium">
+                      <td className="text-center py-3 px-2 text-lime-400">
                         {s.attackAngleDeg ? `${parseFloat(s.attackAngleDeg).toFixed(1)}°` : "—"}
-                      </td>
-                      <td className="text-center py-3 px-2 text-violet-400 font-medium">
-                        {s.exitVelocityMph ? `${parseFloat(s.exitVelocityMph).toFixed(1)}` : "—"}
                       </td>
                       <td className="text-center py-3 px-2">
                         {s.hasLinkedNote ? (

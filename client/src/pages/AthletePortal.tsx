@@ -311,7 +311,7 @@ export default function AthletePortal() {
                         {drill.difficulty}
                       </Badge>
                       {drill.categories[0] && (
-                        <Badge className="bg-[#DC143C]/20 text-[#E8425A] border border-[#DC143C]/30">
+                        <Badge className="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
                           {drill.categories[0]}
                         </Badge>
                       )}
@@ -545,7 +545,7 @@ export default function AthletePortal() {
 // ─── Shared Practice Plans Component ─────────────────────────────────────────
 
 const BLOCK_TYPE_CONFIG: Record<string, { icon: any; label: string; color: string; bg: string }> = {
-  drill: { icon: Target, label: "Drill", color: "text-[#E8425A]", bg: "bg-[#DC143C]/10 border-[#DC143C]/20" },
+  drill: { icon: Target, label: "Drill", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20" },
   warmup: { icon: Zap, label: "Warm-Up", color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20" },
   cooldown: { icon: Coffee, label: "Cool-Down", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
   break: { icon: Coffee, label: "Break", color: "text-gray-400", bg: "bg-gray-500/10 border-gray-500/20" },
@@ -563,10 +563,10 @@ function SharedPracticePlans() {
     <div className="animate-fade-in-up" style={{ animationDelay: '0.35s' }}>
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-bold text-foreground flex items-center gap-2">
-          <FileText className="w-5 h-5 text-[#E8425A]" />
+          <FileText className="w-5 h-5 text-blue-400" />
           Practice Plans
         </h3>
-        <Badge className="bg-[#DC143C]/20 text-[#E8425A] border border-[#DC143C]/30">
+        <Badge className="bg-blue-500/20 text-blue-400 border border-blue-500/30">
           {sharedPlans.length}
         </Badge>
       </div>
@@ -584,8 +584,8 @@ function SharedPracticePlans() {
                 onClick={() => setExpandedPlan(isExpanded ? null : plan.id)}
                 className="w-full text-left p-4 flex items-center gap-3"
               >
-                <div className="h-10 w-10 rounded-lg bg-[#DC143C]/10 border border-[#DC143C]/20 flex items-center justify-center flex-shrink-0">
-                  <FileText className="h-5 w-5 text-[#E8425A]" />
+                <div className="h-10 w-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
+                  <FileText className="h-5 w-5 text-blue-400" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className="font-medium text-foreground truncate">{plan.title}</h4>
@@ -604,7 +604,7 @@ function SharedPracticePlans() {
                   {focusAreas.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
                       {focusAreas.map((area) => (
-                        <span key={area} className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-[#DC143C]/10 text-[#E8425A]">{area}</span>
+                        <span key={area} className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-blue-500/10 text-blue-400">{area}</span>
                       ))}
                     </div>
                   )}

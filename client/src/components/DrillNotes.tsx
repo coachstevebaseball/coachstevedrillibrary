@@ -150,8 +150,8 @@ export function DrillNotes({
                 </div>
               </div>
             ) : coachFeedback ? (
-              <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 p-3 rounded-lg">
-                <p className="text-sm whitespace-pre-wrap text-red-900 dark:text-red-100">{coachFeedback}</p>
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 p-3 rounded-lg">
+                <p className="text-sm whitespace-pre-wrap text-blue-900 dark:text-blue-100">{coachFeedback}</p>
               </div>
             ) : (
               <p className="text-sm text-muted-foreground italic">

@@ -131,7 +131,7 @@ export function DrillModalRedesigned({
                 {drill.difficulty}
               </Badge>
               {drill.categories[0] && (
-                <Badge className="bg-[#DC143C]/20 text-[#E8425A] border border-[#DC143C]/30 text-xs px-2.5 py-1">
+                <Badge className="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs px-2.5 py-1">
                   {drill.categories[0]}
                 </Badge>
               )}
@@ -165,14 +165,14 @@ export function DrillModalRedesigned({
           {drillDetail?.description && drillDetail.description.length > 0 && (
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <ListChecks className="w-4 h-4 text-[#E8425A]" />
+                <ListChecks className="w-4 h-4 text-cyan-400" />
                 <h3 className="font-semibold text-foreground text-sm">How to Do This Drill</h3>
               </div>
               <div className="space-y-2">
                 {drillDetail.description.map((step: string, idx: number) => (
                   <div key={idx} className="flex gap-3 items-start">
-                    <div className="w-6 h-6 bg-[#DC143C]/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-xs font-bold text-[#E8425A]">{idx + 1}</span>
+                    <div className="w-6 h-6 bg-cyan-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-xs font-bold text-cyan-400">{idx + 1}</span>
                     </div>
                     <p className="text-sm text-foreground/80 leading-relaxed">{step}</p>
                   </div>

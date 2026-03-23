@@ -9,7 +9,7 @@ import { Link } from "wouter";
 import { ArrowLeft, Plus, X } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
-import drillsData from "@/data/drills";
+import drillsData from "@/data/drills.json";
 
 export default function CreateDrillDetails() {
   const [selectedDrill, setSelectedDrill] = useState<string>("");

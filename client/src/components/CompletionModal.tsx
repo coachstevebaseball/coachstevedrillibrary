@@ -42,10 +42,10 @@ export function CompletionModal({ isOpen, drillName, onClose, onConfirm }: Compl
           </p>
 
           {/* Motivational message */}
-          <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6 w-full">
+          <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6 w-full">
             <div className="flex items-start gap-2">
-              <Sparkles className="h-5 w-5 text-[#DC143C] dark:text-[#E8425A] mt-0.5 flex-shrink-0" />
-              <p className="text-sm text-red-900 dark:text-red-100">
+              <Sparkles className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+              <p className="text-sm text-blue-900 dark:text-blue-100">
                 Keep up the great work! You're building excellent baseball skills. 💪
               </p>
             </div>

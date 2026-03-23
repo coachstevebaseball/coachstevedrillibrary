@@ -297,16 +297,15 @@ export async function deleteDrillVideo(drillId: string) {
 
 // Drill Details Management
 export async function saveDrillDetail(drillId: string, detail: {
-  skillSet?: string;
-  difficulty?: string;
-  athletes?: string;
-  time?: string;
-  equipment?: string;
-  goal?: string;
-  description?: string[];
+  skillSet: string;
+  difficulty: string;
+  athletes: string;
+  time: string;
+  equipment: string;
+  goal: string;
+  description: string[];
   commonMistakes?: string[];
   progressions?: string[];
-  instructions?: string;
 }, userId: number): Promise<boolean> {
   const db = await getDb();
   if (!db) {
@@ -322,34 +321,32 @@ export async function saveDrillDetail(drillId: string, detail: {
     const existing = await db.select().from(drillDetails).where(eq(drillDetails.drillId, drillId));
     
     if (existing.length > 0) {
-      // Build partial update - only include fields that were provided
-      const updateData: Record<string, any> = { updatedAt: new Date() };
-      if (detail.skillSet !== undefined) updateData.skillSet = detail.skillSet;
-      if (detail.difficulty !== undefined) updateData.difficulty = detail.difficulty;
-      if (detail.athletes !== undefined) updateData.athletes = detail.athletes;
-      if (detail.time !== undefined) updateData.time = detail.time;
-      if (detail.equipment !== undefined) updateData.equipment = detail.equipment;
-      if (detail.goal !== undefined) updateData.goal = detail.goal;
-      if (detail.description !== undefined) updateData.description = detail.description;
-      if (detail.commonMistakes !== undefined) updateData.commonMistakes = detail.commonMistakes;
-      if (detail.progressions !== undefined) updateData.progressions = detail.progressions;
-      if (detail.instructions !== undefined) updateData.instructions = detail.instructions;
-      
-      await db.update(drillDetails).set(updateData).where(eq(drillDetails.drillId, drillId));
-    } else {
-      // Insert new - use provided values or sensible defaults
-      await db.insert(drillDetails).values({
-        drillId,
-        skillSet: detail.skillSet || 'Custom',
-        difficulty: detail.difficulty || 'Medium',
-        athletes: detail.athletes || 'Varies',
-        time: detail.time || 'Varies',
-        equipment: detail.equipment || 'Varies',
-        goal: detail.goal || '',
-        description: detail.description || [],
+      // Update existing
+      await db.update(drillDetails).set({
+        skillSet: detail.skillSet,
+        difficulty: detail.difficulty,
+        athletes: detail.athletes,
+        time: detail.time,
+        equipment: detail.equipment,
+        goal: detail.goal,
+        description: detail.description,
         commonMistakes: detail.commonMistakes || null,
         progressions: detail.progressions || null,
-        instructions: detail.instructions || null,
+        updatedAt: new Date(),
+      }).where(eq(drillDetails.drillId, drillId));
+    } else {
+      // Insert new
+      await db.insert(drillDetails).values({
+        drillId,
+        skillSet: detail.skillSet,
+        difficulty: detail.difficulty,
+        athletes: detail.athletes,
+        time: detail.time,
+        equipment: detail.equipment,
+        goal: detail.goal,
+        description: detail.description,
+        commonMistakes: detail.commonMistakes || null,
+        progressions: detail.progressions || null,
         createdBy: userId,
       });
     }

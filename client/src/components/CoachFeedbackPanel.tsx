@@ -99,9 +99,9 @@ export function CoachFeedbackPanel({ submission, athleteName, onFeedbackSent }: 
             </h4>
             <div className="space-y-2">
               {existingFeedback.map((fb: any) => (
-                <div key={fb.id} className="bg-red-50 dark:bg-red-900/20 p-3 rounded-lg border border-red-200 dark:border-red-800">
-                  <p className="text-sm text-red-900 dark:text-red-100">{fb.feedback}</p>
-                  <p className="text-xs text-red-700 dark:text-[#E8425A] mt-1">
+                <div key={fb.id} className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <p className="text-sm text-blue-900 dark:text-blue-100">{fb.feedback}</p>
+                  <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
                     {new Date(fb.createdAt).toLocaleString()}
                   </p>
                 </div>

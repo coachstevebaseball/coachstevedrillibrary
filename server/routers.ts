@@ -24,15 +24,12 @@ import { athleteProfilesRouter } from "./routers-athlete-profiles";
 import { videoAnalysisRouter } from "./routers-video-analysis";
 import { blastMetricsRouter } from "./routers-blast-metrics";
 import { badgesRouter } from "./routers-badges";
-import { siteContentRouter } from "./routers-site-content";
 import * as drillCustomizationsDb from "./drillCustomizations";
-import * as drillStatCardsDb from "./drillStatCards";
 import { storagePut } from "./storage";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
-  siteContent: siteContentRouter,
   notifications: notificationsRouter,
   imageUpload: imageUploadRouter,
   activity: activityRouter,
@@ -431,7 +428,7 @@ export const appRouter = router({
 
   // Drill details router
   drillDetails: router({
-    getDrillDetail: publicProcedure
+    getDrillDetail: protectedProcedure
       .input(z.object({ drillId: z.string() }))
       .query(async ({ input }) => {
         return await db.getDrillDetail(input.drillId);
@@ -565,33 +562,11 @@ export const appRouter = router({
         }
         return await drillPageLayoutDb.deleteDrillPageLayout(input.drillId);
       }),
-    getStatCards: publicProcedure
-      .input(z.object({ drillId: z.string() }))
-      .query(async ({ input }) => {
-        return await drillStatCardsDb.getStatCards(input.drillId);
-      }),
-    saveStatCards: protectedProcedure
-      .input(z.object({
-        drillId: z.string(),
-        cards: z.array(z.object({
-          label: z.string(),
-          value: z.string(),
-          icon: z.string().optional(),
-          position: z.number(),
-          isVisible: z.number(),
-        })),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
-        }
-        return await drillStatCardsDb.upsertStatCards(input.drillId, input.cards);
-      }),
   }),
 
   // Videos router
   videos: router({
-    getVideo: publicProcedure
+    getVideo: protectedProcedure
       .input(z.object({ drillId: z.string() }))
       .query(async ({ input }) => {
         return await db.getDrillVideo(input.drillId);

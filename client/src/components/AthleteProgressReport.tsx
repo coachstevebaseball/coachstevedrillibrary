@@ -262,8 +262,8 @@ export function AthleteProgressReport({ userId, athleteName }: AthleteProgressRe
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-[#DC143C]/10 rounded-lg">
-                <AlertCircle className="h-5 w-5 text-[#DC143C]" />
+              <div className="p-2 bg-blue-500/10 rounded-lg">
+                <AlertCircle className="h-5 w-5 text-blue-500" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{coreMetrics.assigned}</p>
@@ -541,8 +541,8 @@ export function AthleteProgressReport({ userId, athleteName }: AthleteProgressRe
               <p className="text-2xl font-bold">{coreMetrics.inProgress}</p>
               <p className="text-sm text-muted-foreground">In Progress</p>
             </div>
-            <div className="text-center p-4 bg-[#DC143C]/10 rounded-lg">
-              <AlertCircle className="h-8 w-8 text-[#DC143C] mx-auto mb-2" />
+            <div className="text-center p-4 bg-blue-500/10 rounded-lg">
+              <AlertCircle className="h-8 w-8 text-blue-500 mx-auto mb-2" />
               <p className="text-2xl font-bold">{coreMetrics.assigned}</p>
               <p className="text-sm text-muted-foreground">Not Started</p>
             </div>

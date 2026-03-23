@@ -492,13 +492,13 @@ export function DrillPageBuilderNotion({
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3 md:gap-4 min-w-0">
-            <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl bg-gradient-to-br from-[#DC143C] to-purple-500 flex items-center justify-center shrink-0">
+            <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl bg-gradient-to-br from-electric-blue to-purple-500 flex items-center justify-center shrink-0">
               <Edit3 className="h-5 w-5 md:h-6 md:w-6 text-white" />
             </div>
             <div className="min-w-0">
               <h1 className="text-lg md:text-2xl font-bold text-foreground flex items-center gap-2">
                 Page Builder
-                <span className="text-[10px] md:text-xs bg-[#DC143C]/20 text-[#DC143C] px-2 py-0.5 rounded-full whitespace-nowrap">
+                <span className="text-[10px] md:text-xs bg-electric-blue/20 text-electric-blue px-2 py-0.5 rounded-full whitespace-nowrap">
                   Notion-style
                 </span>
               </h1>
@@ -613,7 +613,7 @@ export function DrillPageBuilderNotion({
               onClick={() => setPreviewMode(!previewMode)}
               className={
                 previewMode
-                  ? "bg-[#DC143C]/20 border-[#DC143C] text-[#DC143C]"
+                  ? "bg-electric-blue/20 border-electric-blue text-electric-blue"
                   : "bg-white/5 border-white/10 hover:bg-white/10"
               }
               aria-label={previewMode ? "Switch to editing mode" : "Switch to preview mode"}
@@ -679,10 +679,10 @@ export function DrillPageBuilderNotion({
 
         {/* Instructions banner (shown when empty) */}
         {blocks.length === 0 && !previewMode && (
-          <div className="glass-card rounded-xl p-6 mb-6 border border-dashed border-[#DC143C]/30 bg-[#DC143C]/5">
+          <div className="glass-card rounded-xl p-6 mb-6 border border-dashed border-electric-blue/30 bg-electric-blue/5">
             <div className="flex items-start gap-4">
-              <div className="h-10 w-10 rounded-lg bg-[#DC143C]/20 flex items-center justify-center shrink-0">
-                <Sparkles className="h-5 w-5 text-[#DC143C]" />
+              <div className="h-10 w-10 rounded-lg bg-electric-blue/20 flex items-center justify-center shrink-0">
+                <Sparkles className="h-5 w-5 text-electric-blue" />
               </div>
               <div className="space-y-2">
                 <h3 className="font-semibold text-foreground">
@@ -732,7 +732,7 @@ export function DrillPageBuilderNotion({
                   </span>
                 </div>
                 {templates && templates.length > 0 && (
-                  <p className="text-xs text-[#DC143C]">
+                  <p className="text-xs text-electric-blue">
                     {templates.filter((t: any) => t.isSystem).length} built-in template{templates.filter((t: any) => t.isSystem).length !== 1 ? 's' : ''}
                     {templates.filter((t: any) => !t.isSystem).length > 0 && ` + ${templates.filter((t: any) => !t.isSystem).length} custom`} available — use the
                     dropdown above to get started quickly.
@@ -747,7 +747,7 @@ export function DrillPageBuilderNotion({
         {blocks.length > 0 && !previewMode && (
           <div className="px-4 py-2.5 mb-4 rounded-lg bg-white/[0.03] border border-white/[0.06]">
             <p className="text-xs text-muted-foreground flex items-center gap-2 flex-wrap">
-              <Sparkles className="h-3.5 w-3.5 text-[#DC143C] shrink-0" />
+              <Sparkles className="h-3.5 w-3.5 text-electric-blue shrink-0" />
               <span>
                 Type{" "}
                 <kbd className="px-1 py-0.5 bg-white/10 rounded text-[10px]">
@@ -770,7 +770,7 @@ export function DrillPageBuilderNotion({
                 Save
               </span>
               <span className="text-white/20">|</span>
-              <span className="text-[#DC143C]/70">
+              <span className="text-electric-blue/70">
                 Autosave is on
               </span>
             </p>
@@ -831,7 +831,7 @@ export function DrillPageBuilderNotion({
               <Button
                 onClick={handleSaveAsTemplate}
                 disabled={createTemplateMutation.isPending}
-                className="bg-[#DC143C] hover:bg-[#DC143C]/80"
+                className="bg-electric-blue hover:bg-electric-blue/80"
               >
                 Save Template
               </Button>

@@ -28,9 +28,9 @@ import { formatDistanceToNow } from "date-fns";
 
 // Activity type icons and colors
 const activityConfig: Record<string, { icon: React.ReactNode; color: string; label: string }> = {
-  portal_login: { icon: <LogIn className="h-4 w-4" />, color: "bg-red-100 text-red-700", label: "Login" },
+  portal_login: { icon: <LogIn className="h-4 w-4" />, color: "bg-blue-100 text-blue-700", label: "Login" },
   drill_view: { icon: <Eye className="h-4 w-4" />, color: "bg-purple-100 text-purple-700", label: "Viewed" },
-  assignment_view: { icon: <Eye className="h-4 w-4" />, color: "bg-red-100 text-[#DC143C]", label: "Assignments" },
+  assignment_view: { icon: <Eye className="h-4 w-4" />, color: "bg-indigo-100 text-indigo-700", label: "Assignments" },
   drill_start: { icon: <PlayCircle className="h-4 w-4" />, color: "bg-yellow-100 text-yellow-700", label: "Started" },
   drill_complete: { icon: <CheckCircle className="h-4 w-4" />, color: "bg-green-100 text-green-700", label: "Completed" },
   video_submit: { icon: <Video className="h-4 w-4" />, color: "bg-pink-100 text-pink-700", label: "Video" },
@@ -109,8 +109,8 @@ export default function ActivityFeed() {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-red-100 rounded-lg">
-                <Users className="h-5 w-5 text-[#DC143C]" />
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Users className="h-5 w-5 text-blue-600" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{summary?.activeAthletesToday || 0}</p>
@@ -333,7 +333,7 @@ export default function ActivityFeed() {
                 <div className="grid gap-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <LogIn className="h-5 w-5 text-[#DC143C]" />
+                      <LogIn className="h-5 w-5 text-blue-500" />
                       <Label htmlFor="portal_login">Portal Login</Label>
                     </div>
                     <Switch
@@ -357,7 +357,7 @@ export default function ActivityFeed() {
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Eye className="h-5 w-5 text-[#DC143C]" />
+                      <Eye className="h-5 w-5 text-indigo-500" />
                       <Label htmlFor="assignment_view">Assignments Viewed</Label>
                     </div>
                     <Switch
@@ -434,7 +434,7 @@ export default function ActivityFeed() {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Mail className="h-5 w-5 text-[#DC143C]" />
+                    <Mail className="h-5 w-5 text-blue-500" />
                     <div>
                       <Label htmlFor="email_alerts">Instant Email Alerts</Label>
                       <p className="text-xs text-muted-foreground">Get an email every time an athlete performs an activity</p>

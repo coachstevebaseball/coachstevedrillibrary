@@ -1,1 +1,0 @@
-ALTER TABLE `archivedDrills` MODIFY COLUMN `originalDrillId` varchar(500) NOT NULL;

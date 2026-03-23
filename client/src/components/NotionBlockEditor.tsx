@@ -702,7 +702,7 @@ function BlockItem({
 
       case "callout":
         const calloutStyles = {
-          info: "bg-[#DC143C]/10 border-[#DC143C]/30 text-[#E8425A]",
+          info: "bg-blue-500/10 border-blue-500/30 text-blue-400",
           warning: "bg-yellow-500/10 border-yellow-500/30 text-yellow-400",
           success: "bg-green-500/10 border-green-500/30 text-green-400",
           error: "bg-red-500/10 border-red-500/30 text-red-400",
@@ -925,7 +925,7 @@ function BlockItem({
         );
       case "callout":
         const calloutStylesRO = {
-          info: "bg-[#DC143C]/10 border-[#DC143C]/30 text-[#E8425A]",
+          info: "bg-blue-500/10 border-blue-500/30 text-blue-400",
           warning: "bg-yellow-500/10 border-yellow-500/30 text-yellow-400",
           success: "bg-green-500/10 border-green-500/30 text-green-400",
           error: "bg-red-500/10 border-red-500/30 text-red-400",

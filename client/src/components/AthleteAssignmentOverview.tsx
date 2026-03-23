@@ -20,7 +20,6 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 import { AthleteProfilePanel } from "./AthleteProfilePanel";
-import { InlineEdit } from "./InlineEdit";
 
 interface AthleteAssignmentOverviewProps {
   onSelectAthlete?: (athleteId: string) => void;
@@ -120,7 +119,7 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
               </div>
               <div>
                 <p className="text-2xl font-bold">{summary.totalAthletes}</p>
-                <InlineEdit contentKey="coach.overview.stat.totalAthletes" defaultValue="Total Athletes" as="p" className="text-xs text-muted-foreground" />
+                <p className="text-xs text-muted-foreground">Total Athletes</p>
               </div>
             </div>
           </CardContent>
@@ -134,7 +133,7 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
               </div>
               <div>
                 <p className="text-2xl font-bold">{summary.athletesWithDrills}</p>
-                <InlineEdit contentKey="coach.overview.stat.withDrills" defaultValue="With Drills" as="p" className="text-xs text-muted-foreground" />
+                <p className="text-xs text-muted-foreground">With Drills</p>
               </div>
             </div>
           </CardContent>
@@ -148,21 +147,21 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
               </div>
               <div>
                 <p className="text-2xl font-bold">{summary.athletesWithoutDrills}</p>
-                <InlineEdit contentKey="coach.overview.stat.needDrills" defaultValue="Need Drills" as="p" className="text-xs text-muted-foreground" />
+                <p className="text-xs text-muted-foreground">Need Drills</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-[#DC143C]/10 to-[#DC143C]/5 border-[#DC143C]/20">
+        <Card className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-[#DC143C]/20 rounded-lg">
-                <TrendingUp className="h-5 w-5 text-[#DC143C]" />
+              <div className="p-2 bg-blue-500/20 rounded-lg">
+                <TrendingUp className="h-5 w-5 text-blue-500" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{summary.completionRate}%</p>
-                <InlineEdit contentKey="coach.overview.stat.completionRate" defaultValue="Completion Rate" as="p" className="text-xs text-muted-foreground" />
+                <p className="text-xs text-muted-foreground">Completion Rate</p>
               </div>
             </div>
           </CardContent>
@@ -175,7 +174,7 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <CardTitle className="text-lg flex items-center gap-2">
               <Target className="h-5 w-5 text-secondary" />
-              <InlineEdit contentKey="coach.overview.listTitle" defaultValue="Athlete Assignment Status" as="span" />
+              Athlete Assignment Status
             </CardTitle>
             <div className="flex items-center gap-2">
               <div className="relative flex-1 md:w-48">
@@ -262,14 +261,14 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
                           ? 'bg-amber-500/20' 
                           : athlete.completedDrills === athlete.totalDrills && athlete.totalDrills > 0
                             ? 'bg-green-500/20'
-                            : 'bg-[#DC143C]/20'
+                            : 'bg-blue-500/20'
                       }`}>
                         {!athlete.hasDrills ? (
                           <AlertTriangle className="h-5 w-5 text-amber-500" />
                         ) : athlete.completedDrills === athlete.totalDrills && athlete.totalDrills > 0 ? (
                           <CheckCircle className="h-5 w-5 text-green-500" />
                         ) : (
-                          <Clock className="h-5 w-5 text-[#DC143C]" />
+                          <Clock className="h-5 w-5 text-blue-500" />
                         )}
                       </div>
 
@@ -315,7 +314,7 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-8 w-8 p-0 text-muted-foreground hover:text-[#DC143C]"
+                          className="h-8 w-8 p-0 text-muted-foreground hover:text-electric-blue"
                           onClick={(e) => {
                             e.stopPropagation();
                             setViewingProfileId(numericId);

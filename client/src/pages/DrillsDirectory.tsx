@@ -3,12 +3,22 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, LogIn, LogOut, Shield, X, Users, Activity } from "lucide-react";
+import { Search, Filter, LogIn, LogOut, Shield, X, Users, Activity, ChevronDown } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
 import { useAllDrills } from "@/hooks/useAllDrills";
-import { filterOptions, drillTypeOptions } from "@/data/drills";
+
+// Types
+interface Drill {
+  id: string;
+  name: string;
+  difficulty: string;
+  categories: string[];
+  duration: string;
+  url: string;
+  is_direct_link: boolean;
+}
 
 // Get difficulty color pill
 const getDifficultyColor = (difficulty: string) => {
@@ -20,34 +30,25 @@ const getDifficultyColor = (difficulty: string) => {
   }
 };
 
-const getDrillTypeColor = (drillType: string) => {
-  if (!drillType) return "bg-slate-600";
-  if (drillType.includes("Tee")) return "bg-blue-600";
-  if (drillType.includes("Front Toss") || drillType.includes("Soft Toss")) return "bg-purple-600";
-  if (drillType.includes("Flaw")) return "bg-red-700";
-  if (drillType.includes("Balance") || drillType.includes("Load")) return "bg-teal-600";
-  if (drillType.includes("Recognition") || drillType.includes("Decision") || drillType.includes("Tracking")) return "bg-indigo-600";
-  if (drillType.includes("Machine") || drillType.includes("Velocity") || drillType.includes("Live BP")) return "bg-orange-600";
-  return "bg-slate-600";
+// Get category color pill
+const getCategoryColor = (category: string) => {
+  return "bg-teal-500";
 };
 
 export default function DrillsDirectory() {
-  const { user, loading, isAuthenticated, logout } = useAuth();
+  // IMPORTANT: All hooks must be called before any conditional returns
+  const { user, loading, error, isAuthenticated, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState("All");
   const [categoryFilter, setCategoryFilter] = useState("All");
-  const [ageLevelFilter, setAgeLevelFilter] = useState("all-levels");
-  const [drillTypeFilter, setDrillTypeFilter] = useState("all-types");
-  const [problemFilter, setProblemFilter] = useState("all-problems");
-  const [goalFilter, setGoalFilter] = useState("all-goals");
-  const [tagFilter, setTagFilter] = useState("all-tags");
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [showFilters, setShowFilters] = useState(false);
   const DRILLS_PER_PAGE = 20;
 
+  // Merge static + custom drills, sorted alphabetically
   const allDrills = useAllDrills();
 
-  // Extract unique categories
+  // Extract unique categories from ALL drills (static + custom)
   const allCategories = useMemo(() => {
     const categories = new Set<string>();
     allDrills.forEach(drill => {
@@ -56,68 +57,33 @@ export default function DrillsDirectory() {
     return ["All", ...Array.from(categories).sort()];
   }, [allDrills]);
 
-  // Flatten all drill types for the select
-  const allDrillTypes = useMemo(() => {
-    return drillTypeOptions.flatMap(group => group.options);
-  }, []);
-
-  // Filter drills
+  // Filter drills (now includes custom drills, already sorted alphabetically)
   const filteredDrills = useMemo(() => {
     return allDrills.filter(drill => {
       const matchesSearch = drill.name.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesDifficulty = difficultyFilter === "All" || drill.difficulty === difficultyFilter;
       const matchesCategory = categoryFilter === "All" || drill.categories.includes(categoryFilter);
-      const matchesAgeLevel = ageLevelFilter === "all-levels" || (drill.ageLevel ?? []).includes(ageLevelFilter);
-      const matchesDrillType = drillTypeFilter === "all-types" || drill.drillType === drillTypeFilter;
-      const matchesProblem = problemFilter === "all-problems" || (drill.problem ?? []).includes(problemFilter);
-      const matchesGoal = goalFilter === "all-goals" || (drill.goal ?? []).includes(goalFilter);
-      const matchesTag = tagFilter === "all-tags" || (drill.tags ?? []).includes(tagFilter);
-      return matchesSearch && matchesDifficulty && matchesCategory && matchesAgeLevel && matchesDrillType && matchesProblem && matchesGoal && matchesTag;
+      return matchesSearch && matchesDifficulty && matchesCategory;
     });
-  }, [allDrills, searchQuery, difficultyFilter, categoryFilter, ageLevelFilter, drillTypeFilter, problemFilter, goalFilter, tagFilter]);
+  }, [allDrills, searchQuery, difficultyFilter, categoryFilter]);
 
+  // Pagination logic
   const totalPages = Math.ceil(filteredDrills.length / DRILLS_PER_PAGE);
   const startIndex = (currentPage - 1) * DRILLS_PER_PAGE;
-  const paginatedDrills = filteredDrills.slice(startIndex, startIndex + DRILLS_PER_PAGE);
+  const endIndex = startIndex + DRILLS_PER_PAGE;
+  const paginatedDrills = filteredDrills.slice(startIndex, endIndex);
 
-  const handleFilterChange = (setter: (v: string) => void, value: string) => {
+  // Reset to page 1 when filters change
+  const handleFilterChange = (setter: any, value: any) => {
     setCurrentPage(1);
     setter(value);
   };
 
-  const hasActiveFilters =
-    searchQuery !== "" ||
-    difficultyFilter !== "All" ||
-    categoryFilter !== "All" ||
-    ageLevelFilter !== "all-levels" ||
-    drillTypeFilter !== "all-types" ||
-    problemFilter !== "all-problems" ||
-    goalFilter !== "all-goals" ||
-    tagFilter !== "all-tags";
+  const hasActiveFilters = searchQuery !== "" || difficultyFilter !== "All" || categoryFilter !== "All";
 
-  const clearAllFilters = () => {
-    setSearchQuery("");
-    setDifficultyFilter("All");
-    setCategoryFilter("All");
-    setAgeLevelFilter("all-levels");
-    setDrillTypeFilter("all-types");
-    setProblemFilter("all-problems");
-    setGoalFilter("all-goals");
-    setTagFilter("all-tags");
-    setCurrentPage(1);
-  };
+  // NOW we can do conditional returns after all hooks are called
 
-  // Count active filters (excluding search)
-  const activeFilterCount = [
-    difficultyFilter !== "All",
-    categoryFilter !== "All",
-    ageLevelFilter !== "all-levels",
-    drillTypeFilter !== "all-types",
-    problemFilter !== "all-problems",
-    goalFilter !== "all-goals",
-    tagFilter !== "all-tags",
-  ].filter(Boolean).length;
-
+  // Redirect unauthenticated users to login
   if (!loading && !isAuthenticated) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
@@ -135,6 +101,7 @@ export default function DrillsDirectory() {
     );
   }
 
+  // Check if user is an active athlete
   if (!loading && isAuthenticated && user?.role === 'athlete' && !user?.isActiveClient) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
@@ -157,14 +124,14 @@ export default function DrillsDirectory() {
       {/* Hero Section */}
       <header className="relative bg-primary text-primary-foreground overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img
-            src="/images/hero-bg.jpg"
-            alt="Baseball Field"
+          <img 
+            src="/images/hero-bg.jpg" 
+            alt="Baseball Field" 
             className="w-full h-full object-cover opacity-40 mix-blend-overlay"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-primary/80 to-primary/95" />
         </div>
-
+        
         <div className="container relative z-10 py-8 md:py-20">
           {/* Auth & Admin Controls */}
           <div className="flex justify-end gap-2 mb-6 flex-wrap">
@@ -211,7 +178,7 @@ export default function DrillsDirectory() {
               </a>
             )}
           </div>
-
+          
           <div className="max-w-4xl">
             <div className="flex items-center gap-3 mb-3">
               <div className="h-1 w-12 bg-secondary rounded-full" />
@@ -221,9 +188,9 @@ export default function DrillsDirectory() {
               Drills Directory
             </h1>
             <p className="text-base md:text-lg text-primary-foreground/90 mb-6 md:mb-10 max-w-3xl leading-relaxed font-medium">
-              {allDrills.length} professional baseball drills. Filter by skill set, difficulty, age level, drill type, and more.
+              {allDrills.length} professional baseball drills. Filter by skill set, difficulty, and duration to build the perfect practice plan.
             </p>
-
+            
             {/* Search Bar in Hero */}
             <div className="relative w-full md:max-w-2xl">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -234,7 +201,7 @@ export default function DrillsDirectory() {
                 placeholder="Search drills..."
                 className="pl-11 py-5 md:py-7 text-sm md:text-base bg-background/95 text-foreground border-0 shadow-2xl rounded-xl md:rounded-2xl focus-visible:ring-2 focus-visible:ring-secondary font-medium"
                 value={searchQuery}
-                onChange={(e) => handleFilterChange(setSearchQuery, e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
           </div>
@@ -243,34 +210,26 @@ export default function DrillsDirectory() {
 
       {/* Main Content */}
       <main className="flex-1 container py-6 md:py-12">
-
-        {/* Filter Controls Header */}
-        <div className="flex items-center gap-3 mb-4">
-          <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+        {/* Add Filter Button */}
+        <div className="mb-8">
+          <Button 
+            variant="outline" 
+            onClick={() => setShowFilters(!showFilters)}
+            className="gap-2 font-semibold"
+          >
             <Filter className="h-4 w-4" />
-            Filters
-            {activeFilterCount > 0 && (
-              <Badge className="bg-secondary text-secondary-foreground h-5 w-5 p-0 flex items-center justify-center text-xs rounded-full">
-                {activeFilterCount}
-              </Badge>
-            )}
-          </div>
-          {hasActiveFilters && (
-            <Button variant="ghost" size="sm" onClick={clearAllFilters} className="gap-1 text-muted-foreground hover:text-foreground">
-              <X className="h-3.5 w-3.5" />
-              Clear all
-            </Button>
-          )}
+            Add Filter
+            <ChevronDown className={`h-4 w-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
+          </Button>
         </div>
 
-        {/* Filters Panel - always visible */}
-        <div className="bg-card border rounded-xl p-5 md:p-6 shadow-sm mb-8 space-y-5">
-
-            {/* Row 1: Difficulty, Skill Set, Age Level */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Filters Section - Collapsible */}
+        {showFilters && (
+          <div className="bg-card border rounded-lg p-4 md:p-6 shadow-sm mb-8 md:mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
               <div>
-                <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wide">Difficulty</label>
-                <Select value={difficultyFilter} onValueChange={(v) => handleFilterChange(setDifficultyFilter, v)}>
+                <label className="text-xs md:text-sm font-semibold text-muted-foreground mb-1.5 md:mb-2 block">Difficulty</label>
+                <Select value={difficultyFilter} onValueChange={(value) => handleFilterChange(setDifficultyFilter, value)}>
                   <SelectTrigger className="w-full text-sm">
                     <SelectValue placeholder="All Difficulties" />
                   </SelectTrigger>
@@ -284,8 +243,8 @@ export default function DrillsDirectory() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wide">Skill Set</label>
-                <Select value={categoryFilter} onValueChange={(v) => handleFilterChange(setCategoryFilter, v)}>
+                <label className="text-xs md:text-sm font-semibold text-muted-foreground mb-1.5 md:mb-2 block">Skill Set</label>
+                <Select value={categoryFilter} onValueChange={(value) => handleFilterChange(setCategoryFilter, value)}>
                   <SelectTrigger className="w-full text-sm">
                     <SelectValue placeholder="All Skill Sets" />
                   </SelectTrigger>
@@ -297,143 +256,29 @@ export default function DrillsDirectory() {
                 </Select>
               </div>
 
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wide">Age / Level</label>
-                <Select value={ageLevelFilter} onValueChange={(v) => handleFilterChange(setAgeLevelFilter, v)}>
-                  <SelectTrigger className="w-full text-sm">
-                    <SelectValue placeholder="All Levels" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all-levels">All Levels</SelectItem>
-                    {filterOptions.ageLevel.map(opt => (
-                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              {hasActiveFilters && (
+                <div className="flex items-end">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setDifficultyFilter("All");
+                      setCategoryFilter("All");
+                    }}
+                    className="w-full"
+                  >
+                    <X className="h-4 w-4 mr-1" />
+                    Clear Filters
+                  </Button>
+                </div>
+              )}
             </div>
-
-            {/* Row 2: Drill Type, Problem, Goal */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wide">Drill Type</label>
-                <Select value={drillTypeFilter} onValueChange={(v) => handleFilterChange(setDrillTypeFilter, v)}>
-                  <SelectTrigger className="w-full text-sm">
-                    <SelectValue placeholder="All Drill Types" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all-types">All Drill Types</SelectItem>
-                    {drillTypeOptions.map(group => (
-                      <div key={group.label}>
-                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">{group.label}</div>
-                        {group.options.map(opt => (
-                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                        ))}
-                      </div>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wide">Fix a Problem</label>
-                <Select value={problemFilter} onValueChange={(v) => handleFilterChange(setProblemFilter, v)}>
-                  <SelectTrigger className="w-full text-sm">
-                    <SelectValue placeholder="All Problems" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all-problems">All Problems</SelectItem>
-                    {filterOptions.problem.map(opt => (
-                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wide">Training Goal</label>
-                <Select value={goalFilter} onValueChange={(v) => handleFilterChange(setGoalFilter, v)}>
-                  <SelectTrigger className="w-full text-sm">
-                    <SelectValue placeholder="All Goals" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all-goals">All Goals</SelectItem>
-                    {filterOptions.goal.map(opt => (
-                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {/* Row 3: Tags */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wide">Tag / Focus Area</label>
-                <Select value={tagFilter} onValueChange={(v) => handleFilterChange(setTagFilter, v)}>
-                  <SelectTrigger className="w-full text-sm">
-                    <SelectValue placeholder="All Tags" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all-tags">All Tags</SelectItem>
-                    {filterOptions.tags.map(tag => (
-                      <SelectItem key={tag} value={tag}>{tag.charAt(0).toUpperCase() + tag.slice(1)}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-        </div>
-
-        {/* Active Filter Pills */}
-        {hasActiveFilters && (
-          <div className="flex flex-wrap gap-2 mb-6">
-            {searchQuery && (
-              <Badge variant="secondary" className="gap-1 pr-1 cursor-pointer" onClick={() => handleFilterChange(setSearchQuery, "")}>
-                Search: "{searchQuery}" <X className="h-3 w-3 ml-0.5" />
-              </Badge>
-            )}
-            {difficultyFilter !== "All" && (
-              <Badge variant="secondary" className="gap-1 pr-1 cursor-pointer" onClick={() => handleFilterChange(setDifficultyFilter, "All")}>
-                {difficultyFilter} <X className="h-3 w-3 ml-0.5" />
-              </Badge>
-            )}
-            {categoryFilter !== "All" && (
-              <Badge variant="secondary" className="gap-1 pr-1 cursor-pointer" onClick={() => handleFilterChange(setCategoryFilter, "All")}>
-                {categoryFilter} <X className="h-3 w-3 ml-0.5" />
-              </Badge>
-            )}
-            {ageLevelFilter !== "all-levels" && (
-              <Badge variant="secondary" className="gap-1 pr-1 cursor-pointer" onClick={() => handleFilterChange(setAgeLevelFilter, "all-levels")}>
-                {filterOptions.ageLevel.find(o => o.value === ageLevelFilter)?.label} <X className="h-3 w-3 ml-0.5" />
-              </Badge>
-            )}
-            {drillTypeFilter !== "all-types" && (
-              <Badge variant="secondary" className="gap-1 pr-1 cursor-pointer" onClick={() => handleFilterChange(setDrillTypeFilter, "all-types")}>
-                {drillTypeFilter} <X className="h-3 w-3 ml-0.5" />
-              </Badge>
-            )}
-            {problemFilter !== "all-problems" && (
-              <Badge variant="secondary" className="gap-1 pr-1 cursor-pointer" onClick={() => handleFilterChange(setProblemFilter, "all-problems")}>
-                Fix: {filterOptions.problem.find(o => o.value === problemFilter)?.label} <X className="h-3 w-3 ml-0.5" />
-              </Badge>
-            )}
-            {goalFilter !== "all-goals" && (
-              <Badge variant="secondary" className="gap-1 pr-1 cursor-pointer" onClick={() => handleFilterChange(setGoalFilter, "all-goals")}>
-                Goal: {filterOptions.goal.find(o => o.value === goalFilter)?.label} <X className="h-3 w-3 ml-0.5" />
-              </Badge>
-            )}
-            {tagFilter !== "all-tags" && (
-              <Badge variant="secondary" className="gap-1 pr-1 cursor-pointer" onClick={() => handleFilterChange(setTagFilter, "all-tags")}>
-                Tag: {tagFilter} <X className="h-3 w-3 ml-0.5" />
-              </Badge>
-            )}
           </div>
         )}
 
         {/* Results Count */}
-        <div className="mb-6">
+        <div className="mb-8">
           <h2 className="text-2xl md:text-3xl font-heading font-bold">
             Available Drills
             <Badge variant="secondary" className="ml-3 text-base md:text-lg">
@@ -447,13 +292,13 @@ export default function DrillsDirectory() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-12">
               {paginatedDrills.map((drill) => (
-                <Link
-                  key={drill.id}
+                <Link 
+                  key={drill.id} 
                   href={`/drill/${drill.id}`}
                   className="group block h-full"
                 >
                   <div className="bg-card border rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col hover:border-secondary">
-                    <div className="p-4 md:p-5 flex-1 flex flex-col">
+                    <div className="p-4 md:p-6 flex-1 flex flex-col">
                       <div className="flex justify-between items-start gap-2 mb-3">
                         <Badge className={`${getDifficultyColor(drill.difficulty)} text-white font-semibold text-xs`}>
                           {drill.difficulty}
@@ -464,32 +309,16 @@ export default function DrillsDirectory() {
                           </span>
                         )}
                       </div>
-                      <h3 className="text-base md:text-lg font-heading font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2">
+                      <h3 className="text-lg md:text-xl font-heading font-bold mb-4 group-hover:text-primary transition-colors line-clamp-2">
                         {drill.name}
                       </h3>
-
-                      {/* Drill Type badge */}
-                      {drill.drillType && (
-                        <div className="mb-3">
-                          <Badge className={`${getDrillTypeColor(drill.drillType)} text-white text-xs font-medium`}>
-                            {drill.drillType}
+                      <div className="flex flex-wrap gap-2 mt-auto">
+                        {drill.categories.map((cat, idx) => (
+                          <Badge key={idx} variant="outline" className={`${getCategoryColor(cat)} text-white text-xs`}>
+                            {cat}
                           </Badge>
-                        </div>
-                      )}
-
-                      {/* Tags */}
-                      {(drill.tags ?? []).length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mt-auto">
-                          {(drill.tags ?? []).slice(0, 3).map((tag: string, idx: number) => (
-                            <span key={idx} className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
-                              {tag}
-                            </span>
-                          ))}
-                          {(drill.tags ?? []).length > 3 && (
-                            <span className="text-xs text-muted-foreground px-1">+{(drill.tags ?? []).length - 3}</span>
-                          )}
-                        </div>
-                      )}
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </Link>
@@ -506,31 +335,17 @@ export default function DrillsDirectory() {
                 >
                   Previous
                 </Button>
-                <div className="flex items-center gap-1 flex-wrap justify-center">
-                  {Array.from({ length: Math.min(totalPages, 10) }, (_, i) => {
-                    // Show pages around current page
-                    let page: number;
-                    if (totalPages <= 10) {
-                      page = i + 1;
-                    } else if (currentPage <= 5) {
-                      page = i + 1;
-                    } else if (currentPage >= totalPages - 4) {
-                      page = totalPages - 9 + i;
-                    } else {
-                      page = currentPage - 4 + i;
-                    }
-                    return (
-                      <Button
-                        key={page}
-                        variant={currentPage === page ? "default" : "outline"}
-                        onClick={() => setCurrentPage(page)}
-                        size="sm"
-                        className="w-9"
-                      >
-                        {page}
-                      </Button>
-                    );
-                  })}
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "outline"}
+                      onClick={() => setCurrentPage(page)}
+                      size="sm"
+                    >
+                      {page}
+                    </Button>
+                  ))}
                 </div>
                 <Button
                   variant="outline"
@@ -547,9 +362,15 @@ export default function DrillsDirectory() {
             <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-xl font-bold mb-2">No drills found</h3>
             <p className="text-muted-foreground max-w-md mx-auto mb-6">
-              We couldn't find any drills matching your search criteria. Try adjusting your filters.
+              We couldn't find any drills matching your search criteria. Try adjusting your filters or search term.
             </p>
-            <Button onClick={clearAllFilters}>
+            <Button 
+              onClick={() => {
+                setSearchQuery("");
+                setDifficultyFilter("All");
+                setCategoryFilter("All");
+              }}
+            >
               Clear All Filters
             </Button>
           </div>

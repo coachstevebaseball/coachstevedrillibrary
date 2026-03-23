@@ -121,9 +121,18 @@ describe("Blast Metrics - Add Session", () => {
       sessionType: "Tee",
       metrics: {
         batSpeedMph: "65.5",
+        rotationalAccelerationG: "12.3",
+        planeScore: 78,
+        connectionScore: 82,
+        rotationScore: 75,
+        powerKw: "1.85",
+        peakHandSpeedMph: "22.0",
         onPlaneEfficiencyPercent: "85.0",
         attackAngleDeg: "10.5",
-        exitVelocityMph: "88.0",
+        earlyConnectionDeg: "95.0",
+        connectionAtImpactDeg: "90.0",
+        verticalBatAngleDeg: "-25.0",
+        timeToContactSec: "0.150",
       },
     });
 
@@ -147,9 +156,10 @@ describe("Blast Metrics - Add Session", () => {
       .where(eq(blastMetrics.sessionId, result.sessionId));
     expect(metrics).toBeDefined();
     expect(metrics.batSpeedMph).toBe("65.5");
-    expect(metrics.onPlaneEfficiencyPercent).toBe("85.0");
-    expect(metrics.attackAngleDeg).toBe("10.5");
-    expect(metrics.exitVelocityMph).toBe("88.0");
+    expect(metrics.planeScore).toBe(78);
+    expect(metrics.connectionScore).toBe(82);
+    expect(metrics.rotationScore).toBe(75);
+    expect(metrics.powerKw).toBe("1.85");
   });
 
   it("should add a session with partial metrics (only bat speed)", async () => {
@@ -173,8 +183,8 @@ describe("Blast Metrics - Add Session", () => {
       .where(eq(blastMetrics.sessionId, result.sessionId));
     expect(metrics).toBeDefined();
     expect(metrics.batSpeedMph).toBe("48.0");
-    expect(metrics.onPlaneEfficiencyPercent).toBeNull();
-    expect(metrics.attackAngleDeg).toBeNull();
+    expect(metrics.planeScore).toBeNull();
+    expect(metrics.connectionScore).toBeNull();
   });
 
   it("should add a session with empty metrics", async () => {
@@ -196,8 +206,8 @@ describe("Blast Metrics - Add Session", () => {
       .where(eq(blastMetrics.sessionId, result.sessionId));
     expect(metrics).toBeDefined();
     expect(metrics.batSpeedMph).toBeNull();
-    expect(metrics.onPlaneEfficiencyPercent).toBeNull();
-    expect(metrics.exitVelocityMph).toBeNull();
+    expect(metrics.planeScore).toBeNull();
+    expect(metrics.powerKw).toBeNull();
   });
 
   it("should NOT auto-create session note when player has no userId", async () => {
@@ -291,8 +301,8 @@ describe("Blast Metrics - Add Session with Linked User (auto session note)", () 
       createSessionNote: true,
       metrics: {
         batSpeedMph: "65.0",
-        onPlaneEfficiencyPercent: "80.0",
-        attackAngleDeg: "12.0",
+        planeScore: 80,
+        connectionScore: 75,
       },
     });
 
@@ -313,8 +323,8 @@ describe("Blast Metrics - Add Session with Linked User (auto session note)", () 
     expect(note.sessionLabel).toContain("Blast");
     expect(note.sessionLabel).toContain("Tee");
     expect(note.whatImproved).toContain("Bat Speed: 65.0 mph");
-    expect(note.whatImproved).toContain("OPE: 80.0%");
-    expect(note.whatImproved).toContain("Attack Angle: 12.0");
+    expect(note.whatImproved).toContain("Plane: 80");
+    expect(note.whatImproved).toContain("Connection: 75");
   });
 
   it("should NOT create session note when createSessionNote is false", async () => {
@@ -378,7 +388,7 @@ describe("Blast Metrics - Delete Session (with linked note cleanup)", () => {
     await db.insert(blastMetrics).values({
       sessionId: testSessionId,
       batSpeedMph: "55.0",
-      onPlaneEfficiencyPercent: "70.0",
+      planeScore: 70,
     });
     // Create a linked session note
     await db.insert(sessionNotes).values({
@@ -710,8 +720,8 @@ describe("Blast Metrics - Update Session", () => {
       sessionType: "Tee",
       metrics: {
         batSpeedMph: "60.0",
-        onPlaneEfficiencyPercent: "70.0",
-        attackAngleDeg: "11.0",
+        planeScore: 70,
+        connectionScore: 65,
       },
     });
     testSessionId = result.sessionId;
@@ -740,8 +750,8 @@ describe("Blast Metrics - Update Session", () => {
       sessionType: "Live BP",
       metrics: {
         batSpeedMph: "60.0",
-        onPlaneEfficiencyPercent: "70.0",
-        attackAngleDeg: "11.0",
+        planeScore: 70,
+        connectionScore: 65,
       },
     });
 
@@ -764,9 +774,9 @@ describe("Blast Metrics - Update Session", () => {
       sessionType: "Tee",
       metrics: {
         batSpeedMph: "72.5",
-        onPlaneEfficiencyPercent: "85.0",
-        attackAngleDeg: "14.0",
-        exitVelocityMph: "92.0",
+        planeScore: 85,
+        connectionScore: 90,
+        rotationScore: 80,
       },
     });
 
@@ -777,9 +787,9 @@ describe("Blast Metrics - Update Session", () => {
       .from(blastMetrics)
       .where(eq(blastMetrics.sessionId, testSessionId));
     expect(metrics.batSpeedMph).toBe("72.5");
-    expect(metrics.onPlaneEfficiencyPercent).toBe("85.0");
-    expect(metrics.attackAngleDeg).toBe("14.0");
-    expect(metrics.exitVelocityMph).toBe("92.0");
+    expect(metrics.planeScore).toBe(85);
+    expect(metrics.connectionScore).toBe(90);
+    expect(metrics.rotationScore).toBe(80);
   });
 
   it("should reject non-admin users from updating sessions", async () => {
@@ -832,17 +842,17 @@ describe("Blast Metrics - Bulk Import Sessions", () => {
         {
           sessionDate: "2026-01-15",
           sessionType: "Tee",
-          metrics: { batSpeedMph: "55.0", onPlaneEfficiencyPercent: "70.0" },
+          metrics: { batSpeedMph: "55.0", planeScore: 70 },
         },
         {
           sessionDate: "2026-01-20",
           sessionType: "Soft Toss",
-          metrics: { batSpeedMph: "58.0", onPlaneEfficiencyPercent: "72.0" },
+          metrics: { batSpeedMph: "58.0", planeScore: 72 },
         },
         {
           sessionDate: "2026-01-25",
           sessionType: "Live BP",
-          metrics: { batSpeedMph: "62.0", onPlaneEfficiencyPercent: "75.0" },
+          metrics: { batSpeedMph: "62.0", planeScore: 75 },
         },
       ],
     });
@@ -911,14 +921,14 @@ describe("Blast Metrics - Retroactive Session Notes", () => {
       sessionDate: "2026-01-10",
       sessionType: "Tee",
       createSessionNote: false,
-      metrics: { batSpeedMph: "55.0", onPlaneEfficiencyPercent: "70.0" },
+      metrics: { batSpeedMph: "55.0", planeScore: 70 },
     });
     await caller.blastMetrics.addSession({
       playerId: testPlayerId,
       sessionDate: "2026-01-15",
       sessionType: "Soft Toss",
       createSessionNote: false,
-      metrics: { batSpeedMph: "58.0", onPlaneEfficiencyPercent: "72.0" },
+      metrics: { batSpeedMph: "58.0", planeScore: 72 },
     });
   });
 
@@ -1019,7 +1029,7 @@ describe("Blast Metrics - Athlete getMyBlastData", () => {
       playerId: testPlayerId,
       sessionDate: "2026-02-20",
       sessionType: "Tee",
-      metrics: { batSpeedMph: "65.0", onPlaneEfficiencyPercent: "80.0" },
+      metrics: { batSpeedMph: "65.0", planeScore: 80 },
     });
   });
 
@@ -1047,7 +1057,7 @@ describe("Blast Metrics - Athlete getMyBlastData", () => {
     expect(data.player!.fullName).toBe("My Blast Athlete");
     expect(data.sessions).toHaveLength(1);
     expect(data.sessions[0].batSpeedMph).toBe("65.0");
-    expect(data.sessions[0].onPlaneEfficiencyPercent).toBe("80.0");
+    expect(data.sessions[0].planeScore).toBe(80);
   });
 
   it("should return empty data for athlete with no Blast player", async () => {

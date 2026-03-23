@@ -3,6 +3,7 @@ import { trpc } from "@/lib/trpc";
 import { Badge } from "@/components/ui/badge";
 import {
   Zap,
+  Activity,
   Target,
   Crosshair,
   Gauge,
@@ -24,10 +25,16 @@ interface MetricConfig {
 }
 
 const METRIC_CONFIGS: MetricConfig[] = [
-  { label: "Bat Speed", key: "batSpeedMph", unit: "mph", color: "text-[#E8425A]", icon: Zap },
+  { label: "Bat Speed", key: "batSpeedMph", unit: "mph", color: "text-blue-400", icon: Zap },
+  { label: "Rot. Accel", key: "rotationalAccelerationG", unit: "g", color: "text-violet-400", icon: Activity },
+  { label: "Plane", key: "planeScore", unit: "", color: "text-green-400", icon: Target, isScore: true },
+  { label: "Connection", key: "connectionScore", unit: "", color: "text-yellow-400", icon: Crosshair, isScore: true },
+  { label: "Rotation", key: "rotationScore", unit: "", color: "text-red-400", icon: Gauge, isScore: true },
+  { label: "Power", key: "powerKw", unit: "kW", color: "text-pink-400", icon: Zap },
+  { label: "Attack Angle", key: "attackAngleDeg", unit: "°", color: "text-cyan-400", icon: TrendingUp },
   { label: "On-Plane Eff.", key: "onPlaneEfficiencyPercent", unit: "%", color: "text-emerald-400", icon: Target },
-  { label: "Attack Angle", key: "attackAngleDeg", unit: "°", color: "text-lime-400", icon: Crosshair },
-  { label: "Exit Velo", key: "exitVelocityMph", unit: "mph", color: "text-violet-400", icon: Gauge },
+  { label: "Peak Hand Speed", key: "peakHandSpeedMph", unit: "mph", color: "text-orange-400", icon: Activity },
+  { label: "Time to Contact", key: "timeToContactSec", unit: "s", color: "text-amber-400", icon: Gauge },
 ];
 
 export function AthleteBlastMetrics() {
@@ -163,7 +170,7 @@ export function AthleteBlastMetrics() {
                       timeZone: "America/New_York",
                     })}
                     {session.batSpeedMph && (
-                      <span className="text-[#E8425A] ml-1">
+                      <span className="text-blue-400 ml-1">
                         {parseFloat(session.batSpeedMph).toFixed(1)} mph
                       </span>
                     )}

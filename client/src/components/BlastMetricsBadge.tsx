@@ -1,5 +1,5 @@
 import { trpc } from "@/lib/trpc";
-import { Zap, Target, Crosshair, Gauge } from "lucide-react";
+import { Zap, Activity, Target, Crosshair, Gauge } from "lucide-react";
 
 interface BlastMetricsBadgeProps {
   blastSessionId: string;
@@ -15,10 +15,12 @@ export function BlastMetricsBadge({ blastSessionId }: BlastMetricsBadgeProps) {
   if (isLoading || !data) return null;
 
   const metrics = [
-    { label: "Bat Speed", value: data.batSpeedMph, unit: "mph", color: "text-[#E8425A]", icon: Zap },
-    { label: "OPE", value: data.onPlaneEfficiencyPercent, unit: "%", color: "text-green-400", icon: Target },
-    { label: "Attack Angle", value: data.attackAngleDeg, unit: "°", color: "text-yellow-400", icon: Crosshair },
-    { label: "Exit Velo", value: data.exitVelocityMph, unit: "mph", color: "text-violet-400", icon: Gauge },
+    { label: "Bat Speed", value: data.batSpeedMph, unit: "mph", color: "text-blue-400", icon: Zap },
+    { label: "Rot. Accel", value: data.rotationalAccelerationG, unit: "g", color: "text-violet-400", icon: Activity },
+    { label: "Plane", value: data.planeScore, unit: "", color: "text-green-400", icon: Target },
+    { label: "Connection", value: data.connectionScore, unit: "", color: "text-yellow-400", icon: Crosshair },
+    { label: "Rotation", value: data.rotationScore, unit: "", color: "text-red-400", icon: Gauge },
+    { label: "Power", value: data.powerKw, unit: "kW", color: "text-pink-400", icon: Zap },
   ].filter(m => m.value != null);
 
   if (metrics.length === 0) return null;

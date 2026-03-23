@@ -75,6 +75,11 @@
     "goal": "To improve an infielder's ability to handle difficult short hops by developing quick, soft hands and confidence."
   },
   {
+    "drillId": "4-corners",
+    "drillName": "4 Corners",
+    "goal": "To develop quick feet, soft hands, and rapid ball transfer for infielders."
+  },
+  {
     "drillId": "arm-path-drill",
     "drillName": "Arm Path Drill",
     "goal": "To develop a consistent and efficient arm action that promotes throwing accuracy and reduces the risk of injury."
@@ -235,6 +240,11 @@
     "goal": "To develop an infielder's ability to create space and efficient angles to the ball on groundballs hit directly at them or to their immediate left or right."
   },
   {
+    "drillId": "execute-on-the-field",
+    "drillName": "Execute - On the Field",
+    "goal": "To develop a player's ability to execute fundamental defensive plays flawlessly under pressure."
+  },
+  {
     "drillId": "flat-ground",
     "drillName": "Flat Ground",
     "goal": "To refine pitching mechanics, improve command, and build a consistent throwing motion without the stress of a sloped mound."
@@ -298,6 +308,11 @@
     "drillId": "hook-ems",
     "drillName": "Hook 'Ems",
     "goal": "To develop proper hip sequencing and direction into foot-strike, promoting a powerful and efficient throwing motion."
+  },
+  {
+    "drillId": "indoor-facility-defensive-stations",
+    "drillName": "Indoor Facility Defensive Stations",
+    "goal": "To develop a range of fundamental infield skills in a structured and efficient station-based circuit."
   },
   {
     "drillId": "infield-hands-routine",
@@ -503,6 +518,16 @@
     "drillId": "tandem",
     "drillName": "Tandem",
     "goal": "To develop teamwork, communication, and efficiency between outfielders on long throws from the gaps, ensuring the ball gets to the infield quickly and accurately."
+  },
+  {
+    "drillId": "team-bunting-stations",
+    "drillName": "Team Bunting Stations",
+    "goal": "To develop a versatile bunting skillset by providing high-volume, situational repetitions of various bunt types."
+  },
+  {
+    "drillId": "team-situations",
+    "drillName": "Team Situations",
+    "goal": "To improve an infielder's ability to read game situations, communicate effectively with teammates, and execute the correct defensive play as a cohesive unit."
   },
   {
     "drillId": "upper-body-throwing",

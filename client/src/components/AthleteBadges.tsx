@@ -39,7 +39,7 @@ export function AthleteBadges({
         name: "Getting Started",
         description: "Submitted your first drill",
         icon: <Target className="h-5 w-5" />,
-        color: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-[#E8425A]",
+        color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
         unlockedAt: new Date(),
       });
     }

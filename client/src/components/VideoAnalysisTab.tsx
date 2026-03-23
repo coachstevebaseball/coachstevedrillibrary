@@ -32,7 +32,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Streamdown } from "streamdown";
-import { InlineEdit } from "./InlineEdit";
 
 type AnalysisStatus = "pending" | "analyzing" | "analyzed" | "reviewed" | "approved" | "sent" | "failed";
 
@@ -70,9 +69,9 @@ interface AnalysisRecord {
 
 const STATUS_CONFIG: Record<AnalysisStatus, { label: string; color: string; icon: typeof Clock }> = {
   pending: { label: "Pending", color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30", icon: Clock },
-  analyzing: { label: "Analyzing", color: "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30", icon: Loader2 },
+  analyzing: { label: "Analyzing", color: "bg-blue-500/20 text-blue-400 border-blue-500/30", icon: Loader2 },
   analyzed: { label: "AI Ready", color: "bg-purple-500/20 text-purple-400 border-purple-500/30", icon: Sparkles },
-  reviewed: { label: "Reviewed", color: "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30", icon: Edit3 },
+  reviewed: { label: "Reviewed", color: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30", icon: Edit3 },
   approved: { label: "Approved", color: "bg-green-500/20 text-green-400 border-green-500/30", icon: CheckCircle },
   sent: { label: "Sent", color: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30", icon: Send },
   failed: { label: "Failed", color: "bg-red-500/20 text-red-400 border-red-500/30", icon: AlertCircle },
@@ -289,7 +288,7 @@ export function VideoAnalysisTab() {
                 setRecipientEmail("");
                 setEmailDialogOpen(true);
               }}
-              className="bg-[#DC143C] hover:bg-[#B91030]"
+              className="bg-blue-600 hover:bg-blue-700"
             >
               <Send className="h-4 w-4 mr-2" />
               Send to Athlete
@@ -400,10 +399,10 @@ export function VideoAnalysisTab() {
               {/* Drill Recommendations */}
               {selectedAnalysis.aiFeedback.drillRecommendations.length > 0 && (
                 <div>
-                  <h4 className="font-semibold text-[#E8425A] mb-2">Recommended Drills</h4>
+                  <h4 className="font-semibold text-blue-400 mb-2">Recommended Drills</h4>
                   <div className="flex flex-wrap gap-2">
                     {selectedAnalysis.aiFeedback.drillRecommendations.map((d, i) => (
-                      <Badge key={i} variant="secondary" className="bg-[#DC143C]/10 text-[#E8425A] border-[#DC143C]/20">
+                      <Badge key={i} variant="secondary" className="bg-blue-500/10 text-blue-400 border-blue-500/20">
                         {d}
                       </Badge>
                     ))}
@@ -433,7 +432,7 @@ export function VideoAnalysisTab() {
           <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
-                <Edit3 className="h-5 w-5 text-[#E8425A]" />
+                <Edit3 className="h-5 w-5 text-cyan-400" />
                 Edit Feedback for Athlete
               </CardTitle>
             </CardHeader>
@@ -514,7 +513,7 @@ export function VideoAnalysisTab() {
               <Button
                 onClick={handleSend}
                 disabled={sendMutation.isPending}
-                className="bg-[#DC143C] hover:bg-[#B91030]"
+                className="bg-blue-600 hover:bg-blue-700"
               >
                 {sendMutation.isPending ? (
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -538,25 +537,27 @@ export function VideoAnalysisTab() {
         <div>
           <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-purple-400" />
-            <InlineEdit contentKey="coach.videoAnalysis.title" defaultValue="AI Video Analysis" as="span" />
+            AI Video Analysis
           </h2>
-          <InlineEdit contentKey="coach.videoAnalysis.desc" defaultValue="Review AI-generated feedback on athlete video submissions" as="p" className="text-muted-foreground mt-1" />
+          <p className="text-muted-foreground mt-1">
+            Review AI-generated feedback on athlete video submissions
+          </p>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
-          { key: "total", label: "Total", value: stats.total, color: "text-foreground" },
-          { key: "pending", label: "Pending", value: stats.pending, color: "text-yellow-400" },
-          { key: "needsReview", label: "Needs Review", value: stats.needsReview, color: "text-purple-400" },
-          { key: "sent", label: "Sent", value: stats.sent, color: "text-emerald-400" },
-          { key: "failed", label: "Failed", value: stats.failed, color: "text-red-400" },
+          { label: "Total", value: stats.total, color: "text-foreground" },
+          { label: "Pending", value: stats.pending, color: "text-yellow-400" },
+          { label: "Needs Review", value: stats.needsReview, color: "text-purple-400" },
+          { label: "Sent", value: stats.sent, color: "text-emerald-400" },
+          { label: "Failed", value: stats.failed, color: "text-red-400" },
         ].map((stat) => (
-          <Card key={stat.key} className="bg-card border-border">
+          <Card key={stat.label} className="bg-card border-border">
             <CardContent className="p-4 text-center">
               <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
-              <InlineEdit contentKey={`coach.videoAnalysis.stat.${stat.key}`} defaultValue={stat.label} as="p" className="text-xs text-muted-foreground mt-1" />
+              <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
             </CardContent>
           </Card>
         ))}

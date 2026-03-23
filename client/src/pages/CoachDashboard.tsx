@@ -25,7 +25,6 @@ import { SessionNotesTab } from "@/components/SessionNotesTab";
 import { VideoAnalysisTab } from "@/components/VideoAnalysisTab";
 import { BlastMetricsTab } from "@/components/BlastMetricsTab";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
-import { InlineEdit } from "@/components/InlineEdit";
 
 interface Drill {
   id: string;
@@ -37,8 +36,8 @@ interface Drill {
 
 // Quick action card data
 const quickActions = [
-  { label: "Drill Directory", shortLabel: "Drills", href: "/", icon: Search, color: "from-[#DC143C]/20 to-[#DC143C]/20", iconColor: "text-[#E8425A]" },
-  { label: "AI Generator", shortLabel: "AI", href: "/drill-generator", icon: Zap, color: "from-[#DC143C]/20 to-fuchsia-500/20", iconColor: "text-violet-400" },
+  { label: "Drill Directory", shortLabel: "Drills", href: "/", icon: Search, color: "from-blue-500/20 to-cyan-500/20", iconColor: "text-blue-400" },
+  { label: "AI Generator", shortLabel: "AI", href: "/drill-generator", icon: Zap, color: "from-violet-500/20 to-fuchsia-500/20", iconColor: "text-violet-400" },
   { label: "Manage Videos", shortLabel: "Videos", href: "/manage-drill-videos", icon: Video, color: "from-orange-500/20 to-amber-500/20", iconColor: "text-orange-400" },
   { label: "User Management", shortLabel: "Users", href: "/user-management", icon: Users, color: "from-green-500/20 to-emerald-500/20", iconColor: "text-green-400" },
 ];
@@ -167,7 +166,7 @@ export default function CoachDashboard() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-12 w-12 rounded-full border-2 border-[#DC143C]/30 border-t-[#DC143C] animate-spin" />
+          <div className="h-12 w-12 rounded-full border-2 border-electric-blue/30 border-t-electric-blue animate-spin" />
           <p className="text-muted-foreground animate-pulse">Loading dashboard...</p>
         </div>
       </div>
@@ -199,9 +198,9 @@ export default function CoachDashboard() {
       {/* Hero Header */}
       <header className="relative overflow-hidden">
         {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.18_0.01_25)] via-[oklch(0.15_0.005_0)] to-[oklch(0.12_0.01_20)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.50_0.20_25/0.15),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,oklch(0.45_0.18_25/0.1),transparent_60%)]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.25_0.05_250)] via-[oklch(0.20_0.04_260)] to-[oklch(0.15_0.06_280)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.45_0.15_250/0.15),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,oklch(0.50_0.18_280/0.1),transparent_60%)]" />
         
         {/* Subtle grid pattern */}
         <div className="absolute inset-0 opacity-[0.03]" style={{
@@ -226,7 +225,7 @@ export default function CoachDashboard() {
                 className="text-white/70 hover:text-white hover:bg-white/10 gap-2 text-sm"
               >
                 <Zap className="h-4 w-4" />
-                <span className="hidden sm:inline"><InlineEdit contentKey="coach.btn.quickActions" defaultValue="Quick Actions" as="span" /></span>
+                <span className="hidden sm:inline">Quick Actions</span>
               </Button>
               <Button
                 onClick={() => setIsBulkGoalOpen(true)}
@@ -234,7 +233,7 @@ export default function CoachDashboard() {
                 className="text-white/70 hover:text-white hover:bg-white/10 gap-2 text-sm"
               >
                 <Upload className="h-4 w-4" />
-                <span className="hidden sm:inline"><InlineEdit contentKey="coach.btn.bulkGoals" defaultValue="Bulk Goals" as="span" /></span>
+                <span className="hidden sm:inline">Bulk Goals</span>
               </Button>
               <Button
                 onClick={() => setActiveTab(activeTab === "bulk-import" ? "overview" : "bulk-import")}
@@ -242,29 +241,33 @@ export default function CoachDashboard() {
                 className="text-white/70 hover:text-white hover:bg-white/10 gap-2 text-sm"
               >
                 <Upload className="h-4 w-4" />
-                <span className="hidden sm:inline"><InlineEdit contentKey="coach.btn.bulkImport" defaultValue="Bulk Import" as="span" /></span>
+                <span className="hidden sm:inline">Bulk Import</span>
               </Button>
             </div>
           </div>
 
           {/* Title */}
           <div className="mb-8">
-            <InlineEdit contentKey="coach.title" defaultValue="Coach Dashboard" as="h1" className="text-3xl md:text-5xl font-heading font-black text-white tracking-tight" />
-            <InlineEdit contentKey="coach.subtitle" defaultValue="Manage your athletes, assign drills, and track progress all in one place." as="p" className="text-white/60 mt-2 text-sm md:text-base max-w-lg" />
+            <h1 className="text-3xl md:text-5xl font-heading font-black text-white tracking-tight">
+              Coach Dashboard
+            </h1>
+            <p className="text-white/60 mt-2 text-sm md:text-base max-w-lg">
+              Manage your athletes, assign drills, and track progress all in one place.
+            </p>
           </div>
 
           {/* Stats Row */}
           <section aria-label="Dashboard Statistics" className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
             {[
-              { key: "athletes", label: "Athletes", value: totalAthletes, icon: Users, color: "text-[#E8425A]" },
-              { key: "assigned", label: "Assigned", value: totalAssignments, icon: Target, color: "text-amber-400" },
-              { key: "inProgress", label: "In Progress", value: inProgressAssignments, icon: Clock, color: "text-purple-400" },
-              { key: "completed", label: "Completed", value: completedAssignments, icon: TrendingUp, color: "text-green-400" },
+              { label: "Athletes", value: totalAthletes, icon: Users, color: "text-blue-400" },
+              { label: "Assigned", value: totalAssignments, icon: Target, color: "text-amber-400" },
+              { label: "In Progress", value: inProgressAssignments, icon: Clock, color: "text-purple-400" },
+              { label: "Completed", value: completedAssignments, icon: TrendingUp, color: "text-green-400" },
             ].map((stat) => (
-              <div key={stat.key} className="bg-white/[0.06] backdrop-blur-sm border border-white/[0.08] rounded-xl p-3 md:p-4" role="status" aria-label={`${stat.label}: ${stat.value}`}>
+              <div key={stat.label} className="bg-white/[0.06] backdrop-blur-sm border border-white/[0.08] rounded-xl p-3 md:p-4" role="status" aria-label={`${stat.label}: ${stat.value}`}>
                 <div className="flex items-center gap-2 mb-1">
                   <stat.icon className={`h-4 w-4 ${stat.color}`} aria-hidden="true" />
-                  <InlineEdit contentKey={`coach.stat.${stat.key}.label`} defaultValue={stat.label} as="span" className="text-white/50 text-xs font-medium uppercase tracking-wider" />
+                  <span className="text-white/50 text-xs font-medium uppercase tracking-wider">{stat.label}</span>
                 </div>
                 <p className="text-2xl md:text-3xl font-heading font-black text-white">{stat.value}</p>
               </div>
@@ -317,8 +320,8 @@ export default function CoachDashboard() {
                   }`}
                 >
                   <tab.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-                  <span className="hidden sm:inline"><InlineEdit contentKey={`coach.tab.${tab.key}.label`} defaultValue={tab.label} as="span" /></span>
-                  <span className="sm:hidden"><InlineEdit contentKey={`coach.tab.${tab.key}.short`} defaultValue={tab.shortLabel} as="span" /></span>
+                  <span className="hidden sm:inline">{tab.label}</span>
+                  <span className="sm:hidden">{tab.shortLabel}</span>
                 </button>
               ))}
             </nav>
@@ -359,8 +362,8 @@ export default function CoachDashboard() {
               <>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <InlineEdit contentKey="coach.pageLayouts.title" defaultValue="Drill Page Layouts" as="h2" className="text-2xl font-heading font-bold" />
-                    <InlineEdit contentKey="coach.pageLayouts.desc" defaultValue="Pick a drill to create or edit its page layout with the block editor." as="p" className="text-muted-foreground mt-1 text-sm" />
+                    <h2 className="text-2xl font-heading font-bold">Drill Page Layouts</h2>
+                    <p className="text-muted-foreground mt-1 text-sm">Pick a drill to create or edit its page layout with the block editor.</p>
                   </div>
                   <div className="relative w-full sm:w-72">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -378,15 +381,15 @@ export default function CoachDashboard() {
                     .map((drill) => (
                       <div
                         key={drill.id}
-                        className="glass-card rounded-xl p-4 cursor-pointer transition-all duration-200 hover:bg-white/[0.08] hover:border-[#DC143C]/30 group"
+                        className="glass-card rounded-xl p-4 cursor-pointer transition-all duration-200 hover:bg-white/[0.08] hover:border-electric-blue/30 group"
                         onClick={() => setEditingLayoutDrill({ id: String(drill.id), name: drill.name })}
                       >
                         <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-[#DC143C]/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 group-hover:from-[#DC143C]/30 group-hover:to-purple-500/30 transition-all">
-                            <Edit3 className="h-5 w-5 text-[#DC143C]" />
+                          <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-electric-blue/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 group-hover:from-electric-blue/30 group-hover:to-purple-500/30 transition-all">
+                            <Edit3 className="h-5 w-5 text-electric-blue" />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="font-medium text-sm truncate group-hover:text-[#DC143C] transition-colors">{drill.name}</p>
+                            <p className="font-medium text-sm truncate group-hover:text-electric-blue transition-colors">{drill.name}</p>
                             <p className="text-xs text-muted-foreground">{drill.difficulty} · {drill.categories?.join(", ")}</p>
                           </div>
                           <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -415,10 +418,10 @@ export default function CoachDashboard() {
               <div className="glass-card rounded-xl overflow-hidden">
                 <div className="p-4 md:p-5 border-b border-white/[0.06]">
                   <h3 className="font-heading font-bold text-lg flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center">
-                      <Plus className="h-4 w-4 text-[#DC143C]" />
+                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-electric-blue/20 to-cyan-500/20 flex items-center justify-center">
+                      <Plus className="h-4 w-4 text-electric-blue" />
                     </div>
-                    <InlineEdit contentKey="coach.assign.title" defaultValue="Assign Drill" as="span" />
+                    Assign Drill
                   </h3>
                 </div>
                 <div className="p-4 md:p-5 space-y-4">
@@ -471,7 +474,7 @@ export default function CoachDashboard() {
                               key={drill.id}
                               onClick={() => setSelectedDrill(drill)}
                               className={`w-full text-left px-3 py-2.5 hover:bg-white/[0.06] transition-colors border-b border-white/[0.04] last:border-0 ${
-                                selectedDrill?.id === drill.id ? "bg-[#DC143C]/10 border-l-2 border-l-[#DC143C]" : ""
+                                selectedDrill?.id === drill.id ? "bg-electric-blue/10 border-l-2 border-l-electric-blue" : ""
                               }`}
                             >
                               <div className="font-medium text-sm">{drill.name}</div>
@@ -485,10 +488,10 @@ export default function CoachDashboard() {
 
                   {/* Selected Drill */}
                   {selectedDrill && (
-                    <div className="bg-gradient-to-br from-[#DC143C]/10 to-purple-500/10 border border-[#DC143C]/20 p-4 rounded-xl">
+                    <div className="bg-gradient-to-br from-electric-blue/10 to-purple-500/10 border border-electric-blue/20 p-4 rounded-xl">
                       <div className="font-semibold text-sm mb-2">{selectedDrill.name}</div>
                       <div className="flex gap-1.5 flex-wrap mb-3">
-                        <Badge variant="outline" className="text-[10px] border-[#DC143C]/30 text-[#DC143C]">{selectedDrill.difficulty}</Badge>
+                        <Badge variant="outline" className="text-[10px] border-electric-blue/30 text-electric-blue">{selectedDrill.difficulty}</Badge>
                         {selectedDrill.categories.map(cat => (
                           <Badge key={cat} variant="secondary" className="text-[10px]">{cat}</Badge>
                         ))}
@@ -496,7 +499,7 @@ export default function CoachDashboard() {
                       <Button
                         onClick={handleAssignDrill}
                         disabled={assignDrillMutation.isPending}
-                        className="w-full bg-[#DC143C] hover:bg-[#DC143C]/90 text-white text-sm"
+                        className="w-full bg-electric-blue hover:bg-electric-blue/90 text-white text-sm"
                         size="sm"
                       >
                         {assignDrillMutation.isPending ? "Assigning..." : "Assign Drill"}
@@ -542,7 +545,7 @@ export default function CoachDashboard() {
                         <div key={assignment.id} className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 hover:bg-white/[0.06] hover:border-white/[0.1] transition-all duration-200 group">
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-semibold text-base mb-2 truncate group-hover:text-[#DC143C] transition-colors">{assignment.drillName}</h4>
+                              <h4 className="font-semibold text-base mb-2 truncate group-hover:text-electric-blue transition-colors">{assignment.drillName}</h4>
                               <div className="flex items-center gap-2 flex-wrap">
                                 <Badge
                                   className={`text-[10px] ${
