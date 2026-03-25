@@ -234,20 +234,6 @@ export default function AthletePortal() {
     );
   }
 
-  // Check if user is an active athlete
-  if (user?.role === 'athlete' && !user?.isActiveClient) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
-        <div className="absolute top-1/3 left-1/3 w-80 h-80 bg-destructive/10 rounded-full blur-3xl" />
-        <div className="glass-card max-w-md w-full p-8 rounded-2xl animate-fade-in-up">
-          <div className="w-16 h-16 bg-destructive/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <AlertCircle className="w-8 h-8 text-destructive" />
-          </div>
-          <h2 className="text-xl font-bold text-center mb-2">Account Inactive</h2>
-          <p className="text-muted-foreground text-center mb-6">Your account has been deactivated. Please contact your coach.</p>
-          <Button onClick={() => logout()} variant="outline" className="w-full glass hover:bg-white/5 gap-2">
-            <LogOut className="h-4 w-4" />
-            Log Out
           </Button>
         </div>
       </div>
