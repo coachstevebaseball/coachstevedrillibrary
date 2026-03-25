@@ -7,24 +7,17 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import AdminDashboard from "./pages/AdminDashboard";
 import CoachDashboard from "./pages/CoachDashboard";
-import AthletePortal from "./pages/AthletePortal";
 import DrillDetail from "./pages/DrillDetail";
 import AcceptInvite from "./pages/AcceptInvite";
 import DrillGeneratorPage from "./pages/DrillGeneratorPage";
 import { ManageDrillVideos } from "./pages/ManageDrillVideos";
 import CreateDrillDetails from "./pages/CreateDrillDetails";
 import SubmissionsDashboard from "./pages/SubmissionsDashboard";
-import CoachMessaging from "./pages/CoachMessaging";
-import AthleteMessaging from "./pages/AthleteMessaging";
-import VerifyEmail from "./pages/VerifyEmail";
 import UserManagement from "./pages/UserManagement";
 import DrillsDirectory from "./pages/DrillsDirectory";
-import ParentDashboard from "./pages/ParentDashboard";
 import ActivityFeed from "./pages/ActivityFeed";
-import DrillComparison from "./pages/DrillComparison";
 import AthleteAssessment from "./pages/AthleteAssessment";
 import MyProfile from "./pages/MyProfile";
-import ProtectedRoute from "./components/ProtectedRoute";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
 import { PWAInstallBanner } from "./components/PWAInstallBanner";
@@ -51,8 +44,6 @@ function Router() {
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/drills"} component={DrillsDirectory} />
-      <Route path={"/accept-invite/:token"} component={AcceptInvite} />
-      <Route path={"/verify-email/:token"} component={VerifyEmail} />
       <Route path={"/drill/:id"} component={DrillDetail} />
       
       {/* Protected Routes - Admin Only */}
@@ -121,31 +112,7 @@ function Router() {
         </ProtectedRoute>
       </Route>
       
-      <Route path={"/athlete-messaging"}>
-        <ProtectedRoute requiredRole="athlete">
-          <AthleteMessaging />
-        </ProtectedRoute>
-      </Route>
-      
-      {/* Protected Routes - Parent Dashboard */}
-      <Route path={"/parent-dashboard"}>
-        <ProtectedRoute>
-          <ParentDashboard />
-        </ProtectedRoute>
-      </Route>
-      
-      {/* Protected Routes - Athlete Only */}
-      <Route path={"/athlete-portal"}>
-        <ProtectedRoute requiredRole="athlete">
-          <AthletePortal />
-        </ProtectedRoute>
-      </Route>
 
-      <Route path={"/my-profile"}>
-        <ProtectedRoute requiredRole="athlete">
-          <MyProfile />
-        </ProtectedRoute>
-      </Route>
       
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
