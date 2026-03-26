@@ -8,7 +8,6 @@ import Home from "./pages/Home";
 import AdminDashboard from "./pages/AdminDashboard";
 import CoachDashboard from "./pages/CoachDashboard";
 import DrillDetail from "./pages/DrillDetail";
-import AcceptInvite from "./pages/AcceptInvite";
 import DrillGeneratorPage from "./pages/DrillGeneratorPage";
 import { ManageDrillVideos } from "./pages/ManageDrillVideos";
 import CreateDrillDetails from "./pages/CreateDrillDetails";
@@ -17,8 +16,6 @@ import UserManagement from "./pages/UserManagement";
 import DrillsDirectory from "./pages/DrillsDirectory";
 import ActivityFeed from "./pages/ActivityFeed";
 import AthleteAssessment from "./pages/AthleteAssessment";
-import AthletePortal from "./pages/AthletePortal";
-import MyProfile from "./pages/MyProfile";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
 import { PWAInstallBanner } from "./components/PWAInstallBanner";
@@ -46,40 +43,42 @@ function registerServiceWorker() {
 function Router() {
   return (
     <Switch>
+      {/* Public Routes — No login required */}
       <Route path={"/"} component={Home} />
       <Route path={"/drills"} component={DrillsDirectory} />
       <Route path={"/drill/:id"} component={DrillDetail} />
       
-      {/* Protected Routes - Admin Only */}
+      {/* Admin-Only Protected Routes */}
       <Route path={"/admin"}>
         <ProtectedRoute requiredRole="admin">
           <AdminDashboard />
         </ProtectedRoute>
       </Route>
       
-      {/* Protected Routes - Coach Only */}
       <Route path={"/coach-dashboard"}>
-        <ProtectedRoute requiredRole="coach">
+        <ProtectedRoute requiredRole="admin">
           <CoachDashboard />
         </ProtectedRoute>
       </Route>
-           <Route path={"/drill-generator"}>
+
+      <Route path={"/drill-generator"}>
         <ProtectedRoute requiredRole="admin">
           <DrillGeneratorPage />
         </ProtectedRoute>
       </Route>
       
       <Route path={"/manage-drill-videos"}>
-        <ProtectedRoute requiredRole="coach">
+        <ProtectedRoute requiredRole="admin">
           <ManageDrillVideos />
         </ProtectedRoute>
       </Route>
       
       <Route path={"/create-drill-details"}>
-        <ProtectedRoute requiredRole="coach">
+        <ProtectedRoute requiredRole="admin">
           <CreateDrillDetails />
         </ProtectedRoute>
       </Route>
+
       <Route path={"/submissions"}>
         <ProtectedRoute requiredRole="admin">
           <SubmissionsDashboard />
@@ -115,9 +114,7 @@ function Router() {
           <AthleteAssessment />
         </ProtectedRoute>
       </Route>
-      
 
-      
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

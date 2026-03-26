@@ -1,9 +1,10 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, LogIn, LogOut, Shield, Users, Activity, ChevronRight, Sparkles, Settings, Clock, Zap, Target, TrendingUp } from "lucide-react";
+import { Search, LogOut, Shield, Users, ChevronRight, Sparkles, Settings, Clock, Zap, Target, TrendingUp } from "lucide-react";
 import { HomePageSkeleton } from "@/components/Skeleton";
 import { getLoginUrl } from "@/const";
+import { Settings2 } from "lucide-react";
 import { Link } from "wouter";
 import { ScrollRestoreLink } from "@/components/ScrollRestoreLink";
 import { useState, useMemo, useEffect, useRef } from "react";
@@ -135,32 +136,20 @@ export default function Home() {
             </div>
             
             <div className="flex items-center gap-2 flex-wrap">
-              {user ? (
+              {user?.role === 'admin' ? (
                 <>
-                  {user.role === 'admin' && (
-                    <>
-                      <Link href="/coach-dashboard">
-                        <Button variant="outline" size="sm" className="gap-1.5 text-xs glass border-white/10 hover:border-electric/30 hover:bg-electric/10 transition-all duration-300">
-                          <Users className="h-3.5 w-3.5" />
-                          <span className="hidden sm:inline">Dashboard</span>
-                        </Button>
-                      </Link>
-                      <Link href="/admin">
-                        <Button variant="outline" size="sm" className="gap-1.5 text-xs glass border-white/10 hover:border-electric/30 hover:bg-electric/10 transition-all duration-300">
-                          <Shield className="h-3.5 w-3.5" />
-                          <span className="hidden sm:inline">Admin</span>
-                        </Button>
-                      </Link>
-                    </>
-                  )}
-                  {user.role === 'athlete' && (
-                    <Link href="/athlete-portal">
-                      <Button size="sm" className="gap-1.5 text-xs btn-premium text-white">
-                        <Activity className="h-3.5 w-3.5" />
-                        My Drills
-                      </Button>
-                    </Link>
-                  )}
+                  <Link href="/coach-dashboard">
+                    <Button variant="outline" size="sm" className="gap-1.5 text-xs glass border-white/10 hover:border-electric/30 hover:bg-electric/10 transition-all duration-300">
+                      <Users className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">Dashboard</span>
+                    </Button>
+                  </Link>
+                  <Link href="/admin">
+                    <Button variant="outline" size="sm" className="gap-1.5 text-xs glass border-white/10 hover:border-electric/30 hover:bg-electric/10 transition-all duration-300">
+                      <Shield className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">Admin</span>
+                    </Button>
+                  </Link>
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -172,11 +161,11 @@ export default function Home() {
                   </Button>
                 </>
               ) : (
-                <a href={getLoginUrl()}>
-                  <Button size="sm" className="gap-1.5 text-xs btn-premium text-white">
-                    <LogIn className="h-3.5 w-3.5" />
-                    Login
-                  </Button>
+                /* Subtle admin login — only visible as a small icon */
+                <a href={getLoginUrl()} title="Admin Login">
+                  <button className="p-2 rounded-lg text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors duration-300">
+                    <Settings2 className="h-4 w-4" />
+                  </button>
                 </a>
               )}
             </div>
