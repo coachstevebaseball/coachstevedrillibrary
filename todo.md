@@ -1447,3 +1447,17 @@
 - [x] Display streaks, badges, and progress visually
 - [x] Reward athletes for completing drills with points/badges
 - [x] Write vitest tests for gamification system
+
+## Rollback + Re-apply Access Model (Preserve Drill Detail Features)
+- [x] Rollback to bc991281 to restore full drill detail functionality
+- [x] Re-apply access model changes: public drill library, no athlete portal, admin-only dashboards
+- [x] Remove auth gates from Home.tsx, DrillsDirectory.tsx, DrillDetail.tsx
+- [x] Remove athlete nav items (My Drills, athlete-portal links)
+- [x] Replace prominent Login/Logout with subtle admin gear icon for non-admins
+- [x] Change coach role checks to admin-only in DrillDetail.tsx
+- [x] Remove athlete Q&A sections from DrillDetail.tsx
+- [x] Remove athlete routes from App.tsx (AthletePortal, AcceptInvite, VerifyEmail, etc.)
+- [x] Verify drill detail page works (back button, video, content, scroll restoration)
+- [x] Verify admin routes still protected
+- [x] Run existing tests and confirm they pass
+- [x] Save checkpoint

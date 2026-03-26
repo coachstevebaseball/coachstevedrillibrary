@@ -99,57 +99,7 @@ export default function Home() {
 
   if (loading) return <HomePageSkeleton />;
 
-  // Unauthenticated view
-  if (!loading && !isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 relative overflow-hidden">
-        <div className="absolute inset-0 gradient-mesh" />
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-secondary/15 rounded-full blur-[100px] animate-pulse-glow" />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-electric/8 rounded-full blur-[80px] animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
-        
-        <div className="text-center max-w-lg relative z-10 animate-fade-in-up">
-          <div className="glass-card p-10 rounded-2xl">
-            <div className="w-16 h-16 mx-auto mb-6 rounded-xl bg-gradient-to-br from-secondary to-electric flex items-center justify-center shadow-lg">
-              <Zap className="h-8 w-8 text-white" />
-            </div>
-            <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4 text-gradient">Access Restricted</h1>
-            <h2 className="text-lg text-muted-foreground mb-8 leading-relaxed font-normal">
-              Exclusive baseball training drills for invited athletes. Log in to access the full drill library.
-            </h2>
-            <Button 
-              onClick={() => window.location.href = getLoginUrl()} 
-              size="lg"
-              className="btn-premium text-white font-semibold px-8 py-3 text-base"
-            >
-              <LogIn className="h-5 w-5 mr-2" />
-              Log In to Continue
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Inactive athlete view
-  if (!loading && isAuthenticated && user?.role === 'athlete' && !user?.isActiveClient) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 relative overflow-hidden">
-        <div className="absolute top-1/3 left-1/3 w-80 h-80 bg-destructive/10 rounded-full blur-[80px]" />
-        <div className="text-center max-w-md relative z-10 animate-fade-in-up">
-          <div className="glass-card p-10 rounded-2xl">
-            <h1 className="text-4xl font-heading font-bold mb-4">Account Inactive</h1>
-            <p className="text-lg text-muted-foreground mb-8">
-              Your account has been deactivated. Please contact your coach for more information.
-            </p>
-            <Button onClick={() => logout()} variant="outline" size="lg" className="hover-lift">
-              <LogOut className="h-5 w-5 mr-2" />
-              Log Out
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // No auth gates — drill library is fully public
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -187,32 +137,20 @@ export default function Home() {
             </div>
             
             <div className="flex items-center gap-2 flex-wrap">
-              {user ? (
+              {user?.role === 'admin' ? (
                 <>
-                  {user.role === 'admin' && (
-                    <>
-                      <Link href="/coach-dashboard">
-                        <Button variant="outline" size="sm" className="gap-1.5 text-xs glass border-white/10 hover:border-electric/30 hover:bg-electric/10 transition-all duration-300">
-                          <Users className="h-3.5 w-3.5" />
-                          <span className="hidden sm:inline">Dashboard</span>
-                        </Button>
-                      </Link>
-                      <Link href="/admin">
-                        <Button variant="outline" size="sm" className="gap-1.5 text-xs glass border-white/10 hover:border-electric/30 hover:bg-electric/10 transition-all duration-300">
-                          <Shield className="h-3.5 w-3.5" />
-                          <span className="hidden sm:inline">Admin</span>
-                        </Button>
-                      </Link>
-                    </>
-                  )}
-                  {user.role === 'athlete' && (
-                    <Link href="/athlete-portal">
-                      <Button size="sm" className="gap-1.5 text-xs btn-premium text-white">
-                        <Activity className="h-3.5 w-3.5" />
-                        My Drills
-                      </Button>
-                    </Link>
-                  )}
+                  <Link href="/coach-dashboard">
+                    <Button variant="outline" size="sm" className="gap-1.5 text-xs glass border-white/10 hover:border-electric/30 hover:bg-electric/10 transition-all duration-300">
+                      <Users className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">Dashboard</span>
+                    </Button>
+                  </Link>
+                  <Link href="/admin">
+                    <Button variant="outline" size="sm" className="gap-1.5 text-xs glass border-white/10 hover:border-electric/30 hover:bg-electric/10 transition-all duration-300">
+                      <Shield className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">Admin</span>
+                    </Button>
+                  </Link>
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -224,11 +162,10 @@ export default function Home() {
                   </Button>
                 </>
               ) : (
-                <a href={getLoginUrl()}>
-                  <Button size="sm" className="gap-1.5 text-xs btn-premium text-white">
-                    <LogIn className="h-3.5 w-3.5" />
-                    Login
-                  </Button>
+                <a href={getLoginUrl()} title="Admin Login">
+                  <button className="p-2 rounded-lg text-foreground/20 hover:text-foreground/50 transition-colors duration-300">
+                    <Settings className="h-4 w-4" />
+                  </button>
                 </a>
               )}
             </div>

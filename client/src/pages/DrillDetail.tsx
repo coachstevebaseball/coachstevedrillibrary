@@ -1277,8 +1277,8 @@ export default function DrillDetail() {
     }
   };
 
-  // Check if user has access (or if preview mode is enabled)
-  const hasAccess = PREVIEW_MODE || (user && (user.role === 'admin' || user.isActiveClient === 1));
+  // Drill content is fully public — no access check needed
+  const hasAccess = true;
 
   if (loading) {
     return (
@@ -1420,7 +1420,7 @@ export default function DrillDetail() {
         {pageLayout?.blocks && Array.isArray(pageLayout.blocks) && pageLayout.blocks.length > 0 ? (
           <div className="grid gap-6 md:gap-8">
             {/* Admin/Coach edit buttons */}
-            {user && (user.role === 'admin' || user.role === 'coach') && (
+            {user && (user.role === 'admin') && (
               <div className="flex gap-2 justify-end">
                 <button
                   onClick={() => setShowPageBuilder(true)}
@@ -1434,10 +1434,7 @@ export default function DrillDetail() {
             {/* Render the custom page layout */}
             <CustomDrillLayout blocks={pageLayout.blocks as any[]} />
             
-            {/* Q&A Section for Athletes - also show on custom layouts */}
-            {user?.role === 'athlete' && (
-              <DrillQAForm drillId={id || ''} drillName={drill?.name || ''} />
-            )}
+
           </div>
         ) : details ? (
           <div className="grid gap-6 md:gap-8">
@@ -1463,7 +1460,7 @@ export default function DrillDetail() {
                     </div>
                     Goal of Drill
                   </h3>
-                  {user && (user.role === 'admin' || user.role === 'coach') && (
+                  {user && (user.role === 'admin') && (
                     <div className="flex gap-2">
                       <button
                         onClick={() => setShowPageBuilder(true)}
@@ -1534,7 +1531,7 @@ export default function DrillDetail() {
                 Instructions
               </h2>
               <div className="glass-card rounded-xl p-4 md:p-6">
-                {user && (user.role === 'admin' || user.role === 'coach') ? (
+                {user && (user.role === 'admin') ? (
                   <InstructionsEditor
                     value={customInstructions}
                     onChange={setCustomInstructions}
@@ -1608,12 +1605,7 @@ export default function DrillDetail() {
         </div>
       )}
       
-      {/* Q&A Section for Athletes */}
-      {hasAccess && user?.role === 'athlete' && (
-        <div className="container max-w-4xl mx-auto mb-8">
-          <DrillQAForm drillId={id || ''} drillName={drill?.name || ''} />
-        </div>
-      )}
+
       
       {/* Edit Drill Details Modal */}
       <EditDrillDetailsModal
