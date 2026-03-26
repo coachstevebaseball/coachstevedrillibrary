@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";;
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink, ChevronDown, AlertCircle, TrendingUp, Lightbulb, Star } from "lucide-react";
+import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink, Lock, LogIn, ChevronDown, AlertCircle, TrendingUp, Lightbulb, Star } from "lucide-react";
 import { getCategoryConfig } from "@/lib/categoryColors";
-import { getLoginUrl } from "@/const";
+import { getLoginUrl, PREVIEW_MODE } from "@/const";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Link, useRoute } from "wouter";
 import { useState, useMemo, useEffect } from "react";
@@ -1277,8 +1277,8 @@ export default function DrillDetail() {
     }
   };
 
-  // All drill content is now fully public
-  const isAdmin = user?.role === 'admin';
+  // Check if user has access (or if preview mode is enabled)
+  const hasAccess = PREVIEW_MODE || (user && (user.role === 'admin' || user.isActiveClient === 1));
 
   if (loading) {
     return (
@@ -1313,7 +1313,45 @@ export default function DrillDetail() {
 
   return (
     <div className="min-h-screen bg-background pb-8 md:pb-12">
+      {/* Access Control Check */}
+      {!hasAccess && (
+        <div className="container py-12">
+          <Card className="max-w-2xl mx-auto border-2">
+            <CardHeader className="text-center">
+              <div className="mx-auto bg-muted h-16 w-16 rounded-full flex items-center justify-center mb-4">
+                <Lock className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <CardTitle className="text-2xl">Client Access Required</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center space-y-4">
+              <p className="text-muted-foreground">
+                This drill content is only available to active clients. Please log in with an authorized account to view the full drill details.
+              </p>
+              {!user ? (
+                <a href={getLoginUrl()}>
+                  <Button size="lg" className="gap-2">
+                    <LogIn className="h-5 w-5" />
+                    Login to Access
+                  </Button>
+                </a>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    Your account does not have active client access. Please contact the administrator.
+                  </p>
+                  <Link href="/">
+                    <Button variant="outline">Return to Directory</Button>
+                  </Link>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {/* Header */}
+      {hasAccess && (
+      <>
       <header className="relative overflow-hidden mb-6 md:mb-8">
         <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.25_0.05_250)] via-[oklch(0.20_0.04_260)] to-[oklch(0.15_0.06_280)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.45_0.15_250/0.15),transparent_60%)]" />
@@ -1382,7 +1420,7 @@ export default function DrillDetail() {
         {pageLayout?.blocks && Array.isArray(pageLayout.blocks) && pageLayout.blocks.length > 0 ? (
           <div className="grid gap-6 md:gap-8">
             {/* Admin/Coach edit buttons */}
-            {user?.role === 'admin' && (
+            {user && (user.role === 'admin' || user.role === 'coach') && (
               <div className="flex gap-2 justify-end">
                 <button
                   onClick={() => setShowPageBuilder(true)}
@@ -1396,7 +1434,10 @@ export default function DrillDetail() {
             {/* Render the custom page layout */}
             <CustomDrillLayout blocks={pageLayout.blocks as any[]} />
             
-
+            {/* Q&A Section for Athletes - also show on custom layouts */}
+            {user?.role === 'athlete' && (
+              <DrillQAForm drillId={id || ''} drillName={drill?.name || ''} />
+            )}
           </div>
         ) : details ? (
           <div className="grid gap-6 md:gap-8">
@@ -1422,7 +1463,7 @@ export default function DrillDetail() {
                     </div>
                     Goal of Drill
                   </h3>
-                  {user?.role === 'admin' && (
+                  {user && (user.role === 'admin' || user.role === 'coach') && (
                     <div className="flex gap-2">
                       <button
                         onClick={() => setShowPageBuilder(true)}
@@ -1493,7 +1534,7 @@ export default function DrillDetail() {
                 Instructions
               </h2>
               <div className="glass-card rounded-xl p-4 md:p-6">
-                {user?.role === 'admin' ? (
+                {user && (user.role === 'admin' || user.role === 'coach') ? (
                   <InstructionsEditor
                     value={customInstructions}
                     onChange={setCustomInstructions}
@@ -1530,6 +1571,8 @@ export default function DrillDetail() {
           </div>
         )}
       </div>
+      </>
+      )}
       
       {/* Delete Confirmation Dialog */}
       {showDeleteConfirm && (
@@ -1565,7 +1608,12 @@ export default function DrillDetail() {
         </div>
       )}
       
-
+      {/* Q&A Section for Athletes */}
+      {hasAccess && user?.role === 'athlete' && (
+        <div className="container max-w-4xl mx-auto mb-8">
+          <DrillQAForm drillId={id || ''} drillName={drill?.name || ''} />
+        </div>
+      )}
       
       {/* Edit Drill Details Modal */}
       <EditDrillDetailsModal
