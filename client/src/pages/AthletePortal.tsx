@@ -234,12 +234,6 @@ export default function AthletePortal() {
     );
   }
 
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header with glassmorphism */}

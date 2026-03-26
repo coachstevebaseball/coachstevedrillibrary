@@ -17,11 +17,15 @@ import UserManagement from "./pages/UserManagement";
 import DrillsDirectory from "./pages/DrillsDirectory";
 import ActivityFeed from "./pages/ActivityFeed";
 import AthleteAssessment from "./pages/AthleteAssessment";
+import AthletePortal from "./pages/AthletePortal";
 import MyProfile from "./pages/MyProfile";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
 import { PWAInstallBanner } from "./components/PWAInstallBanner";
 import { useEffect } from "react";
+import ProtectedRoute from "./components/ProtectedRoute";
+import DrillComparison from "./pages/DrillComparison";
+import CoachMessaging from "./pages/CoachMessaging";
 
 // Register service worker
 function registerServiceWorker() {

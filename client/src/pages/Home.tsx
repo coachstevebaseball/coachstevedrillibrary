@@ -99,17 +99,6 @@ export default function Home() {
 
   if (loading) return <HomePageSkeleton />;
 
-          </div>
-        </div>
-      </div>
-    );
-  }
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* ===== HERO SECTION ===== */}
