@@ -34,6 +34,28 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+
+  // ── Iframe Embedding Support ──────────────────────────────────
+  // Allow the site to be embedded in iframes on any external website.
+  // This middleware runs before all other routes so every response
+  // carries the correct headers.
+  app.use((_req, res, next) => {
+    // Remove any default X-Frame-Options that might block embedding
+    res.removeHeader("X-Frame-Options");
+    // Explicitly allow framing from any origin
+    res.setHeader("Content-Security-Policy", "frame-ancestors *");
+    // Allow cross-origin requests for embedded assets
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    // Handle preflight OPTIONS requests
+    if (_req.method === "OPTIONS") {
+      return res.status(204).end();
+    }
+    next();
+  });
+
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));

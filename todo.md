@@ -1461,3 +1461,12 @@
 - [x] Verify admin routes still protected
 - [x] Run existing tests and confirm they pass
 - [x] Save checkpoint
+
+## Iframe Embedding Support
+- [x] Remove X-Frame-Options DENY/SAMEORIGIN headers from server
+- [x] Update Content-Security-Policy to allow frame-ancestors from any origin
+- [x] Update cookie SameSite policy for cross-origin iframe context (already set to SameSite=none, Secure=true)
+- [x] Remove any client-side frame-busting JavaScript (none found)
+- [x] Add CORS headers for embedded asset loading
+- [x] Test iframe embedding on external page
+- [x] Save checkpoint
