@@ -22,6 +22,8 @@ import DrillsDirectory from "./pages/DrillsDirectory";
 // ParentDashboard removed — no athlete accounts
 import ActivityFeed from "./pages/ActivityFeed";
 import DrillComparison from "./pages/DrillComparison";
+import EmbedDrillLibrary from "./pages/EmbedDrillLibrary";
+import EmbedDrillDetail from "./pages/EmbedDrillDetail";
 import AthleteAssessment from "./pages/AthleteAssessment";
 // MyProfile removed — no athlete accounts
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -51,6 +53,10 @@ function Router() {
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/drills"} component={DrillsDirectory} />
+
+      {/* Embed Routes — streamlined views for iframe embedding */}
+      <Route path={"/embed"} component={EmbedDrillLibrary} />
+      <Route path={"/embed/drill/:id"} component={EmbedDrillDetail} />
 
       <Route path={"/drill/:id"} component={DrillDetail} />
       

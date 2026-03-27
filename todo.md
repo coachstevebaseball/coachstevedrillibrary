@@ -1470,3 +1470,10 @@
 - [x] Add CORS headers for embedded asset loading
 - [x] Test iframe embedding on external page
 - [x] Save checkpoint
+
+## Embed Route (/embed)
+- [x] Create EmbedDrillLibrary page — streamlined drill grid without header/footer
+- [x] Create EmbedDrillDetail page — streamlined drill detail without header/footer
+- [x] Register /embed and /embed/drill/:slug routes in App.tsx
+- [x] Test embed route in browser
+- [x] Save checkpoint
