@@ -7,25 +7,23 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import AdminDashboard from "./pages/AdminDashboard";
 import CoachDashboard from "./pages/CoachDashboard";
-// AthletePortal removed — drill library is now public
+import AthletePortal from "./pages/AthletePortal";
 import DrillDetail from "./pages/DrillDetail";
-// AcceptInvite removed — no athlete onboarding
+import AcceptInvite from "./pages/AcceptInvite";
 import DrillGeneratorPage from "./pages/DrillGeneratorPage";
 import { ManageDrillVideos } from "./pages/ManageDrillVideos";
 import CreateDrillDetails from "./pages/CreateDrillDetails";
 import SubmissionsDashboard from "./pages/SubmissionsDashboard";
 import CoachMessaging from "./pages/CoachMessaging";
-// AthleteMessaging removed — no athlete portal
-// VerifyEmail removed — no athlete accounts
+import AthleteMessaging from "./pages/AthleteMessaging";
+import VerifyEmail from "./pages/VerifyEmail";
 import UserManagement from "./pages/UserManagement";
 import DrillsDirectory from "./pages/DrillsDirectory";
-// ParentDashboard removed — no athlete accounts
+import ParentDashboard from "./pages/ParentDashboard";
 import ActivityFeed from "./pages/ActivityFeed";
 import DrillComparison from "./pages/DrillComparison";
-import EmbedDrillLibrary from "./pages/EmbedDrillLibrary";
-import EmbedDrillDetail from "./pages/EmbedDrillDetail";
 import AthleteAssessment from "./pages/AthleteAssessment";
-// MyProfile removed — no athlete accounts
+import MyProfile from "./pages/MyProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
@@ -53,11 +51,8 @@ function Router() {
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/drills"} component={DrillsDirectory} />
-
-      {/* Embed Routes — streamlined views for iframe embedding */}
-      <Route path={"/embed"} component={EmbedDrillLibrary} />
-      <Route path={"/embed/drill/:id"} component={EmbedDrillDetail} />
-
+      <Route path={"/accept-invite/:token"} component={AcceptInvite} />
+      <Route path={"/verify-email/:token"} component={VerifyEmail} />
       <Route path={"/drill/:id"} component={DrillDetail} />
       
       {/* Protected Routes - Admin Only */}
@@ -67,9 +62,9 @@ function Router() {
         </ProtectedRoute>
       </Route>
       
-      {/* Protected Routes - Coach Dashboard (Admin Only) */}
+      {/* Protected Routes - Coach Only */}
       <Route path={"/coach-dashboard"}>
-        <ProtectedRoute requiredRole="admin">
+        <ProtectedRoute requiredRole="coach">
           <CoachDashboard />
         </ProtectedRoute>
       </Route>
@@ -80,13 +75,13 @@ function Router() {
       </Route>
       
       <Route path={"/manage-drill-videos"}>
-        <ProtectedRoute requiredRole="admin">
+        <ProtectedRoute requiredRole="coach">
           <ManageDrillVideos />
         </ProtectedRoute>
       </Route>
       
       <Route path={"/create-drill-details"}>
-        <ProtectedRoute requiredRole="admin">
+        <ProtectedRoute requiredRole="coach">
           <CreateDrillDetails />
         </ProtectedRoute>
       </Route>
@@ -126,7 +121,31 @@ function Router() {
         </ProtectedRoute>
       </Route>
       
+      <Route path={"/athlete-messaging"}>
+        <ProtectedRoute requiredRole="athlete">
+          <AthleteMessaging />
+        </ProtectedRoute>
+      </Route>
+      
+      {/* Protected Routes - Parent Dashboard */}
+      <Route path={"/parent-dashboard"}>
+        <ProtectedRoute>
+          <ParentDashboard />
+        </ProtectedRoute>
+      </Route>
+      
+      {/* Protected Routes - Athlete Only */}
+      <Route path={"/athlete-portal"}>
+        <ProtectedRoute requiredRole="athlete">
+          <AthletePortal />
+        </ProtectedRoute>
+      </Route>
 
+      <Route path={"/my-profile"}>
+        <ProtectedRoute requiredRole="athlete">
+          <MyProfile />
+        </ProtectedRoute>
+      </Route>
       
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

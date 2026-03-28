@@ -20,10 +20,6 @@
     "description": "Position the tee at three different angles relative to the hitter's stance to practice directional hitting. Swing at balls set up for pull-side (90), up the middle (even), and opposite field (45) to learn how the contact point changes for each. This teaches the hitter how to let the ball travel or meet it out front based on location."
   },
   {
-    "drillName": "Advanced Batting Practice",
-    "description": "Incorporate game-like scenarios such as situational counts, runners on base, and varying pitch speeds during a standard cage session. The hitter must verbalize the situation before each pitch to train the mental aspect of the game alongside physical execution. It bridges the gap between mechanical practice and live-game performance."
-  },
-  {
     "drillName": "Angle Flips",
     "description": "The coach sits at a 45-degree angle to the hitter and flips balls toward the plate, forcing the hitter to stay \"inside\" the ball to drive it back toward the coach. This prevents \"pulling off\" the ball and encourages a path that stays through the hitting zone for as long as possible."
   },
@@ -64,10 +60,6 @@
     "description": "Hold the bat horizontally against the small of the back, hooked into the elbows, and practice dry rotations toward a tee. This drill isolates the lower body and core, showing the hitter how the hips should lead the swing without relying on the arms to create movement."
   },
   {
-    "drillName": "Beginner's Batting Practice",
-    "description": "Focus on high-volume, easy-to-hit tosses directly over the heart of the plate to build confidence and muscle memory. The emphasis is on a consistent starting stance and a full, balanced follow-through. It is the foundational step for establishing a \"feel\" for the barrel."
-  },
-  {
     "drillName": "Behind the Hitter Toss 1-2-3",
     "description": "Combine the 1-2-3 rhythm drill with a toss coming from behind the hitter's back hip. The hitter counts \"one, two\" as they load, and the coach tosses on \"three,\" forcing the hitter to react to a ball they didn't see until the last moment. This builds elite reaction time and hand speed."
   },
@@ -90,10 +82,6 @@
   {
     "drillName": "Color Front Toss",
     "description": "Use balls with different colored dots or seams and have the hitter call out the color before making contact. This forces the eyes to focus intensely on the ball rather than just \"zoning out,\" which significantly improves tracking and contact quality."
-  },
-  {
-    "drillName": "Cup Ball Game",
-    "description": "Place a small plastic cup on the ground and try to hit \"fungo\" style or off a toss so the ball lands in or hits the cup. This gamified drill improves barrel accuracy and \"feel,\" making the hitter more conscious of exactly where they are placing the bat on the ball."
   },
   {
     "drillName": "Decline Swings",
@@ -236,18 +224,6 @@
     "description": "The coach uses a \"long\" arm circle and a slow release to simulate a curveball or change-up. The hitter must recognize the \"slower\" motion and hold their \"hinge\" longer, teaching them how to not \"over-commit\" to the fastball."
   },
   {
-    "drillName": "Offensive Stations - Tee and Live Hitting",
-    "description": "Divide the team into groups where one group works on \"technical tee drills\" while the other faces a \"live pitcher.\" This creates a high-volume environment where players can immediately apply the \"feels\" from the tee to a live-ball situation."
-  },
-  {
-    "drillName": "Offensive Stations – Cage Work and Baserunning",
-    "description": "Incorporate \"baserunning\" into the hitting rotation; after a hitter finishes their \"round\" in the cage, they must sprint to \"first base\" (a cone) and take a \"turn.\" This builds the habit of being a \"complete\" offensive player who is always thinking about the next 90 feet."
-  },
-  {
-    "drillName": "One Cut Competition",
-    "description": "Two hitters compete to see who can hit the highest \"exit velocity\" or the furthest \"line drive\" on a single swing. This \"gamification\" introduces \"pressure\" and \"intent\" into the practice, which is often missing during standard \"rep-heavy\" drills."
-  },
-  {
     "drillName": "One-Handed Hitting",
     "description": "Alternate between \"Top Hand Only\" and \"Bottom Hand Only\" swings using a short bat. This isolates the specific roles of each hand (bottom hand pulls, top hand directs/powers) and identifies which hand might be \"weaker\" or \"dominant\" in the swing."
   },
@@ -358,10 +334,6 @@
   {
     "drillName": "Weighted Ball Front Toss",
     "description": "Toss \"heavy\" sand-filled balls (like Plyo balls) to the hitter. Because the balls are \"heavy,\" the hitter must \"hit through\" the ball with their \"entire body\"; weak \"arm swings\" will result in the ball simply \"dropping\" to the ground."
-  },
-  {
-    "drillName": "Whiffle Ball Toss",
-    "description": "Use \"whiffle balls\" or \"golf-ball sized\" plastic balls to improve \"tracking.\" The smaller the target, the more the \"eyes\" have to work, and the more \"precise\" the \"barrel\" must be at the \"point of contact.\""
   },
   {
     "drillName": "Wrist Strength Tee",

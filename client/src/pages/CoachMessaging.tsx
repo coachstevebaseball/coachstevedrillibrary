@@ -350,9 +350,9 @@ export default function CoachMessaging() {
                       <p className="text-sm font-semibold mb-2">Your Responses</p>
                       <div className="space-y-2 max-h-32 overflow-y-auto">
                         {selectedQuestion.answers.map((answer: any) => (
-                          <div key={answer.id} className="p-2 bg-blue-50 rounded border border-blue-200">
-                            <p className="text-xs text-blue-900">{answer.answer}</p>
-                            <p className="text-xs text-blue-700 mt-1">
+                          <div key={answer.id} className="p-2 bg-red-50 rounded border border-red-200">
+                            <p className="text-xs text-red-900">{answer.answer}</p>
+                            <p className="text-xs text-red-700 mt-1">
                               {new Date(answer.createdAt).toLocaleString()}
                             </p>
                           </div>

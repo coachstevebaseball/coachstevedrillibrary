@@ -211,6 +211,22 @@ Generate the progress report in your voice. Return it as structured JSON.`;
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       const { id, ...data } = input;
+
+      // If reportContent changed, regenerate the HTML so the email stays in sync
+      if (data.reportContent) {
+        const report = await sessionNotesDb.getProgressReportById(id);
+        if (report) {
+          const athleteData = await sessionNotesDb.getSessionNotesWithAthleteName(report.athleteId);
+          const sessionNote = report.sessionNoteId ? await sessionNotesDb.getSessionNoteById(report.sessionNoteId) : null;
+          data.reportHtml = generateReportHtml({
+            athleteName: athleteData.athleteName,
+            sessionDate: sessionNote ? new Date(sessionNote.sessionDate) : new Date(),
+            sessionNumber: sessionNote?.sessionNumber ?? 0,
+            reportContent: data.reportContent as any,
+          });
+        }
+      }
+
       return sessionNotesDb.updateProgressReport(id, data as any);
     }),
 
@@ -240,15 +256,28 @@ Generate the progress report in your voice. Return it as structured JSON.`;
         });
       }
 
-      // Get athlete name for subject line
+      // Get athlete name and session note for regenerating HTML
       const athleteData = await sessionNotesDb.getSessionNotesWithAthleteName(report.athleteId);
+      const sessionNote = report.sessionNoteId ? await sessionNotesDb.getSessionNoteById(report.sessionNoteId) : null;
+
+      // Regenerate HTML from the latest edited reportContent
+      const rc = report.reportContent as any;
+      const freshHtml = generateReportHtml({
+        athleteName: athleteData.athleteName,
+        sessionDate: sessionNote ? new Date(sessionNote.sessionDate) : new Date(),
+        sessionNumber: sessionNote?.sessionNumber ?? 0,
+        reportContent: rc,
+      });
+
+      // Persist the regenerated HTML
+      await sessionNotesDb.updateProgressReport(report.id, { reportHtml: freshHtml } as any);
 
       try {
         const result = await resend.emails.send({
           from: "coach@coachstevemobilecoach.com",
           to: input.parentEmail,
           subject: `${athleteData.athleteName} — ${report.title}`,
-          html: report.reportHtml as string,
+          html: freshHtml,
         });
 
         if (result.error) {
@@ -297,6 +326,11 @@ function generateReportHtml(params: {
     homeworkAndNextSteps: string;
     playerNote: string;
     signOff: string;
+    sectionHeadings?: {
+      strengths?: string;
+      areasForImprovement?: string;
+      homeworkAndNextSteps?: string;
+    };
   };
 }): string {
   const { athleteName, sessionDate, sessionNumber, reportContent } = params;
@@ -307,65 +341,142 @@ function generateReportHtml(params: {
     year: "numeric",
   });
 
+  const headings = {
+    strengths: reportContent.sectionHeadings?.strengths || "What Stood Out",
+    areasForImprovement: reportContent.sectionHeadings?.areasForImprovement || "What We're Building On",
+    homeworkAndNextSteps: reportContent.sectionHeadings?.homeworkAndNextSteps || "Next Steps & Homework",
+  };
+
   return `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.7; color: #1a1a2e; margin: 0; padding: 0; background-color: #f0f2f5; }
-    .wrapper { max-width: 640px; margin: 0 auto; padding: 20px; }
-    .header { background: linear-gradient(135deg, #0a1628 0%, #1a2744 100%); color: white; padding: 32px; border-radius: 12px 12px 0 0; text-align: center; }
-    .header h1 { margin: 0 0 4px 0; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
-    .header .tagline { font-size: 13px; color: #60a5fa; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
-    .meta { background: #1e3a5f; color: #94a3b8; padding: 14px 32px; font-size: 13px; display: flex; justify-content: space-between; }
-    .meta span { display: inline-block; }
-    .content { background: white; padding: 32px; border: 1px solid #e2e8f0; border-top: none; }
-    .content p { margin: 0 0 16px 0; font-size: 15px; color: #334155; }
-    .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #64748b; margin: 24px 0 8px 0; padding-bottom: 6px; border-bottom: 2px solid #e2e8f0; }
-    .section-label.strengths { color: #16a34a; border-color: #bbf7d0; }
-    .section-label.improvement { color: #d97706; border-color: #fde68a; }
-    .section-label.homework { color: #2563eb; border-color: #bfdbfe; }
-    .player-note { background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 24px 0; }
-    .player-note p { color: #1e40af; font-style: italic; margin: 0; }
-    .sign-off { margin-top: 24px; font-weight: 600; color: #0a1628; font-size: 15px; }
-    .footer { background: #0a1628; color: #94a3b8; padding: 24px 32px; border-radius: 0 0 12px 12px; text-align: center; font-size: 12px; }
-    .footer .brand { color: #60a5fa; font-weight: 600; font-size: 14px; margin-bottom: 4px; }
-    .footer .tagline-footer { color: #64748b; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.7; color: #1e293b; margin: 0; padding: 0; background-color: #f1f5f9; -webkit-font-smoothing: antialiased; }
+    .wrapper { max-width: 620px; margin: 0 auto; padding: 32px 16px; }
+    .email-card { border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 10px 15px -3px rgba(0,0,0,0.05); }
+
+    /* Header */
+    .header { background: linear-gradient(145deg, #0b1a2e 0%, #122240 40%, #1a3055 100%); color: white; padding: 40px 32px 36px; text-align: center; position: relative; }
+    .header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(96,165,250,0.3), transparent); }
+    .header-logo { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .header-subtitle { font-size: 10px; color: rgba(96,165,250,0.9); font-weight: 600; letter-spacing: 3px; text-transform: uppercase; }
+
+    /* Meta */
+    .meta-bar { background: linear-gradient(90deg, #15304f, #1a3a5c); padding: 14px 32px; display: flex; justify-content: space-between; align-items: center; }
+    .meta-bar span { font-size: 12px; color: #94a3b8; font-weight: 500; }
+    .meta-bar .athlete-name { color: #cbd5e1; font-weight: 600; }
+
+    /* Content */
+    .content { background: #ffffff; padding: 36px 32px 28px; }
+    .content p { margin: 0 0 18px 0; font-size: 15px; color: #374151; line-height: 1.75; }
+
+    /* Section blocks */
+    .section { margin: 28px 0; }
+    .section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .section-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .section-dot.green { background: #10b981; }
+    .section-dot.amber { background: #f59e0b; }
+    .section-dot.blue { background: #3b82f6; }
+    .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+    .section-label.green { color: #059669; }
+    .section-label.amber { color: #d97706; }
+    .section-label.blue { color: #2563eb; }
+    .section-body { padding-left: 14px; border-left: 2px solid #e5e7eb; }
+    .section-body.green { border-color: #d1fae5; }
+    .section-body.amber { border-color: #fef3c7; }
+    .section-body.blue { border-color: #dbeafe; }
+    .section-body p { margin: 0; color: #374151; font-size: 15px; line-height: 1.75; }
+
+    /* Player note */
+    .player-note { background: linear-gradient(135deg, #eff6ff, #f0f9ff); border-left: 3px solid #3b82f6; padding: 20px 24px; border-radius: 0 12px 12px 0; margin: 32px 0 24px; }
+    .player-note p { color: #1e40af; font-style: italic; margin: 0; font-size: 15px; line-height: 1.7; }
+
+    /* Sign-off */
+    .sign-off-section { margin-top: 28px; padding-top: 20px; border-top: 1px solid #f1f5f9; }
+    .sign-off-name { font-weight: 700; color: #0f172a; font-size: 15px; margin-bottom: 4px; }
+    .sign-off-desc { font-size: 12px; color: #64748b; line-height: 1.5; font-style: italic; }
+
+    /* Footer */
+    .footer { background: linear-gradient(145deg, #0b1a2e, #122240); text-align: center; padding: 28px 32px; }
+    .footer-brand { color: #60a5fa; font-weight: 700; font-size: 14px; letter-spacing: 0.3px; margin-bottom: 4px; }
+    .footer-tagline { color: #475569; font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 500; }
+    .footer-divider { width: 40px; height: 2px; background: linear-gradient(90deg, transparent, #60a5fa, transparent); margin: 12px auto; }
+
+    @media (max-width: 480px) {
+      .wrapper { padding: 16px 8px; }
+      .header { padding: 28px 20px 24px; }
+      .meta-bar { padding: 12px 20px; flex-direction: column; gap: 4px; text-align: center; }
+      .content { padding: 24px 20px 20px; }
+      .footer { padding: 20px; }
+    }
   </style>
 </head>
 <body>
   <div class="wrapper">
-    <div class="header">
-      <h1>Coach Steve</h1>
-      <div class="tagline">Elite Instruction. Measurable Growth.</div>
-    </div>
-    <div class="meta">
-      <span>${athleteName} — Session #${sessionNumber}</span>
-      <span>${dateStr}</span>
-    </div>
-    <div class="content">
-      <p>${reportContent.greeting}</p>
-      <p>${reportContent.sessionSummary}</p>
-
-      <div class="section-label strengths">What Stood Out</div>
-      <p>${reportContent.strengths}</p>
-
-      <div class="section-label improvement">What We're Building On</div>
-      <p>${reportContent.areasForImprovement}</p>
-
-      <div class="section-label homework">Next Steps & Homework</div>
-      <p>${reportContent.homeworkAndNextSteps}</p>
-
-      <div class="player-note">
-        <p>${reportContent.playerNote}</p>
+    <div class="email-card">
+      <div class="header">
+        <div class="header-logo">Coach Steve</div>
+        <div class="header-subtitle">Division 1 All-American &bull; Elite Player Development</div>
       </div>
 
-      <div class="sign-off">${reportContent.signOff}</div>
-    </div>
-    <div class="footer">
-      <div class="brand">Coach Steve Goldstein</div>
-      <div class="tagline-footer">Elite Instruction. Measurable Growth.</div>
+      <div class="meta-bar">
+        <span><span class="athlete-name">${athleteName}</span> &mdash; Session #${sessionNumber}</span>
+        <span>${dateStr}</span>
+      </div>
+
+      <div class="content">
+        <p>${reportContent.greeting}</p>
+        <p>${reportContent.sessionSummary}</p>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="section-dot green"></div>
+            <div class="section-label green">${headings.strengths}</div>
+          </div>
+          <div class="section-body green">
+            <p>${reportContent.strengths}</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="section-dot amber"></div>
+            <div class="section-label amber">${headings.areasForImprovement}</div>
+          </div>
+          <div class="section-body amber">
+            <p>${reportContent.areasForImprovement}</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="section-dot blue"></div>
+            <div class="section-label blue">${headings.homeworkAndNextSteps}</div>
+          </div>
+          <div class="section-body blue">
+            <p>${reportContent.homeworkAndNextSteps}</p>
+          </div>
+        </div>
+
+        <div class="player-note">
+          <p>${reportContent.playerNote}</p>
+        </div>
+
+        <div class="sign-off-section">
+          <div class="sign-off-name">${reportContent.signOff}</div>
+          <div class="sign-off-desc">Elite private hitting instruction in Westbury, NY.<br>Building powerful, confident players through professional mechanics and mental preparation.</div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="footer-brand">Coach Steve Goldstein</div>
+        <div class="footer-divider"></div>
+        <div class="footer-tagline">Elite Instruction &bull; Measurable Growth</div>
+      </div>
     </div>
   </div>
 </body>

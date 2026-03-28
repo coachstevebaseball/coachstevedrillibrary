@@ -18,7 +18,7 @@ function Switch({
         // Disabled styles
         "disabled:cursor-not-allowed disabled:opacity-50",
         // Checked state - bright electric blue
-        "data-[state=checked]:bg-[#3b82f6] data-[state=checked]:border-[#3b82f6]",
+        "data-[state=checked]:bg-[#DC143C] data-[state=checked]:border-[#DC143C]",
         // Unchecked state - more visible gray with border
         "data-[state=unchecked]:bg-[#374151] data-[state=unchecked]:border-[#4b5563]",
         className

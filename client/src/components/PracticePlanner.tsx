@@ -33,6 +33,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import { useAllDrills, type UnifiedDrill } from "@/hooks/useAllDrills";
 import { toast } from "sonner";
+import { InlineEdit } from "./InlineEdit";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -70,7 +71,7 @@ const FOCUS_AREAS = [
 ];
 
 const BLOCK_TYPE_CONFIG = {
-  drill: { icon: Target, label: "Drill", color: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/30", accent: "#3b82f6", gradient: "from-blue-500/20 to-blue-600/5" },
+  drill: { icon: Target, label: "Drill", color: "text-[#E8425A]", bg: "bg-[#DC143C]/10", border: "border-[#DC143C]/30", accent: "#DC143C", gradient: "from-[#DC143C]/20 to-[#B91030]/5" },
   warmup: { icon: Flame, label: "Warm-Up", color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/30", accent: "#f59e0b", gradient: "from-amber-500/20 to-amber-600/5" },
   cooldown: { icon: Snowflake, label: "Cool-Down", color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30", accent: "#10b981", gradient: "from-emerald-500/20 to-emerald-600/5" },
   break: { icon: Coffee, label: "Break", color: "text-gray-400", bg: "bg-gray-500/10", border: "border-gray-500/30", accent: "#6b7280", gradient: "from-gray-500/20 to-gray-600/5" },
@@ -172,7 +173,7 @@ export default function PracticePlanner() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-heading font-bold text-white">Practice Plans</h2>
+          <InlineEdit contentKey="coach.planner.title" defaultValue="Practice Plans" as="h2" className="text-2xl font-heading font-bold text-white" />
           <p className="text-sm text-white/40 mt-1">{plans?.length || 0} plans created</p>
         </div>
         <div className="flex items-center gap-2">
@@ -193,8 +194,8 @@ export default function PracticePlanner() {
               <CalendarDays className="h-4 w-4" />
             </button>
           </div>
-          <Button onClick={() => setView("create")} className="bg-blue-600 hover:bg-blue-700 text-white gap-2 shadow-lg shadow-blue-600/20">
-            <Plus className="h-4 w-4" /> New Plan
+          <Button onClick={() => setView("create")} className="bg-[#DC143C] hover:bg-[#B91030] text-white gap-2 shadow-lg shadow-[#DC143C]/20">
+            <Plus className="h-4 w-4" /> <InlineEdit contentKey="coach.planner.newPlan" defaultValue="New Plan" as="span" />
           </Button>
         </div>
       </div>
@@ -217,7 +218,7 @@ export default function PracticePlanner() {
               onClick={() => setStatusFilter(s)}
               className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
                 statusFilter === s
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+                  ? "bg-[#DC143C] text-white shadow-lg shadow-[#DC143C]/20"
                   : "bg-white/[0.04] text-white/50 hover:text-white/80 hover:bg-white/[0.08]"
               }`}
             >
@@ -246,7 +247,7 @@ export default function PracticePlanner() {
               : "Try adjusting your search or filter criteria."}
           </p>
           {plans?.length === 0 && (
-            <Button onClick={() => setView("create")} className="bg-blue-600 hover:bg-blue-700 text-white gap-2">
+            <Button onClick={() => setView("create")} className="bg-[#DC143C] hover:bg-[#B91030] text-white gap-2">
               <Plus className="h-4 w-4" /> Create First Plan
             </Button>
           )}
@@ -286,7 +287,7 @@ function PlanCard({ plan, onView, onEdit, onStartSession, onDuplicate, onDelete,
   const focusAreas = (plan.focusAreas as string[] | null) || [];
   const statusColors: Record<string, string> = {
     draft: "bg-gray-500/20 text-gray-400 border-gray-500/30",
-    scheduled: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+    scheduled: "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
     completed: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
     cancelled: "bg-red-500/20 text-red-400 border-red-500/30",
   };
@@ -298,13 +299,13 @@ function PlanCard({ plan, onView, onEdit, onStartSession, onDuplicate, onDelete,
     >
       <CardContent className="p-0">
         {/* Top accent bar */}
-        <div className="h-1 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 opacity-60 group-hover:opacity-100 transition-opacity" />
+        <div className="h-1 bg-gradient-to-r from-[#DC143C] via-[#DC143C] to-[#B91030] opacity-60 group-hover:opacity-100 transition-opacity" />
 
         <div className="p-4 sm:p-5">
           {/* Header row */}
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex-1 min-w-0">
-              <h3 className="font-heading font-bold text-white text-lg leading-tight truncate group-hover:text-blue-300 transition-colors">
+              <h3 className="font-heading font-bold text-white text-lg leading-tight truncate group-hover:text-[#E8425A] transition-colors">
                 {plan.title}
               </h3>
               {plan.athleteName && (
@@ -330,10 +331,10 @@ function PlanCard({ plan, onView, onEdit, onStartSession, onDuplicate, onDelete,
                         <Play className="h-4 w-4 text-green-400" /> Start Session
                       </button>
                       <button onClick={(e) => { e.stopPropagation(); onEdit(); setMenuOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.06] flex items-center gap-2.5 transition-colors">
-                        <Edit3 className="h-4 w-4 text-blue-400" /> Edit Plan
+                        <Edit3 className="h-4 w-4 text-[#E8425A]" /> Edit Plan
                       </button>
                       <button onClick={(e) => { e.stopPropagation(); onDuplicate(); setMenuOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.06] flex items-center gap-2.5 transition-colors">
-                        <Copy className="h-4 w-4 text-cyan-400" /> Duplicate
+                        <Copy className="h-4 w-4 text-[#E8425A]" /> Duplicate
                       </button>
                       <button onClick={(e) => { e.stopPropagation(); onToggleShare(); setMenuOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.06] flex items-center gap-2.5 transition-colors">
                         {plan.isShared ? <EyeOff className="h-4 w-4 text-yellow-400" /> : <Share2 className="h-4 w-4 text-yellow-400" />}
@@ -443,20 +444,20 @@ function PlanDetail({ planId, onBack, onEdit, onStartSession, onShare }: {
       </div>
 
       {/* Session Overview Card */}
-      <Card className="bg-gradient-to-br from-blue-500/10 via-white/[0.03] to-cyan-500/5 border-white/[0.08] overflow-hidden">
+      <Card className="bg-gradient-to-br from-[#DC143C]/10 via-white/[0.03] to-[#DC143C]/5 border-white/[0.08] overflow-hidden">
         <CardContent className="p-5">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
             <div>
               <p className="text-[10px] font-medium text-white/30 uppercase tracking-wider mb-1">Duration</p>
-              <p className="text-xl font-bold text-white flex items-center gap-1.5"><Clock className="h-4 w-4 text-blue-400" /> {plan.duration} min</p>
+              <p className="text-xl font-bold text-white flex items-center gap-1.5"><Clock className="h-4 w-4 text-[#E8425A]" /> {plan.duration} min</p>
             </div>
             <div>
               <p className="text-[10px] font-medium text-white/30 uppercase tracking-wider mb-1">Blocks</p>
-              <p className="text-xl font-bold text-white flex items-center gap-1.5"><Activity className="h-4 w-4 text-cyan-400" /> {blocks.length}</p>
+              <p className="text-xl font-bold text-white flex items-center gap-1.5"><Activity className="h-4 w-4 text-[#E8425A]" /> {blocks.length}</p>
             </div>
             <div>
               <p className="text-[10px] font-medium text-white/30 uppercase tracking-wider mb-1">Status</p>
-              <Badge className="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-xs">{plan.status}</Badge>
+              <Badge className="bg-[#DC143C]/20 text-[#E8425A] border border-[#DC143C]/30 text-xs">{plan.status}</Badge>
             </div>
             <div>
               <p className="text-[10px] font-medium text-white/30 uppercase tracking-wider mb-1">Date</p>
@@ -512,7 +513,7 @@ function PlanDetail({ planId, onBack, onEdit, onStartSession, onShare }: {
       </div>
 
       {/* Sticky Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#0d1117]/95 backdrop-blur-xl border-t border-white/[0.08] px-4 py-3 z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-[#1a1a1a]/95 backdrop-blur-xl border-t border-white/[0.08] px-4 py-3 z-50">
         <div className="max-w-4xl mx-auto flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <Button variant="outline" onClick={onEdit} className="bg-transparent border-white/[0.1] text-white/60 hover:text-white hover:bg-white/[0.06] gap-2">
@@ -594,9 +595,9 @@ function DetailBlock({ block, index, startTime, config, intensityConf }: {
         <div className="px-4 pb-4 space-y-3 border-t border-white/[0.05] pt-3">
           {block.goal && (
             <div className="flex items-start gap-2">
-              <Target className="h-3.5 w-3.5 text-blue-400 mt-0.5 flex-shrink-0" />
+              <Target className="h-3.5 w-3.5 text-[#E8425A] mt-0.5 flex-shrink-0" />
               <div>
-                <p className="text-[10px] font-medium text-blue-400/60 uppercase tracking-wider mb-0.5">Goal</p>
+                <p className="text-[10px] font-medium text-[#E8425A]/60 uppercase tracking-wider mb-0.5">Goal</p>
                 <p className="text-sm text-white/70">{block.goal}</p>
               </div>
             </div>
@@ -612,8 +613,8 @@ function DetailBlock({ block, index, startTime, config, intensityConf }: {
           )}
 
           {block.keyPoints && (
-            <div className="bg-cyan-500/5 border border-cyan-500/15 rounded-lg p-3">
-              <p className="text-[10px] font-medium text-cyan-400/70 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+            <div className="bg-[#DC143C]/5 border border-[#DC143C]/15 rounded-lg p-3">
+              <p className="text-[10px] font-medium text-[#E8425A]/70 uppercase tracking-wider mb-1.5 flex items-center gap-1">
                 <AlertCircle className="h-3 w-3" /> Key Points / What to Watch
               </p>
               <p className="text-sm text-white/70 whitespace-pre-wrap leading-relaxed">{block.keyPoints}</p>
@@ -681,7 +682,7 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
   };
 
   if (isLoading) return (
-    <div className="fixed inset-0 bg-[#0a0e14] z-[100] flex items-center justify-center">
+    <div className="fixed inset-0 bg-[#1a1a1a] z-[100] flex items-center justify-center">
       <div className="animate-pulse text-white/30 text-lg">Loading session...</div>
     </div>
   );
@@ -698,7 +699,7 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
   // Pre-session start screen
   if (!sessionStarted) {
     return (
-      <div className="fixed inset-0 bg-[#0a0e14] z-[100] flex flex-col safe-area-inset-top safe-area-inset-bottom" role="dialog" aria-label="Session Mode">
+      <div className="fixed inset-0 bg-[#1a1a1a] z-[100] flex flex-col safe-area-inset-top safe-area-inset-bottom" role="dialog" aria-label="Session Mode">
         <div className="flex items-center justify-between p-4 border-b border-white/[0.06]">
           <button onClick={onExit} aria-label="Exit session" className="p-2 rounded-lg hover:bg-white/[0.1] text-white/50 hover:text-white transition-colors touch-target">
             <X className="h-5 w-5" />
@@ -708,8 +709,8 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
         </div>
 
         <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-          <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/10 flex items-center justify-center mb-6 border border-blue-500/20">
-            <Play className="h-10 w-10 text-blue-400" />
+          <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/10 flex items-center justify-center mb-6 border border-[#DC143C]/20">
+            <Play className="h-10 w-10 text-[#E8425A]" />
           </div>
           <h2 className="text-3xl font-heading font-bold text-white mb-2">{plan.title}</h2>
           {plan.athleteName && <p className="text-lg text-white/40 mb-2">{plan.athleteName}</p>}
@@ -741,9 +742,9 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
 
   // Active session view
   return (
-    <div className="fixed inset-0 bg-[#0a0e14] z-[100] flex flex-col safe-area-inset-top safe-area-inset-bottom" role="dialog" aria-label="Active Session">
+    <div className="fixed inset-0 bg-[#1a1a1a] z-[100] flex flex-col safe-area-inset-top safe-area-inset-bottom" role="dialog" aria-label="Active Session">
       {/* Top bar */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-[#0a0e14]/95 backdrop-blur-lg flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-[#1a1a1a]/95 backdrop-blur-lg flex-shrink-0">
         <button onClick={() => { setIsTimerRunning(false); onExit(); }} aria-label="Exit session" className="p-2 rounded-lg hover:bg-white/[0.1] text-white/50 hover:text-white transition-colors touch-target">
           <X className="h-5 w-5" />
         </button>
@@ -763,7 +764,7 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
           <div
             key={i}
             className={`h-1 flex-1 rounded-full transition-all cursor-pointer ${
-              i < currentBlockIdx ? "bg-green-500" : i === currentBlockIdx ? "bg-blue-500" : "bg-white/[0.08]"
+              i < currentBlockIdx ? "bg-green-500" : i === currentBlockIdx ? "bg-[#DC143C]" : "bg-white/[0.08]"
             }`}
             onClick={() => goToBlock(i)}
           />
@@ -855,8 +856,8 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
 
           {/* Goal */}
           {currentBlock.goal && (
-            <div className="bg-blue-500/8 border border-blue-500/15 rounded-xl p-4 mb-4 max-w-lg mx-auto">
-              <p className="text-[10px] font-medium text-blue-400/60 uppercase tracking-wider mb-1.5 flex items-center gap-1 justify-center">
+            <div className="bg-[#DC143C]/8 border border-[#DC143C]/15 rounded-xl p-4 mb-4 max-w-lg mx-auto">
+              <p className="text-[10px] font-medium text-[#E8425A]/60 uppercase tracking-wider mb-1.5 flex items-center gap-1 justify-center">
                 <Target className="h-3 w-3" /> Block Goal
               </p>
               <p className="text-base text-white/80 text-center leading-relaxed">{currentBlock.goal}</p>
@@ -875,8 +876,8 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
 
           {/* Key Points */}
           {currentBlock.keyPoints && (
-            <div className="bg-cyan-500/8 border border-cyan-500/15 rounded-xl p-4 mb-4 max-w-lg mx-auto">
-              <p className="text-[10px] font-medium text-cyan-400/60 uppercase tracking-wider mb-1.5 flex items-center gap-1 justify-center">
+            <div className="bg-[#DC143C]/8 border border-[#DC143C]/15 rounded-xl p-4 mb-4 max-w-lg mx-auto">
+              <p className="text-[10px] font-medium text-[#E8425A]/60 uppercase tracking-wider mb-1.5 flex items-center gap-1 justify-center">
                 <AlertCircle className="h-3 w-3" /> What to Watch
               </p>
               <p className="text-base text-white/70 text-center leading-relaxed whitespace-pre-wrap">{currentBlock.keyPoints}</p>
@@ -896,7 +897,7 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
       )}
 
       {/* Bottom navigation */}
-      <div className="flex items-center justify-between px-4 py-4 border-t border-white/[0.06] bg-[#0a0e14]/95 backdrop-blur-lg flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-4 border-t border-white/[0.06] bg-[#1a1a1a]/95 backdrop-blur-lg flex-shrink-0">
         <button
           onClick={() => goToBlock(currentBlockIdx - 1)}
           disabled={currentBlockIdx === 0}
@@ -913,7 +914,7 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
               key={i}
               onClick={() => goToBlock(i)}
               className={`h-2.5 w-2.5 rounded-full transition-all flex-shrink-0 ${
-                i === currentBlockIdx ? "bg-blue-500 scale-125" : i < currentBlockIdx ? "bg-green-500/60" : "bg-white/[0.15]"
+                i === currentBlockIdx ? "bg-[#DC143C] scale-125" : i < currentBlockIdx ? "bg-green-500/60" : "bg-white/[0.15]"
               }`}
             />
           ))}
@@ -922,7 +923,7 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
         {currentBlockIdx < totalBlocks - 1 ? (
           <button
             onClick={() => { goToBlock(currentBlockIdx + 1); setElapsedSeconds(0); }}
-            className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20"
+            className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium bg-[#DC143C] text-white hover:bg-[#B91030] transition-all shadow-lg shadow-[#DC143C]/20"
           >
             Next <SkipForward className="h-4 w-4" />
           </button>
@@ -1128,7 +1129,7 @@ function PlanForm({ planId, onCancel, onSaved }: { planId: number | null; onCanc
             <div className="flex flex-wrap gap-2">
               {(["draft", "scheduled", "completed", "cancelled"] as const).map((s) => (
                 <button key={s} onClick={() => setStatus(s)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${status === s ? "bg-blue-600 text-white" : "bg-white/[0.06] text-white/50 hover:text-white/80"}`}>
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${status === s ? "bg-[#DC143C] text-white" : "bg-white/[0.06] text-white/50 hover:text-white/80"}`}>
                   {s.charAt(0).toUpperCase() + s.slice(1)}
                 </button>
               ))}
@@ -1140,7 +1141,7 @@ function PlanForm({ planId, onCancel, onSaved }: { planId: number | null; onCanc
             <div className="flex flex-wrap gap-2">
               {FOCUS_AREAS.map((area) => (
                 <button key={area} onClick={() => toggleFocusArea(area)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${focusAreas.includes(area) ? "bg-blue-600 text-white" : "bg-white/[0.06] text-white/50 hover:text-white/80"}`}>
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${focusAreas.includes(area) ? "bg-[#DC143C] text-white" : "bg-white/[0.06] text-white/50 hover:text-white/80"}`}>
                   {area}
                 </button>
               ))}
@@ -1184,12 +1185,12 @@ function PlanForm({ planId, onCancel, onSaved }: { planId: number | null; onCanc
       </div>
 
       {/* Sticky Save Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#0d1117]/95 backdrop-blur-xl border-t border-white/[0.08] px-4 py-3 z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-[#1a1a1a]/95 backdrop-blur-xl border-t border-white/[0.08] px-4 py-3 z-50">
         <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
           <Button variant="outline" onClick={onCancel} className="bg-transparent border-white/[0.1] text-white/60 hover:text-white hover:bg-white/[0.06]">Cancel</Button>
           <div className="flex items-center gap-3">
             <span className="text-sm text-white/40 hidden sm:inline">{blocks.length} blocks · {totalDuration} min</span>
-            <Button onClick={handleSubmit} disabled={!title.trim() || isSaving} className="bg-blue-600 hover:bg-blue-700 text-white gap-2 min-w-[120px]">
+            <Button onClick={handleSubmit} disabled={!title.trim() || isSaving} className="bg-[#DC143C] hover:bg-[#B91030] text-white gap-2 min-w-[120px]">
               {isSaving ? <span className="animate-pulse">Saving...</span> : <><Check className="h-4 w-4" />{planId ? "Save Changes" : "Create Plan"}</>}
             </Button>
           </div>
@@ -1296,10 +1297,10 @@ function BlockEditor({ block, index, total, onUpdate, onRemove, onMoveUp, onMove
 
           {/* Key Points */}
           <div>
-            <label className="text-[10px] font-medium text-cyan-400/60 uppercase mb-1 block flex items-center gap-1"><AlertCircle className="h-3 w-3" /> Key Points / What to Watch</label>
+            <label className="text-[10px] font-medium text-[#E8425A]/60 uppercase mb-1 block flex items-center gap-1"><AlertCircle className="h-3 w-3" /> Key Points / What to Watch</label>
             <Textarea value={block.keyPoints || ""} onChange={(e) => onUpdate({ keyPoints: e.target.value || null })}
               placeholder="What to observe and correct (e.g., 'Watch for early hip rotation, head movement off the ball')"
-              rows={2} className="bg-cyan-500/5 border-cyan-500/10 text-white text-sm resize-none placeholder:text-white/20" />
+              rows={2} className="bg-[#DC143C]/5 border-[#DC143C]/10 text-white text-sm resize-none placeholder:text-white/20" />
           </div>
 
           {/* Notes */}
@@ -1347,12 +1348,12 @@ function DrillPickerButton({ currentDrillId, onSelect }: { currentDrillId: strin
           <div className="max-h-[50vh] overflow-y-auto space-y-1">
             {filtered.map((drill) => (
               <button key={drill.id} onClick={() => { onSelect(drill); setOpen(false); setSearch(""); }}
-                className={`w-full text-left px-3 py-2.5 rounded-lg transition-colors flex items-center justify-between gap-2 ${currentDrillId === drill.id ? "bg-blue-600/20 text-blue-300" : "hover:bg-white/[0.06] text-white/70"}`}>
+                className={`w-full text-left px-3 py-2.5 rounded-lg transition-colors flex items-center justify-between gap-2 ${currentDrillId === drill.id ? "bg-[#DC143C]/20 text-[#E8425A]" : "hover:bg-white/[0.06] text-white/70"}`}>
                 <div className="min-w-0">
                   <span className="text-sm font-medium block truncate">{drill.name}</span>
                   <span className="text-[10px] text-white/30">{drill.difficulty} · {drill.duration} · {drill.categories.join(", ")}</span>
                 </div>
-                {currentDrillId === drill.id && <Check className="h-4 w-4 text-blue-400 flex-shrink-0" />}
+                {currentDrillId === drill.id && <Check className="h-4 w-4 text-[#E8425A] flex-shrink-0" />}
               </button>
             ))}
             {filtered.length === 0 && <p className="text-sm text-white/30 text-center py-4">No drills found</p>}
@@ -1450,7 +1451,7 @@ function CalendarView({ plans, onBack, onViewPlan, onCreatePlan, onStartSession 
 
   const statusColors: Record<string, string> = {
     draft: "bg-gray-400",
-    scheduled: "bg-blue-400",
+    scheduled: "bg-[#DC143C]",
     completed: "bg-emerald-400",
     cancelled: "bg-red-400",
   };
@@ -1464,7 +1465,7 @@ function CalendarView({ plans, onBack, onViewPlan, onCreatePlan, onStartSession 
             <ArrowLeft className="h-5 w-5" />
           </button>
           <div>
-            <h2 className="text-2xl font-heading font-bold text-white">Schedule</h2>
+            <InlineEdit contentKey="coach.planner.schedule" defaultValue="Schedule" as="h2" className="text-2xl font-heading font-bold text-white" />
             <p className="text-sm text-white/40">{monthNames[month]} {year}</p>
           </div>
         </div>
@@ -1507,7 +1508,7 @@ function CalendarView({ plans, onBack, onViewPlan, onCreatePlan, onStartSession 
                 className={`
                   relative min-h-[72px] sm:min-h-[90px] p-1 sm:p-1.5 border-b border-r border-white/[0.04] text-left transition-all
                   ${!day.isCurrentMonth ? "opacity-30" : ""}
-                  ${isSelectedCell ? "bg-blue-600/10 ring-1 ring-inset ring-blue-500/30" : "hover:bg-white/[0.03]"}
+                  ${isSelectedCell ? "bg-[#DC143C]/10 ring-1 ring-inset ring-[#DC143C]/30" : "hover:bg-white/[0.03]"}
                   ${isTodayCell ? "bg-white/[0.03]" : ""}
                 `}
                 aria-label={`${day.date.toLocaleDateString()}, ${dayPlans.length} sessions`}
@@ -1515,7 +1516,7 @@ function CalendarView({ plans, onBack, onViewPlan, onCreatePlan, onStartSession 
                 {/* Date number */}
                 <span className={`
                   inline-flex items-center justify-center h-6 w-6 rounded-full text-xs font-medium
-                  ${isTodayCell ? "bg-blue-600 text-white font-bold" : day.isCurrentMonth ? "text-white/70" : "text-white/20"}
+                  ${isTodayCell ? "bg-[#DC143C] text-white font-bold" : day.isCurrentMonth ? "text-white/70" : "text-white/20"}
                 `}>
                   {day.date.getDate()}
                 </span>
@@ -1551,7 +1552,7 @@ function CalendarView({ plans, onBack, onViewPlan, onCreatePlan, onStartSession 
             <Button
               size="sm"
               onClick={() => onCreatePlan(selectedDate)}
-              className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5 text-xs"
+              className="bg-[#DC143C] hover:bg-[#B91030] text-white gap-1.5 text-xs"
             >
               <Plus className="h-3.5 w-3.5" /> New Session
             </Button>
@@ -1600,7 +1601,7 @@ function CalendarView({ plans, onBack, onViewPlan, onCreatePlan, onStartSession 
                       </button>
                       <button
                         onClick={(e) => { e.stopPropagation(); onViewPlan(plan.id); }}
-                        className="p-1.5 rounded-md hover:bg-blue-500/20 text-blue-400 transition-colors"
+                        className="p-1.5 rounded-md hover:bg-[#B91030]/20 text-[#E8425A] transition-colors"
                         aria-label="View plan details"
                       >
                         <Eye className="h-3.5 w-3.5" />
@@ -1617,7 +1618,7 @@ function CalendarView({ plans, onBack, onViewPlan, onCreatePlan, onStartSession 
       {/* Legend */}
       <div className="flex items-center gap-4 text-[10px] text-white/30 px-1">
         <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-gray-400" /> Draft</span>
-        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-blue-400" /> Scheduled</span>
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#DC143C]" /> Scheduled</span>
         <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-400" /> Completed</span>
         <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-red-400" /> Cancelled</span>
       </div>

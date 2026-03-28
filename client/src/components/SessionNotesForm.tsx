@@ -30,6 +30,8 @@ import {
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useAllDrills } from "@/hooks/useAllDrills";
+import { InlineEdit } from "@/components/InlineEdit";
+import { useSiteContent } from "@/contexts/SiteContentContext";
 
 const SKILL_CATEGORIES = [
   "Swing Mechanics",
@@ -60,9 +62,9 @@ const SKILL_SHORT_LABELS: Record<string, string> = {
 
 // Skill category colors for visual distinction
 const SKILL_COLORS: Record<string, string> = {
-  "Swing Mechanics": "bg-blue-500/20 text-blue-300 border-blue-500/30",
+  "Swing Mechanics": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
   "Pitch Recognition": "bg-purple-500/20 text-purple-300 border-purple-500/30",
-  "Plate Approach": "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
+  "Plate Approach": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
   "Fielding Fundamentals": "bg-green-500/20 text-green-300 border-green-500/30",
   "Throwing Mechanics": "bg-orange-500/20 text-orange-300 border-orange-500/30",
   "Base Running": "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
@@ -183,6 +185,32 @@ function TemplatePicker({
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState<string>("relevant");
   const pickerRef = useRef<HTMLDivElement>(null);
+  const { get, set: setContent } = useSiteContent();
+
+  // Persisted custom quick fill templates
+  const customTemplates: TemplateOption[] = useMemo(() => {
+    const raw = get(`custom.quickFills.${label}`, "[]");
+    try { return JSON.parse(raw); } catch { return []; }
+  }, [get, label]);
+  const [isAddingTemplate, setIsAddingTemplate] = useState(false);
+  const [newTemplateLabel, setNewTemplateLabel] = useState("");
+  const [newTemplateText, setNewTemplateText] = useState("");
+  const newTemplateLabelRef = useRef<HTMLInputElement>(null);
+
+  const addCustomTemplate = () => {
+    const tLabel = newTemplateLabel.trim();
+    const tText = newTemplateText.trim();
+    if (tLabel && tText) {
+      const updated = [...customTemplates, { label: tLabel, text: tText, category: undefined }];
+      setContent(`custom.quickFills.${label}`, JSON.stringify(updated));
+      setNewTemplateLabel("");
+      setNewTemplateText("");
+      setIsAddingTemplate(false);
+    }
+  };
+
+  // Combine built-in + custom templates
+  const allTemplates = useMemo(() => [...templates, ...customTemplates], [templates, customTemplates]);
 
   // Close picker when clicking outside
   useEffect(() => {
@@ -198,12 +226,12 @@ function TemplatePicker({
 
   // Filter templates based on selected skills
   const filteredTemplates = useMemo(() => {
-    if (filter === "all") return templates;
+    if (filter === "all") return allTemplates;
     // Show templates matching selected skills + general ones
-    return templates.filter(
+    return allTemplates.filter(
       (t) => !t.category || selectedSkills.includes(t.category)
     );
-  }, [templates, selectedSkills, filter]);
+  }, [allTemplates, selectedSkills, filter]);
 
   const handleSelect = (template: TemplateOption) => {
     if (currentText.trim()) {
@@ -222,10 +250,10 @@ function TemplatePicker({
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(!isOpen)}
-        className="h-7 px-2 text-xs text-electric-blue hover:text-electric-blue/80 hover:bg-electric-blue/10 gap-1"
+        className="h-7 px-2 text-xs text-[#DC143C] hover:text-[#DC143C]/80 hover:bg-[#DC143C]/10 gap-1"
       >
         <Sparkles className="h-3 w-3" />
-        Quick Fill
+        <InlineEdit contentKey={`sessionNote.quickFill.${label}.btnLabel`} defaultValue="Quick Fill" />
         <ChevronDown className={`h-3 w-3 transition-transform ${isOpen ? "rotate-180" : ""}`} />
       </Button>
 
@@ -233,13 +261,15 @@ function TemplatePicker({
         <div className="absolute z-30 top-full mt-1 left-0 right-0 min-w-[320px] max-w-[calc(100vw-2rem)] bg-card/95 backdrop-blur-xl border border-white/[0.12] rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
           {/* Filter tabs */}
           <div className="flex items-center gap-1 px-3 py-2 border-b border-white/[0.08] bg-white/[0.02]">
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mr-1">Show:</span>
+            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mr-1">
+              <InlineEdit contentKey="sessionNote.quickFill.showLabel" defaultValue="Show:" />
+            </span>
             <button
               type="button"
               onClick={() => setFilter("relevant")}
               className={`px-2 py-0.5 rounded text-xs font-medium transition-colors ${
                 filter === "relevant"
-                  ? "bg-electric-blue/20 text-electric-blue"
+                  ? "bg-[#DC143C]/20 text-[#DC143C]"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -250,7 +280,7 @@ function TemplatePicker({
               onClick={() => setFilter("all")}
               className={`px-2 py-0.5 rounded text-xs font-medium transition-colors ${
                 filter === "all"
-                  ? "bg-electric-blue/20 text-electric-blue"
+                  ? "bg-[#DC143C]/20 text-[#DC143C]"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -266,7 +296,7 @@ function TemplatePicker({
                 <button
                   type="button"
                   onClick={() => setFilter("all")}
-                  className="text-electric-blue hover:underline mt-1 text-xs"
+                  className="text-[#DC143C] hover:underline mt-1 text-xs"
                 >
                   Show all templates
                 </button>
@@ -280,10 +310,10 @@ function TemplatePicker({
                   className="w-full text-left px-3 py-2.5 hover:bg-white/[0.06] transition-colors border-b border-white/[0.04] last:border-0 group"
                 >
                   <div className="flex items-start gap-2">
-                    <Zap className="h-3.5 w-3.5 text-electric-blue/60 mt-0.5 shrink-0 group-hover:text-electric-blue transition-colors" />
+                    <Zap className="h-3.5 w-3.5 text-[#DC143C]/60 mt-0.5 shrink-0 group-hover:text-[#DC143C] transition-colors" />
                     <div className="min-w-0">
                       <span className="text-sm font-medium text-foreground block">
-                        {template.label}
+                        <InlineEdit contentKey={`sessionNote.template.${label}.${idx}`} defaultValue={template.label} />
                       </span>
                       <span className="text-xs text-muted-foreground line-clamp-2 mt-0.5 block">
                         {template.text}
@@ -300,13 +330,69 @@ function TemplatePicker({
             )}
           </div>
 
+          {/* Add custom quick fill */}
+          <div className="border-t border-white/[0.08]">
+            {isAddingTemplate ? (
+              <div className="p-3 space-y-2">
+                <input
+                  ref={newTemplateLabelRef}
+                  value={newTemplateLabel}
+                  onChange={(e) => setNewTemplateLabel(e.target.value)}
+                  placeholder="Template title..."
+                  className="w-full text-sm bg-white/[0.06] border border-white/[0.15] rounded px-2 py-1.5 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-[#DC143C]/40"
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") { setIsAddingTemplate(false); setNewTemplateLabel(""); setNewTemplateText(""); }
+                  }}
+                />
+                <textarea
+                  value={newTemplateText}
+                  onChange={(e) => setNewTemplateText(e.target.value)}
+                  placeholder="Template text to insert..."
+                  rows={2}
+                  className="w-full text-sm bg-white/[0.06] border border-white/[0.15] rounded px-2 py-1.5 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-[#DC143C]/40 resize-none"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); addCustomTemplate(); }
+                    if (e.key === "Escape") { setIsAddingTemplate(false); setNewTemplateLabel(""); setNewTemplateText(""); }
+                  }}
+                />
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={addCustomTemplate}
+                    disabled={!newTemplateLabel.trim() || !newTemplateText.trim()}
+                    className="flex-1 text-xs font-medium py-1.5 rounded bg-[#DC143C]/20 text-[#DC143C] hover:bg-[#DC143C]/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Add Template
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setIsAddingTemplate(false); setNewTemplateLabel(""); setNewTemplateText(""); }}
+                    className="flex-1 text-xs font-medium py-1.5 rounded text-muted-foreground hover:bg-white/[0.06] transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => { setIsAddingTemplate(true); setTimeout(() => newTemplateLabelRef.current?.focus(), 50); }}
+                className="w-full text-left px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-white/[0.06] transition-colors flex items-center gap-2"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add Custom Quick Fill
+              </button>
+            )}
+          </div>
+
           {/* Close button */}
           <button
             type="button"
             onClick={() => setIsOpen(false)}
             className="w-full text-center py-2 text-xs text-muted-foreground hover:bg-white/[0.04] border-t border-white/[0.08]"
           >
-            Close
+            <InlineEdit contentKey={`sessionNote.quickFill.${label}.closeLabel`} defaultValue="Close" />
           </button>
         </div>
       )}
@@ -387,6 +473,32 @@ export function SessionNotesForm({
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [drillSearch, setDrillSearch] = useState("");
   const [showDrillPicker, setShowDrillPicker] = useState(false);
+
+  // Custom skill pills — persisted to siteContent DB
+  const { get: getSiteContent, set: setSiteContent } = useSiteContent();
+  const customSkills: string[] = useMemo(() => {
+    const raw = getSiteContent("custom.skills", "[]");
+    try { return JSON.parse(raw); } catch { return []; }
+  }, [getSiteContent]);
+  const [isAddingSkill, setIsAddingSkill] = useState(false);
+  const [newSkillName, setNewSkillName] = useState("");
+  const newSkillRef = useRef<HTMLInputElement>(null);
+
+  // All skills = built-in + custom
+  const allSkillCategories = useMemo(() => [
+    ...SKILL_CATEGORIES,
+    ...customSkills,
+  ], [customSkills]);
+
+  const addCustomSkill = () => {
+    const name = newSkillName.trim();
+    if (name && !allSkillCategories.includes(name)) {
+      const updated = [...customSkills, name];
+      setSiteContent("custom.skills", JSON.stringify(updated));
+      setNewSkillName("");
+      setIsAddingSkill(false);
+    }
+  };
 
   // Get next session number
   const { data: nextSessionNumber } = trpc.sessionNotes.getNextSessionNumber.useQuery(
@@ -533,10 +645,15 @@ export function SessionNotesForm({
           )}
           <div>
             <h2 className="font-heading font-bold text-lg md:text-xl">
-              {isEditing ? "Edit Session Note" : "New Session Note"}
+              <InlineEdit
+                contentKey={isEditing ? "sessionNote.form.editTitle" : "sessionNote.form.newTitle"}
+                defaultValue={isEditing ? "Edit Session Note" : "New Session Note"}
+              />
             </h2>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-sm text-muted-foreground">{athleteName}</span>
+              <span className="text-sm text-muted-foreground">
+                <InlineEdit contentKey={`sessionNote.athleteName.${athleteId}`} defaultValue={athleteName} />
+              </span>
               <span className="text-muted-foreground/40">·</span>
               {isEditingLabel ? (
                 <div className="flex items-center gap-1">
@@ -553,14 +670,14 @@ export function SessionNotesForm({
                       }
                     }}
                     placeholder={displayLabel}
-                    className="h-6 w-40 text-sm bg-electric-blue/10 border-electric-blue/30 text-electric-blue px-2 py-0"
+                    className="h-6 w-40 text-sm bg-[#DC143C]/10 border-[#DC143C]/30 text-[#DC143C] px-2 py-0"
                   />
                 </div>
               ) : (
                 <button
                   type="button"
                   onClick={handleLabelEdit}
-                  className="flex items-center gap-1 text-sm text-electric-blue font-medium hover:text-electric-blue/80 transition-colors group"
+                  className="flex items-center gap-1 text-sm text-[#DC143C] font-medium hover:text-[#DC143C]/80 transition-colors group"
                 >
                   {displayLabel}
                   <Pencil className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -575,7 +692,7 @@ export function SessionNotesForm({
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">
-            Date
+            <InlineEdit contentKey="sessionNote.label.date" defaultValue="Date" />
           </label>
           <Input
             type="date"
@@ -586,7 +703,7 @@ export function SessionNotesForm({
         </div>
         <div>
           <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">
-            Duration (min)
+            <InlineEdit contentKey="sessionNote.label.duration" defaultValue="Duration (min)" />
           </label>
           <Input
             type="number"
@@ -601,12 +718,15 @@ export function SessionNotesForm({
       {/* Skills Worked — Quick-tap chips */}
       <div>
         <label className="text-xs font-semibold text-muted-foreground mb-2 block uppercase tracking-wider">
-          Skills Worked On
-          <span className="text-electric-blue ml-1">*</span>
+          <InlineEdit contentKey="sessionNote.label.skillsWorkedOn" defaultValue="Skills Worked On" />
+          <span className="text-[#DC143C] ml-1">*</span>
         </label>
         <div className="flex flex-wrap gap-2">
-          {SKILL_CATEGORIES.map((skill) => {
+          {allSkillCategories.map((skill) => {
             const isSelected = selectedSkills.includes(skill);
+            const isCustom = customSkills.includes(skill);
+            const colorClass = SKILL_COLORS[skill] || "bg-blue-500/20 text-blue-300 border-blue-500/30";
+            const shortLabel = SKILL_SHORT_LABELS[skill] || skill;
             return (
               <button
                 key={skill}
@@ -617,21 +737,55 @@ export function SessionNotesForm({
                   touch-manipulation select-none active:scale-95
                   ${
                     isSelected
-                      ? SKILL_COLORS[skill] + " ring-1 ring-white/20"
+                      ? colorClass + " ring-1 ring-white/20"
                       : "bg-white/[0.04] text-white/50 border-white/[0.08] hover:bg-white/[0.08] hover:text-white/70"
                   }
                 `}
               >
                 {isSelected && <Check className="h-3 w-3 inline mr-1.5" />}
-                <span className="sm:hidden">{SKILL_SHORT_LABELS[skill]}</span>
-                <span className="hidden sm:inline">{skill}</span>
+                <span className="sm:hidden">
+                  <InlineEdit contentKey={`sessionNote.skill.short.${skill}`} defaultValue={shortLabel} />
+                </span>
+                <span className="hidden sm:inline">
+                  <InlineEdit contentKey={`sessionNote.skill.${skill}`} defaultValue={skill} />
+                </span>
               </button>
             );
           })}
+          {/* Add custom skill pill button */}
+          {isAddingSkill ? (
+            <div className="flex items-center gap-1">
+              <Input
+                ref={newSkillRef}
+                value={newSkillName}
+                onChange={(e) => setNewSkillName(e.target.value)}
+                onBlur={() => {
+                  if (newSkillName.trim()) addCustomSkill();
+                  else setIsAddingSkill(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") { e.preventDefault(); addCustomSkill(); }
+                  if (e.key === "Escape") { setNewSkillName(""); setIsAddingSkill(false); }
+                }}
+                placeholder="Skill name..."
+                className="h-9 w-40 text-sm bg-white/[0.06] border-white/[0.15] px-2"
+                autoFocus
+              />
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => { setIsAddingSkill(true); setTimeout(() => newSkillRef.current?.focus(), 50); }}
+              className="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-dashed border-white/[0.15] text-white/40 hover:text-white/70 hover:border-white/[0.25] hover:bg-white/[0.04] touch-manipulation"
+            >
+              <Plus className="h-3.5 w-3.5 inline mr-1" />
+              Add Skill
+            </button>
+          )}
         </div>
         {selectedSkills.length > 0 && (
           <p className="text-xs text-muted-foreground mt-1.5">
-            {selectedSkills.length} skill{selectedSkills.length !== 1 ? "s" : ""} selected
+            {selectedSkills.length} <InlineEdit contentKey="sessionNote.label.skillSelected" defaultValue={selectedSkills.length !== 1 ? "skills selected" : "skill selected"} />
           </p>
         )}
       </div>
@@ -640,8 +794,8 @@ export function SessionNotesForm({
       <div>
         <div className="flex items-center justify-between mb-1.5">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            What Improved This Session
-            <span className="text-electric-blue ml-1">*</span>
+            <InlineEdit contentKey="sessionNote.label.whatImproved" defaultValue="What Improved This Session" />
+            <span className="text-[#DC143C] ml-1">*</span>
           </label>
           <TemplatePicker
             templates={IMPROVED_TEMPLATES}
@@ -664,8 +818,8 @@ export function SessionNotesForm({
       <div>
         <div className="flex items-center justify-between mb-1.5">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            What Still Needs Work
-            <span className="text-electric-blue ml-1">*</span>
+            <InlineEdit contentKey="sessionNote.label.whatNeedsWork" defaultValue="What Still Needs Work" />
+            <span className="text-[#DC143C] ml-1">*</span>
           </label>
           <TemplatePicker
             templates={NEEDS_WORK_TEMPLATES}
@@ -687,7 +841,7 @@ export function SessionNotesForm({
       {/* Homework Drills — Quick search + add */}
       <div>
         <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">
-          Homework Drills Assigned
+          <InlineEdit contentKey="sessionNote.label.homeworkDrills" defaultValue="Homework Drills Assigned" />
         </label>
 
         {/* Selected drills */}
@@ -697,7 +851,7 @@ export function SessionNotesForm({
               <Badge
                 key={d.drillId}
                 variant="secondary"
-                className="bg-electric-blue/15 text-electric-blue border-electric-blue/30 pr-1.5 gap-1"
+                className="bg-[#DC143C]/15 text-[#DC143C] border-[#DC143C]/30 pr-1.5 gap-1"
               >
                 <Dumbbell className="h-3 w-3" />
                 {d.drillName}
@@ -780,8 +934,10 @@ export function SessionNotesForm({
       {/* Overall Rating — Star rating */}
       <div>
         <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">
-          Session Rating
-          <span className="text-muted-foreground/60 ml-1 normal-case">(private — not in reports)</span>
+          <InlineEdit contentKey="sessionNote.label.sessionRating" defaultValue="Session Rating" />
+          <span className="text-muted-foreground/60 ml-1 normal-case">
+            <InlineEdit contentKey="sessionNote.label.ratingSubtext" defaultValue="(private — not in reports)" />
+          </span>
         </label>
         <div className="flex gap-1">
           {[1, 2, 3, 4, 5].map((n) => (
@@ -819,7 +975,7 @@ export function SessionNotesForm({
         ) : (
           <ChevronDown className="h-4 w-4" />
         )}
-        Private Coach Notes
+        <InlineEdit contentKey="sessionNote.label.privateNotes" defaultValue="Private Coach Notes" />
       </button>
 
       {showAdvanced && (
@@ -843,13 +999,13 @@ export function SessionNotesForm({
             className="flex-1 h-12 text-base"
             disabled={isSaving}
           >
-            Cancel
+            <InlineEdit contentKey="sessionNote.btn.cancel" defaultValue="Cancel" />
           </Button>
         )}
         <Button
           onClick={handleSubmit}
           disabled={isSaving || selectedSkills.length === 0 || !whatImproved.trim() || !whatNeedsWork.trim()}
-          className="flex-1 h-12 text-base bg-electric-blue hover:bg-electric-blue/90 font-semibold"
+          className="flex-1 h-12 text-base bg-[#DC143C] hover:bg-[#DC143C]/90 font-semibold"
         >
           {isSaving ? (
             <>
@@ -857,11 +1013,11 @@ export function SessionNotesForm({
               Saving...
             </>
           ) : isEditing ? (
-            "Update Session Note"
+            <InlineEdit contentKey="sessionNote.btn.update" defaultValue="Update Session Note" />
           ) : (
             <>
               <Check className="h-4 w-4 mr-2" />
-              Save Session Note
+              <InlineEdit contentKey="sessionNote.btn.save" defaultValue="Save Session Note" />
             </>
           )}
         </Button>

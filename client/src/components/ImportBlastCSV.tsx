@@ -16,43 +16,25 @@ import { Upload, Loader2, FileSpreadsheet, AlertTriangle, CheckCircle2, Link2, X
 
 // Known Blast Motion CSV column names mapped to our metric keys
 const COLUMN_MAP: Record<string, string> = {
-  // Exact Blast Motion export headers
+  // Bat Speed
   "bat speed (mph)": "batSpeedMph",
   "bat speed": "batSpeedMph",
   "batspeed": "batSpeedMph",
-  "rotational acceleration (g)": "rotationalAccelerationG",
-  "rotational acceleration": "rotationalAccelerationG",
-  "rotaccel": "rotationalAccelerationG",
-  "plane score": "planeScore",
-  "planescore": "planeScore",
-  "connection score": "connectionScore",
-  "connectionscore": "connectionScore",
-  "rotation score": "rotationScore",
-  "rotationscore": "rotationScore",
-  "power (kw)": "powerKw",
-  "power": "powerKw",
-  "peak hand speed (mph)": "peakHandSpeedMph",
-  "peak hand speed": "peakHandSpeedMph",
-  "peakhandspeed": "peakHandSpeedMph",
+  // On-Plane Efficiency
   "on plane efficiency (%)": "onPlaneEfficiencyPercent",
   "on-plane efficiency": "onPlaneEfficiencyPercent",
   "on plane efficiency": "onPlaneEfficiencyPercent",
   "onplaneefficiency": "onPlaneEfficiencyPercent",
+  // Attack Angle
   "attack angle (deg)": "attackAngleDeg",
   "attack angle": "attackAngleDeg",
   "attackangle": "attackAngleDeg",
-  "early connection (deg)": "earlyConnectionDeg",
-  "early connection": "earlyConnectionDeg",
-  "earlyconnection": "earlyConnectionDeg",
-  "connection at impact (deg)": "connectionAtImpactDeg",
-  "connection at impact": "connectionAtImpactDeg",
-  "connectionatimpact": "connectionAtImpactDeg",
-  "vertical bat angle (deg)": "verticalBatAngleDeg",
-  "vertical bat angle": "verticalBatAngleDeg",
-  "verticalbatangle": "verticalBatAngleDeg",
-  "time to contact (sec)": "timeToContactSec",
-  "time to contact": "timeToContactSec",
-  "timetocontact": "timeToContactSec",
+  // Exit Velocity
+  "exit velocity (mph)": "exitVelocityMph",
+  "exit velocity": "exitVelocityMph",
+  "exitvelocity": "exitVelocityMph",
+  "exit velo": "exitVelocityMph",
+  "exitvelo": "exitVelocityMph",
   // Date columns
   "date": "sessionDate",
   "session date": "sessionDate",
@@ -64,8 +46,6 @@ const COLUMN_MAP: Record<string, string> = {
   "drill type": "sessionType",
   "drill": "sessionType",
 };
-
-const SCORE_KEYS = new Set(["planeScore", "connectionScore", "rotationScore"]);
 
 interface ParsedRow {
   sessionDate: string;
@@ -220,13 +200,6 @@ export function ImportBlastCSV({ open, onOpenChange, playerId, playerName, isLin
           }
         } else if (metricKey === "sessionType") {
           sessionType = val;
-        } else if (SCORE_KEYS.has(metricKey)) {
-          const num = parseInt(val, 10);
-          if (!isNaN(num)) {
-            metrics[metricKey] = num;
-          } else {
-            warnings.push(`Invalid score "${val}" for ${header}`);
-          }
         } else {
           const num = parseFloat(val);
           if (!isNaN(num)) {
@@ -281,7 +254,7 @@ export function ImportBlastCSV({ open, onOpenChange, playerId, playerName, isLin
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) handleReset(); onOpenChange(o); }}>
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-[#0f1225] border-white/10 text-white">
+      <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-[#1a1a1a] border-white/10 text-white">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-white flex items-center gap-2">
             <FileSpreadsheet className="h-5 w-5 text-green-400" />
@@ -322,7 +295,7 @@ export function ImportBlastCSV({ open, onOpenChange, playerId, playerName, isLin
                 <Info className="h-4 w-4 shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-white/70 mb-1">Expected CSV format</p>
-                  <p>The importer auto-detects Blast Motion export columns. At minimum, include a <span className="text-white/80">Date</span> column. Recognized metrics: Bat Speed, Rotational Acceleration, Plane/Connection/Rotation Scores, Power, Peak Hand Speed, On-Plane Efficiency, Attack Angle, Early Connection, Connection at Impact, Vertical Bat Angle, Time to Contact.</p>
+                  <p>The importer auto-detects Blast Motion export columns. At minimum, include a <span className="text-white/80">Date</span> column. Recognized metrics: Bat Speed, On-Plane Efficiency, Attack Angle, Exit Velocity.</p>
                 </div>
               </div>
             </div>
@@ -379,16 +352,16 @@ export function ImportBlastCSV({ open, onOpenChange, playerId, playerName, isLin
                 onClick={() => setCreateNotes(!createNotes)}
                 className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all duration-200 text-left ${
                   createNotes
-                    ? "bg-electric-blue/10 border-electric-blue/30 text-white"
+                    ? "bg-[#DC143C]/10 border-[#DC143C]/30 text-white"
                     : "bg-white/[0.02] border-white/[0.08] text-white/50"
                 }`}
               >
-                <Link2 className={`h-4 w-4 shrink-0 ${createNotes ? "text-electric-blue" : "text-white/30"}`} />
+                <Link2 className={`h-4 w-4 shrink-0 ${createNotes ? "text-[#DC143C]" : "text-white/30"}`} />
                 <span className="text-sm">
                   {createNotes ? "Session Notes will be auto-created for each imported session" : "No Session Notes will be created"}
                 </span>
                 <div className={`ml-auto h-5 w-9 rounded-full transition-colors shrink-0 relative ${
-                  createNotes ? "bg-electric-blue" : "bg-white/20"
+                  createNotes ? "bg-[#DC143C]" : "bg-white/20"
                 }`}>
                   <div className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${
                     createNotes ? "translate-x-4" : "translate-x-0.5"
@@ -400,17 +373,15 @@ export function ImportBlastCSV({ open, onOpenChange, playerId, playerName, isLin
             {/* Preview table */}
             <div className="overflow-x-auto max-h-[300px] overflow-y-auto rounded-lg border border-white/[0.08]">
               <table className="w-full text-xs">
-                <thead className="sticky top-0 bg-[#0f1225]">
+                <thead className="sticky top-0 bg-[#1a1a1a]">
                   <tr className="border-b border-white/[0.1]">
                     <th className="text-left py-2 px-3 text-white/50">#</th>
                     <th className="text-left py-2 px-3 text-white/50">Date</th>
                     <th className="text-left py-2 px-3 text-white/50">Type</th>
                     <th className="text-center py-2 px-2 text-white/50">Bat Speed</th>
-                    <th className="text-center py-2 px-2 text-white/50">Rot. Accel</th>
-                    <th className="text-center py-2 px-2 text-white/50">Plane</th>
-                    <th className="text-center py-2 px-2 text-white/50">Conn.</th>
-                    <th className="text-center py-2 px-2 text-white/50">Rot.</th>
-                    <th className="text-center py-2 px-2 text-white/50">Power</th>
+                    <th className="text-center py-2 px-2 text-white/50">On-Plane Eff.</th>
+                    <th className="text-center py-2 px-2 text-white/50">Attack Angle</th>
+                    <th className="text-center py-2 px-2 text-white/50">Exit Velo</th>
                     <th className="text-left py-2 px-2 text-white/50">Warnings</th>
                   </tr>
                 </thead>
@@ -424,12 +395,10 @@ export function ImportBlastCSV({ open, onOpenChange, playerId, playerName, isLin
                           {row.sessionType}
                         </Badge>
                       </td>
-                      <td className="text-center py-2 px-2 text-blue-400">{row.metrics.batSpeedMph || "—"}</td>
-                      <td className="text-center py-2 px-2 text-violet-400">{row.metrics.rotationalAccelerationG || "—"}</td>
-                      <td className="text-center py-2 px-2 text-green-400">{row.metrics.planeScore ?? "—"}</td>
-                      <td className="text-center py-2 px-2 text-yellow-400">{row.metrics.connectionScore ?? "—"}</td>
-                      <td className="text-center py-2 px-2 text-red-400">{row.metrics.rotationScore ?? "—"}</td>
-                      <td className="text-center py-2 px-2 text-pink-400">{row.metrics.powerKw || "—"}</td>
+                      <td className="text-center py-2 px-2 text-[#E8425A]">{row.metrics.batSpeedMph || "—"}</td>
+                      <td className="text-center py-2 px-2 text-emerald-400">{row.metrics.onPlaneEfficiencyPercent || "—"}</td>
+                      <td className="text-center py-2 px-2 text-lime-400">{row.metrics.attackAngleDeg || "—"}</td>
+                      <td className="text-center py-2 px-2 text-violet-400">{row.metrics.exitVelocityMph || "—"}</td>
                       <td className="py-2 px-2">
                         {row.warnings.length > 0 && (
                           <span className="text-amber-400/70 text-[10px]" title={row.warnings.join("\n")}>
@@ -467,8 +436,8 @@ export function ImportBlastCSV({ open, onOpenChange, playerId, playerName, isLin
                 <p className="text-2xl font-bold text-green-400">{importResult.imported}</p>
                 <p className="text-xs text-white/50">Sessions Imported</p>
               </div>
-              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 text-center">
-                <p className="text-2xl font-bold text-blue-400">{importResult.notesCreated}</p>
+              <div className="bg-[#DC143C]/10 border border-[#DC143C]/20 rounded-lg p-3 text-center">
+                <p className="text-2xl font-bold text-[#E8425A]">{importResult.notesCreated}</p>
                 <p className="text-xs text-white/50">Notes Created</p>
               </div>
               <div className={`${importResult.errors.length > 0 ? "bg-red-500/10 border-red-500/20" : "bg-white/[0.04] border-white/[0.08]"} border rounded-lg p-3 text-center`}>

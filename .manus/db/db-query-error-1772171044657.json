@@ -1,0 +1,8 @@
+{
+  "query": "UPDATE sessionNotes SET whatNeedsWork = NULL WHERE blastSessionId IS NOT NULL AND whatNeedsWork IS NOT NULL;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute UPDATE sessionNotes SET whatNeedsWork = NULL WHERE blastSessionId IS NOT NULL AND whatNeedsWork IS NOT NULL;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1048 (23000) at line 1: Column 'whatNeedsWork' cannot be null"
+  ]
+}

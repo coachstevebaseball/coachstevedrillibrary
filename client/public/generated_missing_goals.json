@@ -25,11 +25,6 @@
     "goal": "To master the ability to control ball direction by adjusting the contact point based on pitch location."
   },
   {
-    "drillId": "advanced-batting-practice",
-    "drillName": "Advanced Batting Practice",
-    "goal": "To integrate physical hitting mechanics with high-level mental processing under simulated game pressure."
-  },
-  {
     "drillId": "angle-flips",
     "drillName": "Angle Flips",
     "goal": "To reinforce staying inside the baseball and maintaining a direct, extended path through the hitting zone."
@@ -78,11 +73,6 @@
     "drillId": "bat-behind-hips",
     "drillName": "Bat Behind Hips",
     "goal": "To isolate the lower body and core mechanics to teach the proper sequence of hip-led rotation in the swing."
-  },
-  {
-    "drillId": "beginners-batting-practice",
-    "drillName": "Beginner's Batting Practice",
-    "goal": "To establish foundational hitting confidence and muscle memory through consistent stance, full follow-through, and high-volume repetitions."
   },
   {
     "drillId": "behind-the-hitter-toss-1-2-3",

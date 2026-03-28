@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Search, ArrowLeftRight, X, Clock, Activity, BarChart3, Video, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
-import drillsData from "@/data/drills.json";
+import drillsData from "@/data/drills";
 
 interface Drill {
   id: string;
@@ -52,7 +52,7 @@ function DrillSelector({
 
   if (selectedDrill && !isOpen) {
     return (
-      <div className="glass-card rounded-xl border-2 border-blue-500/30">
+      <div className="glass-card rounded-xl border-2 border-[#DC143C]/30">
         <div className="p-4 pb-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</span>
@@ -270,7 +270,7 @@ export default function DrillComparison() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.25_0.05_250)] via-[oklch(0.20_0.04_260)] to-[oklch(0.15_0.06_280)]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.18_0.01_25)] via-[oklch(0.15_0.005_0)] to-[oklch(0.12_0.01_20)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.45_0.15_250/0.15),transparent_60%)]" />
         <div className="container relative z-10 py-6">
           <Link href="/coach-dashboard">
@@ -331,8 +331,8 @@ export default function DrillComparison() {
             <div className="glass-card rounded-xl overflow-hidden">
               <div className="p-4 md:p-6 pb-3">
                 <h3 className="text-lg font-heading font-bold flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center">
-                    <BarChart3 className="h-4 w-4 text-blue-400" />
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center">
+                    <BarChart3 className="h-4 w-4 text-[#E8425A]" />
                   </div>
                   Quick Comparison
                 </h3>
@@ -467,8 +467,8 @@ export default function DrillComparison() {
         {/* Empty State */}
         {!bothSelected && (
           <div className="text-center py-16">
-            <div className="h-20 w-20 rounded-full bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-white/[0.06] flex items-center justify-center mx-auto mb-4">
-              <ArrowLeftRight className="h-10 w-10 text-blue-400/60" />
+            <div className="h-20 w-20 rounded-full bg-gradient-to-br from-[#DC143C]/10 to-purple-500/10 border border-white/[0.06] flex items-center justify-center mx-auto mb-4">
+              <ArrowLeftRight className="h-10 w-10 text-[#E8425A]/60" />
             </div>
             <h3 className="text-xl font-heading font-bold mb-2">Select Two Drills to Compare</h3>
             <p className="text-muted-foreground max-w-md mx-auto">

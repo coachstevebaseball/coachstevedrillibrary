@@ -54,7 +54,7 @@ export function DeleteBlastSession({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-[#0f1225] border-white/10 text-white">
+      <DialogContent className="sm:max-w-md bg-[#1a1a1a] border-white/10 text-white">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-white flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-red-400" />

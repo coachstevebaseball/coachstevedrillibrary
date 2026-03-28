@@ -351,13 +351,6 @@
       "when": 1773003556666,
       "tag": "0049_good_bruce_banner",
       "breakpoints": true
-    },
-    {
-      "idx": 50,
-      "version": "5",
-      "when": 1773080197224,
-      "tag": "0050_superb_hardball",
-      "breakpoints": true
     }
   ]
 }

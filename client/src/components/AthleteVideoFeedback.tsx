@@ -80,9 +80,9 @@ function getStatusConfig(status: string) {
         label: "AI Analyzing",
         description: "Our AI is reviewing your swing mechanics right now.",
         icon: Loader2,
-        color: "text-blue-400",
-        bg: "bg-blue-500/20 border-blue-500/30",
-        dotColor: "bg-blue-400",
+        color: "text-[#E8425A]",
+        bg: "bg-[#DC143C]/20 border-[#DC143C]/30",
+        dotColor: "bg-[#DC143C]",
         spin: true,
       };
     case "analyzed":
@@ -238,7 +238,7 @@ export function AthleteVideoFeedback() {
                         Standalone
                       </Badge>
                     ) : analysis.drillId ? (
-                      <Badge className="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[10px] px-1.5 py-0">
+                      <Badge className="bg-[#DC143C]/10 text-[#E8425A] border border-[#DC143C]/20 text-[10px] px-1.5 py-0">
                         Drill
                       </Badge>
                     ) : null}
@@ -279,7 +279,7 @@ export function AthleteVideoFeedback() {
       <Dialog open={!!selectedAnalysis} onOpenChange={(open) => !open && setSelectedId(null)}>
         <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0 gap-0 glass-card border-white/10 overflow-hidden">
           {/* Header */}
-          <DialogHeader className="p-5 pb-4 border-b border-white/10 bg-gradient-to-r from-[#0a0f1e] to-[#0f172a] flex-shrink-0">
+          <DialogHeader className="p-5 pb-4 border-b border-white/10 bg-gradient-to-r from-[#1a1a1a] to-[#2a2a2a] flex-shrink-0">
             <div className="flex items-center justify-between">
               <DialogTitle className="flex items-center gap-2 text-foreground pr-8">
                 <Sparkles className="h-5 w-5 text-purple-400" />
@@ -302,7 +302,7 @@ export function AthleteVideoFeedback() {
                     Standalone Swing
                   </Badge>
                 ) : (
-                  <Badge className="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[10px]">
+                  <Badge className="bg-[#DC143C]/10 text-[#E8425A] border border-[#DC143C]/20 text-[10px]">
                     Drill Submission
                   </Badge>
                 )}
@@ -366,7 +366,7 @@ export function AthleteVideoFeedback() {
                     {(selectedAnalysis.aiFeedback as any).mechanicsBreakdown?.length > 0 && (
                       <div>
                         <div className="flex items-center gap-2 mb-3">
-                          <Dumbbell className="w-4 h-4 text-blue-400" />
+                          <Dumbbell className="w-4 h-4 text-[#E8425A]" />
                           <h4 className="font-bold text-foreground text-sm">Mechanics Breakdown</h4>
                         </div>
                         <div className="grid gap-2">
@@ -432,15 +432,15 @@ export function AthleteVideoFeedback() {
 
                     {/* Drill Recommendations */}
                     {(selectedAnalysis.aiFeedback as any).drillRecommendations?.length > 0 && (
-                      <div className="bg-blue-500/5 rounded-xl p-4 border border-blue-500/15">
+                      <div className="bg-[#DC143C]/5 rounded-xl p-4 border border-[#DC143C]/15">
                         <div className="flex items-center gap-2 mb-3">
-                          <Dumbbell className="w-4 h-4 text-blue-400" />
-                          <h4 className="font-bold text-blue-400 text-sm">Recommended Drills</h4>
+                          <Dumbbell className="w-4 h-4 text-[#E8425A]" />
+                          <h4 className="font-bold text-[#E8425A] text-sm">Recommended Drills</h4>
                         </div>
                         <ul className="space-y-2">
                           {(selectedAnalysis.aiFeedback as any).drillRecommendations.map((d: string, i: number) => (
                             <li key={i} className="flex items-start gap-2.5 text-sm text-foreground/75">
-                              <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2 flex-shrink-0" />
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#DC143C] mt-2 flex-shrink-0" />
                               {d}
                             </li>
                           ))}

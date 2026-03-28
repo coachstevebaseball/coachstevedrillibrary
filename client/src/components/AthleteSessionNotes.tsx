@@ -2,6 +2,7 @@ import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { Badge } from "@/components/ui/badge";
 import { BlastMetricsBadge } from "./BlastMetricsBadge";
+import { InlineEdit } from "@/components/InlineEdit";
 import {
   FileText,
   Calendar,
@@ -16,9 +17,9 @@ import {
 } from "lucide-react";
 
 const SKILL_COLORS: Record<string, string> = {
-  "Swing Mechanics": "bg-blue-500/20 text-blue-400 border-blue-500/30",
+  "Swing Mechanics": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
   "Pitch Recognition": "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  "Plate Approach": "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
+  "Plate Approach": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
   "Fielding Fundamentals": "bg-green-500/20 text-green-400 border-green-500/30",
   "Throwing Mechanics": "bg-orange-500/20 text-orange-400 border-orange-500/30",
   "Base Running": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
@@ -36,11 +37,11 @@ export function AthleteSessionNotes() {
     return (
       <div className="animate-fade-in-up">
         <div className="flex items-center gap-2 mb-3">
-          <FileText className="w-5 h-5 text-blue-400" />
+          <FileText className="w-5 h-5 text-[#E8425A]" />
           <h3 className="font-bold text-foreground">Session Notes</h3>
         </div>
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin text-blue-400" />
+          <Loader2 className="h-6 w-6 animate-spin text-[#E8425A]" />
         </div>
       </div>
     );
@@ -52,10 +53,10 @@ export function AthleteSessionNotes() {
     <div className="animate-fade-in-up" style={{ animationDelay: "0.25s" }}>
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-bold text-foreground flex items-center gap-2">
-          <FileText className="w-5 h-5 text-blue-400" />
+          <FileText className="w-5 h-5 text-[#E8425A]" />
           Session Notes
         </h3>
-        <Badge className="bg-blue-500/20 text-blue-400 border border-blue-500/30">
+        <Badge className="bg-[#DC143C]/20 text-[#E8425A] border border-[#DC143C]/30">
           {notes.length}
         </Badge>
       </div>
@@ -76,8 +77,8 @@ export function AthleteSessionNotes() {
                 onClick={() => setExpandedId(isExpanded ? null : note.id)}
                 className="w-full text-left p-4 flex items-center gap-3"
               >
-                <div className="h-10 w-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
-                  <span className="text-sm font-bold text-blue-400">#{note.sessionNumber}</span>
+                <div className="h-10 w-10 rounded-lg bg-[#DC143C]/10 border border-[#DC143C]/20 flex items-center justify-center flex-shrink-0">
+                  <span className="text-sm font-bold text-[#E8425A]">#{note.sessionNumber}</span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className="font-medium text-foreground truncate text-sm">
@@ -133,30 +134,47 @@ export function AthleteSessionNotes() {
                     </div>
                   )}
 
-                  {/* What improved */}
-                  <div className="bg-emerald-500/5 border border-emerald-500/15 rounded-lg p-3">
-                    <div className="flex items-center gap-1.5 mb-1.5">
-                      <TrendingUp className="h-3.5 w-3.5 text-emerald-400" />
-                      <span className="text-xs font-semibold text-emerald-400">What Improved</span>
+                  {/* Blast notes show metrics only; regular notes show improved/needs work */}
+                  {note.blastSessionId ? (
+                    <div className="bg-[#DC143C]/5 border border-[#DC143C]/15 rounded-lg p-3">
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <Zap className="h-3.5 w-3.5 text-[#DC143C]" />
+                        <span className="text-xs font-semibold text-[#DC143C]"><InlineEdit contentKey="sessionHistory.heading.blastMetrics" defaultValue="Session Blast Metrics" /></span>
+                      </div>
+                      <p className="text-xs text-white/70 leading-relaxed">{note.whatImproved}</p>
                     </div>
-                    <p className="text-xs text-white/70 leading-relaxed">{note.whatImproved}</p>
-                  </div>
+                  ) : (
+                    <>
+                      {/* What improved */}
+                      {note.whatImproved && (
+                        <div className="bg-emerald-500/5 border border-emerald-500/15 rounded-lg p-3">
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <TrendingUp className="h-3.5 w-3.5 text-emerald-400" />
+                            <span className="text-xs font-semibold text-emerald-400"><InlineEdit contentKey="sessionHistory.heading.whatImproved" defaultValue="What Improved" /></span>
+                          </div>
+                          <p className="text-xs text-white/70 leading-relaxed">{note.whatImproved}</p>
+                        </div>
+                      )}
 
-                  {/* What needs work */}
-                  <div className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
-                    <div className="flex items-center gap-1.5 mb-1.5">
-                      <TrendingDown className="h-3.5 w-3.5 text-amber-400" />
-                      <span className="text-xs font-semibold text-amber-400">What to Work On</span>
-                    </div>
-                    <p className="text-xs text-white/70 leading-relaxed">{note.whatNeedsWork}</p>
-                  </div>
+                      {/* What needs work */}
+                      {note.whatNeedsWork && (
+                        <div className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <TrendingDown className="h-3.5 w-3.5 text-amber-400" />
+                            <span className="text-xs font-semibold text-amber-400"><InlineEdit contentKey="sessionHistory.heading.whatNeedsWork" defaultValue="What to Work On" /></span>
+                          </div>
+                          <p className="text-xs text-white/70 leading-relaxed">{note.whatNeedsWork}</p>
+                        </div>
+                      )}
+                    </>
+                  )}
 
                   {/* Homework drills */}
                   {homework.length > 0 && (
                     <div className="bg-white/[0.03] border border-white/[0.06] rounded-lg p-3">
                       <div className="flex items-center gap-1.5 mb-2">
                         <Dumbbell className="h-3.5 w-3.5 text-electric" />
-                        <span className="text-xs font-semibold text-electric">Homework Drills</span>
+                        <span className="text-xs font-semibold text-electric"><InlineEdit contentKey="sessionHistory.heading.homeworkDrills" defaultValue="Homework Drills" /></span>
                       </div>
                       <div className="space-y-1">
                         {homework.map((drill, i) => (

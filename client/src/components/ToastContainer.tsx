@@ -14,7 +14,7 @@ export function ToastContainer() {
         return <AlertTriangle className="w-5 h-5 text-yellow-500" />;
       case 'info':
       default:
-        return <Info className="w-5 h-5 text-blue-500" />;
+        return <Info className="w-5 h-5 text-[#DC143C]" />;
     }
   };
 
@@ -28,7 +28,7 @@ export function ToastContainer() {
         return 'bg-yellow-50 border-yellow-200';
       case 'info':
       default:
-        return 'bg-blue-50 border-blue-200';
+        return 'bg-red-50 border-red-200';
     }
   };
 
@@ -42,7 +42,7 @@ export function ToastContainer() {
         return 'text-yellow-800';
       case 'info':
       default:
-        return 'text-blue-800';
+        return 'text-red-800';
     }
   };
 
