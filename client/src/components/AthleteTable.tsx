@@ -219,6 +219,8 @@ export function AthleteTable() {
     return "Just now";
   };
 
+  const sendReminderMutation = trpc.drillAssignments.sendFollowUpReminder.useMutation();
+
   // Stats
   const activeCount = athletes.filter((a) => a.isActiveClient).length;
   const pendingCount = athletes.filter((a) => a.type === "invite").length;
@@ -238,8 +240,6 @@ export function AthleteTable() {
       </div>
     );
   }
-
-  const sendReminderMutation = trpc.drillAssignments.sendFollowUpReminder.useMutation();
 
   return (
     <div className="space-y-4">

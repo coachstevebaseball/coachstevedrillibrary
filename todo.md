@@ -1573,3 +1573,6 @@
 - [x] Add inline editing to AthleteSessionNotes component (athlete-facing view)
 - [x] Add reset/delete tRPC procedure + 2 new tests (8 total siteContent tests pass)
 - [x] TypeScript check (0 errors), tests (405 pass), browser verify (all elements confirmed)
+
+## Bug Fix: AthleteTable Hooks Ordering
+- [x] Fix "Rendered more hooks than during the previous render" error in AthleteTable component
