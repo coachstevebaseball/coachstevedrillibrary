@@ -1576,3 +1576,12 @@
 
 ## Bug Fix: AthleteTable Hooks Ordering
 - [x] Fix "Rendered more hooks than during the previous render" error in AthleteTable component
+
+## Remove Protected Routes / Login Walls (Public Pages Only)
+- [x] Remove ProtectedRoute from athlete-portal, athlete-messaging, my-profile, parent-dashboard routes
+- [x] Remove auth gates / login redirects from Home.tsx
+- [x] Remove auth gates from DrillsDirectory.tsx
+- [x] Remove auth gates from DrillDetail.tsx
+- [x] Keep admin/coach dashboard routes protected (admin-only)
+- [x] Verify public pages load without login
+- [x] Verify admin/coach pages still require login

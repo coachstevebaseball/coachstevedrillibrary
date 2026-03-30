@@ -49,42 +49,48 @@ function registerServiceWorker() {
 function Router() {
   return (
     <Switch>
+      {/* Public Routes — No login required */}
       <Route path={"/"} component={Home} />
       <Route path={"/drills"} component={DrillsDirectory} />
+      <Route path={"/drill/:id"} component={DrillDetail} />
       <Route path={"/accept-invite/:token"} component={AcceptInvite} />
       <Route path={"/verify-email/:token"} component={VerifyEmail} />
-      <Route path={"/drill/:id"} component={DrillDetail} />
+      <Route path={"/athlete-portal"} component={AthletePortal} />
+      <Route path={"/athlete-messaging"} component={AthleteMessaging} />
+      <Route path={"/my-profile"} component={MyProfile} />
+      <Route path={"/parent-dashboard"} component={ParentDashboard} />
       
-      {/* Protected Routes - Admin Only */}
+      {/* Protected Routes — Admin Only */}
       <Route path={"/admin"}>
         <ProtectedRoute requiredRole="admin">
           <AdminDashboard />
         </ProtectedRoute>
       </Route>
       
-      {/* Protected Routes - Coach Only */}
       <Route path={"/coach-dashboard"}>
-        <ProtectedRoute requiredRole="coach">
+        <ProtectedRoute requiredRole="admin">
           <CoachDashboard />
         </ProtectedRoute>
       </Route>
-           <Route path={"/drill-generator"}>
+      
+      <Route path={"/drill-generator"}>
         <ProtectedRoute requiredRole="admin">
           <DrillGeneratorPage />
         </ProtectedRoute>
       </Route>
       
       <Route path={"/manage-drill-videos"}>
-        <ProtectedRoute requiredRole="coach">
+        <ProtectedRoute requiredRole="admin">
           <ManageDrillVideos />
         </ProtectedRoute>
       </Route>
       
       <Route path={"/create-drill-details"}>
-        <ProtectedRoute requiredRole="coach">
+        <ProtectedRoute requiredRole="admin">
           <CreateDrillDetails />
         </ProtectedRoute>
       </Route>
+      
       <Route path={"/submissions"}>
         <ProtectedRoute requiredRole="admin">
           <SubmissionsDashboard />
@@ -118,32 +124,6 @@ function Router() {
       <Route path={"/athlete-assessment"}>
         <ProtectedRoute requiredRole="admin">
           <AthleteAssessment />
-        </ProtectedRoute>
-      </Route>
-      
-      <Route path={"/athlete-messaging"}>
-        <ProtectedRoute requiredRole="athlete">
-          <AthleteMessaging />
-        </ProtectedRoute>
-      </Route>
-      
-      {/* Protected Routes - Parent Dashboard */}
-      <Route path={"/parent-dashboard"}>
-        <ProtectedRoute>
-          <ParentDashboard />
-        </ProtectedRoute>
-      </Route>
-      
-      {/* Protected Routes - Athlete Only */}
-      <Route path={"/athlete-portal"}>
-        <ProtectedRoute requiredRole="athlete">
-          <AthletePortal />
-        </ProtectedRoute>
-      </Route>
-
-      <Route path={"/my-profile"}>
-        <ProtectedRoute requiredRole="athlete">
-          <MyProfile />
         </ProtectedRoute>
       </Route>
       

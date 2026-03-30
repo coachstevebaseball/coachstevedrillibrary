@@ -1324,25 +1324,10 @@ export default function DrillDetail() {
     setEditGoalText('');
   };
 
-  // Check if user has access (or if preview mode is enabled)
-  const hasAccess = PREVIEW_MODE || (user && (user.role === 'admin' || user.isActiveClient === 1));
+  // All content is public — no access check needed
+  const hasAccess = true;
 
-  // Free preview logic: unauthenticated visitors get 2 free drill views
-  // If they're logged in (any role), bypass the preview limit entirely
   const isAnonymous = !user && !loading;
-  const currentSlugAlreadyViewed = id ? hasViewed(id) : false;
-  const showPreviewWall = isAnonymous && isLimitReached && !currentSlugAlreadyViewed;
-
-  // Record this drill view for anonymous users (only if they haven't hit the wall)
-  useEffect(() => {
-    if (isAnonymous && id && drill && !isLimitReached) {
-      recordView(id);
-    }
-    // Also allow viewing if they already viewed this slug before hitting limit
-    if (isAnonymous && id && drill && currentSlugAlreadyViewed) {
-      // No-op: they can revisit drills they already saw
-    }
-  }, [isAnonymous, id, drill?.name, isLimitReached, currentSlugAlreadyViewed]);
 
   if (loading) {
     return (
@@ -1375,59 +1360,13 @@ export default function DrillDetail() {
     );
   }
 
-  // Show the preview wall for anonymous users who have hit their free limit
-  if (showPreviewWall) {
-    return (
-      <DrillPreviewWall
-        drillName={drill.name}
-        viewedCount={viewedSlugs.length}
-        maxPreviews={MAX_FREE_PREVIEWS}
-        backHref={backHref}
-      />
-    );
-  }
+
 
   return (
     <div className="min-h-screen bg-background pb-8 md:pb-12">
-      {/* Access Control Check - for logged-in users without active client status */}
-      {!hasAccess && !isAnonymous && (
-        <div className="container py-12">
-          <Card className="max-w-2xl mx-auto border-2">
-            <CardHeader className="text-center">
-              <div className="mx-auto bg-muted h-16 w-16 rounded-full flex items-center justify-center mb-4">
-                <Lock className="h-8 w-8 text-muted-foreground" />
-              </div>
-              <CardTitle className="text-2xl">Client Access Required</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center space-y-4">
-              <p className="text-muted-foreground">
-                This drill content is only available to active clients. Please log in with an authorized account to view the full drill details.
-              </p>
-              {!user ? (
-                <a href={getLoginUrl()}>
-                  <Button size="lg" className="gap-2">
-                    <LogIn className="h-5 w-5" />
-                    Login to Access
-                  </Button>
-                </a>
-              ) : (
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
-                    Your account does not have active client access. Please contact the administrator.
-                  </p>
-                  <Link href={backHref}>
-                    <Button variant="outline">Return to Directory</Button>
-                  </Link>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      )}
+
 
       {/* Header */}
-      {(hasAccess || isAnonymous) && (
-      <>
       <header className="relative overflow-hidden mb-6 md:mb-8">
         <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.18_0.01_25)] via-[oklch(0.15_0.005_0)] to-[oklch(0.12_0.01_20)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.45_0.15_250/0.15),transparent_60%)]" />
@@ -1792,8 +1731,7 @@ export default function DrillDetail() {
         )}
 
       </div>
-      </>
-      )}
+
       
       {/* Delete Confirmation Dialog */}
       {showDeleteConfirm && (
@@ -1829,12 +1767,7 @@ export default function DrillDetail() {
         </div>
       )}
       
-      {/* Q&A Section for Athletes */}
-      {hasAccess && user?.role === 'athlete' && (
-        <div className="container max-w-4xl mx-auto mb-8">
-          <DrillQAForm drillId={id || ''} drillName={drill?.name || ''} />
-        </div>
-      )}
+
       
       {/* Edit Drill Details Modal */}
       <EditDrillDetailsModal

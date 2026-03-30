@@ -118,39 +118,7 @@ export default function DrillsDirectory() {
     tagFilter !== "all-tags",
   ].filter(Boolean).length;
 
-  if (!loading && !isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
-        <div className="text-center max-w-md">
-          <h1 className="text-4xl font-bold mb-4">Access Restricted</h1>
-          <p className="text-lg text-muted-foreground mb-8">
-            This content is exclusive to invited athletes. Please log in to access the drill library.
-          </p>
-          <Button onClick={() => window.location.href = getLoginUrl()} size="lg">
-            <LogIn className="h-5 w-5 mr-2" />
-            Log In
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
-  if (!loading && isAuthenticated && user?.role === 'athlete' && !user?.isActiveClient) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
-        <div className="text-center max-w-md">
-          <h1 className="text-4xl font-bold mb-4">Account Inactive</h1>
-          <p className="text-lg text-muted-foreground mb-8">
-            Your account has been deactivated. Please contact your coach for more information.
-          </p>
-          <Button onClick={() => logout()} variant="outline" size="lg">
-            <LogOut className="h-5 w-5 mr-2" />
-            Log Out
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -166,51 +134,29 @@ export default function DrillsDirectory() {
         </div>
 
         <div className="container relative z-10 py-8 md:py-20">
-          {/* Auth & Admin Controls */}
-          <div className="flex justify-end gap-2 mb-6 flex-wrap">
-            {user ? (
-              <>
-                {user.role === 'admin' && (
-                  <>
-                    <Link href="/coach">
-                      <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
-                        <Users className="h-4 w-4" />
-                        Coach Dashboard
-                      </Button>
-                    </Link>
-                    <Link href="/admin">
-                      <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
-                        <Shield className="h-4 w-4" />
-                        <span className="hidden sm:inline">Admin Dashboard</span>
-                        <span className="sm:hidden">Admin</span>
-                      </Button>
-                    </Link>
-                  </>
-                )}
-                {user.role === 'athlete' && (
-                  <Link href="/athlete-portal">
-                    <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
-                      <Activity className="h-4 w-4" />
-                      <span className="hidden sm:inline">My Drills</span>
-                      <span className="sm:hidden">Drills</span>
-                    </Button>
-                  </Link>
-                )}
-                <Button variant="outline" size="sm" onClick={logout} className="gap-2 bg-background/20 hover:bg-background/30 text-xs md:text-sm">
-                  <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline">Logout</span>
-                  <span className="sm:hidden">Exit</span>
-                </Button>
-              </>
-            ) : (
-              <a href={getLoginUrl()}>
+          {/* Admin Controls - only visible to admin */}
+          {user && user.role === 'admin' && (
+            <div className="flex justify-end gap-2 mb-6 flex-wrap">
+              <Link href="/coach-dashboard">
                 <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
-                  <LogIn className="h-4 w-4" />
-                  Login
+                  <Users className="h-4 w-4" />
+                  Coach Dashboard
                 </Button>
-              </a>
-            )}
-          </div>
+              </Link>
+              <Link href="/admin">
+                <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
+                  <Shield className="h-4 w-4" />
+                  <span className="hidden sm:inline">Admin Dashboard</span>
+                  <span className="sm:hidden">Admin</span>
+                </Button>
+              </Link>
+              <Button variant="outline" size="sm" onClick={logout} className="gap-2 bg-background/20 hover:bg-background/30 text-xs md:text-sm">
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Logout</span>
+                <span className="sm:hidden">Exit</span>
+              </Button>
+            </div>
+          )}
 
           <div className="max-w-4xl">
             <div className="flex items-center gap-3 mb-3">
