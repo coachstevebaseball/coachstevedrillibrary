@@ -25,6 +25,9 @@ import DrillComparison from "./pages/DrillComparison";
 import AthleteAssessment from "./pages/AthleteAssessment";
 import MyProfile from "./pages/MyProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
+import EmbedHome from "./pages/EmbedHome";
+import EmbedDrillLibrary from "./pages/EmbedDrillLibrary";
+import EmbedDrillDetail from "./pages/EmbedDrillDetail";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
 import { PWAInstallBanner } from "./components/PWAInstallBanner";
@@ -126,6 +129,11 @@ function Router() {
           <AthleteAssessment />
         </ProtectedRoute>
       </Route>
+      
+      {/* Embed Routes — Dedicated embed-safe routes for iframe embedding */}
+      <Route path="/embed" component={EmbedHome} />
+      <Route path="/embed/drills" component={EmbedDrillLibrary} />
+      <Route path="/embed/drill/:id" component={EmbedDrillDetail} />
       
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

@@ -1585,3 +1585,21 @@
 - [x] Keep admin/coach dashboard routes protected (admin-only)
 - [x] Verify public pages load without login
 - [x] Verify admin/coach pages still require login
+
+## Controlled Iframe Embedding Implementation
+- [x] Create EMBED_ALLOWED_ORIGINS env variable with configurable domain allowlist
+- [x] Create dual CSP middleware — frame-ancestors allowlist for /embed/*, frame-ancestors 'self' for all other routes
+- [x] Remove X-Frame-Options header from /embed/* responses only
+- [x] Create /embed landing page (streamlined, no header/footer)
+- [x] Create /embed/drills page (drill library, no chrome)
+- [x] Create /embed/drill/:id page (drill detail, no chrome)
+- [ ] Create /embed/player-report page (player report, no chrome)
+- [x] Register all embed routes in App.tsx
+- [x] Ensure all embed internal navigation stays within /embed/*
+- [ ] Ensure responsive layout works at 320px, 768px, 1280px widths
+- [ ] Ensure modals/dropdowns render within iframe boundary
+- [x] Create iframe test harness for approved vs unapproved domain testing
+- [x] Verify approved domain loads embed in iframe
+- [x] Verify unapproved domain is blocked from embedding (CSP blocks non-embed routes)
+- [x] Verify non-embed routes are blocked from external framing
+- [ ] Save checkpoint (pending)

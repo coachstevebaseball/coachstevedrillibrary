@@ -10,4 +10,5 @@ export const ENV = {
   resendApiKey: process.env.RESEND_API_KEY ?? "",
   geminiApiKey: process.env.GEMINI_API_KEY ?? "",
   openaiApiKey: process.env.OPENAI_API_KEY ?? "",
+  embedAllowedOrigins: process.env.EMBED_ALLOWED_ORIGINS ?? "",
 };
