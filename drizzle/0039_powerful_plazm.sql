@@ -1,0 +1,1 @@
+ALTER TABLE `blastPlayers` ADD `blastEmail` varchar(320);

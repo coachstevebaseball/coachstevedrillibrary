@@ -1,0 +1,1 @@
+ALTER TABLE `sessionNotes` ADD `blastSessionId` varchar(36);

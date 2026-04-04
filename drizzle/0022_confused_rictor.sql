@@ -1,0 +1,1 @@
+ALTER TABLE `coachAlertPreferences` ADD `emailAlerts` int DEFAULT 1 NOT NULL;

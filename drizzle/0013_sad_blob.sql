@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `sentWelcomeEmail` int DEFAULT 0 NOT NULL;

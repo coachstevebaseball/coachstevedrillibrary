@@ -1,0 +1,1 @@
+ALTER TABLE `sessionNotes` ADD `sharedWithAthlete` boolean DEFAULT true NOT NULL;
