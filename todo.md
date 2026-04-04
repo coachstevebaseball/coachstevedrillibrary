@@ -1603,8 +1603,3 @@
 - [x] Verify unapproved domain is blocked from embedding (CSP blocks non-embed routes)
 - [x] Verify non-embed routes are blocked from external framing
 - [ ] Save checkpoint (pending)
-
-## Remove PWA Install Prompt
-- [x] Find and remove/disable web app manifest link from index.html
-- [x] Remove or disable service worker registration (none found)
-- [x] Verify install prompt no longer appears on mobile
