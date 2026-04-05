@@ -18,7 +18,7 @@ import CoachMessaging from "./pages/CoachMessaging";
 import AthleteMessaging from "./pages/AthleteMessaging";
 import VerifyEmail from "./pages/VerifyEmail";
 import UserManagement from "./pages/UserManagement";
-import DrillsDirectory from "./pages/DrillsDirectory";
+// DrillsDirectory is now merged into Home; /drills redirects to /
 import ParentDashboard from "./pages/ParentDashboard";
 import ActivityFeed from "./pages/ActivityFeed";
 import DrillComparison from "./pages/DrillComparison";
@@ -32,6 +32,7 @@ import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
 import { PWAInstallBanner } from "./components/PWAInstallBanner";
 import { useEffect } from "react";
+import { useLocation, useSearch } from "wouter";
 
 // Register service worker
 function registerServiceWorker() {
@@ -49,12 +50,25 @@ function registerServiceWorker() {
   }
 }
 
+/**
+ * Redirect /drills → / preserving all query params so old bookmarks still work.
+ */
+function DrillsRedirect() {
+  const [, navigate] = useLocation();
+  const searchString = useSearch();
+  useEffect(() => {
+    const qs = searchString.startsWith('?') ? searchString : (searchString ? `?${searchString}` : '');
+    navigate(`/${qs}`, { replace: true });
+  }, []);
+  return null;
+}
+
 function Router() {
   return (
     <Switch>
       {/* Public Routes — No login required */}
       <Route path={"/"} component={Home} />
-      <Route path={"/drills"} component={DrillsDirectory} />
+      <Route path={"/drills"}>{() => <DrillsRedirect />}</Route>
       <Route path={"/drill/:id"} component={DrillDetail} />
       <Route path={"/accept-invite/:token"} component={AcceptInvite} />
       <Route path={"/verify-email/:token"} component={VerifyEmail} />
