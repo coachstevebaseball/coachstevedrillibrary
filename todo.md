@@ -1614,7 +1614,7 @@
 - [x] Fix drill count accuracy — single source of truth for hero, badges, results
 - [x] Redirect /drills → / with query params so old links still work
 - [x] Test logged-out behavior
-- [ ] Save checkpoint
+- [x] Save checkpoint
 
 
 ## Homepage Advanced Filters Migration
@@ -1627,3 +1627,54 @@
 - [x] Test logged-out behavior works correctly
 - [x] Verify old /drills links still work via redirect
 - [x] Unit tests for parseDrillParams and buildDrillQuery (32 tests passing)
+
+
+## Notification & Tracking System
+### Phase 1: Database Schema
+- [ ] Create activityFeed table (coach-facing event log with timestamps, event types, athlete info)
+- [ ] Create emailLog table (track sent emails, delivery status, open/click tracking)
+- [ ] Create notificationTriggers table or config for automated triggers
+- [ ] Run migrations (pnpm db:push)
+
+### Phase 2: Core Email Service
+- [ ] Build branded email templates (assignment, metrics update, reminder, milestone, custom note)
+- [ ] Create email sending utility with Resend integration
+- [ ] Add open/click tracking pixel and link wrapping
+
+### Phase 3: Use Case A — Pre-Lesson Prep (Manual Email + Tracking)
+- [ ] Coach assigns video/drill → system emails athlete "New video assigned for review"
+- [ ] Log email sent event to activity feed
+- [ ] Track when athlete clicks/watches → log to activity feed silently
+
+### Phase 4: Use Case B — Metrics Update (Automatic Email)
+- [ ] When coach updates bat speed / exit velocity → auto-email athlete "New swing metrics posted"
+- [ ] Log metrics update event to activity feed
+
+### Phase 5: Use Case C — Ghosting Tracker (Automatic Tracking)
+- [ ] Scheduled job: check for athletes inactive 7+ days (no login, no completed assignments)
+- [ ] Flag inactive athletes in activity feed as "Inactive for 7 days"
+
+### Phase 6: Use Case D — Drill Reminders (Automatic Email)
+- [ ] Scheduled job: check for assignments due within 24 hours
+- [ ] Auto-send reminder email to athlete
+- [ ] Log reminder sent to activity feed
+
+### Phase 7: Use Case E — Positive Reinforcement (Automatic Email)
+- [ ] Track monthly drill completion count per athlete
+- [ ] When athlete hits 10th completed drill of month → auto-send congratulation email
+- [ ] Log milestone event to activity feed
+
+### Phase 8: Coach Activity Feed UI
+- [ ] Build Activity Feed component on coach dashboard
+- [ ] Show chronological list of all events (assignments, views, metrics, inactivity, milestones)
+- [ ] Add filtering by event type and athlete
+- [ ] Display timestamps in EST
+- [ ] Real-time or polling updates
+
+### Phase 9: Testing & Verification
+- [ ] Unit tests for email service
+- [ ] Unit tests for activity feed logging
+- [ ] Unit tests for scheduled job logic
+- [ ] Integration test: assignment → email → tracking flow
+- [ ] Verify logged-out behavior (no in-app notification bell for athletes)
+- [ ] Save checkpoint

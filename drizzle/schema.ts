@@ -44,6 +44,10 @@ export const drillAssignments = mysqlTable("drillAssignments", {
   status: mysqlEnum("status", ["assigned", "in-progress", "completed"]).default("assigned").notNull(),
   notes: text("notes"),
   assignedAt: timestamp("assignedAt").defaultNow().notNull(),
+  /** Optional due date for the assignment (for deadline reminders) */
+  dueDate: timestamp("dueDate"),
+  /** Whether a 24h reminder has already been sent for this assignment */
+  reminderSent: int("reminderSent").default(0).notNull(),
   completedAt: timestamp("completedAt"),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -720,3 +724,63 @@ export const siteContent = mysqlTable("siteContent", {
 });
 export type SiteContent = typeof siteContent.$inferSelect;
 export type InsertSiteContent = typeof siteContent.$inferInsert;
+
+
+// ============================================================
+// Email Notification Log — Track all outbound athlete/parent emails
+// ============================================================
+export const emailNotificationLog = mysqlTable("emailNotificationLog", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Recipient user ID (athlete) */
+  recipientId: int("recipientId"),
+  /** Recipient email address */
+  recipientEmail: varchar("recipientEmail", { length: 320 }).notNull(),
+  /** Recipient name */
+  recipientName: varchar("recipientName", { length: 255 }),
+  /** Email type for categorization */
+  emailType: varchar("emailType", { length: 100 }).notNull(), // e.g. "drill_assignment", "metrics_update", "drill_reminder", "milestone", "custom_note"
+  /** Email subject line */
+  subject: varchar("subject", { length: 500 }).notNull(),
+  /** Brief description of what triggered this email */
+  description: text("description"),
+  /** Additional metadata (drill name, metric values, etc.) */
+  metadata: json("metadata"),
+  /** Whether the email was sent successfully */
+  success: int("success").default(1).notNull(), // 0 = failed, 1 = success
+  /** Error message if sending failed */
+  errorMessage: text("errorMessage"),
+  /** Resend email ID for tracking */
+  resendId: varchar("resendId", { length: 255 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type EmailNotificationLog = typeof emailNotificationLog.$inferSelect;
+export type InsertEmailNotificationLog = typeof emailNotificationLog.$inferInsert;
+
+
+// ============================================================
+// Coach Activity Log — System-generated events for the coach's Activity Feed
+// (Separate from athleteActivity which tracks athlete-initiated actions)
+// ============================================================
+export const coachActivityLog = mysqlTable("coachActivityLog", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Event type */
+  eventType: varchar("eventType", { length: 100 }).notNull(),
+  // e.g. "inactivity_flag", "milestone_reached", "email_sent", "metrics_updated", "assignment_reminder_sent"
+  /** Human-readable title */
+  title: varchar("title", { length: 255 }).notNull(),
+  /** Detailed message */
+  message: text("message").notNull(),
+  /** Related athlete ID (if applicable) */
+  athleteId: int("athleteId"),
+  /** Related athlete name */
+  athleteName: varchar("athleteName", { length: 255 }),
+  /** Additional metadata */
+  metadata: json("metadata"),
+  /** Severity: info, warning, success */
+  severity: varchar("severity", { length: 20 }).default("info").notNull(),
+  /** Whether the coach has seen/acknowledged this event */
+  isRead: int("isRead").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type CoachActivityLog = typeof coachActivityLog.$inferSelect;
+export type InsertCoachActivityLog = typeof coachActivityLog.$inferInsert;

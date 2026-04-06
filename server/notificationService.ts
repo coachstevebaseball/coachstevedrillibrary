@@ -46,10 +46,9 @@ export async function logEmailNotification(data: {
       recipientEmail: data.recipientEmail,
       emailType: data.emailType,
       subject: data.subject,
-      status: data.status,
+      success: data.status === "sent" ? 1 : 0,
       metadata: data.metadata ?? null,
       errorMessage: data.error ?? null,
-      sentAt: data.status === "sent" ? new Date() : null,
     });
   } catch (err) {
     console.error("[NotificationLog] Failed to log email:", err);
@@ -215,7 +214,7 @@ export async function runDrillDeadlineReminderJob(): Promise<number> {
 
     let sent = 0;
 
-    for (const [userId, assignments] of byUser.entries()) {
+    for (const [userId, assignments] of Array.from(byUser.entries())) {
       const [user] = await db
         .select({ email: users.email, name: users.name })
         .from(users)
@@ -227,7 +226,7 @@ export async function runDrillDeadlineReminderJob(): Promise<number> {
       const result = await sendDrillFollowUpReminder({
         athleteEmail: user.email,
         athleteName: user.name || "Athlete",
-        drills: assignments.map(a => ({
+        drills: assignments.map((a: any) => ({
           name: a.drillName,
           assignedDate: a.dueDate
             ? new Date(a.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
@@ -252,7 +251,7 @@ export async function runDrillDeadlineReminderJob(): Promise<number> {
           emailType: "drill_deadline_reminder",
           subject: `Drill Reminder: ${assignments.length} drill${assignments.length > 1 ? "s" : ""} due soon`,
           status: "sent",
-          metadata: { drillCount: assignments.length, drillIds: assignments.map(a => a.id) },
+          metadata: { drillCount: assignments.length, drillIds: assignments.map((a: any) => a.id) },
         });
 
         sent++;
@@ -391,7 +390,7 @@ export async function checkAndSendMilestoneEmail(userId: number): Promise<boolea
         and(
           eq(emailNotificationLog.recipientId, userId),
           eq(emailNotificationLog.emailType, "milestone_10_drills"),
-          gte(emailNotificationLog.sentAt, monthStart)
+          gte(emailNotificationLog.createdAt, monthStart)
         )
       )
       .limit(1);
