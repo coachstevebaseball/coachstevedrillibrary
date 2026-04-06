@@ -494,6 +494,12 @@ export const appRouter = router({
         commonMistakes: z.array(z.string()).optional(),
         progressions: z.array(z.string()).optional(),
         instructions: z.string().optional(),
+        // Metadata fields
+        drillType: z.string().optional(),
+        ageLevel: z.array(z.string()).optional(),
+        focusTags: z.array(z.string()).optional(),
+        problemsFix: z.array(z.string()).optional(),
+        pillars: z.array(z.string()).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         if (ctx.user.role !== 'admin') {

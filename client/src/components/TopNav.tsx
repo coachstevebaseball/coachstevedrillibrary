@@ -297,9 +297,9 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
         {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </button>
 
-      {/* Mobile dropdown — absolute positioned below nav */}
+      {/* Mobile dropdown — fixed to viewport so it escapes overflow:hidden on hero */}
       {mobileOpen && (
-        <div className="absolute top-full right-0 mt-2 w-64 z-50 rounded-xl border border-white/20 shadow-2xl p-2 flex flex-col gap-1 animate-fade-in-down sm:hidden" style={{background: "oklch(0.18 0.052 267 / 0.97)", backdropFilter: "blur(20px)"}}>
+        <div className="fixed top-16 right-3 w-64 z-[9999] rounded-xl border border-white/20 shadow-2xl p-2 flex flex-col gap-1 animate-fade-in-down sm:hidden" style={{background: "oklch(0.14 0.052 267 / 0.98)", backdropFilter: "blur(24px)"}}>
           {renderMobileMenu()}
         </div>
       )}

@@ -109,6 +109,12 @@ export const drillDetails = mysqlTable("drillDetails", {
   commonMistakes: json("commonMistakes").$type<string[]>(), // Array of common mistakes
   progressions: json("progressions").$type<string[]>(), // Array of progression steps
   instructions: text("instructions"), // Custom instructions entered by coach
+  // Metadata / tagging fields
+  drillType: varchar("drillType", { length: 100 }), // e.g. "Tee", "Soft Toss", "Live BP"
+  ageLevel: json("ageLevel").$type<string[]>(), // e.g. ["beginner-drills","intermediate-drills"]
+  focusTags: json("focusTags").$type<string[]>(), // e.g. ["bat speed","hip rotation"]
+  problemsFix: json("problemsFix").$type<string[]>(), // maps to drills.ts problem[]
+  pillars: json("pillars").$type<string[]>(), // coaching pillars/goals
   createdBy: int("createdBy").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),

@@ -307,6 +307,11 @@ export async function saveDrillDetail(drillId: string, detail: {
   commonMistakes?: string[];
   progressions?: string[];
   instructions?: string;
+  drillType?: string;
+  ageLevel?: string[];
+  focusTags?: string[];
+  problemsFix?: string[];
+  pillars?: string[];
 }, userId: number): Promise<boolean> {
   const db = await getDb();
   if (!db) {
@@ -318,11 +323,9 @@ export async function saveDrillDetail(drillId: string, detail: {
     const { drillDetails } = await import("../drizzle/schema");
     const { eq } = await import("drizzle-orm");
     
-    // Check if detail already exists
     const existing = await db.select().from(drillDetails).where(eq(drillDetails.drillId, drillId));
     
     if (existing.length > 0) {
-      // Build partial update - only include fields that were provided
       const updateData: Record<string, any> = { updatedAt: new Date() };
       if (detail.skillSet !== undefined) updateData.skillSet = detail.skillSet;
       if (detail.difficulty !== undefined) updateData.difficulty = detail.difficulty;
@@ -334,10 +337,14 @@ export async function saveDrillDetail(drillId: string, detail: {
       if (detail.commonMistakes !== undefined) updateData.commonMistakes = detail.commonMistakes;
       if (detail.progressions !== undefined) updateData.progressions = detail.progressions;
       if (detail.instructions !== undefined) updateData.instructions = detail.instructions;
+      if (detail.drillType !== undefined) updateData.drillType = detail.drillType;
+      if (detail.ageLevel !== undefined) updateData.ageLevel = detail.ageLevel;
+      if (detail.focusTags !== undefined) updateData.focusTags = detail.focusTags;
+      if (detail.problemsFix !== undefined) updateData.problemsFix = detail.problemsFix;
+      if (detail.pillars !== undefined) updateData.pillars = detail.pillars;
       
       await db.update(drillDetails).set(updateData).where(eq(drillDetails.drillId, drillId));
     } else {
-      // Insert new - use provided values or sensible defaults
       await db.insert(drillDetails).values({
         drillId,
         skillSet: detail.skillSet || 'Custom',
@@ -350,6 +357,11 @@ export async function saveDrillDetail(drillId: string, detail: {
         commonMistakes: detail.commonMistakes || null,
         progressions: detail.progressions || null,
         instructions: detail.instructions || null,
+        drillType: detail.drillType || null,
+        ageLevel: detail.ageLevel || null,
+        focusTags: detail.focusTags || null,
+        problemsFix: detail.problemsFix || null,
+        pillars: detail.pillars || null,
         createdBy: userId,
       });
     }
