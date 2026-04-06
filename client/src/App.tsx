@@ -24,6 +24,7 @@ import ActivityFeed from "./pages/ActivityFeed";
 import DrillComparison from "./pages/DrillComparison";
 import AthleteAssessment from "./pages/AthleteAssessment";
 import MyProfile from "./pages/MyProfile";
+import HittingCoach from "./pages/HittingCoach";
 import ProtectedRoute from "./components/ProtectedRoute";
 import EmbedHome from "./pages/EmbedHome";
 import EmbedDrillLibrary from "./pages/EmbedDrillLibrary";
@@ -75,6 +76,7 @@ function Router() {
       <Route path={"/athlete-portal"} component={AthletePortal} />
       <Route path={"/athlete-messaging"} component={AthleteMessaging} />
       <Route path={"/my-profile"} component={MyProfile} />
+      <Route path={"/hitting-coach"} component={HittingCoach} />
       <Route path={"/parent-dashboard"} component={ParentDashboard} />
       
       {/* Protected Routes — Admin Only */}

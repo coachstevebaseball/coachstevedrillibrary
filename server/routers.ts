@@ -25,6 +25,7 @@ import { videoAnalysisRouter } from "./routers-video-analysis";
 import { blastMetricsRouter } from "./routers-blast-metrics";
 import { badgesRouter } from "./routers-badges";
 import { siteContentRouter } from "./routers-site-content";
+import { hittingCoachRouter } from "./routers-hitting-coach";
 import * as drillCustomizationsDb from "./drillCustomizations";
 import { storagePut } from "./storage";
 import { checkAndSendMilestoneEmail } from "./notificationService";
@@ -33,6 +34,7 @@ export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
   siteContent: siteContentRouter,
+  hittingCoach: hittingCoachRouter,
   notifications: notificationsRouter,
   imageUpload: imageUploadRouter,
   activity: activityRouter,

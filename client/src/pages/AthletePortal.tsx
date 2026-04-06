@@ -502,6 +502,26 @@ export default function AthletePortal() {
           </div>
         )}
 
+        {/* AI Hitting Coach */}
+        <div className="mx-4 mb-4 rounded-xl overflow-hidden border border-[#e4002b]/30 bg-gradient-to-r from-[#0A1628] to-[#1a0a0a]">
+          <div className="p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-[#e4002b] flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-[#e4002b]/30 flex-shrink-0">
+                CS
+              </div>
+              <div>
+                <p className="text-white font-semibold text-sm">AI Hitting Coach</p>
+                <p className="text-white/50 text-xs">Describe your issue, get drills + cues from Coach Steve</p>
+              </div>
+            </div>
+            <Link href="/hitting-coach">
+              <button className="bg-[#e4002b] hover:bg-[#c0001f] text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors flex-shrink-0">
+                Ask Coach
+              </button>
+            </Link>
+          </div>
+        </div>
+
         {/* Swing Analyzer — standalone video upload */}
         <SwingAnalyzer />
 
