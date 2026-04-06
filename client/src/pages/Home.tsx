@@ -7,17 +7,17 @@ import {
   Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription,
 } from "@/components/ui/sheet";
 import {
-  Search, LogOut, Shield, Users, ChevronRight, Sparkles, Settings,
+  Search, Users, ChevronRight, Sparkles,
   Clock, Target, TrendingUp, SlidersHorizontal, X, Pencil,
 } from "lucide-react";
 import { HomePageSkeleton } from "@/components/Skeleton";
-import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { trpc } from "@/lib/trpc";
 import { useAllDrills } from "@/hooks/useAllDrills";
 import { DrillEditModal } from "@/components/DrillEditModal";
 import { useDrillListParams } from "@/hooks/useDrillListParams";
+import { TopNav } from "@/components/TopNav";
 import { InlineEdit } from "@/components/InlineEdit";
 import { filterOptions, drillTypeOptions } from "@/data/drills";
 
@@ -351,50 +351,8 @@ export default function Home() {
         
         <div className="container relative z-10 pt-6 pb-12 md:pt-8 md:pb-20">
           {/* Top Navigation Bar */}
-          <nav className="flex justify-between items-center mb-10 md:mb-16 animate-fade-in-down">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 bg-gradient-to-br from-secondary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-lg text-white shadow-lg shadow-secondary/20">
-                CS
-              </div>
-              <span className="font-heading font-bold text-lg text-foreground hidden sm:block">Coach Steve</span>
-            </div>
-            
-            <div className="flex items-center gap-2 flex-wrap">
-              {user && user.role === 'admin' && (
-                <>
-                  <Link href="/coach-dashboard">
-                    <Button variant="outline" size="sm" className="gap-1.5 text-xs glass border-white/10 hover:border-electric/30 hover:bg-electric/10 transition-all duration-300">
-                      <Users className="h-3.5 w-3.5" />
-                      <span className="hidden sm:inline">Dashboard</span>
-                    </Button>
-                  </Link>
-                  <Link href="/admin">
-                    <Button variant="outline" size="sm" className="gap-1.5 text-xs glass border-white/10 hover:border-electric/30 hover:bg-electric/10 transition-all duration-300">
-                      <Shield className="h-3.5 w-3.5" />
-                      <span className="hidden sm:inline">Admin</span>
-                    </Button>
-                  </Link>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={logout} 
-                    className="gap-1.5 text-xs glass border-white/10 hover:border-white/20 hover:bg-white/5 transition-all duration-300"
-                  >
-                    <LogOut className="h-3.5 w-3.5" />
-                    <span className="hidden sm:inline">Logout</span>
-                  </Button>
-                </>
-              )}
-              {!user && (
-                <a href={getLoginUrl()} title="Admin Login">
-                  <Button variant="ghost" size="sm" className="gap-1.5 text-xs text-muted-foreground/50 hover:text-muted-foreground transition-all duration-300">
-                    <Settings className="h-3.5 w-3.5" />
-                  </Button>
-                </a>
-              )}
-            </div>
-          </nav>
-          
+          <TopNav variant="hero" />
+
           {/* Hero Content */}
           <div className="max-w-4xl mx-auto text-center">
             {/* Badge */}
