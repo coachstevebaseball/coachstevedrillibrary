@@ -372,6 +372,13 @@
       "when": 1775452027336,
       "tag": "0052_condemned_valeria_richards",
       "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "5",
+      "when": 1775485314327,
+      "tag": "0053_famous_boom_boom",
+      "breakpoints": true
     }
   ]
 }
