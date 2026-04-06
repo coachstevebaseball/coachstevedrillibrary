@@ -5,6 +5,7 @@ import { getDb } from "./db";
 import { blastPlayers, blastSessions, blastMetrics, users, sessionNotes } from "../drizzle/schema";
 import { eq, asc, and, sql, desc } from "drizzle-orm";
 import * as sessionNotesDb from "./sessionNotes";
+import { sendBlastMetricsUpdateEmail } from "./notificationService";
 
 async function requireDb() {
   const db = await getDb();
@@ -305,7 +306,14 @@ export const blastMetricsRouter = router({
         exitVelocityMph: input.metrics.exitVelocityMph ?? null,
       });
 
-      // Auto-create a linked session note if the player is linked to a portal user
+      // Auto-email the linked athlete when metrics are posted (Use Case B)
+      sendBlastMetricsUpdateEmail(
+        input.playerId,
+        sessionId,
+        input.metrics,
+        input.sessionType,
+        input.sessionDate
+      ).catch(err => console.error("[BlastMetrics] Failed to send metrics email:", err));
       let linkedSessionNoteId: number | null = null;
       const shouldCreateNote = input.createSessionNote !== false; // default true
       if (shouldCreateNote) {

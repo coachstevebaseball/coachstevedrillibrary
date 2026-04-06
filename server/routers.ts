@@ -27,6 +27,7 @@ import { badgesRouter } from "./routers-badges";
 import { siteContentRouter } from "./routers-site-content";
 import * as drillCustomizationsDb from "./drillCustomizations";
 import { storagePut } from "./storage";
+import { checkAndSendMilestoneEmail } from "./notificationService";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -242,6 +243,13 @@ export const appRouter = router({
         // Allow admins to update any assignment
         if (ctx.user.role === 'admin') {
           await drillAssignmentDb.updateAssignmentStatus(input.assignmentId, input.status, input.notes);
+          // Check milestone on drill completion (Use Case E)
+          if (input.status === "completed") {
+            const assignment = await drillAssignmentDb.getAssignmentById(input.assignmentId);
+            if (assignment?.userId) {
+              checkAndSendMilestoneEmail(assignment.userId).catch(console.error);
+            }
+          }
           return { success: true };
         }
         
@@ -255,6 +263,10 @@ export const appRouter = router({
         }
         
         await drillAssignmentDb.updateAssignmentStatus(input.assignmentId, input.status, input.notes);
+        // Check milestone on drill completion (Use Case E)
+        if (input.status === "completed" && assignment.userId) {
+          checkAndSendMilestoneEmail(assignment.userId).catch(console.error);
+        }
         return { success: true };
       }),
 

@@ -9,6 +9,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { startBatchProcessor } from "../emailBatching";
+import { startScheduledJobs } from "../notificationService";
 import { storageDownload, storagePut } from "../storage";
 import { sdk } from "./sdk";
 
@@ -175,6 +176,7 @@ async function startServer() {
     
     // Start email batch processor for rate-limited activity alerts
     startBatchProcessor();
+    startScheduledJobs();
   });
 }
 
