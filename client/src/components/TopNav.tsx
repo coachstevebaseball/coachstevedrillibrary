@@ -157,8 +157,8 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
     if (!mobileOpen) return null;
 
     return (
-      <div className="absolute top-full left-0 right-0 z-50 glass border-t border-white/10 shadow-xl animate-fade-in-down">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col gap-2">
+      <div className="absolute top-full left-0 right-0 z-50 border-t border-white/10 shadow-xl animate-fade-in-down" style={{background: "oklch(0.18 0.052 267 / 0.97)", backdropFilter: "blur(20px)"}}>
+        <div className="flex flex-col gap-1">
           {user && isAdmin && (
             <>
               <MobileLink
@@ -178,7 +178,7 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
               />
               <button
                 onClick={() => { logout(); setMobileOpen(false); }}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-foreground/60 hover:text-foreground hover:bg-white/8 transition-all text-left"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all text-left"
               >
                 <LogOut className="h-4 w-4" />
                 Logout
@@ -198,7 +198,7 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
               />
               <button
                 onClick={() => { logout(); setMobileOpen(false); }}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-foreground/60 hover:text-foreground hover:bg-white/8 transition-all text-left"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all text-left"
               >
                 <LogOut className="h-4 w-4" />
                 Logout
@@ -218,7 +218,7 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
               />
               <a
                 href={loginUrl}
-                className="flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-sm text-foreground/70 hover:text-foreground hover:bg-white/8 border border-white/10 transition-all"
+                className="flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 border border-white/15 transition-all"
                 onClick={() => setMobileOpen(false)}
               >
                 <div className="flex items-center gap-3">
@@ -299,7 +299,7 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
 
       {/* Mobile dropdown — absolute positioned below nav */}
       {mobileOpen && (
-        <div className="absolute top-full right-0 mt-2 w-64 z-50 glass-card rounded-xl border border-white/10 shadow-xl p-2 flex flex-col gap-1 animate-fade-in-down sm:hidden">
+        <div className="absolute top-full right-0 mt-2 w-64 z-50 rounded-xl border border-white/20 shadow-2xl p-2 flex flex-col gap-1 animate-fade-in-down sm:hidden" style={{background: "oklch(0.18 0.052 267 / 0.97)", backdropFilter: "blur(20px)"}}>
           {renderMobileMenu()}
         </div>
       )}
@@ -339,7 +339,7 @@ function MobileLink({
           <Icon className="h-4 w-4" />
           {label}
         </div>
-        <ChevronRight className="h-4 w-4 opacity-40" />
+        <ChevronRight className="h-4 w-4 text-white/40" />
       </a>
     </Link>
   );
