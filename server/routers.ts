@@ -162,6 +162,98 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    // ── Activity Feed ────────────────────────────────────────────
+    getActivityFeed: protectedProcedure
+      .input(z.object({
+        limit: z.number().min(1).max(100).default(50),
+        offset: z.number().default(0),
+        types: z.array(z.string()).optional(), // filter by event types
+      }))
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const database = await db.getDb();
+        if (!database) return { events: [], total: 0 };
+
+        const { coachActivityLog, emailNotificationLog } = await import('../drizzle/schema');
+        const { desc, or } = await import('drizzle-orm');
+
+        // Fetch coach activity log
+        const activityEvents = await database
+          .select()
+          .from(coachActivityLog)
+          .orderBy(desc(coachActivityLog.createdAt))
+          .limit(30);
+
+        // Fetch email notification log
+        const emailEvents = await database
+          .select()
+          .from(emailNotificationLog)
+          .orderBy(desc(emailNotificationLog.createdAt))
+          .limit(30);
+
+        // Merge and sort by date
+        const merged = [
+          ...activityEvents.map((e: any) => ({
+            id: `activity-${e.id}`,
+            source: 'activity' as const,
+            eventType: e.eventType,
+            title: e.title,
+            message: e.message,
+            athleteId: e.athleteId,
+            athleteName: e.athleteName,
+            severity: e.severity,
+            isRead: e.isRead,
+            metadata: e.metadata,
+            createdAt: e.createdAt,
+          })),
+          ...emailEvents.map((e: any) => ({
+            id: `email-${e.id}`,
+            source: 'email' as const,
+            eventType: e.emailType,
+            title: e.subject,
+            message: e.description || e.subject,
+            athleteId: e.recipientId,
+            athleteName: e.recipientName,
+            severity: e.success ? 'info' : 'warning',
+            isRead: 1,
+            metadata: e.metadata,
+            createdAt: e.createdAt,
+          })),
+        ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+        return { events: merged.slice(0, 50), total: merged.length };
+      }),
+
+    markActivityRead: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const database = await db.getDb();
+        if (!database) return { success: false };
+        const { coachActivityLog } = await import('../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+        await database.update(coachActivityLog)
+          .set({ isRead: 1 })
+          .where(eq(coachActivityLog.id, input.id));
+        return { success: true };
+      }),
+
+    markAllActivityRead: protectedProcedure
+      .mutation(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const database = await db.getDb();
+        if (!database) return { success: false };
+        const { coachActivityLog } = await import('../drizzle/schema');
+        await database.update(coachActivityLog).set({ isRead: 1 });
+        return { success: true };
+      }),
+
     deleteUser: protectedProcedure
       .input(z.object({ userId: z.number() }))
       .mutation(async ({ ctx, input }) => {

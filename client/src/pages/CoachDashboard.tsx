@@ -8,7 +8,7 @@ import {
   ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, 
   Sparkles, Video, Upload, MessageSquare, BarChart3, Activity, Users, 
   LayoutTemplate, Edit3, ArrowLeftRight, FileText, ChevronRight,
-  Zap, Target, TrendingUp, Shield, Table2
+  Zap, Target, TrendingUp, Shield, Table2, Bell
 } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
@@ -25,6 +25,7 @@ import { SessionNotesTab } from "@/components/SessionNotesTab";
 import { VideoAnalysisTab } from "@/components/VideoAnalysisTab";
 import { BlastMetricsTab } from "@/components/BlastMetricsTab";
 import { PlayerReportTab } from "@/components/PlayerReportTab";
+import { ActivityFeedTab } from "@/components/ActivityFeedTab";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { InlineEdit } from "@/components/InlineEdit";
 
@@ -50,7 +51,7 @@ export default function CoachDashboard() {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [searchDrill, setSearchDrill] = useState("");
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts" | "athletes" | "planner" | "session-notes" | "video-analysis" | "blast-metrics" | "player-report">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts" | "athletes" | "planner" | "session-notes" | "video-analysis" | "blast-metrics" | "player-report" | "activity-feed">("overview");
   const [editingLayoutDrill, setEditingLayoutDrill] = useState<{ id: string; name: string } | null>(null);
   const [layoutSearchQuery, setLayoutSearchQuery] = useState("");
   const [isBulkGoalOpen, setIsBulkGoalOpen] = useState(false);
@@ -304,6 +305,7 @@ export default function CoachDashboard() {
                 { key: "video-analysis" as const, label: "Video Analysis", shortLabel: "AI Video", icon: Sparkles },
                 { key: "blast-metrics" as const, label: "Blast Metrics", shortLabel: "Blast", icon: Activity },
                 { key: "player-report" as const, label: "Player Report", shortLabel: "Report", icon: FileText },
+                { key: "activity-feed" as const, label: "Activity Feed", shortLabel: "Feed", icon: Bell },
               ].map((tab) => (
                 <button
                   key={tab.key}
@@ -351,6 +353,8 @@ export default function CoachDashboard() {
           <BlastMetricsTab />
         ) : activeTab === "player-report" ? (
           <PlayerReportTab />
+        ) : activeTab === "activity-feed" ? (
+          <ActivityFeedTab />
         ) : activeTab === "page-layouts" ? (
           <div className="space-y-6">
             {editingLayoutDrill ? (
