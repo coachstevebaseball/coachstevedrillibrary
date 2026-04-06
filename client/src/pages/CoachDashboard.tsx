@@ -24,6 +24,7 @@ import PracticePlanner from "@/components/PracticePlanner";
 import { SessionNotesTab } from "@/components/SessionNotesTab";
 import { VideoAnalysisTab } from "@/components/VideoAnalysisTab";
 import { BlastMetricsTab } from "@/components/BlastMetricsTab";
+import { PlayerReportTab } from "@/components/PlayerReportTab";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { InlineEdit } from "@/components/InlineEdit";
 
@@ -49,7 +50,7 @@ export default function CoachDashboard() {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [searchDrill, setSearchDrill] = useState("");
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts" | "athletes" | "planner" | "session-notes" | "video-analysis" | "blast-metrics">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts" | "athletes" | "planner" | "session-notes" | "video-analysis" | "blast-metrics" | "player-report">("overview");
   const [editingLayoutDrill, setEditingLayoutDrill] = useState<{ id: string; name: string } | null>(null);
   const [layoutSearchQuery, setLayoutSearchQuery] = useState("");
   const [isBulkGoalOpen, setIsBulkGoalOpen] = useState(false);
@@ -302,6 +303,7 @@ export default function CoachDashboard() {
                 { key: "session-notes" as const, label: "Session Notes", shortLabel: "Notes", icon: FileText },
                 { key: "video-analysis" as const, label: "Video Analysis", shortLabel: "AI Video", icon: Sparkles },
                 { key: "blast-metrics" as const, label: "Blast Metrics", shortLabel: "Blast", icon: Activity },
+                { key: "player-report" as const, label: "Player Report", shortLabel: "Report", icon: FileText },
               ].map((tab) => (
                 <button
                   key={tab.key}
@@ -347,6 +349,8 @@ export default function CoachDashboard() {
           <VideoAnalysisTab />
         ) : activeTab === "blast-metrics" ? (
           <BlastMetricsTab />
+        ) : activeTab === "player-report" ? (
+          <PlayerReportTab />
         ) : activeTab === "page-layouts" ? (
           <div className="space-y-6">
             {editingLayoutDrill ? (

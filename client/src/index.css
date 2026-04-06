@@ -863,3 +863,10 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Player Report editor placeholder */
+[contenteditable][data-placeholder]:empty:before {
+  content: attr(data-placeholder);
+  color: rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+}

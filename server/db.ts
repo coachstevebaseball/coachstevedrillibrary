@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, notifications, notificationPreferences, InsertNotificationPreference } from "../drizzle/schema";
+import { InsertUser, users, notifications, notificationPreferences, InsertNotificationPreference, drillAssignments } from "../drizzle/schema";
 import { ENV } from './_core/env';
 import { eq, and, desc, count } from "drizzle-orm";
 
@@ -1307,5 +1307,44 @@ export async function getParentOfChild(childUserId: number) {
   } catch (error) {
     console.error("[Database] Failed to get parent of child:", error);
     return null;
+  }
+}
+
+export async function deleteUser(userId: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    // Delete associated data first
+    await db.delete(drillAssignments).where(eq(drillAssignments.userId, userId));
+    await db.delete(notifications).where(eq(notifications.userId, userId));
+    await db.delete(users).where(eq(users.id, userId));
+    return true;
+  } catch (error) {
+    console.error("[DB] Failed to delete user:", error);
+    return false;
+  }
+}
+
+export async function updateUserName(userId: number, name: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    await db.update(users).set({ name }).where(eq(users.id, userId));
+    return true;
+  } catch (error) {
+    console.error("[DB] Failed to update user name:", error);
+    return false;
+  }
+}
+
+export async function updateUserEmail(userId: number, email: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    await db.update(users).set({ email }).where(eq(users.id, userId));
+    return true;
+  } catch (error) {
+    console.error("[DB] Failed to update user email:", error);
+    return false;
   }
 }

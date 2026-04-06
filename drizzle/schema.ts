@@ -699,10 +699,18 @@ export type InsertBlastSession = typeof blastSessions.$inferInsert;
 export const blastMetrics = mysqlTable("blastMetrics", {
   id: int("id").autoincrement().primaryKey(),
   sessionId: varchar("sessionId", { length: 36 }).notNull(),
+  // Core metrics
   batSpeedMph: varchar("batSpeedMph", { length: 10 }),
   onPlaneEfficiencyPercent: varchar("onPlaneEfficiencyPercent", { length: 10 }),
   attackAngleDeg: varchar("attackAngleDeg", { length: 10 }),
   exitVelocityMph: varchar("exitVelocityMph", { length: 10 }),
+  // Extended Blast Motion metrics
+  peakHandSpeedMph: varchar("peakHandSpeedMph", { length: 10 }),
+  rotationalAccelerationG: varchar("rotationalAccelerationG", { length: 10 }),
+  connectionAtImpactDeg: varchar("connectionAtImpactDeg", { length: 10 }),
+  earlyConnectionDeg: varchar("earlyConnectionDeg", { length: 10 }),
+  powerKpi: varchar("powerKpi", { length: 10 }),
+  timeToContactSec: varchar("timeToContactSec", { length: 10 }),
 });
 export type BlastMetric = typeof blastMetrics.$inferSelect;
 export type InsertBlastMetric = typeof blastMetrics.$inferInsert;

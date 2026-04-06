@@ -161,6 +161,38 @@ export const appRouter = router({
         await runStreakReminderJob();
         return { success: true };
       }),
+
+    deleteUser: protectedProcedure
+      .input(z.object({ userId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        if (input.userId === ctx.user.id) {
+          throw new TRPCError({ code: 'BAD_REQUEST', message: 'Cannot delete your own account' });
+        }
+        const success = await db.deleteUser(input.userId);
+        return { success };
+      }),
+
+    updateUserInfo: protectedProcedure
+      .input(z.object({
+        userId: z.number(),
+        name: z.string().optional(),
+        email: z.string().email().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        if (input.name !== undefined) {
+          await db.updateUserName(input.userId, input.name);
+        }
+        if (input.email !== undefined) {
+          await db.updateUserEmail(input.userId, input.email);
+        }
+        return { success: true };
+      }),
   }),
 
   // Drill assignment router for coach dashboard
