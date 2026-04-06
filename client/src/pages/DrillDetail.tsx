@@ -1631,25 +1631,7 @@ export default function DrillDetail() {
               </div>
             </div>
 
-            {/* Step-by-step — rendered from drill detail data (was previously omitted) */}
-            {descriptionSteps.length > 0 && (
-              <section className="rounded-xl border border-border bg-card/40 overflow-hidden">
-                <div className="px-4 py-3 md:px-5 md:py-3.5 border-b border-border/80 bg-muted/25">
-                  <h2 className="text-lg md:text-xl font-heading font-bold text-foreground flex items-center gap-2">
-                    <Target className="h-5 w-5 text-primary shrink-0" />
-                    <InlineEdit contentKey={`drill.detail.${id}.stepsHeading`} defaultValue="Step-by-step" as="span" />
-                  </h2>
-                  <p className="text-xs text-muted-foreground mt-1 md:mt-0.5">Follow in order — adjust for your space and age group.</p>
-                </div>
-                <ol className="list-decimal list-outside space-y-2.5 md:space-y-3 px-4 py-4 md:px-6 md:py-5 ml-4 md:ml-5 text-foreground/90 text-sm md:text-base leading-relaxed marker:text-primary marker:font-semibold">
-                  {descriptionSteps.map((step, idx) => (
-                    <li key={idx} className="pl-1.5">
-                      {step}
-                    </li>
-                  ))}
-                </ol>
-              </section>
-            )}
+
 
             {addDifficultySteps.length > 0 && (
               <CollapsibleSection title="Added difficulty" icon={TrendingUp} defaultOpen={false}>
