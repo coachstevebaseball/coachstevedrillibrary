@@ -673,6 +673,7 @@ export default function CoachDashboard() {
             </div>
           </div>
         )}
+        </TabErrorBoundary>
       </main>
     </div>
   );
