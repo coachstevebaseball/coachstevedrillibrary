@@ -147,6 +147,7 @@ export async function sendBlastMetricsUpdateEmail(
 
     const result = await getResend().emails.send({
       from: ENV.resendFromEmail,
+      ...(ENV.resendReplyTo ? { replyTo: ENV.resendReplyTo } : {}),
       to: user.email,
       subject: `⚾ New Swing Metrics Posted — ${sessionType} Session`,
       html: emailHtml,
@@ -448,6 +449,7 @@ export async function checkAndSendMilestoneEmail(userId: number): Promise<boolea
 
     const sendResult = await getResend().emails.send({
       from: ENV.resendFromEmail,
+      ...(ENV.resendReplyTo ? { replyTo: ENV.resendReplyTo } : {}),
       to: user.email,
       subject: `🏆 Milestone: 10 Drills Completed in ${monthName}!`,
       html: emailHtml,
