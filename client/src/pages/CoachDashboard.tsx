@@ -8,7 +8,7 @@ import {
   ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, 
   Sparkles, Video, Upload, MessageSquare, BarChart3, Activity, Users, 
   LayoutTemplate, Edit3, ArrowLeftRight, FileText, ChevronRight,
-  Zap, Target, TrendingUp, Shield, Table2, Bell, Tag
+  Zap, Target, TrendingUp, Shield, Table2, Bell, Tag, Mail
 } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
@@ -28,6 +28,7 @@ import { PlayerReportTab } from "@/components/PlayerReportTab";
 import { ActivityFeedTab } from "@/components/ActivityFeedTab";
 import { DuplicateDetectionPanel } from "@/components/DuplicateDetectionPanel";
 import { DrillTagEditor } from "@/components/DrillTagEditor";
+import { EmailSettingsPanel } from "@/components/EmailSettingsPanel";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { InlineEdit } from "@/components/InlineEdit";
 
@@ -53,7 +54,7 @@ export default function CoachDashboard() {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [searchDrill, setSearchDrill] = useState("");
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts" | "athletes" | "planner" | "session-notes" | "video-analysis" | "blast-metrics" | "player-report" | "activity-feed" | "dedup" | "drill-tags">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts" | "athletes" | "planner" | "session-notes" | "video-analysis" | "blast-metrics" | "player-report" | "activity-feed" | "dedup" | "drill-tags" | "email-settings">("overview");
   const [editingLayoutDrill, setEditingLayoutDrill] = useState<{ id: string; name: string } | null>(null);
   const [layoutSearchQuery, setLayoutSearchQuery] = useState("");
   const [isBulkGoalOpen, setIsBulkGoalOpen] = useState(false);
@@ -310,6 +311,7 @@ export default function CoachDashboard() {
                 { key: "activity-feed" as const, label: "Activity Feed", shortLabel: "Feed", icon: Bell },
                 { key: "dedup" as const, label: "Dedup Athletes", shortLabel: "Dedup", icon: Users },
                 { key: "drill-tags" as const, label: "Drill Tags", shortLabel: "Tags", icon: Tag },
+                { key: "email-settings" as const, label: "Email Settings", shortLabel: "Email", icon: Mail },
               ].map((tab) => (
                 <button
                   key={tab.key}
@@ -371,6 +373,19 @@ export default function CoachDashboard() {
               </p>
             </div>
             <DrillTagEditor />
+          </div>
+        ) : activeTab === "email-settings" ? (
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <Mail className="h-6 w-6 text-teal-400" />
+                Email Settings & Diagnostics
+              </h2>
+              <p className="text-white/50 mt-1 text-sm">
+                Check email config, test delivery, and fix notification issues.
+              </p>
+            </div>
+            <EmailSettingsPanel />
           </div>
         ) : activeTab === "dedup" ? (
           <div className="space-y-4">

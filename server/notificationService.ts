@@ -22,7 +22,7 @@ import {
 import { sendDrillFollowUpReminder, getResend } from "./email";
 import { ENV } from "./_core/env";
 
-const BASE_URL = process.env.VITE_APP_URL || "https://coachstevemobilecoach.com";
+const BASE_URL = ENV.appUrl;
 
 // ============================================================
 // Email Notification Logger
@@ -146,7 +146,7 @@ export async function sendBlastMetricsUpdateEmail(
     if (!ENV.resendApiKey) return false;
 
     const result = await getResend().emails.send({
-      from: "coach@coachstevemobilecoach.com",
+      from: ENV.resendFromEmail,
       to: user.email,
       subject: `⚾ New Swing Metrics Posted — ${sessionType} Session`,
       html: emailHtml,
@@ -447,7 +447,7 @@ export async function checkAndSendMilestoneEmail(userId: number): Promise<boolea
     if (!ENV.resendApiKey) return false;
 
     const sendResult = await getResend().emails.send({
-      from: "coach@coachstevemobilecoach.com",
+      from: ENV.resendFromEmail,
       to: user.email,
       subject: `🏆 Milestone: 10 Drills Completed in ${monthName}!`,
       html: emailHtml,

@@ -1,6 +1,7 @@
 import { eq, and, or, isNull, inArray, desc, lte, gte, sql } from "drizzle-orm";
 import { drillAssignments, assignmentProgress, InsertDrillAssignment, InsertAssignmentProgress, users, notifications, invites } from "../drizzle/schema";
 import { getDb } from "./db";
+import { ENV } from "./_core/env";
 import { sendDrillAssignmentEmail } from "./email";
 
 /**
@@ -50,18 +51,31 @@ export async function assignDrill(
   const result = await db.insert(drillAssignments).values(assignment);
 
   // Send email notification
+  let emailResult: { success: boolean; error?: string } = { success: false, error: "No email address" };
   if (email) {
-    const portalUrl = `https://coachstevemobilecoach.com/athlete-portal`;
-    await sendDrillAssignmentEmail({
-      athleteEmail: email,
-      athleteName: name || "Athlete",
-      drillName,
-      drillDifficulty: drillDetails?.difficulty || "Unknown",
-      drillDuration: drillDetails?.duration || "Unknown",
-      coachNotes: notes,
-      coachName,
-      portalUrl,
-    });
+    const portalUrl = `${ENV.appUrl}/athlete-portal`;
+    try {
+      emailResult = await sendDrillAssignmentEmail({
+        athleteEmail: email,
+        athleteName: name || "Athlete",
+        drillName,
+        drillDifficulty: drillDetails?.difficulty || "Unknown",
+        drillDuration: drillDetails?.duration || "Unknown",
+        coachNotes: notes,
+        coachName,
+        portalUrl,
+      });
+      if (emailResult.success) {
+        console.log(`[Email] ✅ Drill assignment email sent to ${email} for drill: ${drillName}`);
+      } else {
+        console.error(`[Email] ❌ Failed to send to ${email}: ${emailResult.error}`);
+      }
+    } catch (err) {
+      console.error(`[Email] ❌ Exception sending to ${email}:`, err);
+      emailResult = { success: false, error: err instanceof Error ? err.message : String(err) };
+    }
+  } else {
+    console.warn(`[Email] ⚠️ No email address for userId=${userId} inviteId=${inviteId}, skipping notification`);
   }
 
   // Create in-app notification for athlete (only if userId exists)

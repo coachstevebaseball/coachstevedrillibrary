@@ -1,4 +1,5 @@
 import { COOKIE_NAME } from "@shared/const";
+import { ENV } from "./_core/env";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
@@ -84,7 +85,7 @@ export const appRouter = router({
             const emailResult = await sendEmail({
               athleteEmail: user.email,
               athleteName: user.name || 'Athlete',
-              portalUrl: 'https://coachstevemobilecoach.com/athlete-portal',
+              portalUrl: `${ENV.appUrl}/athlete-portal`,
             });
             if (emailResult.success) {
               await db.markWelcomeEmailSent(input.userId);
@@ -129,7 +130,7 @@ export const appRouter = router({
         const result = await sendEmail({
           athleteEmail: user.email,
           athleteName: user.name || 'Athlete',
-          portalUrl: 'https://coachstevemobilecoach.com/athlete-portal',
+          portalUrl: `${ENV.appUrl}/athlete-portal`,
         });
         if (result.success) {
           await db.markWelcomeEmailSent(input.userId);
@@ -160,6 +161,70 @@ export const appRouter = router({
         const { runStreakReminderJob } = await import('./streakReminderJob');
         await runStreakReminderJob();
         return { success: true };
+      }),
+
+    // ── Email diagnostics ────────────────────────────────────────
+    testEmailDelivery: protectedProcedure
+      .input(z.object({ toEmail: z.string().email() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const hasKey = !!ENV.resendApiKey;
+        const fromEmail = ENV.resendFromEmail;
+        const appUrl = ENV.appUrl;
+
+        if (!hasKey) {
+          return {
+            success: false,
+            error: 'RESEND_API_KEY is not set in environment variables',
+            hasKey: false,
+            fromEmail,
+            appUrl,
+          };
+        }
+
+        try {
+          const { getResend } = await import('./email');
+          const resend = getResend();
+          const result = await resend.emails.send({
+            from: fromEmail,
+            to: input.toEmail,
+            subject: '✅ Coach Steve App — Email Test',
+            html: `<h2>Email delivery is working!</h2>
+                   <p>This is a test from the Coach Steve Baseball platform.</p>
+                   <p><strong>From:</strong> ${fromEmail}</p>
+                   <p><strong>Portal URL:</strong> ${appUrl}</p>
+                   <p><em>If you received this, email notifications are configured correctly.</em></p>`,
+          });
+
+          if (result.error) {
+            return { success: false, error: result.error.message, hasKey: true, fromEmail, appUrl };
+          }
+          return { success: true, messageId: result.data?.id, hasKey: true, fromEmail, appUrl };
+        } catch (err) {
+          return {
+            success: false,
+            error: err instanceof Error ? err.message : String(err),
+            hasKey: true,
+            fromEmail,
+            appUrl,
+          };
+        }
+      }),
+
+    getEmailStatus: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return {
+          hasResendKey: !!ENV.resendApiKey,
+          fromEmail: ENV.resendFromEmail,
+          appUrl: ENV.appUrl,
+          hasGeminiKey: !!ENV.geminiApiKey,
+          hasForgeKey: !!ENV.forgeApiKey,
+        };
       }),
 
     // ── Activity Feed ────────────────────────────────────────────

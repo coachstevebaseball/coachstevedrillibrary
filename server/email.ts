@@ -35,7 +35,7 @@ export async function sendDrillAssignmentEmail(data: DrillAssignmentEmailData): 
     const emailHtml = generateDrillAssignmentEmailHtml(data);
 
     const result = await getResend().emails.send({
-      from: "coach@coachstevemobilecoach.com",
+      from: ENV.resendFromEmail,
       to: data.athleteEmail,
       subject: `New Drill Assignment: ${data.drillName}`,
       html: emailHtml,
@@ -222,7 +222,7 @@ export async function sendSubmissionNotificationToCoach(data: SubmissionNotifica
     `;
 
     const result = await getResend().emails.send({
-      from: "coach@coachstevemobilecoach.com",
+      from: ENV.resendFromEmail,
       to: data.coachEmail,
       subject: `New Submission: ${data.athleteName} - ${data.drillName}`,
       html: emailHtml,
@@ -306,7 +306,7 @@ export async function sendFeedbackNotificationToAthlete(data: FeedbackNotificati
     `;
 
     const result = await getResend().emails.send({
-      from: "coach@coachstevemobilecoach.com",
+      from: ENV.resendFromEmail,
       to: data.athleteEmail,
       subject: `Feedback from ${data.coachName}: ${data.drillName}`,
       html: emailHtml,
@@ -345,7 +345,7 @@ export async function sendInviteEmail(data: InviteEmailData): Promise<{ success:
       : "Join Your Team on USA Baseball Drills Directory";
 
     const result = await getResend().emails.send({
-      from: "coach@coachstevemobilecoach.com",
+      from: ENV.resendFromEmail,
       to: data.toEmail,
       subject: subject,
       html: emailHtml,
@@ -464,7 +464,7 @@ export async function sendEmailVerificationEmail(data: EmailVerificationData): P
     const emailHtml = generateEmailVerificationHtml(data);
 
     const result = await getResend().emails.send({
-      from: "coach@coachstevemobilecoach.com",
+      from: ENV.resendFromEmail,
       to: data.toEmail,
       subject: "Verify Your Email - Coach Steve Baseball Drills",
       html: emailHtml,
@@ -552,7 +552,7 @@ export async function sendInviteExpirationReminderEmail(data: InviteExpirationRe
     const emailHtml = generateInviteExpirationReminderHtml(data);
 
     const result = await getResend().emails.send({
-      from: "coach@coachstevemobilecoach.com",
+      from: ENV.resendFromEmail,
       to: data.toEmail,
       subject: "Your Invitation Expires Soon - Coach Steve Baseball Drills",
       html: emailHtml,
@@ -657,7 +657,7 @@ export async function sendWelcomeEmail(data: WelcomeEmailData): Promise<{ succes
     const emailHtml = generateWelcomeEmailHtml(data);
 
     const result = await getResend().emails.send({
-      from: "coach@coachstevemobilecoach.com",
+      from: ENV.resendFromEmail,
       to: data.athleteEmail,
       subject: "Welcome to Coach Steve's Baseball Drills Directory! 🎉",
       html: emailHtml,
@@ -865,7 +865,7 @@ export async function sendActivityAlertEmail(data: ActivityAlertEmailData): Prom
     `;
 
     const result = await getResend().emails.send({
-      from: "coach@coachstevemobilecoach.com",
+      from: ENV.resendFromEmail,
       to: data.coachEmail,
       subject: `🔔 ${data.athleteName} ${getActivitySubject(data.activityType)}`,
       html: emailHtml,
@@ -1016,7 +1016,7 @@ export async function sendDrillFollowUpReminder(data: DrillFollowUpReminderData)
     `;
 
     const result = await getResend().emails.send({
-      from: "coach@coachstevemobilecoach.com",
+      from: ENV.resendFromEmail,
       to: data.athleteEmail,
       subject: `Drill Reminder: ${data.drills.length} drill${data.drills.length > 1 ? 's' : ''} waiting for you`,
       html: emailHtml,
@@ -1135,7 +1135,7 @@ export async function sendPracticePlanShareEmail(data: PracticePlanShareData): P
     `;
 
     const result = await getResend().emails.send({
-      from: "coach@coachstevemobilecoach.com",
+      from: ENV.resendFromEmail,
       to: data.athleteEmail,
       subject: `Practice Plan: ${data.planTitle}`,
       html: emailHtml,
@@ -1228,7 +1228,7 @@ export async function sendVideoAnalysisFeedbackEmail(data: VideoAnalysisFeedback
 </html>`;
 
     const result = await getResend().emails.send({
-      from: "coach@coachstevemobilecoach.com",
+      from: ENV.resendFromEmail,
       to: data.athleteEmail,
       subject: `Video Feedback: ${data.drillName} — Coach ${data.coachName}`,
       html: emailHtml,

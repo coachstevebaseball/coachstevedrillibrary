@@ -8,6 +8,8 @@ export const ENV = {
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
   resendApiKey: process.env.RESEND_API_KEY ?? "",
+  resendFromEmail: process.env.RESEND_FROM_EMAIL ?? "onboarding@resend.dev",
+  appUrl: process.env.VITE_APP_URL ?? process.env.APP_URL ?? "https://coachstevemobilecoach.manus.space",
   geminiApiKey: process.env.GEMINI_API_KEY ?? "",
   openaiApiKey: process.env.OPENAI_API_KEY ?? "",
   embedAllowedOrigins: process.env.EMBED_ALLOWED_ORIGINS ?? "",
