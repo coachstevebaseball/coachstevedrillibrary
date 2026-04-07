@@ -3,6 +3,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { ENV } from "./_core/env";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { invokeLLM } from "./_core/llm";
 
 const COACH_STEVE_SYSTEM = `You are Coach Steve, an elite baseball hitting instructor. Your background:
 - Division I All-American at Stony Brook University (Louisville Slugger Freshman All-American, 2012)
@@ -73,32 +74,50 @@ export const hittingCoachRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      if (!ENV.geminiApiKey) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "AI coach is not configured. Contact Coach Steve.",
-        });
-      }
-
       try {
-        const genAI = new GoogleGenerativeAI(ENV.geminiApiKey);
-        const model = genAI.getGenerativeModel({
-          model: "gemini-1.5-flash",
-          systemInstruction: COACH_STEVE_SYSTEM,
-        });
+        let response: string;
 
-        const history = input.history.map((m) => ({
-          role: m.role,
-          parts: [{ text: m.content }],
-        }));
-
-        const chat = model.startChat({ history });
-        const result = await chat.sendMessage(input.message);
-        const response = result.response.text();
+        if (ENV.geminiApiKey) {
+          // Use Gemini directly when key is available
+          const genAI = new GoogleGenerativeAI(ENV.geminiApiKey);
+          const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-flash",
+            systemInstruction: COACH_STEVE_SYSTEM,
+          });
+          const history = input.history.map((m) => ({
+            role: m.role,
+            parts: [{ text: m.content }],
+          }));
+          const chat = model.startChat({ history });
+          const result = await chat.sendMessage(input.message);
+          response = result.response.text();
+        } else if (ENV.forgeApiKey) {
+          // Fall back to Manus forge LLM proxy (always available on platform)
+          const messages: { role: "user" | "assistant" | "system"; content: string }[] = [
+            { role: "system", content: COACH_STEVE_SYSTEM },
+            ...input.history.map((m) => ({
+              role: m.role === "model" ? "assistant" as const : "user" as const,
+              content: m.content,
+            })),
+            { role: "user", content: input.message },
+          ];
+          const result = await invokeLLM({ messages });
+          const content = result.choices?.[0]?.message?.content;
+          if (!content || typeof content !== "string") {
+            throw new Error("No response from AI coach");
+          }
+          response = content;
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "AI coach is not configured. Contact Coach Steve.",
+          });
+        }
 
         return { success: true, response };
       } catch (error) {
         console.error("[HittingCoach] Error:", error);
+        if (error instanceof TRPCError) throw error;
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message:

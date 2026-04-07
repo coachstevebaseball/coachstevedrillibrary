@@ -1,4 +1,5 @@
 import { useAuth } from "@/_core/hooks/useAuth";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -101,20 +102,33 @@ function SkillIcon({ category }: { category: string }) {
 export default function AthletePortal() {
   useScrollRestoration();
   const { user, loading, logout } = useAuth();
+  const [location] = useLocation();
+  // Admin "view as athlete" — reads ?viewAs=<userId> from URL
+  const viewAsId = (() => {
+    const params = new URLSearchParams(window.location.search);
+    const v = params.get("viewAs");
+    return v ? parseInt(v, 10) : null;
+  })();
+  const isViewingAs = !!(viewAsId && user?.role === "admin");
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
   const [showDrillModal, setShowDrillModal] = useState(false);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
 
-  // Fetch user's assignments
-  const { data: userAssignments = [], isLoading: assignmentsLoading } = trpc.drillAssignments.getUserAssignments.useQuery(
+  // Fetch user's assignments (or viewAs athlete's assignments for admin)
+  const { data: ownAssignments = [], isLoading: assignmentsLoading } = trpc.drillAssignments.getUserAssignments.useQuery(
     undefined,
-    { enabled: !!user?.id }
+    { enabled: !!user?.id && !isViewingAs }
   );
+  const { data: viewAsAssignments = [], isLoading: viewAsLoading } = trpc.drillAssignments.getAssignmentsForUser.useQuery(
+    { userId: viewAsId! },
+    { enabled: isViewingAs }
+  );
+  const userAssignments = isViewingAs ? viewAsAssignments : ownAssignments;
 
   // Fetch user's streak
   const { data: streak = 0 } = trpc.drillAssignments.getStreak.useQuery(
     undefined,
-    { enabled: !!user?.id }
+    { enabled: !!user?.id && !isViewingAs }
   );
 
   // Fetch user's favorite drills
@@ -256,6 +270,18 @@ export default function AthletePortal() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Admin "View as Athlete" banner */}
+      {isViewingAs && (
+        <div className="bg-amber-500 text-black text-xs font-bold text-center py-2 px-4 flex items-center justify-center gap-2 sticky top-0 z-50">
+          <span>👁 ADMIN PREVIEW — Viewing as athlete #{viewAsId}</span>
+          <button
+            onClick={() => window.close()}
+            className="ml-3 bg-black/20 hover:bg-black/30 text-black px-2 py-0.5 rounded text-xs"
+          >
+            Close
+          </button>
+        </div>
+      )}
       {/* Header with glassmorphism */}
       <header className="glass sticky top-0 z-40 border-b border-white/10">
         <div className="flex items-center justify-between max-w-lg mx-auto px-4 py-3">

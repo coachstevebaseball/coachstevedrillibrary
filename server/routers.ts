@@ -242,6 +242,53 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    // ── Duplicate athlete detection ─────────────────────────────
+    findDuplicateAthletes: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const allUsers = await db.getAllUsers();
+        // Group by normalised email (lowercase, trimmed)
+        const byEmail = new Map<string, typeof allUsers>();
+        for (const u of allUsers) {
+          if (!u.email) continue;
+          const key = u.email.toLowerCase().trim();
+          if (!byEmail.has(key)) byEmail.set(key, []);
+          byEmail.get(key)!.push(u);
+        }
+        // Also group by normalised name (case-insensitive)
+        const byName = new Map<string, typeof allUsers>();
+        for (const u of allUsers) {
+          if (!u.name) continue;
+          const key = u.name.toLowerCase().trim();
+          if (!byName.has(key)) byName.set(key, []);
+          byName.get(key)!.push(u);
+        }
+        const groups: {
+          reason: string;
+          key: string;
+          users: { id: number; name: string | null; email: string | null; createdAt: Date | null }[];
+        }[] = [];
+        for (const [email, users] of byEmail.entries()) {
+          if (users.length > 1) {
+            groups.push({ reason: 'Same email', key: email, users });
+          }
+        }
+        for (const [name, users] of byName.entries()) {
+          if (users.length > 1) {
+            // Avoid double-reporting if already caught by email
+            const alreadyReported = groups.some(g =>
+              g.users.some(u => users.find(u2 => u2.id === u.id))
+            );
+            if (!alreadyReported) {
+              groups.push({ reason: 'Same name', key: name, users });
+            }
+          }
+        }
+        return groups;
+      }),
+
     markAllActivityRead: protectedProcedure
       .mutation(async ({ ctx }) => {
         if (ctx.user.role !== 'admin') {
@@ -420,6 +467,16 @@ export const appRouter = router({
     getUserAssignments: protectedProcedure.query(async ({ ctx }) => {
       return await drillAssignmentDb.getUserAssignments(ctx.user.id);
     }),
+
+    // Admin: get assignments for any user (for "view as athlete" feature)
+    getAssignmentsForUser: protectedProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillAssignmentDb.getUserAssignments(input.userId);
+      }),
 
     getStreak: protectedProcedure.query(async ({ ctx }) => {
       return await drillAssignmentDb.calculateStreak(ctx.user.id);
@@ -600,6 +657,40 @@ export const appRouter = router({
         await db.saveDrillDetail(input.drillId, input as any, ctx.user.id);
         return { success: true };
       }),
+    // Update tags/metadata for an existing drill
+    updateDrillMetadata: protectedProcedure
+      .input(z.object({
+        drillId: z.string(),
+        drillType: z.string().optional(),
+        ageLevel: z.array(z.string()).optional(),
+        focusTags: z.array(z.string()).optional(),
+        problemsFix: z.array(z.string()).optional(),
+        pillars: z.array(z.string()).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        // Only update the metadata fields — preserve existing content
+        const existing = await db.getDrillDetail(input.drillId);
+        await db.saveDrillDetail(input.drillId, {
+          drillType: input.drillType,
+          ageLevel: input.ageLevel,
+          focusTags: input.focusTags,
+          problemsFix: input.problemsFix,
+          pillars: input.pillars,
+          // Preserve existing content fields if record exists
+          skillSet: (existing as any)?.skillSet || 'Custom',
+          difficulty: (existing as any)?.difficulty || 'Medium',
+          athletes: (existing as any)?.athletes || '',
+          time: (existing as any)?.time || '',
+          equipment: (existing as any)?.equipment || '',
+          goal: (existing as any)?.goal || '',
+          description: (existing as any)?.description || [],
+        }, ctx.user.id);
+        return { success: true };
+      }),
+
     bulkUpdateGoals: protectedProcedure
       .input(z.object({ goals: z.record(z.string(), z.string()) }))
       .mutation(async ({ ctx, input }) => {

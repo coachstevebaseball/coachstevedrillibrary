@@ -1303,6 +1303,8 @@ export default function DrillDetail() {
         drillId: id,
         instructions: customInstructions
       });
+      // Invalidate so the page re-fetches the saved content immediately
+      trpcUtils.drillDetails.getDrillDetail.invalidate({ drillId: id });
     } catch (error) {
       console.error('Failed to save instructions:', error);
     }

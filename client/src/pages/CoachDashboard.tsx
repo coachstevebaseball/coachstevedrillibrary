@@ -8,7 +8,7 @@ import {
   ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, 
   Sparkles, Video, Upload, MessageSquare, BarChart3, Activity, Users, 
   LayoutTemplate, Edit3, ArrowLeftRight, FileText, ChevronRight,
-  Zap, Target, TrendingUp, Shield, Table2, Bell
+  Zap, Target, TrendingUp, Shield, Table2, Bell, Tag
 } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
@@ -26,6 +26,8 @@ import { VideoAnalysisTab } from "@/components/VideoAnalysisTab";
 import { BlastMetricsTab } from "@/components/BlastMetricsTab";
 import { PlayerReportTab } from "@/components/PlayerReportTab";
 import { ActivityFeedTab } from "@/components/ActivityFeedTab";
+import { DuplicateDetectionPanel } from "@/components/DuplicateDetectionPanel";
+import { DrillTagEditor } from "@/components/DrillTagEditor";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { InlineEdit } from "@/components/InlineEdit";
 
@@ -51,7 +53,7 @@ export default function CoachDashboard() {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [searchDrill, setSearchDrill] = useState("");
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts" | "athletes" | "planner" | "session-notes" | "video-analysis" | "blast-metrics" | "player-report" | "activity-feed">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts" | "athletes" | "planner" | "session-notes" | "video-analysis" | "blast-metrics" | "player-report" | "activity-feed" | "dedup" | "drill-tags">("overview");
   const [editingLayoutDrill, setEditingLayoutDrill] = useState<{ id: string; name: string } | null>(null);
   const [layoutSearchQuery, setLayoutSearchQuery] = useState("");
   const [isBulkGoalOpen, setIsBulkGoalOpen] = useState(false);
@@ -306,6 +308,8 @@ export default function CoachDashboard() {
                 { key: "blast-metrics" as const, label: "Blast Metrics", shortLabel: "Blast", icon: Activity },
                 { key: "player-report" as const, label: "Player Report", shortLabel: "Report", icon: FileText },
                 { key: "activity-feed" as const, label: "Activity Feed", shortLabel: "Feed", icon: Bell },
+                { key: "dedup" as const, label: "Dedup Athletes", shortLabel: "Dedup", icon: Users },
+                { key: "drill-tags" as const, label: "Drill Tags", shortLabel: "Tags", icon: Tag },
               ].map((tab) => (
                 <button
                   key={tab.key}
@@ -355,6 +359,32 @@ export default function CoachDashboard() {
           <PlayerReportTab />
         ) : activeTab === "activity-feed" ? (
           <ActivityFeedTab />
+        ) : activeTab === "drill-tags" ? (
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <Tag className="h-6 w-6 text-[#e4002b]" />
+                Drill Tag Editor
+              </h2>
+              <p className="text-white/50 mt-1 text-sm">
+                Tag existing drills with type, age level, focus areas, and coaching pillars.
+              </p>
+            </div>
+            <DrillTagEditor />
+          </div>
+        ) : activeTab === "dedup" ? (
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <Users className="h-6 w-6 text-amber-400" />
+                Duplicate Athlete Detection
+              </h2>
+              <p className="text-white/50 mt-1 text-sm">
+                Scan for duplicate records by email or name. Keep the first, remove extras.
+              </p>
+            </div>
+            <DuplicateDetectionPanel />
+          </div>
         ) : activeTab === "page-layouts" ? (
           <div className="space-y-6">
             {editingLayoutDrill ? (
