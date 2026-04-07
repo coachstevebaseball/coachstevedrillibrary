@@ -3,6 +3,7 @@ import { trpc } from "@/lib/trpc";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Users,
   CheckCircle,
@@ -250,7 +251,13 @@ export function AthleteTable() {
     return "Just now";
   };
 
-  const sendReminderMutation = trpc.drillAssignments.sendFollowUpReminder.useMutation();
+  const sendReminderMutation = trpc.drillAssignments.sendFollowUpReminder.useMutation({
+    onSuccess: (data: any) => {
+      if (data?.success) toast.success("Reminder sent!");
+      else toast.error(data?.message || data?.error || "Failed to send reminder");
+    },
+    onError: (err: any) => toast.error(`Reminder failed: ${err.message}`),
+  });
 
   // Stats
   const activeCount = athletes.filter((a) => a.isActiveClient).length;
@@ -577,13 +584,7 @@ export function AthleteTable() {
                                 disabled={sendReminderMutation.isPending}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  sendReminderMutation.mutate({ userId: athlete.numericId }, {
-                                    onSuccess: (data: any) => {
-                                      if (data.success) toast.success(`Reminder sent to ${athlete.name}!`);
-                                      else toast.error(data.message || 'Failed to send reminder');
-                                    },
-                                    onError: (err: any) => toast.error(`Error: ${err.message}`),
-                                  });
+                                  sendReminderMutation.mutate({ userId: athlete.numericId });
                                 }}
                               >
                                 <Bell className="h-3.5 w-3.5" />

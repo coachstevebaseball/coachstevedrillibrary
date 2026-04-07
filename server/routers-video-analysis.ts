@@ -20,7 +20,7 @@ import { z } from "zod";
 import { getDb } from "./db";
 import { videoAnalysis } from "../drizzle/schema";
 import { eq, and, desc, inArray } from "drizzle-orm";
-import { analyzeAthleteVideo, formatAnalysisForCoachEdit } from "./videoAnalysisService";
+import { analyzeAthleteVideoWithFallback, formatAnalysisForCoachEdit } from "./videoAnalysisService";
 import * as db from "./db";
 
 // ── Helpers ──────────────────────────────────────────────────
@@ -180,8 +180,8 @@ export const videoAnalysisRouter = router({
           // Profile lookup is optional
         }
 
-        // Run Gemini analysis
-        const aiFeedback = await analyzeAthleteVideo({
+        // Run Gemini analysis (with forge text-based fallback if Gemini unavailable)
+        const aiFeedback = await analyzeAthleteVideoWithFallback({
           videoUrl: record.videoUrl,
           drillName: record.drillId || "Swing Analysis",
           athleteName: athlete?.name || undefined,

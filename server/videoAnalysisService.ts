@@ -182,3 +182,69 @@ export function formatAnalysisForCoachEdit(analysis: VideoAnalysisResult): strin
 
   return text;
 }
+
+/**
+ * Text-based fallback analysis using forge LLM when Gemini Vision is unavailable.
+ * Generates feedback based on swing type and athlete context without video.
+ */
+export async function analyzeAthleteVideoWithFallback(params: {
+  videoUrl: string;
+  drillName: string;
+  athleteName?: string;
+  athleteAge?: string;
+  athletePosition?: string;
+  additionalContext?: string;
+}): Promise<VideoAnalysisResult> {
+  // Try Gemini Vision first
+  try {
+    return await analyzeAthleteVideo(params);
+  } catch (geminiError) {
+    console.warn("[VideoAnalysis] Gemini Vision failed, using text-based fallback:", 
+      geminiError instanceof Error ? geminiError.message : String(geminiError));
+  }
+
+  // Forge text-based fallback — generates structured feedback without video
+  try {
+    const { invokeLLM } = await import("./_core/llm");
+    const prompt = `You are Coach Steve, an elite baseball hitting instructor (Cape Cod League, Stony Brook CWS 2012). 
+A ${params.athleteAge || "youth"} athlete submitted a ${params.drillName} video for analysis.
+${params.athleteName ? `Athlete: ${params.athleteName}.` : ""}
+${params.additionalContext ? `Notes: ${params.additionalContext}` : ""}
+
+Generate a realistic, helpful swing analysis as if you watched the video. Be specific about common mechanical issues for this drill type. Return ONLY valid JSON matching this exact structure:
+{
+  "overallAssessment": "2-3 sentence assessment",
+  "mechanicsBreakdown": [
+    {"phase": "Stance", "observation": "...", "rating": 3},
+    {"phase": "Load", "observation": "...", "rating": 3},
+    {"phase": "Stride", "observation": "...", "rating": 3},
+    {"phase": "Hip Rotation", "observation": "...", "rating": 3},
+    {"phase": "Contact", "observation": "...", "rating": 3}
+  ],
+  "strengths": ["strength 1", "strength 2"],
+  "areasForImprovement": ["area 1", "area 2"],
+  "drillRecommendations": ["drill 1", "drill 2"],
+  "coachingCues": ["cue 1", "cue 2", "cue 3"],
+  "confidenceScore": 40
+}
+Note: confidenceScore should be 40 since this is based on drill type context, not direct video observation.`;
+
+    const result = await invokeLLM({
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const text = result.choices?.[0]?.message?.content;
+    if (!text || typeof text !== "string") throw new Error("No fallback response");
+
+    const clean = text.replace(/^```json
+?|```$/g, "").trim();
+    const parsed = JSON.parse(clean) as VideoAnalysisResult;
+    parsed.overallAssessment = "[Note: Video could not be processed — analysis based on drill type context] " + parsed.overallAssessment;
+    return parsed;
+  } catch (fallbackError) {
+    throw new Error(
+      `Video analysis unavailable: Gemini Vision requires active billing at console.cloud.google.com. ` +
+      `Fallback also failed: ${fallbackError instanceof Error ? fallbackError.message : String(fallbackError)}`
+    );
+  }
+}
