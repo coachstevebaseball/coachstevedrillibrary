@@ -470,7 +470,7 @@ export const appRouter = router({
             status: d.status || 'assigned',
           })),
           coachName: ctx.user.name || 'Coach',
-          portalUrl: `${ctx.req.protocol}://${ctx.req.get('host')}/athlete-portal`,
+          portalUrl: `${ENV.appUrl}/athlete-portal`,
         });
         return { success: result.success, error: result.error };
       }),
@@ -799,6 +799,11 @@ export const appRouter = router({
         goal: z.string().optional(),
         instructions: z.string().optional(),
         videoUrl: z.string().optional(),
+        drillType: z.string().optional(),
+        ageLevel: z.array(z.string()).optional(),
+        focusTags: z.array(z.string()).optional(),
+        problemsFix: z.array(z.string()).optional(),
+        pillars: z.array(z.string()).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         if (ctx.user.role !== 'admin') {

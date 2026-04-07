@@ -255,8 +255,8 @@ export default function CoachDashboard() {
 
           {/* Title */}
           <div className="mb-8">
-            <InlineEdit contentKey="coach.title" defaultValue="Coach Dashboard" as="h1" className="text-3xl md:text-5xl font-heading font-black text-white tracking-tight" />
-            <InlineEdit contentKey="coach.subtitle" defaultValue="Manage your athletes, assign drills, and track progress all in one place." as="p" className="text-white/60 mt-2 text-sm md:text-base max-w-lg" />
+            <h1 className="text-3xl md:text-5xl font-heading font-black text-white tracking-tight">Coach Dashboard</h1>
+            <p className="text-white/60 mt-2 text-sm md:text-base max-w-lg">Manage your athletes, assign drills, and track progress all in one place.</p>
           </div>
 
           {/* Stats Row */}
@@ -328,8 +328,8 @@ export default function CoachDashboard() {
                   }`}
                 >
                   <tab.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-                  <span className="hidden sm:inline"><InlineEdit contentKey={`coach.tab.${tab.key}.label`} defaultValue={tab.label} as="span" /></span>
-                  <span className="sm:hidden"><InlineEdit contentKey={`coach.tab.${tab.key}.short`} defaultValue={tab.shortLabel} as="span" /></span>
+                  <span className="hidden sm:inline">{tab.label}</span>
+                  <span className="sm:hidden">{tab.shortLabel}</span>
                 </button>
               ))}
             </nav>
