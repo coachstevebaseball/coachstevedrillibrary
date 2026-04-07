@@ -236,8 +236,7 @@ Note: confidenceScore should be 40 since this is based on drill type context, no
     const text = result.choices?.[0]?.message?.content;
     if (!text || typeof text !== "string") throw new Error("No fallback response");
 
-    const clean = text.replace(/^```json
-?|```$/g, "").trim();
+    const clean = text.replace(/^```json\n?|```$/g, "").trim();
     const parsed = JSON.parse(clean) as VideoAnalysisResult;
     parsed.overallAssessment = "[Note: Video could not be processed — analysis based on drill type context] " + parsed.overallAssessment;
     return parsed;
