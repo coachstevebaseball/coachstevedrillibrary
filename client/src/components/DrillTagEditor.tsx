@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,38 +52,27 @@ function DrillTagRow({ drillId, drillName }: { drillId: string; drillName: strin
     { enabled: open }
   );
 
-  const [meta, setMeta] = useState<DrillMeta>({});
+  const [meta, setMeta] = useState<DrillMeta>({
+    drillType: "", ageLevel: [], focusTags: [], problemsFix: [], pillars: [],
+  });
 
-  // Sync from DB when detail loads
-  const initialized = useMemo(() => {
-    if (!detail || !open) return false;
-    return true;
-  }, [detail, open]);
-
-  const currentMeta: DrillMeta = initialized && !dirty
-    ? {
-        drillType: (detail as any)?.drillType || "",
-        ageLevel: (detail as any)?.ageLevel || [],
-        focusTags: (detail as any)?.focusTags || [],
-        problemsFix: (detail as any)?.problemsFix || [],
-        pillars: (detail as any)?.pillars || [],
-      }
-    : meta;
-
-  const updateMeta = (patch: Partial<DrillMeta>) => {
-    if (!dirty) {
-      // first change - init from DB
+  // Sync from DB when detail loads (only once, before user edits)
+  useEffect(() => {
+    if (detail && !dirty) {
       setMeta({
         drillType: (detail as any)?.drillType || "",
         ageLevel: (detail as any)?.ageLevel || [],
         focusTags: (detail as any)?.focusTags || [],
         problemsFix: (detail as any)?.problemsFix || [],
         pillars: (detail as any)?.pillars || [],
-        ...patch,
       });
-    } else {
-      setMeta(m => ({ ...m, ...patch }));
     }
+  }, [detail]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const currentMeta = meta;
+
+  const updateMeta = (patch: Partial<DrillMeta>) => {
+    setMeta(m => ({ ...m, ...patch }));
     setDirty(true);
   };
 

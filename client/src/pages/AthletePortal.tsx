@@ -102,7 +102,6 @@ function SkillIcon({ category }: { category: string }) {
 export default function AthletePortal() {
   useScrollRestoration();
   const { user, loading, logout } = useAuth();
-  const [location] = useLocation();
   // Admin "view as athlete" — reads ?viewAs=<userId> from URL
   const viewAsId = (() => {
     const params = new URLSearchParams(window.location.search);

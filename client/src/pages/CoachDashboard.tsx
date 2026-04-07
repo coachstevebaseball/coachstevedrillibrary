@@ -29,6 +29,7 @@ import { ActivityFeedTab } from "@/components/ActivityFeedTab";
 import { DuplicateDetectionPanel } from "@/components/DuplicateDetectionPanel";
 import { DrillTagEditor } from "@/components/DrillTagEditor";
 import { EmailSettingsPanel } from "@/components/EmailSettingsPanel";
+import { TabErrorBoundary } from "@/components/TabErrorBoundary";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { InlineEdit } from "@/components/InlineEdit";
 
@@ -340,6 +341,7 @@ export default function CoachDashboard() {
       <main role="tabpanel" aria-label={`${activeTab} panel`} className="container max-w-7xl pb-8 md:pb-12 px-3 md:px-4 py-6 md:py-8">
         <BulkGoalUpload isOpen={isBulkGoalOpen} onClose={() => setIsBulkGoalOpen(false)} />
         
+        <TabErrorBoundary tabName={activeTab} key={activeTab}>
         {activeTab === "overview" ? (
           <AthleteAssignmentOverview 
             onSelectAthlete={(athleteId) => {
