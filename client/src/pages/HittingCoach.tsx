@@ -64,12 +64,13 @@ export default function HittingCoach() {
         { role: "model", content: result.response },
       ]);
     } catch (err: any) {
+      const errMsg = err?.message || err?.data?.message || "Unknown error";
+      console.error("[HittingCoach] Error:", errMsg);
       setMessages([
         ...newMessages,
         {
           role: "model",
-          content:
-            "⚠️ Coach Steve is unavailable right now. Check your connection and try again.",
+          content: `⚠️ Coach Steve hit an error: ${errMsg}. Try again in a moment.`,
         },
       ]);
     } finally {

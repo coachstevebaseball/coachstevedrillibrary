@@ -77,22 +77,32 @@ export const hittingCoachRouter = router({
       try {
         let response: string;
 
+        // Try Gemini first, fall back to forge proxy if Gemini fails or key missing
+        let geminiError: Error | null = null;
+
         if (ENV.geminiApiKey) {
-          // Use Gemini directly when key is available
-          const genAI = new GoogleGenerativeAI(ENV.geminiApiKey);
-          const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
-            systemInstruction: COACH_STEVE_SYSTEM,
-          });
-          const history = input.history.map((m) => ({
-            role: m.role,
-            parts: [{ text: m.content }],
-          }));
-          const chat = model.startChat({ history });
-          const result = await chat.sendMessage(input.message);
-          response = result.response.text();
-        } else if (ENV.forgeApiKey) {
-          // Fall back to Manus forge LLM proxy (always available on platform)
+          try {
+            const genAI = new GoogleGenerativeAI(ENV.geminiApiKey);
+            const model = genAI.getGenerativeModel({
+              model: "gemini-1.5-flash",
+              systemInstruction: COACH_STEVE_SYSTEM,
+            });
+            const history = input.history.map((m) => ({
+              role: m.role,
+              parts: [{ text: m.content }],
+            }));
+            const chat = model.startChat({ history });
+            const result = await chat.sendMessage(input.message);
+            response = result.response.text();
+            console.log("[HittingCoach] Responded via Gemini");
+          } catch (err) {
+            geminiError = err instanceof Error ? err : new Error(String(err));
+            console.warn("[HittingCoach] Gemini failed, falling back to forge:", geminiError.message);
+          }
+        }
+
+        // Use forge proxy if Gemini not available or failed
+        if (!response! && ENV.forgeApiKey) {
           const messages: { role: "user" | "assistant" | "system"; content: string }[] = [
             { role: "system", content: COACH_STEVE_SYSTEM },
             ...input.history.map((m) => ({
@@ -102,12 +112,15 @@ export const hittingCoachRouter = router({
             { role: "user", content: input.message },
           ];
           const result = await invokeLLM({ messages });
-          const content = result.choices?.[0]?.message?.content;
-          if (!content || typeof content !== "string") {
+          const forgeContent = result.choices?.[0]?.message?.content;
+          if (!forgeContent || typeof forgeContent !== "string") {
             throw new Error("No response from AI coach");
           }
-          response = content;
-        } else {
+          response = forgeContent;
+          console.log("[HittingCoach] Responded via forge proxy");
+        }
+
+        if (!response!) {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
             message: "AI coach is not configured. Contact Coach Steve.",
