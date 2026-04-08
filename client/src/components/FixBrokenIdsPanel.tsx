@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export function FixBrokenIdsPanel() {
   const [result, setResult] = useState<{
@@ -11,17 +11,10 @@ export function FixBrokenIdsPanel() {
   const fixMutation = trpc.admin.fixBrokenIds.useMutation({
     onSuccess: (data) => {
       setResult(data);
-      toast({
-        title: "✅ IDs Fixed",
-        description: `Fixed ${data.fixed.length} athlete records. ${data.remainingBroken} assignments still unlinked.`,
-      });
+      toast.success(`Fixed ${data.fixed.length} athlete records. ${data.remainingBroken} assignments still unlinked.`);
     },
     onError: (err) => {
-      toast({
-        title: "Error",
-        description: err.message,
-        variant: "destructive",
-      });
+      toast.error(err.message);
     },
   });
 
