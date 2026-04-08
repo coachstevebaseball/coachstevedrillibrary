@@ -27,6 +27,7 @@ import { BlastMetricsTab } from "@/components/BlastMetricsTab";
 import { PlayerReportTab } from "@/components/PlayerReportTab";
 import { ActivityFeedTab } from "@/components/ActivityFeedTab";
 import { DuplicateDetectionPanel } from "@/components/DuplicateDetectionPanel";
+import { FixBrokenIdsPanel } from "@/components/FixBrokenIdsPanel";
 import { DrillTagEditor } from "@/components/DrillTagEditor";
 import { EmailSettingsPanel } from "@/components/EmailSettingsPanel";
 import { TabErrorBoundary } from "@/components/TabErrorBoundary";
@@ -401,6 +402,7 @@ export default function CoachDashboard() {
               </p>
             </div>
             <DuplicateDetectionPanel />
+            <FixBrokenIdsPanel />
           </div>
         ) : activeTab === "page-layouts" ? (
           <div className="space-y-6">

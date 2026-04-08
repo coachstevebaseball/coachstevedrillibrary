@@ -354,6 +354,58 @@ export const appRouter = router({
         return groups;
       }),
 
+    fixBrokenIds: protectedProcedure
+      .mutation(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const database = await db.getDb();
+        if (!database) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'No database connection' });
+
+        const { sql } = await import('drizzle-orm');
+
+        // Old ID -> New ID mappings (IDs changed manually by coach)
+        const idMappings = [
+          { oldId: 3780043, newId: 4,        name: 'Gavin Goldstein' },
+          { oldId: 3840001, newId: 8,        name: 'Gunnar Nelson' },
+          { oldId: 3570024, newId: 10110004, name: 'Sean Jaeger' },
+          { oldId: 3690071, newId: 3,        name: 'Emmet Reilly' },
+          { oldId: 3420019, newId: 3,        name: 'Ellyn Reilly' },
+          { oldId: 9540332, newId: 101400188, name: 'Caputo family' },
+        ];
+
+        const results: string[] = [];
+
+        for (const mapping of idMappings) {
+          // Fix drillAssignments
+          const assignResult = await database.execute(
+            sql`UPDATE drillAssignments SET userId = ${mapping.newId} WHERE userId = ${mapping.oldId}`
+          );
+          // Fix athleteActivity
+          const actResult = await database.execute(
+            sql`UPDATE athleteActivity SET athleteId = ${mapping.newId} WHERE athleteId = ${mapping.oldId}`
+          );
+          results.push(`${mapping.name}: fixed assignments + activity`);
+        }
+
+        // Fix display names in athleteActivity
+        await database.execute(sql`UPDATE athleteActivity SET athleteName = 'Gavin Goldstein' WHERE athleteId = 4`);
+        await database.execute(sql`UPDATE athleteActivity SET athleteName = 'Gunnar Nelson' WHERE athleteId = 8`);
+        await database.execute(sql`UPDATE athleteActivity SET athleteName = 'Sean Jaeger' WHERE athleteId = 10110004`);
+        await database.execute(sql`UPDATE athleteActivity SET athleteName = 'Emmet Reilly' WHERE athleteId = 3`);
+
+        // Count remaining broken assignments
+        const broken = await database.execute(
+          sql`SELECT COUNT(*) as count FROM drillAssignments WHERE userId IS NULL OR userId = ''`
+        );
+
+        return {
+          success: true,
+          fixed: results,
+          remainingBroken: (broken as any)[0]?.[0]?.count ?? 'unknown',
+        };
+      }),
+
     markAllActivityRead: protectedProcedure
       .mutation(async ({ ctx }) => {
         if (ctx.user.role !== 'admin') {
