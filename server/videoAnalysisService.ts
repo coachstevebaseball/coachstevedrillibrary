@@ -5,7 +5,7 @@
  * using the fileData / videoUrl multimodal approach for video input.
  */
 
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType, type Schema } from "@google/generative-ai";
 import { ENV } from "./_core/env";
 
 export interface VideoAnalysisResult {
@@ -130,7 +130,7 @@ export async function analyzeAthleteVideo(params: {
     ],
     generationConfig: {
       responseMimeType: "application/json",
-      responseSchema,
+      responseSchema: responseSchema as Schema,
       maxOutputTokens: 2048,
       temperature: 0.3,
     },

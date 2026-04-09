@@ -686,7 +686,7 @@ export default function Home() {
         <div className="container relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 bg-gradient-to-br from-secondary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-sm text-white">
+              <div className="h-8 w-8 bg-gradient-to-br from-primary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-sm text-white">
                 CS
               </div>
               <div>

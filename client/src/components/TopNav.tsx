@@ -157,7 +157,7 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
     if (!mobileOpen) return null;
 
     return (
-      <div className="absolute top-full left-0 right-0 z-50 border-t border-white/10 shadow-xl animate-fade-in-down" style={{background: "oklch(0.18 0.052 267 / 0.97)", backdropFilter: "blur(20px)"}}>
+      <div className="absolute top-full left-0 right-0 z-50 border-t border-white/10 shadow-xl animate-fade-in-down" style={{background: "oklch(0.13 0.02 260 / 0.97)", backdropFilter: "blur(20px)"}}>
         <div className="flex flex-col gap-1">
           {user && isAdmin && (
             <>
@@ -242,7 +242,7 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
           {/* Logo */}
           <Link href="/">
             <a className="flex items-center gap-2.5 group">
-              <div className="h-8 w-8 bg-gradient-to-br from-secondary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-sm text-white shadow-md shadow-electric/20 group-hover:shadow-electric/40 transition-shadow">
+              <div className="h-8 w-8 bg-gradient-to-br from-primary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-sm text-white shadow-md shadow-electric/20 group-hover:shadow-electric/40 transition-shadow">
                 CS
               </div>
               <span className="font-heading font-bold text-sm text-foreground hidden sm:block group-hover:text-electric transition-colors">
@@ -275,7 +275,7 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
     <nav className="flex justify-between items-center mb-10 md:mb-16 animate-fade-in-down relative">
       {/* Logo */}
       <div className="flex items-center gap-3">
-        <div className="h-10 w-10 bg-gradient-to-br from-secondary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-lg text-white shadow-lg shadow-secondary/20">
+        <div className="h-10 w-10 bg-gradient-to-br from-primary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-lg text-white shadow-lg shadow-primary/20">
           CS
         </div>
         <span className="font-heading font-bold text-lg text-foreground hidden sm:block">
@@ -299,7 +299,7 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
 
       {/* Mobile dropdown — fixed to viewport so it escapes overflow:hidden on hero */}
       {mobileOpen && (
-        <div className="fixed top-16 right-3 w-64 z-[9999] rounded-xl border border-white/20 shadow-2xl p-2 flex flex-col gap-1 animate-fade-in-down sm:hidden" style={{background: "oklch(0.14 0.052 267 / 0.98)", backdropFilter: "blur(24px)"}}>
+        <div className="fixed top-16 right-3 w-64 z-[9999] rounded-xl border border-white/20 shadow-2xl p-2 flex flex-col gap-1 animate-fade-in-down sm:hidden" style={{background: "oklch(0.12 0.02 260 / 0.98)", backdropFilter: "blur(24px)"}}>
           {renderMobileMenu()}
         </div>
       )}

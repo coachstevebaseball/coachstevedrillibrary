@@ -72,7 +72,7 @@ export function PlayerReportTab() {
         .replace(/<o:p[^>]*>.*?<\/o:p>/gi, "") // Word namespace tags
         .replace(/<w:[^>]*>.*?<\/w:[^>]*>/gi, "")
         .replace(/<m:[^>]*>.*?<\/m:[^>]*>/gi, "")
-        .replace(/<!--.*?-->/gs, "")
+        .replace(/<!--[\s\S]*?-->/g, "")
         .replace(/<font[^>]*>/gi, "").replace(/<\/font>/gi, "")
         .replace(/<span[^>]*>\s*<\/span>/gi, "")
         .replace(/<p[^>]*>/gi, "<p>").replace(/<\/p>/gi, "</p>")

@@ -105,7 +105,7 @@ export default function AthleteMessaging() {
           <Card>
             <CardContent className="pt-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-secondary">
+                <div className="text-3xl font-bold text-electric">
                   {filteredQuestions.filter((q: any) => q.answers.length > 0).length}
                 </div>
                 <p className="text-sm text-muted-foreground">Answered</p>

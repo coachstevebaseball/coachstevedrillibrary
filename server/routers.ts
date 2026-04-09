@@ -335,16 +335,16 @@ export const appRouter = router({
           key: string;
           users: { id: number; name: string | null; email: string | null; createdAt: Date | null }[];
         }[] = [];
-        for (const [email, users] of byEmail.entries()) {
+        for (const [email, users] of Array.from(byEmail.entries())) {
           if (users.length > 1) {
             groups.push({ reason: 'Same email', key: email, users });
           }
         }
-        for (const [name, users] of byName.entries()) {
+        for (const [name, users] of Array.from(byName.entries())) {
           if (users.length > 1) {
             // Avoid double-reporting if already caught by email
             const alreadyReported = groups.some(g =>
-              g.users.some(u => users.find(u2 => u2.id === u.id))
+              g.users.some(u => users.find((u2: { id: number }) => u2.id === u.id))
             );
             if (!alreadyReported) {
               groups.push({ reason: 'Same name', key: name, users });

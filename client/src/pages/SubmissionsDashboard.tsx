@@ -198,7 +198,7 @@ export default function SubmissionsDashboard() {
           <Card>
             <CardContent className="pt-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-secondary">{allUsers.filter((u: any) => u.role === 'athlete').length}</div>
+                <div className="text-3xl font-bold text-electric">{allUsers.filter((u: any) => u.role === 'athlete').length}</div>
                 <p className="text-sm text-muted-foreground">Active Athletes</p>
               </div>
             </CardContent>

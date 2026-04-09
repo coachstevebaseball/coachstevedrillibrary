@@ -33,7 +33,7 @@ function CollapsibleSection({ title, icon: Icon, children, defaultOpen = false }
         className="w-full flex items-center justify-between p-4 bg-muted/50 hover:bg-muted transition-colors font-semibold text-left"
       >
         <div className="flex items-center gap-2">
-          <Icon className="h-5 w-5 text-secondary" />
+          <Icon className="h-5 w-5 text-electric" />
           {title}
         </div>
         <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -1385,7 +1385,7 @@ export default function DrillDetail() {
 
       {/* Header — matches directory / brand chrome */}
       <header className="relative bg-brand-header text-brand-header-foreground border-b border-brand-header-foreground/10 mb-6 md:mb-8">
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-secondary/90 via-primary to-secondary/90 opacity-90" />
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/60 via-primary to-primary/60 opacity-90" />
         <div className="container relative py-6 md:py-10">
           <Link href={backHref}>
             <Button variant="ghost" className="text-brand-header-foreground/80 hover:text-brand-header-foreground hover:bg-brand-header-foreground/10 mb-4 pl-0 gap-2 text-sm">
@@ -1435,7 +1435,7 @@ export default function DrillDetail() {
                   variant="outline"
                   className={`flex-1 lg:flex-none gap-2 ${
                     isFavorited
-                      ? "bg-secondary/25 hover:bg-secondary/35 text-secondary border-secondary/40"
+                      ? "bg-electric/25 hover:bg-electric/35 text-electric border-electric/40"
                       : "bg-brand-header-foreground/8 hover:bg-brand-header-foreground/14 text-brand-header-foreground border-brand-header-foreground/15"
                   }`}
                 >
@@ -1469,7 +1469,7 @@ export default function DrillDetail() {
               <div className="flex gap-2 justify-end">
                 <button
                   onClick={() => setShowPageBuilder(true)}
-                  className="flex items-center gap-1 px-3 py-2 rounded-md bg-secondary/10 hover:bg-secondary/20 text-secondary transition-colors text-sm font-medium"
+                  className="flex items-center gap-1 px-3 py-2 rounded-md bg-electric/10 hover:bg-electric/20 text-electric transition-colors text-sm font-medium"
                 >
                   <Layout className="h-4 w-4" />
                   Edit Page
@@ -1567,7 +1567,7 @@ export default function DrillDetail() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => setShowPageBuilder(true)}
-                        className="flex items-center gap-1 px-3 py-2 rounded-md bg-secondary/10 hover:bg-secondary/20 text-secondary transition-colors text-sm font-medium"
+                        className="flex items-center gap-1 px-3 py-2 rounded-md bg-electric/10 hover:bg-electric/20 text-electric transition-colors text-sm font-medium"
                       >
                         <Layout className="h-4 w-4" />
                         Page Builder

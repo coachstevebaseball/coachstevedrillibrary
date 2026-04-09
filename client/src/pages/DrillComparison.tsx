@@ -117,7 +117,7 @@ function DrillSelector({
               className="w-full text-left px-3 py-2.5 rounded-lg hover:bg-accent transition-colors flex items-center justify-between group"
             >
               <div>
-                <span className="font-medium text-sm text-foreground group-hover:text-secondary transition-colors">
+                <span className="font-medium text-sm text-foreground group-hover:text-electric transition-colors">
                   {drill.name}
                 </span>
                 <div className="flex gap-1.5 mt-1">
@@ -169,10 +169,10 @@ function ComparisonRow({ label, icon, valueA, valueB, highlight }: {
         {icon}
         {label}
       </div>
-      <div className={`text-sm text-center ${isDifferent ? "text-secondary font-semibold" : "text-foreground"}`}>
+      <div className={`text-sm text-center ${isDifferent ? "text-electric font-semibold" : "text-foreground"}`}>
         {valueA}
       </div>
-      <div className={`text-sm text-center ${isDifferent ? "text-secondary font-semibold" : "text-foreground"}`}>
+      <div className={`text-sm text-center ${isDifferent ? "text-electric font-semibold" : "text-foreground"}`}>
         {valueB}
       </div>
     </div>
@@ -197,7 +197,7 @@ function DrillVideoEmbed({ drillId }: { drillId: string }) {
   const videoId = extractYouTubeId(videoData.videoUrl);
   if (!videoId) return (
     <div className="flex items-center justify-center h-32 bg-muted/30 rounded-lg">
-      <a href={videoData.videoUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-secondary hover:underline flex items-center gap-1">
+      <a href={videoData.videoUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-electric hover:underline flex items-center gap-1">
         <ExternalLink className="h-4 w-4" /> Open Video
       </a>
     </div>
@@ -237,7 +237,7 @@ function DrillDetailInfo({ drillId }: { drillId: string }) {
           <span className="text-xs font-medium text-muted-foreground uppercase">Instructions</span>
           <p className={`text-sm mt-1 ${!expanded ? "line-clamp-3" : ""}`}>{detail.instructions}</p>
           {detail.instructions.length > 150 && (
-            <button onClick={() => setExpanded(!expanded)} className="text-xs text-secondary hover:underline mt-1 flex items-center gap-1">
+            <button onClick={() => setExpanded(!expanded)} className="text-xs text-electric hover:underline mt-1 flex items-center gap-1">
               {expanded ? <><ChevronUp className="h-3 w-3" /> Show less</> : <><ChevronDown className="h-3 w-3" /> Show more</>}
             </button>
           )}
@@ -300,9 +300,9 @@ export default function DrillComparison() {
                 variant="outline"
                 size="icon"
                 onClick={swapDrills}
-                className="rounded-full h-10 w-10 bg-card border-2 border-secondary/50 hover:border-secondary shadow-lg"
+                className="rounded-full h-10 w-10 bg-card border-2 border-electric/50 hover:border-electric shadow-lg"
               >
-                <ArrowLeftRight className="h-4 w-4 text-secondary" />
+                <ArrowLeftRight className="h-4 w-4 text-electric" />
               </Button>
             </div>
           )}

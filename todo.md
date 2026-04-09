@@ -1678,3 +1678,21 @@
 - [ ] Integration test: assignment → email → tracking flow
 - [ ] Verify logged-out behavior (no in-app notification bell for athletes)
 - [ ] Save checkpoint
+
+## Gemini Fix & AI Hitting Coach Test
+- [x] Fix Gemini SchemaType warning in videoAnalysisService.ts by casting SchemaType.OBJECT explicitly
+- [x] Test AI Hitting Coach end-to-end to verify Gemini responses render correctly
+- [x] Save checkpoint and publish all restored features
+
+## Theme Restyle - Dark Navy/Red Premium
+- [x] Update CSS variables in index.css to dark navy background with red accents
+- [x] Update card styles to match dark navy cards with subtle borders
+- [x] Ensure all text is readable (white/light gray on dark backgrounds)
+- [x] Update accent colors to bold red (#dc2626)
+- [x] Test all pages for visual consistency with new theme
+- [x] Remove gold/secondary color — replace with red or neutral throughout
+- [x] Darken hero gradient and glass effects to match near-black reference
+- [x] Update text-gradient to pure red (remove gold)
+- [x] Update TopNav logo and footer to use red instead of gold
+- [x] Verify drill cards, filter pills, pagination all look correct
+- [x] Save checkpoint

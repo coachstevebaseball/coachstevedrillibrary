@@ -160,8 +160,8 @@ export default function DrillsDirectory() {
 
           <div className="max-w-4xl">
             <div className="flex items-center gap-3 mb-3">
-              <div className="h-1 w-12 bg-secondary rounded-full" />
-              <span className="text-secondary font-bold tracking-wider uppercase text-xs">Coach Steve's Mobile Coach</span>
+              <div className="h-1 w-12 bg-electric rounded-full" />
+              <span className="text-electric font-bold tracking-wider uppercase text-xs">Coach Steve's Mobile Coach</span>
             </div>
             <h1 className="text-4xl md:text-7xl font-heading font-black mb-3 md:mb-4 leading-tight">
               Drills Directory
@@ -178,7 +178,7 @@ export default function DrillsDirectory() {
               <Input
                 type="text"
                 placeholder="Search drills..."
-                className="pl-11 py-5 md:py-7 text-sm md:text-base bg-background/95 text-foreground border-0 shadow-2xl rounded-xl md:rounded-2xl focus-visible:ring-2 focus-visible:ring-secondary font-medium"
+                className="pl-11 py-5 md:py-7 text-sm md:text-base bg-background/95 text-foreground border-0 shadow-2xl rounded-xl md:rounded-2xl focus-visible:ring-2 focus-visible:ring-electric font-medium"
                 value={searchQuery}
                 onChange={(e) => handleFilterChange(setSearchQuery, e.target.value)}
               />
@@ -196,7 +196,7 @@ export default function DrillsDirectory() {
             <Filter className="h-4 w-4" />
             Filters
             {activeFilterCount > 0 && (
-              <Badge className="bg-secondary text-secondary-foreground h-5 w-5 p-0 flex items-center justify-center text-xs rounded-full">
+              <Badge className="bg-electric text-white h-5 w-5 p-0 flex items-center justify-center text-xs rounded-full">
                 {activeFilterCount}
               </Badge>
             )}
