@@ -3,10 +3,8 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { invokeLLM } from "./_core/llm";
 import * as sessionNotesDb from "./sessionNotes";
-import { Resend } from "resend";
 import { ENV } from "./_core/env";
-
-const resend = new Resend(ENV.resendApiKey);
+import { getResend } from "./email";
 
 /** Coach Steve's voice/tone system prompt for AI report generation */
 const COACH_STEVE_SYSTEM_PROMPT = `You are Coach Steve Goldstein, an elite baseball instructor who trains players ages 6–18 with a process-driven, measurable-growth approach. You are writing a progress report to send to a player's parent after a training session.
@@ -201,20 +199,7 @@ Generate the progress report in your voice. Return it as structured JSON.`;
     .input(
       z.object({
         id: z.number(),
-        reportContent: z.object({
-          greeting: z.string().optional(),
-          sessionSummary: z.string().optional(),
-          strengths: z.string().optional(),
-          areasForImprovement: z.string().optional(),
-          homeworkAndNextSteps: z.string().optional(),
-          playerNote: z.string().optional(),
-          signOff: z.string().optional(),
-          sectionHeadings: z.object({
-            strengths: z.string().optional(),
-            areasForImprovement: z.string().optional(),
-            homeworkAndNextSteps: z.string().optional(),
-          }).optional(),
-        }).optional(),
+        reportContent: z.record(z.string(), z.string()).optional(),
         reportHtml: z.string().optional(),
         status: z.enum(["draft", "reviewed", "sent"]).optional(),
       })
@@ -286,7 +271,7 @@ Generate the progress report in your voice. Return it as structured JSON.`;
       await sessionNotesDb.updateProgressReport(report.id, { reportHtml: freshHtml } as any);
 
       try {
-        const result = await resend.emails.send({
+        const result = await getResend().emails.send({
           from: "coach@coachstevemobilecoach.com",
           to: input.parentEmail,
           subject: `${athleteData.athleteName} — ${report.title}`,

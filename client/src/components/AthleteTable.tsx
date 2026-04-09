@@ -3,6 +3,7 @@ import { trpc } from "@/lib/trpc";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Users,
   CheckCircle,
@@ -26,6 +27,11 @@ import {
   Target,
   TrendingUp,
   Eye,
+  Pencil,
+  Trash2,
+  ExternalLink,
+  Check,
+  X,
 } from "lucide-react";
 import { InlineEdit } from "./InlineEdit";
 
@@ -59,6 +65,32 @@ export function AthleteTable() {
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "pending" | "inactive">("all");
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const rowsPerPage = 15;
+  const [editingAthlete, setEditingAthlete] = useState<{ id: number; name: string; email: string } | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [deletingAthlete, setDeletingAthlete] = useState<{ id: number; name: string } | null>(null);
+
+  const utils = trpc.useUtils();
+
+  const deleteUserMutation = trpc.admin.deleteUser.useMutation({
+    onSuccess: () => {
+      toast.success("Athlete deleted successfully");
+      utils.drillAssignments.getAthleteAssignmentOverview.invalidate();
+      utils.admin.getAllUsers.invalidate();
+      setDeletingAthlete(null);
+    },
+    onError: (err) => toast.error(`Failed to delete: ${err.message}`),
+  });
+
+  const updateUserMutation = trpc.admin.updateUserInfo.useMutation({
+    onSuccess: () => {
+      toast.success("Athlete info updated");
+      utils.admin.getAllUsers.invalidate();
+      utils.drillAssignments.getAthleteAssignmentOverview.invalidate();
+      setEditingAthlete(null);
+    },
+    onError: (err) => toast.error(`Failed to update: ${err.message}`),
+  });
 
   // Fetch data from existing endpoints
   const { data: overviewData, isLoading: overviewLoading } = trpc.drillAssignments.getAthleteAssignmentOverview.useQuery();
@@ -219,6 +251,14 @@ export function AthleteTable() {
     return "Just now";
   };
 
+  const sendReminderMutation = trpc.drillAssignments.sendFollowUpReminder.useMutation({
+    onSuccess: (data: any) => {
+      if (data?.success) toast.success("Reminder sent!");
+      else toast.error(data?.message || data?.error || "Failed to send reminder");
+    },
+    onError: (err: any) => toast.error(`Reminder failed: ${err.message}`),
+  });
+
   // Stats
   const activeCount = athletes.filter((a) => a.isActiveClient).length;
   const pendingCount = athletes.filter((a) => a.type === "invite").length;
@@ -238,8 +278,6 @@ export function AthleteTable() {
       </div>
     );
   }
-
-  const sendReminderMutation = trpc.drillAssignments.sendFollowUpReminder.useMutation();
 
   return (
     <div className="space-y-4">
@@ -364,10 +402,16 @@ export function AthleteTable() {
                               ? "bg-gradient-to-br from-amber-500/30 to-orange-500/30 text-amber-400"
                               : "bg-white/[0.08] text-muted-foreground"
                           }`}>
-                            {athlete.name.charAt(0).toUpperCase()}
+                            {(athlete.name && !athlete.name.includes('@') ? athlete.name : athlete.email || 'A').charAt(0).toUpperCase()}
                           </div>
                           <div className="min-w-0">
-                            <p className="font-medium text-sm truncate">{athlete.name}</p>
+                            <p className="font-medium text-sm truncate">
+                              {athlete.name && !athlete.name.includes('@')
+                                ? athlete.name
+                                : athlete.email
+                                  ? athlete.email.split('@')[0].replace(/[._-]/g, ' ').replace(/\w/g, c => c.toUpperCase())
+                                  : `Athlete #${athlete.numericId}`}
+                            </p>
                             {athlete.type === "invite" && (
                               <span className="text-[9px] text-amber-400 font-medium">INVITED</span>
                             )}
@@ -504,35 +548,63 @@ export function AthleteTable() {
                             </div>
                           </div>
                           {/* Action buttons */}
-                          {athlete.type === "user" && athlete.totalDrills > athlete.completedDrills && (
-                            <div className="mt-3 flex items-center gap-2">
+                          <div className="mt-3 flex flex-wrap items-center gap-2">
+                            {athlete.type === "user" && (
                               <Button
-                                variant="outline"
-                                size="sm"
-                                className="gap-1.5 text-xs border-amber-500/30 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300"
+                                variant="outline" size="sm"
+                                className="gap-1.5 text-xs border-blue-500/30 text-blue-400 hover:bg-blue-500/10"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  window.open(`/athlete-portal?viewAs=${athlete.numericId}`, '_blank');
+                                }}
+                              >
+                                <ExternalLink className="h-3.5 w-3.5" />
+                                View as Athlete
+                              </Button>
+                            )}
+                            {athlete.type === "user" && (
+                              <Button
+                                variant="outline" size="sm"
+                                className="gap-1.5 text-xs border-white/20 text-white/60 hover:bg-white/10"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditName(athlete.name && !athlete.name.includes('@') ? athlete.name : '');
+                                  setEditEmail(athlete.email || '');
+                                  setEditingAthlete({ id: athlete.numericId, name: athlete.name, email: athlete.email });
+                                }}
+                              >
+                                <Pencil className="h-3.5 w-3.5" />
+                                Edit Info
+                              </Button>
+                            )}
+                            {athlete.type === "user" && athlete.totalDrills > athlete.completedDrills && (
+                              <Button
+                                variant="outline" size="sm"
+                                className="gap-1.5 text-xs border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
                                 disabled={sendReminderMutation.isPending}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  sendReminderMutation.mutate(
-                                    { userId: athlete.numericId },
-                                    {
-                                      onSuccess: (data: any) => {
-                                        if (data.success) {
-                                          alert(`Reminder sent to ${athlete.name}!`);
-                                        } else {
-                                          alert(data.message || data.error || 'Failed to send reminder');
-                                        }
-                                      },
-                                      onError: (err: any) => alert(`Error: ${err.message}`),
-                                    }
-                                  );
+                                  sendReminderMutation.mutate({ userId: athlete.numericId });
                                 }}
                               >
                                 <Bell className="h-3.5 w-3.5" />
-                                {sendReminderMutation.isPending ? 'Sending...' : `Send Reminder (${athlete.totalDrills - athlete.completedDrills} incomplete)`}
+                                {sendReminderMutation.isPending ? 'Sending...' : `Remind (${athlete.totalDrills - athlete.completedDrills} left)`}
                               </Button>
-                            </div>
-                          )}
+                            )}
+                            {athlete.type === "user" && (
+                              <Button
+                                variant="outline" size="sm"
+                                className="gap-1.5 text-xs border-red-500/30 text-red-400 hover:bg-red-500/10"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDeletingAthlete({ id: athlete.numericId, name: athlete.name || athlete.email || 'Athlete' });
+                                }}
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                                Delete
+                              </Button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     )}
@@ -542,6 +614,88 @@ export function AthleteTable() {
             </tbody>
           </table>
         </div>
+
+      {/* Edit Athlete Modal */}
+      {editingAthlete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-[#1a1f2e] border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl">
+            <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+              <Pencil className="h-5 w-5 text-blue-400" />
+              Edit Athlete Info
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <Label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Full Name</Label>
+                <Input
+                  value={editName}
+                  onChange={e => setEditName(e.target.value)}
+                  placeholder="Athlete full name"
+                  className="bg-white/[0.06] border-white/10 text-white"
+                />
+              </div>
+              <div>
+                <Label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Email</Label>
+                <Input
+                  value={editEmail}
+                  onChange={e => setEditEmail(e.target.value)}
+                  placeholder="athlete@email.com"
+                  type="email"
+                  className="bg-white/[0.06] border-white/10 text-white"
+                />
+              </div>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <Button variant="ghost" className="flex-1 text-white/60 hover:text-white" onClick={() => setEditingAthlete(null)}>
+                Cancel
+              </Button>
+              <Button
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                disabled={updateUserMutation.isPending}
+                onClick={() => updateUserMutation.mutate({
+                  userId: editingAthlete.id,
+                  name: editName || undefined,
+                  email: editEmail || undefined,
+                })}
+              >
+                {updateUserMutation.isPending ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Athlete Confirmation */}
+      {deletingAthlete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-[#1a1f2e] border border-red-500/20 rounded-2xl p-6 w-full max-w-md shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-10 w-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                <Trash2 className="h-5 w-5 text-red-400" />
+              </div>
+              <div>
+                <h3 className="text-white font-bold">Delete Athlete</h3>
+                <p className="text-white/50 text-sm">This cannot be undone</p>
+              </div>
+            </div>
+            <p className="text-white/70 text-sm mb-6">
+              Are you sure you want to delete <span className="text-white font-semibold">{deletingAthlete.name}</span>?
+              All their drill assignments and data will be permanently removed.
+            </p>
+            <div className="flex gap-3">
+              <Button variant="ghost" className="flex-1 text-white/60 hover:text-white" onClick={() => setDeletingAthlete(null)}>
+                Cancel
+              </Button>
+              <Button
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                disabled={deleteUserMutation.isPending}
+                onClick={() => deleteUserMutation.mutate({ userId: deletingAthlete.id })}
+              >
+                {deleteUserMutation.isPending ? 'Deleting...' : 'Delete Athlete'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
         {/* Pagination */}
         {totalPages > 1 && (

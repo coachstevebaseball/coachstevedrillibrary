@@ -1,4 +1,5 @@
 import { useAuth } from "@/_core/hooks/useAuth";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -101,20 +102,32 @@ function SkillIcon({ category }: { category: string }) {
 export default function AthletePortal() {
   useScrollRestoration();
   const { user, loading, logout } = useAuth();
+  // Admin "view as athlete" — reads ?viewAs=<userId> from URL
+  const viewAsId = (() => {
+    const params = new URLSearchParams(window.location.search);
+    const v = params.get("viewAs");
+    return v ? parseInt(v, 10) : null;
+  })();
+  const isViewingAs = !!(viewAsId && user?.role === "admin");
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
   const [showDrillModal, setShowDrillModal] = useState(false);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
 
-  // Fetch user's assignments
-  const { data: userAssignments = [], isLoading: assignmentsLoading } = trpc.drillAssignments.getUserAssignments.useQuery(
+  // Fetch user's assignments (or viewAs athlete's assignments for admin)
+  const { data: ownAssignments = [], isLoading: assignmentsLoading } = trpc.drillAssignments.getUserAssignments.useQuery(
     undefined,
-    { enabled: !!user?.id }
+    { enabled: !!user?.id && !isViewingAs }
   );
+  const { data: viewAsAssignments = [], isLoading: viewAsLoading } = trpc.drillAssignments.getAssignmentsForUser.useQuery(
+    { userId: viewAsId! },
+    { enabled: isViewingAs }
+  );
+  const userAssignments = isViewingAs ? viewAsAssignments : ownAssignments;
 
   // Fetch user's streak
   const { data: streak = 0 } = trpc.drillAssignments.getStreak.useQuery(
     undefined,
-    { enabled: !!user?.id }
+    { enabled: !!user?.id && !isViewingAs }
   );
 
   // Fetch user's favorite drills
@@ -256,6 +269,18 @@ export default function AthletePortal() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Admin "View as Athlete" banner */}
+      {isViewingAs && (
+        <div className="bg-amber-500 text-black text-xs font-bold text-center py-2 px-4 flex items-center justify-center gap-2 sticky top-0 z-50">
+          <span>👁 ADMIN PREVIEW — Viewing as athlete #{viewAsId}</span>
+          <button
+            onClick={() => window.close()}
+            className="ml-3 bg-black/20 hover:bg-black/30 text-black px-2 py-0.5 rounded text-xs"
+          >
+            Close
+          </button>
+        </div>
+      )}
       {/* Header with glassmorphism */}
       <header className="glass sticky top-0 z-40 border-b border-white/10">
         <div className="flex items-center justify-between max-w-lg mx-auto px-4 py-3">
@@ -501,6 +526,26 @@ export default function AthletePortal() {
             </div>
           </div>
         )}
+
+        {/* AI Hitting Coach */}
+        <div className="mx-4 mb-4 rounded-xl overflow-hidden border border-[#e4002b]/30 bg-gradient-to-r from-[#0A1628] to-[#1a0a0a]">
+          <div className="p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-[#e4002b] flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-[#e4002b]/30 flex-shrink-0">
+                CS
+              </div>
+              <div>
+                <p className="text-white font-semibold text-sm">AI Hitting Coach</p>
+                <p className="text-white/50 text-xs">Describe your issue, get drills + cues from Coach Steve</p>
+              </div>
+            </div>
+            <Link href="/hitting-coach">
+              <button className="bg-[#e4002b] hover:bg-[#c0001f] text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors flex-shrink-0">
+                Ask Coach
+              </button>
+            </Link>
+          </div>
+        </div>
 
         {/* Swing Analyzer — standalone video upload */}
         <SwingAnalyzer />

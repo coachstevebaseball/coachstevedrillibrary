@@ -1574,14 +1574,107 @@
 - [x] Add reset/delete tRPC procedure + 2 new tests (8 total siteContent tests pass)
 - [x] TypeScript check (0 errors), tests (405 pass), browser verify (all elements confirmed)
 
-## Bug Fix: Session Note Submit Returns HTML Instead of JSON
-- [x] Fix "Unexpected token '<', '<!doctype'... is not valid JSON" error when saving a new session note
-- [x] Root cause: transient database ECONNRESET errors causing HTML fallback response
-- [x] Added custom fetch wrapper to detect HTML responses and show user-friendly error
-- [x] Added retry logic (queries: 2 retries, mutations: 1 retry) with exponential backoff
+## Bug Fix: AthleteTable Hooks Ordering
+- [x] Fix "Rendered more hooks than during the previous render" error in AthleteTable component
 
-## Bug Fix: Progress Report Save - sectionHeadings type mismatch
-- [x] Fix "expected string, received object" error on reportContent.sectionHeadings when saving/sending progress report
-- [x] Root cause: update mutation used z.record(string, string) which rejects nested sectionHeadings object
-- [x] Fixed server schema to use proper z.object() with nested sectionHeadings
-- [x] Removed unsafe `as unknown as Record<string, string>` casts from client
+## Remove Protected Routes / Login Walls (Public Pages Only)
+- [x] Remove ProtectedRoute from athlete-portal, athlete-messaging, my-profile, parent-dashboard routes
+- [x] Remove auth gates / login redirects from Home.tsx
+- [x] Remove auth gates from DrillsDirectory.tsx
+- [x] Remove auth gates from DrillDetail.tsx
+- [x] Keep admin/coach dashboard routes protected (admin-only)
+- [x] Verify public pages load without login
+- [x] Verify admin/coach pages still require login
+
+## Controlled Iframe Embedding Implementation
+- [x] Create EMBED_ALLOWED_ORIGINS env variable with configurable domain allowlist
+- [x] Create dual CSP middleware — frame-ancestors allowlist for /embed/*, frame-ancestors 'self' for all other routes
+- [x] Remove X-Frame-Options header from /embed/* responses only
+- [x] Create /embed landing page (streamlined, no header/footer)
+- [x] Create /embed/drills page (drill library, no chrome)
+- [x] Create /embed/drill/:id page (drill detail, no chrome)
+- [ ] Create /embed/player-report page (player report, no chrome)
+- [x] Register all embed routes in App.tsx
+- [x] Ensure all embed internal navigation stays within /embed/*
+- [ ] Ensure responsive layout works at 320px, 768px, 1280px widths
+- [ ] Ensure modals/dropdowns render within iframe boundary
+- [x] Create iframe test harness for approved vs unapproved domain testing
+- [x] Verify approved domain loads embed in iframe
+- [x] Verify unapproved domain is blocked from embedding (CSP blocks non-embed routes)
+- [x] Verify non-embed routes are blocked from external framing
+- [ ] Save checkpoint (pending)
+
+## Home Page Advanced Filters
+- [x] Audit DrillsDirectory.tsx filter logic and data sources
+- [x] Audit drill data files for all filter dimensions (ageLevel, drillType, tags, problem, goal)
+- [x] Build all 7 filter dimensions on Home.tsx (Difficulty, Skill set, Age/level, Drill type, Fix a problem, Training goal, Tag/focus area) + search
+- [x] Mobile UX: Level + Skill visible, other dimensions behind "More filters" bottom sheet
+- [x] Desktop UX: show all filters inline or in expanded "Advanced filters" block
+- [x] Show active filter indicators and "Clear all" control
+- [x] Fix drill count accuracy — single source of truth for hero, badges, results
+- [x] Redirect /drills → / with query params so old links still work
+- [x] Test logged-out behavior
+- [x] Save checkpoint
+
+
+## Homepage Advanced Filters Migration
+- [x] Update useDrillListParams hook to support all 7 filter dimensions in URL (ageLevel, drillType, problem, goal, tag)
+- [x] Add all 7 filter dimensions to Home.tsx (Difficulty, Skill set, Age/Level, Drill type, Fix a problem, Training goal, Tag/focus area)
+- [x] Implement responsive filter UX: mobile (Level + Skill visible, others in "More Filters" bottom sheet), desktop (inline expanded block)
+- [x] Add active filter pills with individual remove and "Clear all" control
+- [x] Ensure single accurate drill count across hero stats, results badge, and filter results
+- [x] Set up /drills → / redirect with query param preservation
+- [x] Test logged-out behavior works correctly
+- [x] Verify old /drills links still work via redirect
+- [x] Unit tests for parseDrillParams and buildDrillQuery (32 tests passing)
+
+
+## Notification & Tracking System
+### Phase 1: Database Schema
+- [ ] Create activityFeed table (coach-facing event log with timestamps, event types, athlete info)
+- [ ] Create emailLog table (track sent emails, delivery status, open/click tracking)
+- [ ] Create notificationTriggers table or config for automated triggers
+- [ ] Run migrations (pnpm db:push)
+
+### Phase 2: Core Email Service
+- [ ] Build branded email templates (assignment, metrics update, reminder, milestone, custom note)
+- [ ] Create email sending utility with Resend integration
+- [ ] Add open/click tracking pixel and link wrapping
+
+### Phase 3: Use Case A — Pre-Lesson Prep (Manual Email + Tracking)
+- [ ] Coach assigns video/drill → system emails athlete "New video assigned for review"
+- [ ] Log email sent event to activity feed
+- [ ] Track when athlete clicks/watches → log to activity feed silently
+
+### Phase 4: Use Case B — Metrics Update (Automatic Email)
+- [ ] When coach updates bat speed / exit velocity → auto-email athlete "New swing metrics posted"
+- [ ] Log metrics update event to activity feed
+
+### Phase 5: Use Case C — Ghosting Tracker (Automatic Tracking)
+- [ ] Scheduled job: check for athletes inactive 7+ days (no login, no completed assignments)
+- [ ] Flag inactive athletes in activity feed as "Inactive for 7 days"
+
+### Phase 6: Use Case D — Drill Reminders (Automatic Email)
+- [ ] Scheduled job: check for assignments due within 24 hours
+- [ ] Auto-send reminder email to athlete
+- [ ] Log reminder sent to activity feed
+
+### Phase 7: Use Case E — Positive Reinforcement (Automatic Email)
+- [ ] Track monthly drill completion count per athlete
+- [ ] When athlete hits 10th completed drill of month → auto-send congratulation email
+- [ ] Log milestone event to activity feed
+
+### Phase 8: Coach Activity Feed UI
+- [ ] Build Activity Feed component on coach dashboard
+- [ ] Show chronological list of all events (assignments, views, metrics, inactivity, milestones)
+- [ ] Add filtering by event type and athlete
+- [ ] Display timestamps in EST
+- [ ] Real-time or polling updates
+
+### Phase 9: Testing & Verification
+- [ ] Unit tests for email service
+- [ ] Unit tests for activity feed logging
+- [ ] Unit tests for scheduled job logic
+- [ ] Integration test: assignment → email → tracking flow
+- [ ] Verify logged-out behavior (no in-app notification bell for athletes)
+- [ ] Save checkpoint

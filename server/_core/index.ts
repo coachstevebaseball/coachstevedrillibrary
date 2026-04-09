@@ -9,6 +9,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { startBatchProcessor } from "../emailBatching";
+import { startScheduledJobs } from "../notificationService";
 import { storageDownload, storagePut } from "../storage";
 import { sdk } from "./sdk";
 
@@ -37,6 +38,39 @@ async function startServer() {
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  // --- Iframe Embedding: Dual CSP Middleware ---
+  // Parse allowed origins from env (comma-separated)
+  const embedAllowedOrigins = (process.env.EMBED_ALLOWED_ORIGINS || "")
+    .split(",")
+    .map(o => o.trim())
+    .filter(Boolean);
+
+  // For /embed/* routes: allow framing from approved domains
+  app.use("/embed", (req, res, next) => {
+    // Build frame-ancestors value: 'self' + approved domains
+    const frameAncestors = ["'self'", ...embedAllowedOrigins].join(" ");
+    res.setHeader("Content-Security-Policy", `frame-ancestors ${frameAncestors}`);
+    // Remove X-Frame-Options if set by upstream proxy
+    res.removeHeader("X-Frame-Options");
+    // CORS headers for cross-origin asset loading
+    const origin = req.headers.origin;
+    if (origin && embedAllowedOrigins.includes(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+      res.setHeader("Access-Control-Allow-Credentials", "true");
+    }
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    next();
+  });
+
+  // For all non-embed routes: block external framing
+  app.use((req, res, next) => {
+    if (!req.path.startsWith("/embed")) {
+      res.setHeader("Content-Security-Policy", "frame-ancestors 'self'");
+      res.setHeader("X-Frame-Options", "SAMEORIGIN");
+    }
+    next();
+  });
+
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
   
@@ -142,6 +176,7 @@ async function startServer() {
     
     // Start email batch processor for rate-limited activity alerts
     startBatchProcessor();
+    startScheduledJobs();
   });
 }
 

@@ -1,4 +1,5 @@
 import { COOKIE_NAME } from "@shared/const";
+import { ENV } from "./_core/env";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
@@ -25,13 +26,16 @@ import { videoAnalysisRouter } from "./routers-video-analysis";
 import { blastMetricsRouter } from "./routers-blast-metrics";
 import { badgesRouter } from "./routers-badges";
 import { siteContentRouter } from "./routers-site-content";
+import { hittingCoachRouter } from "./routers-hitting-coach";
 import * as drillCustomizationsDb from "./drillCustomizations";
 import { storagePut } from "./storage";
+import { checkAndSendMilestoneEmail } from "./notificationService";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
   siteContent: siteContentRouter,
+  hittingCoach: hittingCoachRouter,
   notifications: notificationsRouter,
   imageUpload: imageUploadRouter,
   activity: activityRouter,
@@ -81,7 +85,7 @@ export const appRouter = router({
             const emailResult = await sendEmail({
               athleteEmail: user.email,
               athleteName: user.name || 'Athlete',
-              portalUrl: 'https://coachstevemobilecoach.com/athlete-portal',
+              portalUrl: `${ENV.appUrl}/athlete-portal`,
             });
             if (emailResult.success) {
               await db.markWelcomeEmailSent(input.userId);
@@ -126,7 +130,7 @@ export const appRouter = router({
         const result = await sendEmail({
           athleteEmail: user.email,
           athleteName: user.name || 'Athlete',
-          portalUrl: 'https://coachstevemobilecoach.com/athlete-portal',
+          portalUrl: `${ENV.appUrl}/athlete-portal`,
         });
         if (result.success) {
           await db.markWelcomeEmailSent(input.userId);
@@ -156,6 +160,293 @@ export const appRouter = router({
         }
         const { runStreakReminderJob } = await import('./streakReminderJob');
         await runStreakReminderJob();
+        return { success: true };
+      }),
+
+    // ── Email diagnostics ────────────────────────────────────────
+    testEmailDelivery: protectedProcedure
+      .input(z.object({ toEmail: z.string().email() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const hasKey = !!ENV.resendApiKey;
+        const fromEmail = ENV.resendFromEmail;
+        const appUrl = ENV.appUrl;
+
+        if (!hasKey) {
+          return {
+            success: false,
+            error: 'RESEND_API_KEY is not set in environment variables',
+            hasKey: false,
+            fromEmail,
+            appUrl,
+          };
+        }
+
+        try {
+          const { getResend } = await import('./email');
+          const resend = getResend();
+          const result = await resend.emails.send({
+            from: fromEmail,
+            to: input.toEmail,
+            subject: '✅ Coach Steve App — Email Test',
+            html: `<h2>Email delivery is working!</h2>
+                   <p>This is a test from the Coach Steve Baseball platform.</p>
+                   <p><strong>From:</strong> ${fromEmail}</p>
+                   <p><strong>Portal URL:</strong> ${appUrl}</p>
+                   <p><em>If you received this, email notifications are configured correctly.</em></p>`,
+          });
+
+          if (result.error) {
+            return { success: false, error: result.error.message, hasKey: true, fromEmail, appUrl };
+          }
+          return { success: true, messageId: result.data?.id, hasKey: true, fromEmail, appUrl };
+        } catch (err) {
+          return {
+            success: false,
+            error: err instanceof Error ? err.message : String(err),
+            hasKey: true,
+            fromEmail,
+            appUrl,
+          };
+        }
+      }),
+
+    getEmailStatus: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return {
+          hasResendKey: !!ENV.resendApiKey,
+          fromEmail: ENV.resendFromEmail,
+          appUrl: ENV.appUrl,
+          hasGeminiKey: !!ENV.geminiApiKey,
+          hasForgeKey: !!ENV.forgeApiKey,
+        };
+      }),
+
+    // ── Activity Feed ────────────────────────────────────────────
+    getActivityFeed: protectedProcedure
+      .input(z.object({
+        limit: z.number().min(1).max(100).default(50),
+        offset: z.number().default(0),
+        types: z.array(z.string()).optional(), // filter by event types
+      }))
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const database = await db.getDb();
+        if (!database) return { events: [], total: 0 };
+
+        const { coachActivityLog, emailNotificationLog } = await import('../drizzle/schema');
+        const { desc, or } = await import('drizzle-orm');
+
+        // Fetch coach activity log
+        const activityEvents = await database
+          .select()
+          .from(coachActivityLog)
+          .orderBy(desc(coachActivityLog.createdAt))
+          .limit(30);
+
+        // Fetch email notification log
+        const emailEvents = await database
+          .select()
+          .from(emailNotificationLog)
+          .orderBy(desc(emailNotificationLog.createdAt))
+          .limit(30);
+
+        // Merge and sort by date
+        const merged = [
+          ...activityEvents.map((e: any) => ({
+            id: `activity-${e.id}`,
+            source: 'activity' as const,
+            eventType: e.eventType,
+            title: e.title,
+            message: e.message,
+            athleteId: e.athleteId,
+            athleteName: e.athleteName,
+            severity: e.severity,
+            isRead: e.isRead,
+            metadata: e.metadata,
+            createdAt: e.createdAt,
+          })),
+          ...emailEvents.map((e: any) => ({
+            id: `email-${e.id}`,
+            source: 'email' as const,
+            eventType: e.emailType,
+            title: e.subject,
+            message: e.description || e.subject,
+            athleteId: e.recipientId,
+            athleteName: e.recipientName,
+            severity: e.success ? 'info' : 'warning',
+            isRead: 1,
+            metadata: e.metadata,
+            createdAt: e.createdAt,
+          })),
+        ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+        return { events: merged.slice(0, 50), total: merged.length };
+      }),
+
+    markActivityRead: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const database = await db.getDb();
+        if (!database) return { success: false };
+        const { coachActivityLog } = await import('../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+        await database.update(coachActivityLog)
+          .set({ isRead: 1 })
+          .where(eq(coachActivityLog.id, input.id));
+        return { success: true };
+      }),
+
+    // ── Duplicate athlete detection ─────────────────────────────
+    findDuplicateAthletes: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const allUsers = await db.getAllUsers();
+        // Group by normalised email (lowercase, trimmed)
+        const byEmail = new Map<string, typeof allUsers>();
+        for (const u of allUsers) {
+          if (!u.email) continue;
+          const key = u.email.toLowerCase().trim();
+          if (!byEmail.has(key)) byEmail.set(key, []);
+          byEmail.get(key)!.push(u);
+        }
+        // Also group by normalised name (case-insensitive)
+        const byName = new Map<string, typeof allUsers>();
+        for (const u of allUsers) {
+          if (!u.name) continue;
+          const key = u.name.toLowerCase().trim();
+          if (!byName.has(key)) byName.set(key, []);
+          byName.get(key)!.push(u);
+        }
+        const groups: {
+          reason: string;
+          key: string;
+          users: { id: number; name: string | null; email: string | null; createdAt: Date | null }[];
+        }[] = [];
+        for (const [email, users] of byEmail.entries()) {
+          if (users.length > 1) {
+            groups.push({ reason: 'Same email', key: email, users });
+          }
+        }
+        for (const [name, users] of byName.entries()) {
+          if (users.length > 1) {
+            // Avoid double-reporting if already caught by email
+            const alreadyReported = groups.some(g =>
+              g.users.some(u => users.find(u2 => u2.id === u.id))
+            );
+            if (!alreadyReported) {
+              groups.push({ reason: 'Same name', key: name, users });
+            }
+          }
+        }
+        return groups;
+      }),
+
+    fixBrokenIds: protectedProcedure
+      .mutation(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const database = await db.getDb();
+        if (!database) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'No database connection' });
+
+        const { sql } = await import('drizzle-orm');
+
+        // Old ID -> New ID mappings (IDs changed manually by coach)
+        const idMappings = [
+          { oldId: 3780043, newId: 4,        name: 'Gavin Goldstein' },
+          { oldId: 3840001, newId: 8,        name: 'Gunnar Nelson' },
+          { oldId: 3570024, newId: 10110004, name: 'Sean Jaeger' },
+          { oldId: 3690071, newId: 3,        name: 'Emmet Reilly' },
+          { oldId: 3420019, newId: 3,        name: 'Ellyn Reilly' },
+          { oldId: 9540332, newId: 101400188, name: 'Caputo family' },
+        ];
+
+        const results: string[] = [];
+
+        for (const mapping of idMappings) {
+          // Fix drillAssignments
+          const assignResult = await database.execute(
+            sql`UPDATE drillAssignments SET userId = ${mapping.newId} WHERE userId = ${mapping.oldId}`
+          );
+          // Fix athleteActivity
+          const actResult = await database.execute(
+            sql`UPDATE athleteActivity SET athleteId = ${mapping.newId} WHERE athleteId = ${mapping.oldId}`
+          );
+          results.push(`${mapping.name}: fixed assignments + activity`);
+        }
+
+        // Fix display names in athleteActivity
+        await database.execute(sql`UPDATE athleteActivity SET athleteName = 'Gavin Goldstein' WHERE athleteId = 4`);
+        await database.execute(sql`UPDATE athleteActivity SET athleteName = 'Gunnar Nelson' WHERE athleteId = 8`);
+        await database.execute(sql`UPDATE athleteActivity SET athleteName = 'Sean Jaeger' WHERE athleteId = 10110004`);
+        await database.execute(sql`UPDATE athleteActivity SET athleteName = 'Emmet Reilly' WHERE athleteId = 3`);
+
+        // Count remaining broken assignments
+        const broken = await database.execute(
+          sql`SELECT COUNT(*) as count FROM drillAssignments WHERE userId IS NULL OR userId = ''`
+        );
+
+        return {
+          success: true,
+          fixed: results,
+          remainingBroken: (broken as any)[0]?.[0]?.count ?? 'unknown',
+        };
+      }),
+
+    markAllActivityRead: protectedProcedure
+      .mutation(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const database = await db.getDb();
+        if (!database) return { success: false };
+        const { coachActivityLog } = await import('../drizzle/schema');
+        await database.update(coachActivityLog).set({ isRead: 1 });
+        return { success: true };
+      }),
+
+    deleteUser: protectedProcedure
+      .input(z.object({ userId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        if (input.userId === ctx.user.id) {
+          throw new TRPCError({ code: 'BAD_REQUEST', message: 'Cannot delete your own account' });
+        }
+        const success = await db.deleteUser(input.userId);
+        return { success };
+      }),
+
+    updateUserInfo: protectedProcedure
+      .input(z.object({
+        userId: z.number(),
+        name: z.string().optional(),
+        email: z.string().email().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        if (input.name !== undefined) {
+          await db.updateUserName(input.userId, input.name);
+        }
+        if (input.email !== undefined) {
+          await db.updateUserEmail(input.userId, input.email);
+        }
         return { success: true };
       }),
   }),
@@ -231,7 +522,7 @@ export const appRouter = router({
             status: d.status || 'assigned',
           })),
           coachName: ctx.user.name || 'Coach',
-          portalUrl: `${ctx.req.protocol}://${ctx.req.get('host')}/athlete-portal`,
+          portalUrl: `${ENV.appUrl}/athlete-portal`,
         });
         return { success: result.success, error: result.error };
       }),
@@ -242,6 +533,13 @@ export const appRouter = router({
         // Allow admins to update any assignment
         if (ctx.user.role === 'admin') {
           await drillAssignmentDb.updateAssignmentStatus(input.assignmentId, input.status, input.notes);
+          // Check milestone on drill completion (Use Case E)
+          if (input.status === "completed") {
+            const assignment = await drillAssignmentDb.getAssignmentById(input.assignmentId);
+            if (assignment?.userId) {
+              checkAndSendMilestoneEmail(assignment.userId).catch(console.error);
+            }
+          }
           return { success: true };
         }
         
@@ -255,6 +553,10 @@ export const appRouter = router({
         }
         
         await drillAssignmentDb.updateAssignmentStatus(input.assignmentId, input.status, input.notes);
+        // Check milestone on drill completion (Use Case E)
+        if (input.status === "completed" && assignment.userId) {
+          checkAndSendMilestoneEmail(assignment.userId).catch(console.error);
+        }
         return { success: true };
       }),
 
@@ -282,6 +584,16 @@ export const appRouter = router({
     getUserAssignments: protectedProcedure.query(async ({ ctx }) => {
       return await drillAssignmentDb.getUserAssignments(ctx.user.id);
     }),
+
+    // Admin: get assignments for any user (for "view as athlete" feature)
+    getAssignmentsForUser: protectedProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await drillAssignmentDb.getUserAssignments(input.userId);
+      }),
 
     getStreak: protectedProcedure.query(async ({ ctx }) => {
       return await drillAssignmentDb.calculateStreak(ctx.user.id);
@@ -448,6 +760,12 @@ export const appRouter = router({
         commonMistakes: z.array(z.string()).optional(),
         progressions: z.array(z.string()).optional(),
         instructions: z.string().optional(),
+        // Metadata fields
+        drillType: z.string().optional(),
+        ageLevel: z.array(z.string()).optional(),
+        focusTags: z.array(z.string()).optional(),
+        problemsFix: z.array(z.string()).optional(),
+        pillars: z.array(z.string()).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         if (ctx.user.role !== 'admin') {
@@ -456,6 +774,40 @@ export const appRouter = router({
         await db.saveDrillDetail(input.drillId, input as any, ctx.user.id);
         return { success: true };
       }),
+    // Update tags/metadata for an existing drill
+    updateDrillMetadata: protectedProcedure
+      .input(z.object({
+        drillId: z.string(),
+        drillType: z.string().optional(),
+        ageLevel: z.array(z.string()).optional(),
+        focusTags: z.array(z.string()).optional(),
+        problemsFix: z.array(z.string()).optional(),
+        pillars: z.array(z.string()).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        // Only update the metadata fields — preserve existing content
+        const existing = await db.getDrillDetail(input.drillId);
+        await db.saveDrillDetail(input.drillId, {
+          drillType: input.drillType,
+          ageLevel: input.ageLevel,
+          focusTags: input.focusTags,
+          problemsFix: input.problemsFix,
+          pillars: input.pillars,
+          // Preserve existing content fields if record exists
+          skillSet: (existing as any)?.skillSet || 'Custom',
+          difficulty: (existing as any)?.difficulty || 'Medium',
+          athletes: (existing as any)?.athletes || '',
+          time: (existing as any)?.time || '',
+          equipment: (existing as any)?.equipment || '',
+          goal: (existing as any)?.goal || '',
+          description: (existing as any)?.description || [],
+        }, ctx.user.id);
+        return { success: true };
+      }),
+
     bulkUpdateGoals: protectedProcedure
       .input(z.object({ goals: z.record(z.string(), z.string()) }))
       .mutation(async ({ ctx, input }) => {
@@ -499,6 +851,11 @@ export const appRouter = router({
         goal: z.string().optional(),
         instructions: z.string().optional(),
         videoUrl: z.string().optional(),
+        drillType: z.string().optional(),
+        ageLevel: z.array(z.string()).optional(),
+        focusTags: z.array(z.string()).optional(),
+        problemsFix: z.array(z.string()).optional(),
+        pillars: z.array(z.string()).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         if (ctx.user.role !== 'admin') {
