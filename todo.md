@@ -1696,3 +1696,9 @@
 - [x] Update TopNav logo and footer to use red instead of gold
 - [x] Verify drill cards, filter pills, pagination all look correct
 - [x] Save checkpoint
+
+## Pulsing Red Glow CTA Animation
+- [x] Add subtle pulsing red glow keyframe animation to index.css
+- [x] Apply animation to primary CTA buttons across all pages
+- [x] Verify animation is subtle and not distracting
+- [x] Save checkpoint
