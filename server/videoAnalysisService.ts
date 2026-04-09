@@ -1,41 +1,45 @@
 /**
- * Video Analysis Service — Gemini Vision powered baseball mechanics analysis
+ * Video Analysis Service — Gemini-powered baseball mechanics analysis
  *
- * Calls Gemini 1.5 Pro (gemini-1.5-pro) directly via @google/generative-ai
- * using the fileData / videoUrl multimodal approach for video input.
+ * Sends athlete video URLs to the LLM (which supports multimodal video input)
+ * and returns structured feedback on mechanics, strengths, and areas for improvement.
  */
 
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
-import { ENV } from "./_core/env";
+import { invokeLLM } from "./_core/llm";
 
 export interface VideoAnalysisResult {
   overallAssessment: string;
   mechanicsBreakdown: {
     phase: string;
     observation: string;
-    rating: number;
+    rating: number; // 1-5
   }[];
   strengths: string[];
   areasForImprovement: string[];
   drillRecommendations: string[];
   coachingCues: string[];
-  confidenceScore: number;
+  confidenceScore: number; // 0-100
 }
 
-const SYSTEM_PROMPT = `You are Coach Steve — an expert baseball hitting instructor with D1 and Cape Cod League experience (Stony Brook University, 2012 College World Series). Your philosophy is Process Over Outcome. You have coached players alongside Aaron Judge, Kyle Schwarber, and Alex Bregman.
+const COACHING_SYSTEM_PROMPT = `You are an expert baseball hitting and pitching instructor with 20+ years of experience, including time as a professional scout. Your coaching philosophy emphasizes:
 
-When analyzing hitting video:
-- Break down each mechanical phase: Stance, Load, Stride, Hip Rotation, Hand Path, Contact, Follow-Through
-- Note timing, balance, bat path, hip/shoulder sequence, and weight transfer
-- Be direct but encouraging — highlight what's working first
-- Give actionable coaching cues (short phrases athletes can repeat in their head)
-- Recommend specific drills from your library that address the issues
-- Rate each phase 1–5 (1=needs significant work, 3=developing, 5=excellent)
-- Overall confidence score 0–100 based on video quality and angle
-- Speak to the coach, not the athlete — use "the hitter" or athlete's name`;
+1. **Development over Results** — Focus on skill development and long-term growth, not just stats.
+2. **Awareness Before Mechanics** — Understand the situation before fixing the swing. Baseball IQ matters.
+3. **Individualized Coaching** — Every athlete is different. Adapt feedback to their age, skill level, and learning style.
+
+When analyzing video:
+- Identify specific phases of the movement (stance, load, stride, swing/delivery, follow-through)
+- Note body positioning, timing, balance, and bat/arm path
+- Be encouraging but honest — highlight what's working before addressing what needs improvement
+- Provide actionable coaching cues (short, memorable phrases athletes can use during practice)
+- Recommend specific drills that address identified areas for improvement
+- Rate each mechanical phase 1-5 (1=needs significant work, 3=developing, 5=excellent)
+- Provide an overall confidence score (0-100) for how confident you are in the analysis based on video quality
+
+Keep language professional but approachable — these reports will be reviewed by a coach and potentially shared with parents.`;
 
 /**
- * Analyze a baseball swing video using Gemini Vision.
+ * Analyze an athlete's video submission using the LLM with multimodal video input.
  */
 export async function analyzeAthleteVideo(params: {
   videoUrl: string;
@@ -45,109 +49,121 @@ export async function analyzeAthleteVideo(params: {
   athletePosition?: string;
   additionalContext?: string;
 }): Promise<VideoAnalysisResult> {
-  if (!ENV.geminiApiKey) {
-    throw new Error("GEMINI_API_KEY is not configured. Add it to your environment variables.");
-  }
-
   const { videoUrl, drillName, athleteName, athleteAge, athletePosition, additionalContext } = params;
 
-  const genAI = new GoogleGenerativeAI(ENV.geminiApiKey);
+  let userPrompt = `Analyze this baseball drill video submission.\n\n`;
+  userPrompt += `**Drill:** ${drillName}\n`;
+  if (athleteName) userPrompt += `**Athlete:** ${athleteName}\n`;
+  if (athleteAge) userPrompt += `**Age:** ${athleteAge}\n`;
+  if (athletePosition) userPrompt += `**Position:** ${athletePosition}\n`;
+  if (additionalContext) userPrompt += `**Additional Context:** ${additionalContext}\n`;
+  userPrompt += `\nProvide a comprehensive analysis of the athlete's mechanics, technique, and areas for development. Return your analysis as structured JSON.`;
 
-  // Use gemini-1.5-pro for video — it has the best multimodal video understanding
-  const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-pro",
-    systemInstruction: SYSTEM_PROMPT,
-  });
-
-  // Build prompt
-  let prompt = `Analyze this baseball video.\n\n`;
-  prompt += `Drill/Type: ${drillName}\n`;
-  if (athleteName) prompt += `Athlete: ${athleteName}\n`;
-  if (athleteAge) prompt += `Age: ${athleteAge}\n`;
-  if (athletePosition) prompt += `Position: ${athletePosition}\n`;
-  if (additionalContext) prompt += `Notes: ${additionalContext}\n`;
-  prompt += `\nReturn a comprehensive JSON analysis of mechanics, strengths, areas for improvement, drill recommendations, and coaching cues.`;
-
-  // Determine if URL is a direct video file or a hosted platform link
-  // Gemini supports: mp4, mpeg, mov, avi, webm via fileUri (Google Files API)
-  // For public URLs we use the fileData approach with a mimeType hint
-  const videoPart = {
-    fileData: {
-      fileUri: videoUrl,
-      mimeType: "video/mp4" as const,
-    },
-  };
-
-  const responseSchema = {
-    type: SchemaType.OBJECT,
-    properties: {
-      overallAssessment: {
-        type: SchemaType.STRING,
-        description: "2-3 sentence overall assessment of the athlete's swing",
-      },
-      mechanicsBreakdown: {
-        type: SchemaType.ARRAY,
-        items: {
-          type: SchemaType.OBJECT,
-          properties: {
-            phase: { type: SchemaType.STRING },
-            observation: { type: SchemaType.STRING },
-            rating: { type: SchemaType.NUMBER },
-          },
-          required: ["phase", "observation", "rating"],
-        },
-      },
-      strengths: {
-        type: SchemaType.ARRAY,
-        items: { type: SchemaType.STRING },
-      },
-      areasForImprovement: {
-        type: SchemaType.ARRAY,
-        items: { type: SchemaType.STRING },
-      },
-      drillRecommendations: {
-        type: SchemaType.ARRAY,
-        items: { type: SchemaType.STRING },
-      },
-      coachingCues: {
-        type: SchemaType.ARRAY,
-        items: { type: SchemaType.STRING },
-      },
-      confidenceScore: { type: SchemaType.NUMBER },
-    },
-    required: [
-      "overallAssessment", "mechanicsBreakdown", "strengths",
-      "areasForImprovement", "drillRecommendations", "coachingCues", "confidenceScore",
-    ],
-  };
-
-  const result = await model.generateContent({
-    contents: [
+  const response = await invokeLLM({
+    messages: [
+      { role: "system", content: COACHING_SYSTEM_PROMPT },
       {
         role: "user",
-        parts: [videoPart, { text: prompt }],
+        content: [
+          {
+            type: "file_url",
+            file_url: {
+              url: videoUrl,
+              mime_type: "video/mp4",
+            },
+          },
+          {
+            type: "text",
+            text: userPrompt,
+          },
+        ],
       },
     ],
-    generationConfig: {
-      responseMimeType: "application/json",
-      responseSchema,
-      maxOutputTokens: 2048,
-      temperature: 0.3,
+    response_format: {
+      type: "json_schema",
+      json_schema: {
+        name: "video_analysis",
+        strict: true,
+        schema: {
+          type: "object",
+          properties: {
+            overallAssessment: {
+              type: "string",
+              description: "A 2-3 sentence overall assessment of the athlete's performance in this video",
+            },
+            mechanicsBreakdown: {
+              type: "array",
+              description: "Breakdown of each mechanical phase observed",
+              items: {
+                type: "object",
+                properties: {
+                  phase: {
+                    type: "string",
+                    description: "Name of the mechanical phase (e.g., Stance, Load, Stride, Swing, Follow-Through)",
+                  },
+                  observation: {
+                    type: "string",
+                    description: "Detailed observation of what the athlete is doing in this phase",
+                  },
+                  rating: {
+                    type: "number",
+                    description: "Rating from 1-5 (1=needs significant work, 3=developing, 5=excellent)",
+                  },
+                },
+                required: ["phase", "observation", "rating"],
+                additionalProperties: false,
+              },
+            },
+            strengths: {
+              type: "array",
+              description: "List of things the athlete is doing well",
+              items: { type: "string" },
+            },
+            areasForImprovement: {
+              type: "array",
+              description: "List of areas that need work, with specific observations",
+              items: { type: "string" },
+            },
+            drillRecommendations: {
+              type: "array",
+              description: "Specific drills recommended to address areas for improvement",
+              items: { type: "string" },
+            },
+            coachingCues: {
+              type: "array",
+              description: "Short, memorable coaching cues the athlete can use during practice",
+              items: { type: "string" },
+            },
+            confidenceScore: {
+              type: "number",
+              description: "0-100 confidence in the analysis based on video quality and visibility",
+            },
+          },
+          required: [
+            "overallAssessment",
+            "mechanicsBreakdown",
+            "strengths",
+            "areasForImprovement",
+            "drillRecommendations",
+            "coachingCues",
+            "confidenceScore",
+          ],
+          additionalProperties: false,
+        },
+      },
     },
   });
 
-  const text = result.response.text();
-  if (!text) throw new Error("Gemini returned no content for video analysis");
-
-  let parsed: VideoAnalysisResult;
-  try {
-    parsed = JSON.parse(text.replace(/^```json\n?|```$/g, "").trim());
-  } catch {
-    throw new Error(`Failed to parse Gemini response as JSON: ${text.slice(0, 200)}`);
+  const content = response.choices?.[0]?.message?.content;
+  if (!content || typeof content !== "string") {
+    throw new Error("No analysis content returned from LLM");
   }
 
+  const parsed = JSON.parse(content) as VideoAnalysisResult;
+
+  // Validate basic structure
   if (!parsed.overallAssessment || !Array.isArray(parsed.mechanicsBreakdown)) {
-    throw new Error("Invalid analysis structure from Gemini");
+    throw new Error("Invalid analysis structure returned from LLM");
   }
 
   return parsed;
@@ -166,84 +182,27 @@ export function formatAnalysisForCoachEdit(analysis: VideoAnalysisResult): strin
   }
 
   text += `## Strengths\n`;
-  for (const s of analysis.strengths) text += `- ${s}\n`;
+  for (const s of analysis.strengths) {
+    text += `- ${s}\n`;
+  }
   text += `\n`;
 
   text += `## Areas for Improvement\n`;
-  for (const a of analysis.areasForImprovement) text += `- ${a}\n`;
+  for (const a of analysis.areasForImprovement) {
+    text += `- ${a}\n`;
+  }
   text += `\n`;
 
   text += `## Recommended Drills\n`;
-  for (const d of analysis.drillRecommendations) text += `- ${d}\n`;
+  for (const d of analysis.drillRecommendations) {
+    text += `- ${d}\n`;
+  }
   text += `\n`;
 
   text += `## Coaching Cues\n`;
-  for (const c of analysis.coachingCues) text += `- "${c}"\n`;
+  for (const c of analysis.coachingCues) {
+    text += `- "${c}"\n`;
+  }
 
   return text;
-}
-
-/**
- * Text-based fallback analysis using forge LLM when Gemini Vision is unavailable.
- * Generates feedback based on swing type and athlete context without video.
- */
-export async function analyzeAthleteVideoWithFallback(params: {
-  videoUrl: string;
-  drillName: string;
-  athleteName?: string;
-  athleteAge?: string;
-  athletePosition?: string;
-  additionalContext?: string;
-}): Promise<VideoAnalysisResult> {
-  // Try Gemini Vision first
-  try {
-    return await analyzeAthleteVideo(params);
-  } catch (geminiError) {
-    console.warn("[VideoAnalysis] Gemini Vision failed, using text-based fallback:", 
-      geminiError instanceof Error ? geminiError.message : String(geminiError));
-  }
-
-  // Forge text-based fallback — generates structured feedback without video
-  try {
-    const { invokeLLM } = await import("./_core/llm");
-    const prompt = `You are Coach Steve, an elite baseball hitting instructor (Cape Cod League, Stony Brook CWS 2012). 
-A ${params.athleteAge || "youth"} athlete submitted a ${params.drillName} video for analysis.
-${params.athleteName ? `Athlete: ${params.athleteName}.` : ""}
-${params.additionalContext ? `Notes: ${params.additionalContext}` : ""}
-
-Generate a realistic, helpful swing analysis as if you watched the video. Be specific about common mechanical issues for this drill type. Return ONLY valid JSON matching this exact structure:
-{
-  "overallAssessment": "2-3 sentence assessment",
-  "mechanicsBreakdown": [
-    {"phase": "Stance", "observation": "...", "rating": 3},
-    {"phase": "Load", "observation": "...", "rating": 3},
-    {"phase": "Stride", "observation": "...", "rating": 3},
-    {"phase": "Hip Rotation", "observation": "...", "rating": 3},
-    {"phase": "Contact", "observation": "...", "rating": 3}
-  ],
-  "strengths": ["strength 1", "strength 2"],
-  "areasForImprovement": ["area 1", "area 2"],
-  "drillRecommendations": ["drill 1", "drill 2"],
-  "coachingCues": ["cue 1", "cue 2", "cue 3"],
-  "confidenceScore": 40
-}
-Note: confidenceScore should be 40 since this is based on drill type context, not direct video observation.`;
-
-    const result = await invokeLLM({
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    const text = result.choices?.[0]?.message?.content;
-    if (!text || typeof text !== "string") throw new Error("No fallback response");
-
-    const clean = text.replace(/^```json\n?|```$/g, "").trim();
-    const parsed = JSON.parse(clean) as VideoAnalysisResult;
-    parsed.overallAssessment = "[Note: Video could not be processed — analysis based on drill type context] " + parsed.overallAssessment;
-    return parsed;
-  } catch (fallbackError) {
-    throw new Error(
-      `Video analysis unavailable: Gemini Vision requires active billing at console.cloud.google.com. ` +
-      `Fallback also failed: ${fallbackError instanceof Error ? fallbackError.message : String(fallbackError)}`
-    );
-  }
 }

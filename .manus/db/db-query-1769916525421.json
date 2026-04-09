@@ -1,0 +1,70 @@
+{
+  "query": "SELECT id, name, email, role FROM users LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT id, name, email, role FROM users LIMIT 10;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Coach Steve",
+      "email": "coach@coachstevebaseball.com",
+      "role": "admin"
+    },
+    {
+      "id": "3390140",
+      "name": "Steven Goldstein",
+      "email": "coachstevengoldstein@gmail.com",
+      "role": "athlete"
+    },
+    {
+      "id": "3420019",
+      "name": "Cian/Niall Reilly",
+      "email": "ellynreilly@gmail.com",
+      "role": "athlete"
+    },
+    {
+      "id": "3570024",
+      "name": "Sean Jaeger",
+      "email": "seanjae4@gmail.com",
+      "role": "athlete"
+    },
+    {
+      "id": "3570135",
+      "name": "Jack Joelson",
+      "email": "joelsonchristina@gmail.com",
+      "role": "athlete"
+    },
+    {
+      "id": "3570469",
+      "name": "Samuel Vargas",
+      "email": "carlos@85quick.com",
+      "role": "athlete"
+    },
+    {
+      "id": "3690071",
+      "name": "Emmet Reilly",
+      "email": "edingers625@gmail.com",
+      "role": "athlete"
+    },
+    {
+      "id": "3780043",
+      "name": "Gavin Goldstein",
+      "email": "gavgol789@gmail.com",
+      "role": "athlete"
+    },
+    {
+      "id": "3840001",
+      "name": "Gunnar Nelson",
+      "email": "GuncNel5on@gmail.com",
+      "role": "athlete"
+    },
+    {
+      "id": "3990021",
+      "name": "Sebastian Tavares",
+      "email": "coachtavaresbaseball@gmail.com",
+      "role": "athlete"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\n1\tCoach Steve\tcoach@coachstevebaseball.com\tadmin\n3390140\tSteven Goldstein\tcoachstevengoldstein@gmail.com\tathlete\n3420019\tCian/Niall Reilly\tellynreilly@gmail.com\tathlete\n3570024\tSean Jaeger\tseanjae4@gmail.com\tathlete\n3570135\tJack Joelson\tjoelsonchristina@gmail.com\tathlete\n3570469\tSamuel Vargas\tcarlos@85quick.com\tathlete\n3690071\tEmmet Reilly\tedingers625@gmail.com\tathlete\n3780043\tGavin Goldstein\tgavgol789@gmail.com\tathlete\n3840001\tGunnar Nelson\tGuncNel5on@gmail.com\tathlete\n3990021\tSebastian Tavares\tcoachtavaresbaseball@gmail.com\tathlete\n",
+  "stderr": "",
+  "execution_time_ms": 417
+}

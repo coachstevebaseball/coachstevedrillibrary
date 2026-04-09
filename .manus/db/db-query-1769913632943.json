@@ -1,0 +1,17 @@
+{
+  "query": "SELECT drillId, thumbnailUrl, briefDescription, createdAt, updatedAt FROM drillCustomizations;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT drillId, thumbnailUrl, briefDescription, createdAt, updatedAt FROM drillCustomizations;",
+  "rows": [
+    {
+      "drillId": "1-2-3-drill",
+      "thumbnailUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663238794201/4gdCHRuKFjrDK3bmH43Eh2/drill-thumbnails/1-2-3-drill-1769913546878-j798h8.png",
+      "briefDescription": "A foundational hitting drill that teaches proper swing mechanics and timing. Perfect for beginners to develop consistent contact.",
+      "createdAt": "2026-02-01 02:19:41",
+      "updatedAt": "2026-02-01 02:39:07"
+    }
+  ],
+  "messages": [],
+  "stdout": "drillId\tthumbnailUrl\tbriefDescription\tcreatedAt\tupdatedAt\n1-2-3-drill\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663238794201/4gdCHRuKFjrDK3bmH43Eh2/drill-thumbnails/1-2-3-drill-1769913546878-j798h8.png\tA foundational hitting drill that teaches proper swing mechanics and timing. Perfect for beginners to develop consistent contact.\t2026-02-01 02:19:41\t2026-02-01 02:39:07\n",
+  "stderr": "",
+  "execution_time_ms": 352
+}

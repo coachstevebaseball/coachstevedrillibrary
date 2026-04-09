@@ -1,0 +1,23 @@
+{
+  "query": "SELECT * FROM drill_customizations;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT * FROM drill_customizations;",
+  "rows": [
+    {
+      "id": "1",
+      "drillId": "test-drill-123",
+      "thumbnailUrl": "https://example.com/test.jpg",
+      "imageBase64": "NULL",
+      "imageMimeType": "NULL",
+      "briefDescription": "Test description",
+      "difficulty": "NULL",
+      "category": "NULL",
+      "updatedBy": "1",
+      "createdAt": "2026-02-01 04:29:15",
+      "updatedAt": "2026-02-01 04:29:15"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdrillId\tthumbnailUrl\timageBase64\timageMimeType\tbriefDescription\tdifficulty\tcategory\tupdatedBy\tcreatedAt\tupdatedAt\n1\ttest-drill-123\thttps://example.com/test.jpg\tNULL\tNULL\tTest description\tNULL\tNULL\t1\t2026-02-01 04:29:15\t2026-02-01 04:29:15\n",
+  "stderr": "",
+  "execution_time_ms": 357
+}

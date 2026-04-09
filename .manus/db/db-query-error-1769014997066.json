@@ -1,0 +1,8 @@
+{
+  "query": "SELECT d.id, d.name, d.skillSet, \n  CASE WHEN dd.id IS NOT NULL THEN 'YES' ELSE 'NO' END as hasDetails,\n  CASE WHEN dv.id IS NOT NULL THEN 'YES' ELSE 'NO' END as hasVideo\nFROM drills d \nLEFT JOIN drillDetails dd ON d.id = dd.drillId \nLEFT JOIN drillVideos dv ON d.id = dv.drillId \nORDER BY hasDetails, hasVideo\nLIMIT 100;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT d.id, d.name, d.skillSet, \n  CASE WHEN dd.id IS NOT NULL THEN 'YES' ELSE 'NO' END as hasDetails,\n  CASE WHEN dv.id IS NOT NULL THEN 'YES' ELSE 'NO' END as hasVideo\nFROM drills d \nLEFT JOIN drillDetails dd ON d.id = dd.drillId \nLEFT JOIN drillVideos dv ON d.id = dv.drillId \nORDER BY hasDetails, hasVideo\nLIMIT 100;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1146 (42S02) at line 1: Table '4gdchrukfjrdk3bmh43eh2.drills' doesn't exist"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "query": "SELECT a.id, a.userId, u.email, a.drillId, a.drillName, a.status, a.assignedAt FROM drillAssignments a JOIN users u ON a.userId = u.id WHERE u.email = 'info@stevenlewisrealestate.com' LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT a.id, a.userId, u.email, a.drillId, a.drillName, a.status, a.assignedAt FROM drillAssignments a JOIN users u ON a.userId = u.id WHERE u.email = 'info@stevenlewisrealestate.com' LIMIT 10;",
+  "rows": [
+    {
+      "id": "60001",
+      "userId": "2970296",
+      "email": "info@stevenlewisrealestate.com",
+      "drillId": "top-hand-tee",
+      "drillName": "Top Hand Tee",
+      "status": "assigned",
+      "assignedAt": "2026-01-22 05:52:48"
+    },
+    {
+      "id": "60002",
+      "userId": "2970296",
+      "email": "info@stevenlewisrealestate.com",
+      "drillId": "stance-distance-check",
+      "drillName": "Stance Distance Check",
+      "status": "assigned",
+      "assignedAt": "2026-01-22 05:52:55"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\temail\tdrillId\tdrillName\tstatus\tassignedAt\n60001\t2970296\tinfo@stevenlewisrealestate.com\ttop-hand-tee\tTop Hand Tee\tassigned\t2026-01-22 05:52:48\n60002\t2970296\tinfo@stevenlewisrealestate.com\tstance-distance-check\tStance Distance Check\tassigned\t2026-01-22 05:52:55\n",
+  "stderr": "",
+  "execution_time_ms": 356
+}

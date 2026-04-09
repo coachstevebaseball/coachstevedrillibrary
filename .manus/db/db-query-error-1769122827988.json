@@ -1,0 +1,8 @@
+{
+  "query": "SELECT da.*, i.email as invite_email, u.email as user_email FROM drill_assignments da LEFT JOIN invites i ON da.invite_id = i.id LEFT JOIN users u ON da.user_id = u.id ORDER BY da.created_at DESC LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT da.*, i.email as invite_email, u.email as user_email FROM drill_assignments da LEFT JOIN invites i ON da.invite_id = i.id LEFT JOIN users u ON da.user_id = u.id ORDER BY da.created_at DESC LIMIT 20;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1146 (42S02) at line 1: Table '4gdchrukfjrdk3bmh43eh2.drill_assignments' doesn't exist"
+  ]
+}

@@ -1,17 +1,15 @@
+import { Resend } from "resend";
 import { ENV } from "./_core/env";
-import { getResend } from "./email";
+
+const resend = new Resend(ENV.resendApiKey);
 
 export async function sendStreakReminderEmail(
   athleteEmail: string,
   athleteName: string,
   streakDays: number
 ): Promise<boolean> {
-  if (!ENV.resendApiKey) {
-    console.warn("[Email] Resend API key not configured, skipping streak reminder");
-    return false;
-  }
   try {
-    await getResend().emails.send({
+    await resend.emails.send({
       from: "USA Baseball Drills <noreply@manus.space>",
       to: athleteEmail,
       subject: `🔥 Keep your ${streakDays}-day streak alive!`,

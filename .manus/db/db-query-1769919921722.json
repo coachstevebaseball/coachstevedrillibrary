@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `drill_customizations` (\n  `id` int AUTO_INCREMENT NOT NULL,\n  `drillId` varchar(255) NOT NULL,\n  `thumbnailUrl` text,\n  `imageBase64` longtext,\n  `imageMimeType` varchar(100),\n  `briefDescription` text,\n  `difficulty` varchar(50),\n  `category` varchar(100),\n  `updatedBy` int NOT NULL,\n  `createdAt` timestamp NOT NULL DEFAULT (now()),\n  `updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n  CONSTRAINT `drill_customizations_id` PRIMARY KEY(`id`),\n  CONSTRAINT `drill_customizations_drillId_unique` UNIQUE(`drillId`)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute CREATE TABLE IF NOT EXISTS `drill_customizations` (\n  `id` int AUTO_INCREMENT NOT NULL,\n  `drillId` varchar(255) NOT NULL,\n  `thumbnailUrl` text,\n  `imageBase64` longtext,\n  `imageMimeType` varchar(100),\n  `briefDescription` text,\n  `difficulty` varchar(50),\n  `category` varchar(100),\n  `updatedBy` int NOT NULL,\n  `createdAt` timestamp NOT NULL DEFAULT (now()),\n  `updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n  CONSTRAINT `drill_customizations_id` PRIMARY KEY(`id`),\n  CONSTRAINT `drill_customizations_drillId_unique` UNIQUE(`drillId`)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 472
+}

@@ -1,0 +1,70 @@
+{
+  "query": "SELECT * FROM drillAssignments LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT * FROM drillAssignments LIMIT 5;",
+  "rows": [
+    {
+      "id": "180001",
+      "userId": "1",
+      "drillId": "2nd-baseman-underhand-flip",
+      "drillName": "2nd Baseman Underhand Flip",
+      "status": "assigned",
+      "notes": "NULL",
+      "assignedAt": "2026-01-22 22:24:10",
+      "completedAt": "NULL",
+      "updatedAt": "2026-01-22 22:24:10",
+      "inviteId": "NULL"
+    },
+    {
+      "id": "180002",
+      "userId": "NULL",
+      "drillId": "top-hand-tee",
+      "drillName": "Top Hand Tee",
+      "status": "assigned",
+      "notes": "NULL",
+      "assignedAt": "2026-01-22 22:49:36",
+      "completedAt": "NULL",
+      "updatedAt": "2026-01-22 22:49:36",
+      "inviteId": "240002"
+    },
+    {
+      "id": "180003",
+      "userId": "NULL",
+      "drillId": "belly-button-tee",
+      "drillName": "Belly Button Tee",
+      "status": "assigned",
+      "notes": "NULL",
+      "assignedAt": "2026-01-22 22:50:25",
+      "completedAt": "NULL",
+      "updatedAt": "2026-01-22 22:50:25",
+      "inviteId": "240002"
+    },
+    {
+      "id": "180004",
+      "userId": "NULL",
+      "drillId": "1st-base-receiving-short-hops",
+      "drillName": "1st Base Receiving Short Hops",
+      "status": "assigned",
+      "notes": "NULL",
+      "assignedAt": "2026-01-22 22:50:52",
+      "completedAt": "NULL",
+      "updatedAt": "2026-01-22 22:50:52",
+      "inviteId": "240002"
+    },
+    {
+      "id": "180005",
+      "userId": "NULL",
+      "drillId": "location-tee",
+      "drillName": "Location Tee",
+      "status": "assigned",
+      "notes": "NULL",
+      "assignedAt": "2026-01-22 22:51:15",
+      "completedAt": "NULL",
+      "updatedAt": "2026-01-22 22:51:15",
+      "inviteId": "240002"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\tdrillId\tdrillName\tstatus\tnotes\tassignedAt\tcompletedAt\tupdatedAt\tinviteId\n180001\t1\t2nd-baseman-underhand-flip\t2nd Baseman Underhand Flip\tassigned\tNULL\t2026-01-22 22:24:10\tNULL\t2026-01-22 22:24:10\tNULL\n180002\tNULL\ttop-hand-tee\tTop Hand Tee\tassigned\tNULL\t2026-01-22 22:49:36\tNULL\t2026-01-22 22:49:36\t240002\n180003\tNULL\tbelly-button-tee\tBelly Button Tee\tassigned\tNULL\t2026-01-22 22:50:25\tNULL\t2026-01-22 22:50:25\t240002\n180004\tNULL\t1st-base-receiving-short-hops\t1st Base Receiving Short Hops\tassigned\tNULL\t2026-01-22 22:50:52\tNULL\t2026-01-22 22:50:52\t240002\n180005\tNULL\tlocation-tee\tLocation Tee\tassigned\tNULL\t2026-01-22 22:51:15\tNULL\t2026-01-22 22:51:15\t240002\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

@@ -1,0 +1,49 @@
+{
+  "query": "SELECT * FROM drillCustomizations;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT * FROM drillCustomizations;",
+  "rows": [
+    {
+      "id": "2",
+      "drillId": "1-2-3-drill",
+      "thumbnailUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+      "briefDescription": "Master this drill to improve your hitting skills.",
+      "difficulty": "Easy",
+      "category": "Hitting",
+      "updatedBy": "1",
+      "createdAt": "2026-02-01 03:17:08",
+      "updatedAt": "2026-02-01 04:38:53",
+      "imageBase64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+      "imageMimeType": "image/png"
+    },
+    {
+      "id": "3",
+      "drillId": "test-drill-123",
+      "thumbnailUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+      "briefDescription": "NULL",
+      "difficulty": "NULL",
+      "category": "NULL",
+      "updatedBy": "1",
+      "createdAt": "2026-02-01 04:40:14",
+      "updatedAt": "2026-02-01 04:40:14",
+      "imageBase64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+      "imageMimeType": "image/png"
+    },
+    {
+      "id": "4",
+      "drillId": "sql-test-drill",
+      "thumbnailUrl": "NULL",
+      "briefDescription": "NULL",
+      "difficulty": "NULL",
+      "category": "NULL",
+      "updatedBy": "1",
+      "createdAt": "2026-02-01 04:41:34",
+      "updatedAt": "2026-02-01 04:41:34",
+      "imageBase64": "test-base64-data",
+      "imageMimeType": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdrillId\tthumbnailUrl\tbriefDescription\tdifficulty\tcategory\tupdatedBy\tcreatedAt\tupdatedAt\timageBase64\timageMimeType\n2\t1-2-3-drill\tdata:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==\tMaster this drill to improve your hitting skills.\tEasy\tHitting\t1\t2026-02-01 03:17:08\t2026-02-01 04:38:53\tiVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==\timage/png\n3\ttest-drill-123\tdata:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==\tNULL\tNULL\tNULL\t1\t2026-02-01 04:40:14\t2026-02-01 04:40:14\tiVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==\timage/png\n4\tsql-test-drill\tNULL\tNULL\tNULL\tNULL\t1\t2026-02-01 04:41:34\t2026-02-01 04:41:34\ttest-base64-data\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 346
+}

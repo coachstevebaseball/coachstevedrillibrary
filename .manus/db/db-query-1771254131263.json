@@ -1,0 +1,100 @@
+{
+  "query": "SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE();",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE();",
+  "rows": [
+    {
+      "table_name": "__drizzle_migrations"
+    },
+    {
+      "table_name": "users"
+    },
+    {
+      "table_name": "assignmentProgress"
+    },
+    {
+      "table_name": "drillAssignments"
+    },
+    {
+      "table_name": "invites"
+    },
+    {
+      "table_name": "drillVideos"
+    },
+    {
+      "table_name": "drillDetails"
+    },
+    {
+      "table_name": "badges"
+    },
+    {
+      "table_name": "coachFeedback"
+    },
+    {
+      "table_name": "drillSubmissions"
+    },
+    {
+      "table_name": "notificationPreferences"
+    },
+    {
+      "table_name": "notifications"
+    },
+    {
+      "table_name": "drillAnswers"
+    },
+    {
+      "table_name": "drillQuestions"
+    },
+    {
+      "table_name": "customDrills"
+    },
+    {
+      "table_name": "coachNotes"
+    },
+    {
+      "table_name": "weeklyGoals"
+    },
+    {
+      "table_name": "drillPageLayouts"
+    },
+    {
+      "table_name": "drillPageTemplates"
+    },
+    {
+      "table_name": "athleteActivity"
+    },
+    {
+      "table_name": "coachAlertPreferences"
+    },
+    {
+      "table_name": "pendingEmailAlerts"
+    },
+    {
+      "table_name": "drillFavorites"
+    },
+    {
+      "table_name": "quizAttempts"
+    },
+    {
+      "table_name": "quizQuestionResults"
+    },
+    {
+      "table_name": "quizQuestions"
+    },
+    {
+      "table_name": "drillCustomizations"
+    },
+    {
+      "table_name": "drill_customizations"
+    },
+    {
+      "table_name": "practicePlans"
+    },
+    {
+      "table_name": "practicePlanBlocks"
+    }
+  ],
+  "messages": [],
+  "stdout": "table_name\n__drizzle_migrations\nusers\nassignmentProgress\ndrillAssignments\ninvites\ndrillVideos\ndrillDetails\nbadges\ncoachFeedback\ndrillSubmissions\nnotificationPreferences\nnotifications\ndrillAnswers\ndrillQuestions\ncustomDrills\ncoachNotes\nweeklyGoals\ndrillPageLayouts\ndrillPageTemplates\nathleteActivity\ncoachAlertPreferences\npendingEmailAlerts\ndrillFavorites\nquizAttempts\nquizQuestionResults\nquizQuestions\ndrillCustomizations\ndrill_customizations\npracticePlans\npracticePlanBlocks\n",
+  "stderr": "",
+  "execution_time_ms": 353
+}

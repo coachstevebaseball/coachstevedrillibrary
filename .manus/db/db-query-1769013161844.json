@@ -1,0 +1,14 @@
+{
+  "query": "SELECT drillId, instructions FROM drillDetails WHERE drillId = '1-2-3-drill' LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT drillId, instructions FROM drillDetails WHERE drillId = '1-2-3-drill' LIMIT 1;",
+  "rows": [
+    {
+      "drillId": "1-2-3-drill",
+      "instructions": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "drillId\tinstructions\n1-2-3-drill\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 360
+}

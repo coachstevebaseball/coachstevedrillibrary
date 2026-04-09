@@ -1,0 +1,40 @@
+{
+  "query": "SELECT p.id, p.fullName, (SELECT COUNT(*) FROM blastSessions WHERE blastSessions.playerId = p.id) as sessionCount FROM blastPlayers p;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT p.id, p.fullName, (SELECT COUNT(*) FROM blastSessions WHERE blastSessions.playerId = p.id) as sessionCount FROM blastPlayers p;",
+  "rows": [
+    {
+      "id": "33333333-3333-3333-3333-333333333333",
+      "fullName": "Gavin Goldstein",
+      "sessionCount": "1"
+    },
+    {
+      "id": "44444444-4444-4444-4444-444444444444",
+      "fullName": "David Ortiz Jr.",
+      "sessionCount": "5"
+    },
+    {
+      "id": "11111111-1111-1111-1111-111111111111",
+      "fullName": "Mike Troutman",
+      "sessionCount": "5"
+    },
+    {
+      "id": "55555555-5555-5555-5555-555555555555",
+      "fullName": "Shannon Caputo",
+      "sessionCount": "1"
+    },
+    {
+      "id": "22222222-2222-2222-2222-222222222222",
+      "fullName": "Alex Johnson",
+      "sessionCount": "5"
+    },
+    {
+      "id": "66666666-6666-6666-6666-666666666666",
+      "fullName": "Sean Yaegar",
+      "sessionCount": "3"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tfullName\tsessionCount\n33333333-3333-3333-3333-333333333333\tGavin Goldstein\t1\n44444444-4444-4444-4444-444444444444\tDavid Ortiz Jr.\t5\n11111111-1111-1111-1111-111111111111\tMike Troutman\t5\n55555555-5555-5555-5555-555555555555\tShannon Caputo\t1\n22222222-2222-2222-2222-222222222222\tAlex Johnson\t5\n66666666-6666-6666-6666-666666666666\tSean Yaegar\t3\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

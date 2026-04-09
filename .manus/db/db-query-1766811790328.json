@@ -1,0 +1,158 @@
+{
+  "query": "SELECT drillId, videoUrl FROM drillVideos ORDER BY drillId;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT drillId, videoUrl FROM drillVideos ORDER BY drillId;",
+  "rows": [
+    {
+      "drillId": "1-2-3-drill",
+      "videoUrl": "https://youtu.be/r4eylEht9Fk"
+    },
+    {
+      "drillId": "1-2-3-rhythm-tee",
+      "videoUrl": "https://youtu.be/BHfyJQLujhs"
+    },
+    {
+      "drillId": "1st-base-inside-receiving",
+      "videoUrl": "https://youtu.be/8Y6uyNWGozY"
+    },
+    {
+      "drillId": "30-second-backhand",
+      "videoUrl": "https://youtu.be/hL44kgDptuo"
+    },
+    {
+      "drillId": "30-second-backhand-cross",
+      "videoUrl": "https://youtu.be/025j1VJpXmM"
+    },
+    {
+      "drillId": "4-corners-bunting",
+      "videoUrl": "https://youtu.be/NRJgLqRrcDk"
+    },
+    {
+      "drillId": "7-ball-front-toss",
+      "videoUrl": "https://youtu.be/wg7waSI4Yng"
+    },
+    {
+      "drillId": "back-foot-cone-tee",
+      "videoUrl": "https://youtu.be/jkz7YXu9QG0"
+    },
+    {
+      "drillId": "back-hip-load-tee",
+      "videoUrl": "https://youtu.be/k2_JF5r7tCs"
+    },
+    {
+      "drillId": "back-net-constraint-tee",
+      "videoUrl": "https://youtu.be/Qa_XBRPFiJ4"
+    },
+    {
+      "drillId": "backside-angle-toss",
+      "videoUrl": "https://www.youtube.com/embed/OmgHRRPompU"
+    },
+    {
+      "drillId": "ball-in-the-sun",
+      "videoUrl": "https://youtu.be/q9vrr-m1kLk"
+    },
+    {
+      "drillId": "bottom-hand-tee",
+      "videoUrl": "https://youtu.be/FcB4It8ngK4"
+    },
+    {
+      "drillId": "change-up-catch",
+      "videoUrl": "https://youtu.be/Jt_2Znyv7xE"
+    },
+    {
+      "drillId": "change-up-tee",
+      "videoUrl": "https://youtu.be/k39Aw9cPyyw"
+    },
+    {
+      "drillId": "flaw-casting-the-hands-outside-of-the-ball",
+      "videoUrl": "https://youtu.be/xMVojRcf5p0"
+    },
+    {
+      "drillId": "flaw-chopping-at-the-ball",
+      "videoUrl": "https://youtu.be/gGriRVDyGI4"
+    },
+    {
+      "drillId": "flaw-collapsing-the-backside",
+      "videoUrl": "https://youtu.be/r365LTS6JUI"
+    },
+    {
+      "drillId": "flaw-contact-point-too-far-out-front",
+      "videoUrl": "https://youtu.be/xE6d7WyVnJc"
+    },
+    {
+      "drillId": "flaw-hands-dropping-too-low",
+      "videoUrl": "https://youtu.be/2-GSXHCtXBU"
+    },
+    {
+      "drillId": "flaw-improper-stance",
+      "videoUrl": "https://youtu.be/lKRM1GTczuI"
+    },
+    {
+      "drillId": "flaw-lack-of-separation",
+      "videoUrl": "https://youtu.be/DgZxsXT9lO8"
+    },
+    {
+      "drillId": "flaw-loop-in-the-barrel",
+      "videoUrl": "https://youtu.be/pK6YSfhOZ68"
+    },
+    {
+      "drillId": "flaw-lunging-to-the-ball",
+      "videoUrl": "https://youtu.be/y0QQxQvNfwQ"
+    },
+    {
+      "drillId": "flaw-no-lower-half",
+      "videoUrl": "https://youtu.be/mm8BgCjhDUM"
+    },
+    {
+      "drillId": "flaw-soft-front-knee",
+      "videoUrl": "https://youtu.be/vIyySwBroJ4"
+    },
+    {
+      "drillId": "flaw-stepping-in-the-bucket",
+      "videoUrl": "https://youtu.be/T9ATwxZwLOg"
+    },
+    {
+      "drillId": "off-speed-front-toss",
+      "videoUrl": "https://youtu.be/YbKMKncdjg4"
+    },
+    {
+      "drillId": "outside-tee",
+      "videoUrl": "https://youtu.be/gswKH7P442o"
+    },
+    {
+      "drillId": "random-front-toss",
+      "videoUrl": "https://youtu.be/wkyOsDsGpA8"
+    },
+    {
+      "drillId": "rapid-fire-toss",
+      "videoUrl": "https://youtu.be/BnKaH2D0gM8"
+    },
+    {
+      "drillId": "reverse-stride",
+      "videoUrl": "https://youtu.be/xir67PJypoY"
+    },
+    {
+      "drillId": "separation-progression-tee",
+      "videoUrl": "https://youtu.be/UHMiELC06SA"
+    },
+    {
+      "drillId": "short-bat-top-hand-front-toss",
+      "videoUrl": "https://youtu.be/GMwc7OtTHfU"
+    },
+    {
+      "drillId": "stance-distance-check",
+      "videoUrl": "https://youtu.be/0d3uji4WNRM"
+    },
+    {
+      "drillId": "top-drop-drill",
+      "videoUrl": "https://youtu.be/UCR8SDGHVZU"
+    },
+    {
+      "drillId": "top-hand-tee",
+      "videoUrl": "https://youtu.be/GWPx9f4QPno"
+    }
+  ],
+  "messages": [],
+  "stdout": "drillId\tvideoUrl\n1-2-3-drill\thttps://youtu.be/r4eylEht9Fk\n1-2-3-rhythm-tee\thttps://youtu.be/BHfyJQLujhs\n1st-base-inside-receiving\thttps://youtu.be/8Y6uyNWGozY\n30-second-backhand\thttps://youtu.be/hL44kgDptuo\n30-second-backhand-cross\thttps://youtu.be/025j1VJpXmM\n4-corners-bunting\thttps://youtu.be/NRJgLqRrcDk\n7-ball-front-toss\thttps://youtu.be/wg7waSI4Yng\nback-foot-cone-tee\thttps://youtu.be/jkz7YXu9QG0\nback-hip-load-tee\thttps://youtu.be/k2_JF5r7tCs\nback-net-constraint-tee\thttps://youtu.be/Qa_XBRPFiJ4\nbackside-angle-toss\thttps://www.youtube.com/embed/OmgHRRPompU\nball-in-the-sun\thttps://youtu.be/q9vrr-m1kLk\nbottom-hand-tee\thttps://youtu.be/FcB4It8ngK4\nchange-up-catch\thttps://youtu.be/Jt_2Znyv7xE\nchange-up-tee\thttps://youtu.be/k39Aw9cPyyw\nflaw-casting-the-hands-outside-of-the-ball\thttps://youtu.be/xMVojRcf5p0\nflaw-chopping-at-the-ball\thttps://youtu.be/gGriRVDyGI4\nflaw-collapsing-the-backside\thttps://youtu.be/r365LTS6JUI\nflaw-contact-point-too-far-out-front\thttps://youtu.be/xE6d7WyVnJc\nflaw-hands-dropping-too-low\thttps://youtu.be/2-GSXHCtXBU\nflaw-improper-stance\thttps://youtu.be/lKRM1GTczuI\nflaw-lack-of-separation\thttps://youtu.be/DgZxsXT9lO8\nflaw-loop-in-the-barrel\thttps://youtu.be/pK6YSfhOZ68\nflaw-lunging-to-the-ball\thttps://youtu.be/y0QQxQvNfwQ\nflaw-no-lower-half\thttps://youtu.be/mm8BgCjhDUM\nflaw-soft-front-knee\thttps://youtu.be/vIyySwBroJ4\nflaw-stepping-in-the-bucket\thttps://youtu.be/T9ATwxZwLOg\noff-speed-front-toss\thttps://youtu.be/YbKMKncdjg4\noutside-tee\thttps://youtu.be/gswKH7P442o\nrandom-front-toss\thttps://youtu.be/wkyOsDsGpA8\nrapid-fire-toss\thttps://youtu.be/BnKaH2D0gM8\nreverse-stride\thttps://youtu.be/xir67PJypoY\nseparation-progression-tee\thttps://youtu.be/UHMiELC06SA\nshort-bat-top-hand-front-toss\thttps://youtu.be/GMwc7OtTHfU\nstance-distance-check\thttps://youtu.be/0d3uji4WNRM\ntop-drop-drill\thttps://youtu.be/UCR8SDGHVZU\ntop-hand-tee\thttps://youtu.be/GWPx9f4QPno\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

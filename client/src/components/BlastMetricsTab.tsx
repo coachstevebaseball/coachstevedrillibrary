@@ -21,18 +21,12 @@ import { ImportBlastCSV } from "./ImportBlastCSV";
 import { RetroactiveBlastNotes } from "./RetroactiveBlastNotes";
 import { InlineEdit } from "./InlineEdit";
 
-// Metric display config — all Blast Motion metrics
+// Metric display config
 const METRIC_CONFIGS = {
   batSpeed: { label: "Bat Speed", unit: "mph", key: "batSpeedMph", color: "#DC143C", icon: Zap },
-  onPlaneEff: { label: "On-Plane Eff.", unit: "%", key: "onPlaneEfficiencyPercent", color: "#14b8a6", icon: Target },
+  onPlaneEff: { label: "On-Plane Efficiency", unit: "%", key: "onPlaneEfficiencyPercent", color: "#14b8a6", icon: Target },
   attackAngle: { label: "Attack Angle", unit: "deg", key: "attackAngleDeg", color: "#84cc16", icon: Crosshair },
   exitVelocity: { label: "Exit Velocity", unit: "mph", key: "exitVelocityMph", color: "#8b5cf6", icon: Gauge },
-  peakHandSpeed: { label: "Peak Hand Speed", unit: "mph", key: "peakHandSpeedMph", color: "#f97316", icon: Zap },
-  rotationalAccel: { label: "Rotational Accel.", unit: "g", key: "rotationalAccelerationG", color: "#ec4899", icon: TrendingUp },
-  connectionAtImpact: { label: "Connection @ Impact", unit: "deg", key: "connectionAtImpactDeg", color: "#06b6d4", icon: Target },
-  earlyConnection: { label: "Early Connection", unit: "deg", key: "earlyConnectionDeg", color: "#a3e635", icon: Crosshair },
-  powerKpi: { label: "Power KPI", unit: "", key: "powerKpi", color: "#fbbf24", icon: Gauge },
-  timeToContact: { label: "Time to Contact", unit: "sec", key: "timeToContactSec", color: "#94a3b8", icon: TrendingUp },
 } as const;
 
 type MetricKey = keyof typeof METRIC_CONFIGS;
@@ -65,7 +59,9 @@ function CustomTooltip({ active, payload, label }: any) {
 export function BlastMetricsTab() {
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
   const [sessionTypeFilter, setSessionTypeFilter] = useState("All");
-  const [chartMetric, setChartMetric] = useState<MetricKey>("batSpeed");
+  const [chartMetric1, setChartMetric1] = useState<MetricKey>("batSpeed");
+  const [chartMetric2, setChartMetric2] = useState<MetricKey>("onPlaneEff");
+  const [chartView, setChartView] = useState<"line" | "bar">("line");
 
   // Dialog states
   const [addSessionOpen, setAddSessionOpen] = useState(false);
@@ -92,11 +88,6 @@ export function BlastMetricsTab() {
     { enabled: !!selectedPlayerId }
   );
 
-  const { data: highestMetrics } = trpc.blastMetrics.getHighestMetrics.useQuery(
-    { playerId: selectedPlayerId! },
-    { enabled: !!selectedPlayerId }
-  );
-
   const { data: sessionTypes = [] } = trpc.blastMetrics.getSessionTypes.useQuery(
     { playerId: selectedPlayerId! },
     { enabled: !!selectedPlayerId }
@@ -112,9 +103,7 @@ export function BlastMetricsTab() {
     { enabled: !!selectedPlayerId }
   );
 
-  const metricConfig = METRIC_CONFIGS[chartMetric];
-
-  // Prepare chart data — single selected metric
+  // Prepare chart data
   const chartData = useMemo(() => {
     return trends.map((t: any) => ({
       date: formatShortDate(t.sessionDate),
@@ -240,7 +229,8 @@ export function BlastMetricsTab() {
   }
 
   // ========== PLAYER DETAIL DASHBOARD ==========
-
+  const metric1Config = METRIC_CONFIGS[chartMetric1];
+  const metric2Config = METRIC_CONFIGS[chartMetric2];
 
   return (
     <div className="space-y-6">
@@ -341,123 +331,206 @@ export function BlastMetricsTab() {
         </div>
       )}
 
-      {/* Chart Controls */}
-      <div className="flex flex-wrap gap-2 items-center">
-        <Select value={sessionTypeFilter} onValueChange={setSessionTypeFilter}>
-          <SelectTrigger className="w-36 bg-white/[0.06] border-white/[0.1] text-white text-xs h-8">
-            <SelectValue placeholder="Session Type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="All">All Types</SelectItem>
-            {sessionTypes.map((type: string) => (
-              <SelectItem key={type} value={type}>{type}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={chartMetric} onValueChange={(v) => setChartMetric(v as MetricKey)}>
-          <SelectTrigger className="w-48 bg-white/[0.06] border-white/[0.1] text-white text-xs h-8">
-            <SelectValue placeholder="Metric" />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(METRIC_CONFIGS).map(([key, cfg]) => (
-              <SelectItem key={key} value={key}>{cfg.label}{cfg.unit ? ` (${cfg.unit})` : ""}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      {/* Filters & Chart Controls */}
+      <div className="flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
+        <div className="flex flex-wrap gap-3 items-center">
+          <Select value={sessionTypeFilter} onValueChange={setSessionTypeFilter}>
+            <SelectTrigger className="w-[200px] bg-white/[0.06] border-white/[0.1] text-white">
+              <SelectValue placeholder="Session Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">All Session Types</SelectItem>
+              {sessionTypes.map((type: string) => (
+                <SelectItem key={type} value={type}>{type}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex gap-2 items-center">
+          <Select value={chartMetric1} onValueChange={(v) => setChartMetric1(v as MetricKey)}>
+            <SelectTrigger className="w-[160px] bg-white/[0.06] border-white/[0.1] text-white text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(METRIC_CONFIGS).map(([key, cfg]) => (
+                <SelectItem key={key} value={key}>{cfg.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <span className="text-white/30 text-xs">vs</span>
+          <Select value={chartMetric2} onValueChange={(v) => setChartMetric2(v as MetricKey)}>
+            <SelectTrigger className="w-[160px] bg-white/[0.06] border-white/[0.1] text-white text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(METRIC_CONFIGS).map(([key, cfg]) => (
+                <SelectItem key={key} value={key}>{cfg.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="flex bg-white/[0.06] rounded-lg border border-white/[0.08] p-0.5">
+            <button
+              onClick={() => setChartView("line")}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                chartView === "line" ? "bg-white/[0.12] text-white" : "text-white/40 hover:text-white/60"
+              }`}
+            >
+              Line
+            </button>
+            <button
+              onClick={() => setChartView("bar")}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                chartView === "bar" ? "bg-white/[0.12] text-white" : "text-white/40 hover:text-white/60"
+              }`}
+            >
+              Bar
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Trend Chart — single metric */}
+      {/* Trend Chart */}
       <Card className="bg-white/[0.04] border-white/[0.08]">
         <CardHeader className="pb-2">
           <CardTitle className="text-lg text-white flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-violet-400" />
-            Performance Trend — {metricConfig.label}
+            Performance Trends
           </CardTitle>
         </CardHeader>
         <CardContent>
           {chartData.length === 0 ? (
             <div className="h-64 flex flex-col items-center justify-center text-white/30 gap-3">
-              <p>No session data available</p>
-              <Button onClick={() => setAddSessionOpen(true)} size="sm" variant="outline" className="text-violet-400 border-violet-500/30 hover:bg-violet-500/10">
-                <Plus className="h-4 w-4 mr-1.5" />Add First Session
+              <p>No session data available for the selected filters</p>
+              <Button
+                onClick={() => setAddSessionOpen(true)}
+                size="sm"
+                variant="outline"
+                className="text-violet-400 border-violet-500/30 hover:bg-violet-500/10"
+              >
+                <Plus className="h-4 w-4 mr-1.5" />
+                Add First Session
               </Button>
             </div>
           ) : (
             <div className="h-72 md:h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 8, right: 16, left: 0, bottom: 5 }}>
-                  <defs>
-                    <linearGradient id="metricGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={metricConfig.color} stopOpacity={0.35} />
-                      <stop offset="95%" stopColor={metricConfig.color} stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                  <XAxis dataKey="date" stroke="rgba(255,255,255,0.25)" fontSize={11} tick={{ fill: "rgba(255,255,255,0.4)" }} />
-                  <YAxis stroke="rgba(255,255,255,0.15)" fontSize={11} tick={{ fill: "rgba(255,255,255,0.4)" }}
-                    domain={["auto", "auto"]}
-                    tickFormatter={(v: number) => `${v}${metricConfig.unit ? " " + metricConfig.unit : ""}`}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Area
-                    type="monotone"
-                    dataKey={metricConfig.key}
-                    name={`${metricConfig.label}${metricConfig.unit ? " (" + metricConfig.unit + ")" : ""}`}
-                    stroke={metricConfig.color}
-                    fill="url(#metricGrad)"
-                    strokeWidth={2.5}
-                    dot={{ r: 4, fill: metricConfig.color, strokeWidth: 0 }}
-                    activeDot={{ r: 6, fill: metricConfig.color }}
-                  />
-                </AreaChart>
+                {chartView === "line" ? (
+                  <AreaChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                    <defs>
+                      <linearGradient id={`grad-${chartMetric1}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={metric1Config.color} stopOpacity={0.3} />
+                        <stop offset="95%" stopColor={metric1Config.color} stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id={`grad-${chartMetric2}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={metric2Config.color} stopOpacity={0.3} />
+                        <stop offset="95%" stopColor={metric2Config.color} stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+                    <XAxis dataKey="date" stroke="rgba(255,255,255,0.3)" fontSize={11} />
+                    <YAxis yAxisId="left" stroke={metric1Config.color} fontSize={11} />
+                    <YAxis yAxisId="right" orientation="right" stroke={metric2Config.color} fontSize={11} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend wrapperStyle={{ fontSize: "12px", color: "rgba(255,255,255,0.6)" }} />
+                    <Area
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey={metric1Config.key}
+                      name={`${metric1Config.label} (${metric1Config.unit})`}
+                      stroke={metric1Config.color}
+                      fill={`url(#grad-${chartMetric1})`}
+                      strokeWidth={2}
+                      dot={{ r: 4, fill: metric1Config.color }}
+                      activeDot={{ r: 6 }}
+                    />
+                    <Area
+                      yAxisId="right"
+                      type="monotone"
+                      dataKey={metric2Config.key}
+                      name={`${metric2Config.label} (${metric2Config.unit})`}
+                      stroke={metric2Config.color}
+                      fill={`url(#grad-${chartMetric2})`}
+                      strokeWidth={2}
+                      dot={{ r: 4, fill: metric2Config.color }}
+                      activeDot={{ r: 6 }}
+                    />
+                  </AreaChart>
+                ) : (
+                  <BarChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+                    <XAxis dataKey="date" stroke="rgba(255,255,255,0.3)" fontSize={11} />
+                    <YAxis yAxisId="left" stroke={metric1Config.color} fontSize={11} />
+                    <YAxis yAxisId="right" orientation="right" stroke={metric2Config.color} fontSize={11} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend wrapperStyle={{ fontSize: "12px", color: "rgba(255,255,255,0.6)" }} />
+                    <Bar
+                      yAxisId="left"
+                      dataKey={metric1Config.key}
+                      name={`${metric1Config.label} (${metric1Config.unit})`}
+                      fill={metric1Config.color}
+                      radius={[4, 4, 0, 0]}
+                      opacity={0.8}
+                    />
+                    <Bar
+                      yAxisId="right"
+                      dataKey={metric2Config.key}
+                      name={`${metric2Config.label} (${metric2Config.unit})`}
+                      fill={metric2Config.color}
+                      radius={[4, 4, 0, 0]}
+                      opacity={0.8}
+                    />
+                  </BarChart>
+                )}
               </ResponsiveContainer>
             </div>
           )}
         </CardContent>
       </Card>
 
-      {/* Highest Metrics Since Day 1 */}
-      <Card className="bg-white/[0.04] border-white/[0.08]">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg text-white flex items-center gap-2">
-            <BarChart3 className="h-5 w-5 text-[#E8425A]" />
-            Highest Overall Metrics Since They Started
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {!highestMetrics ? (
-            <p className="text-white/30 text-sm text-center py-6">No data yet</p>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-              {[
-                { label: "Bat Speed", value: highestMetrics.maxBatSpeed, unit: "mph", color: "#DC143C" },
-                { label: "On-Plane Eff.", value: highestMetrics.maxOnPlane, unit: "%", color: "#14b8a6" },
-                { label: "Attack Angle", value: highestMetrics.maxAttackAngle, unit: "°", color: "#84cc16" },
-                { label: "Exit Velocity", value: highestMetrics.maxExitVelo, unit: "mph", color: "#8b5cf6" },
-                { label: "Peak Hand Spd", value: highestMetrics.maxPeakHandSpeed, unit: "mph", color: "#f97316" },
-                { label: "Rot. Accel.", value: highestMetrics.maxRotationalAccel, unit: "g", color: "#ec4899" },
-                { label: "Connection", value: highestMetrics.maxConnectionAtImpact, unit: "°", color: "#06b6d4" },
-                { label: "Early Conn.", value: highestMetrics.maxEarlyConnection, unit: "°", color: "#a3e635" },
-                { label: "Power KPI", value: highestMetrics.maxPowerKpi, unit: "", color: "#fbbf24" },
-                { label: "Time to Cont.", value: highestMetrics.minTimeToContact, unit: "s", color: "#94a3b8", isMin: true },
-              ].map((m) => (
-                <div key={m.label} className="bg-white/[0.04] rounded-xl p-3 border border-white/[0.06]">
-                  <p className="text-[10px] text-white/40 uppercase tracking-wider mb-1">{m.label}</p>
-                  {m.value ? (
-                    <p className="text-xl font-bold" style={{ color: m.color }}>
-                      {parseFloat(m.value).toFixed(m.unit === "s" ? 3 : 1)}
-                      <span className="text-xs font-normal text-white/40 ml-1">{m.unit}</span>
-                    </p>
-                  ) : (
-                    <p className="text-white/20 text-sm">—</p>
-                  )}
-                  {m.isMin && m.value && <p className="text-[9px] text-white/30 mt-0.5">lower is better</p>}
-                </div>
-              ))}
+      {/* Averages by Session Type */}
+      {averages.length > 0 && (
+        <Card className="bg-white/[0.04] border-white/[0.08]">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg text-white flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-[#E8425A]" />
+              Averages by Session Type
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-white/[0.08]">
+                    <th className="text-left py-3 px-3 text-white/50 font-medium">Session Type</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Sessions</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Bat Speed</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">On-Plane Eff.</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Attack Angle</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium">Exit Velo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {averages.map((avg: any, idx: number) => (
+                    <tr key={avg.sessionType || idx} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                      <td className="py-3 px-3">
+                        <Badge variant="outline" className="text-white/70 border-white/10 font-normal">
+                          {avg.sessionType}
+                        </Badge>
+                      </td>
+                      <td className="text-center py-3 px-2 text-white/60">{avg.sessionCount}</td>
+                      <td className="text-center py-3 px-2 text-[#E8425A] font-medium">{avg.avgBatSpeed} mph</td>
+                      <td className="text-center py-3 px-2 text-teal-400 font-medium">{avg.avgOnPlaneEfficiency}%</td>
+                      <td className="text-center py-3 px-2 text-lime-400 font-medium">{avg.avgAttackAngle}°</td>
+                      <td className="text-center py-3 px-2 text-violet-400 font-medium">{avg.avgExitVelocity} mph</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Session History Table */}
       <Card className="bg-white/[0.04] border-white/[0.08]">
@@ -513,7 +586,7 @@ export function BlastMetricsTab() {
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Attack Angle</th>
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Exit Velo</th>
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Note</th>
-                    <th className="w-20 sticky right-0 bg-[#0f1419] text-white/50 text-xs font-medium py-3 px-1">Actions</th>
+                    <th className="w-10"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -546,8 +619,8 @@ export function BlastMetricsTab() {
                           <span className="text-white/15">—</span>
                         )}
                       </td>
-                      <td className="py-3 px-1 sticky right-0 bg-[#0f1419]">
-                        <div className="flex items-center gap-0.5">
+                      <td className="py-3 px-1">
+                        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={() => setEditSession(s as SessionData)}
                             className="p-1.5 rounded-md hover:bg-amber-500/10 text-white/30 hover:text-amber-400"

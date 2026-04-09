@@ -1,0 +1,52 @@
+{
+  "query": "SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE();",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE();",
+  "rows": [
+    {
+      "table_name": "__drizzle_migrations"
+    },
+    {
+      "table_name": "users"
+    },
+    {
+      "table_name": "assignmentProgress"
+    },
+    {
+      "table_name": "invites"
+    },
+    {
+      "table_name": "drillVideos"
+    },
+    {
+      "table_name": "drillDetails"
+    },
+    {
+      "table_name": "badges"
+    },
+    {
+      "table_name": "coachFeedback"
+    },
+    {
+      "table_name": "drillSubmissions"
+    },
+    {
+      "table_name": "notificationPreferences"
+    },
+    {
+      "table_name": "notifications"
+    },
+    {
+      "table_name": "drillAnswers"
+    },
+    {
+      "table_name": "drillQuestions"
+    },
+    {
+      "table_name": "drillAssignments"
+    }
+  ],
+  "messages": [],
+  "stdout": "table_name\n__drizzle_migrations\nusers\nassignmentProgress\ninvites\ndrillVideos\ndrillDetails\nbadges\ncoachFeedback\ndrillSubmissions\nnotificationPreferences\nnotifications\ndrillAnswers\ndrillQuestions\ndrillAssignments\n",
+  "stderr": "",
+  "execution_time_ms": 61
+}

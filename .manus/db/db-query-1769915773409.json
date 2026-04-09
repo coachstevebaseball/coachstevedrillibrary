@@ -1,0 +1,9 @@
+{
+  "query": "DELETE FROM drillCustomizations WHERE drillId = '1-2-3-drill';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute DELETE FROM drillCustomizations WHERE drillId = '1-2-3-drill';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 367
+}

@@ -1,0 +1,15 @@
+{
+  "query": "SELECT drillId, goal, instructions FROM drillDetails WHERE drillId = '1-2-3-drill';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT drillId, goal, instructions FROM drillDetails WHERE drillId = '1-2-3-drill';",
+  "rows": [
+    {
+      "drillId": "1-2-3-drill",
+      "goal": "Master the 1-2-3 Hitting Progression - Updated",
+      "instructions": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "drillId\tgoal\tinstructions\n1-2-3-drill\tMaster the 1-2-3 Hitting Progression - Updated\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 362
+}

@@ -1,0 +1,70 @@
+{
+  "query": "\nSELECT \n  drillId,\n  goal,\n  description,\n  createdAt\nFROM drillDetails\nWHERE skillSet = 'Hitting'\nLIMIT 15;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute \nSELECT \n  drillId,\n  goal,\n  description,\n  createdAt\nFROM drillDetails\nWHERE skillSet = 'Hitting'\nLIMIT 15;\n",
+  "rows": [
+    {
+      "drillId": "1-2-3-drill",
+      "goal": "To establish a repeatable, rhythmic tempo in the load and stride phase, preventing the hitter from being static or rushed.",
+      "description": "[\"Test instructions for the 1-2-3 Drill. This is a test to see if instructions save properly.\"]",
+      "createdAt": "2025-12-25 17:24:45"
+    },
+    {
+      "drillId": "tight-tee",
+      "goal": "To train inward hand speed and hip clearing, forcing the hitter to be short to the inside pitch.",
+      "description": "[\"Position the tee one ball-width inside the plate at the front hip. The hitter should stand with their front hip aligned with the tee.\", \"Focus on hitting the ball back up the middle by getting your hands inside the ball, overemphasizing the act of loading and getting behind the ball. \", \"After swinging for 10 to 15 times, take a short break or switch with your partner if you have one.\"]",
+      "createdAt": "2025-12-25 18:23:15"
+    },
+    {
+      "drillId": "reverse-stride",
+      "goal": "To create linear momentum and athletic flow, helping \"stiff\" hitters feel dynamic movement toward the ball.",
+      "description": "[\"Tee set up in front of the middle of the plate\", \"Hitter stands with feet closer together and strides backwards\", \"Tee placement is extremely important. Tee needs to be in position to hit after batter strides backwards\", \"Focus should be on hitting the ball up the middle and generating energy through the backside using ground reaction force\", \"Perfect for hitters that are learning how to use ground reaction force or lack rhythm in their swing\"]",
+      "createdAt": "2025-12-25 18:54:47"
+    },
+    {
+      "drillId": "stance-distance-check",
+      "goal": "To eliminate setup variables, ensuring the hitter is in the exact same position for every at-bat.",
+      "description": "[\"Hitter sets up in their normal spot in the batter’s box\", \"Hitter should hold the bat in their hands, with their elbows against their stomach, with the bat held out over the plate about waist high\", \"Hitter drops the bat straight down on the plate\\n\", \"The barrel of the bat should cover the plate\", \"If the bat goes over the outside of the plate or does not touch the outside of the plate, the batter should move their stance away from or toward the plate\", \"This is the ideal distance the hitter should stand from the plate\"]",
+      "createdAt": "2025-12-25 19:17:08"
+    },
+    {
+      "drillId": "short-bat-top-hand-tee",
+      "goal": "To eliminate hand drag, teaching the top hand to fire and release the barrel directly at the ball.",
+      "description": "[\"Hitter gets ready, holds the short bat with the hand closest to the barrel of the bat (top hand)\", \"Hitter places other hand (bottom hand) behind back or across chest on back shoulder\", \"Swinging with one hand, the hitter tries to hit the ball on a line back up the middle\"]",
+      "createdAt": "2025-12-26 14:52:37"
+    },
+    {
+      "drillId": "1-2-3-rhythm-tee",
+      "goal": "To synchronize the upper and lower body movements, ensuring that momentum is gathered fluidly rather than through jerky mechanics.",
+      "description": "[\"Tee set up slightly in front of the middle of the plate. \", \"Make sure you set up two steps back from the plate (toward the catcher position). \", \"You should cross your back foot in front of the front foot, staying square to the plate. \", \"Hitter steps with the front foot into this normal area of their batting stance. \", \"As front foot moves towards the pitcher, the weight should be shifted onto the back foot as the load, and the front foot should stride. \", \"You then try to hit the ball back up the middle using your momentum from the steps. Hang the ball on a 3-count (counting starts with the first step). \", \"The objective is for the hitter to land the strike foot on the 3-count as they count off as they walk. \", \"Ideal drill for working on coordinating the body and being able to consistently be in position to hit with timing. \"]",
+      "createdAt": "2025-12-26 15:05:17"
+    },
+    {
+      "drillId": "angled-force-plate-tee-back-foot",
+      "goal": "Goal: Hit the ball back up the middle, keeping the body weight inside the back foot",
+      "description": "[\"The tee is set up in front of the middle of the plate.\\n\", \"The hitter sets up even with the plate, while the partner places a ball on the tee.\\n\", \"Place an angled force plate under the back foot.\\n\", \"The objective is to hit the ball back up the middle using a standard loading pattern and stride, while keeping the hitter’s body weight on the back foot.\", \"The angle of the force plate will prevent hitters from drifting backwards and losing their center of gravity\"]",
+      "createdAt": "2025-12-27 13:26:56"
+    },
+    {
+      "drillId": "tees-with-timing",
+      "goal": "To teach pitcher-hitter synchronization, ensuring the load is triggered by the pitcher's movement.",
+      "description": "[\"- \\nTee set up slightly in front of the middle of the plate\\nHitter sets up even with the plate, while other partner puts a ball on the tee\\nHitter gets ready, looks forward to visualize a pitcher\\nPartner then calls out “1, 2, 3” pausing after each number, on each number hitter will:\\n1: Hitter loads shifting weight to back foot\\n2: Hitter strides while staying balanced, hands separate to move back from the shoulder\\n3: Hitter swings and hits the ball\\nHitter tries to hit the ball back up the middle- text\"]",
+      "createdAt": "2026-01-21 15:55:53"
+    },
+    {
+      "drillId": "back-foot-cone-tee",
+      "goal": "To provide tactile feedback on balance, ensuring the hitter maintains a vertical axis and doesn't \"leak\" weight backward.",
+      "description": "[\"Place cone behind back foot. Focus on hip rotation. Keep hands inside the ball.\"]",
+      "createdAt": "2026-01-21 16:28:18"
+    },
+    {
+      "drillId": "bat-behind-hips",
+      "goal": "Activate the hips into the swing by using only the lower half in the swing",
+      "description": "[]",
+      "createdAt": "2026-01-22 03:38:25"
+    }
+  ],
+  "messages": [],
+  "stdout": "drillId\tgoal\tdescription\tcreatedAt\n1-2-3-drill\tTo establish a repeatable, rhythmic tempo in the load and stride phase, preventing the hitter from being static or rushed.\t[\"Test instructions for the 1-2-3 Drill. This is a test to see if instructions save properly.\"]\t2025-12-25 17:24:45\ntight-tee\tTo train inward hand speed and hip clearing, forcing the hitter to be short to the inside pitch.\t[\"Position the tee one ball-width inside the plate at the front hip. The hitter should stand with their front hip aligned with the tee.\", \"Focus on hitting the ball back up the middle by getting your hands inside the ball, overemphasizing the act of loading and getting behind the ball. \", \"After swinging for 10 to 15 times, take a short break or switch with your partner if you have one.\"]\t2025-12-25 18:23:15\nreverse-stride\tTo create linear momentum and athletic flow, helping \"stiff\" hitters feel dynamic movement toward the ball.\t[\"Tee set up in front of the middle of the plate\", \"Hitter stands with feet closer together and strides backwards\", \"Tee placement is extremely important. Tee needs to be in position to hit after batter strides backwards\", \"Focus should be on hitting the ball up the middle and generating energy through the backside using ground reaction force\", \"Perfect for hitters that are learning how to use ground reaction force or lack rhythm in their swing\"]\t2025-12-25 18:54:47\nstance-distance-check\tTo eliminate setup variables, ensuring the hitter is in the exact same position for every at-bat.\t[\"Hitter sets up in their normal spot in the batter’s box\", \"Hitter should hold the bat in their hands, with their elbows against their stomach, with the bat held out over the plate about waist high\", \"Hitter drops the bat straight down on the plate\\n\", \"The barrel of the bat should cover the plate\", \"If the bat goes over the outside of the plate or does not touch the outside of the plate, the batter should move their stance away from or toward the plate\", \"This is the ideal distance the hitter should stand from the plate\"]\t2025-12-25 19:17:08\nshort-bat-top-hand-tee\tTo eliminate hand drag, teaching the top hand to fire and release the barrel directly at the ball.\t[\"Hitter gets ready, holds the short bat with the hand closest to the barrel of the bat (top hand)\", \"Hitter places other hand (bottom hand) behind back or across chest on back shoulder\", \"Swinging with one hand, the hitter tries to hit the ball on a line back up the middle\"]\t2025-12-26 14:52:37\n1-2-3-rhythm-tee\tTo synchronize the upper and lower body movements, ensuring that momentum is gathered fluidly rather than through jerky mechanics.\t[\"Tee set up slightly in front of the middle of the plate. \", \"Make sure you set up two steps back from the plate (toward the catcher position). \", \"You should cross your back foot in front of the front foot, staying square to the plate. \", \"Hitter steps with the front foot into this normal area of their batting stance. \", \"As front foot moves towards the pitcher, the weight should be shifted onto the back foot as the load, and the front foot should stride. \", \"You then try to hit the ball back up the middle using your momentum from the steps. Hang the ball on a 3-count (counting starts with the first step). \", \"The objective is for the hitter to land the strike foot on the 3-count as they count off as they walk. \", \"Ideal drill for working on coordinating the body and being able to consistently be in position to hit with timing. \"]\t2025-12-26 15:05:17\nangled-force-plate-tee-back-foot\tGoal: Hit the ball back up the middle, keeping the body weight inside the back foot\t[\"The tee is set up in front of the middle of the plate.\\n\", \"The hitter sets up even with the plate, while the partner places a ball on the tee.\\n\", \"Place an angled force plate under the back foot.\\n\", \"The objective is to hit the ball back up the middle using a standard loading pattern and stride, while keeping the hitter’s body weight on the back foot.\", \"The angle of the force plate will prevent hitters from drifting backwards and losing their center of gravity\"]\t2025-12-27 13:26:56\ntees-with-timing\tTo teach pitcher-hitter synchronization, ensuring the load is triggered by the pitcher's movement.\t[\"- \\nTee set up slightly in front of the middle of the plate\\nHitter sets up even with the plate, while other partner puts a ball on the tee\\nHitter gets ready, looks forward to visualize a pitcher\\nPartner then calls out “1, 2, 3” pausing after each number, on each number hitter will:\\n1: Hitter loads shifting weight to back foot\\n2: Hitter strides while staying balanced, hands separate to move back from the shoulder\\n3: Hitter swings and hits the ball\\nHitter tries to hit the ball back up the middle- text\"]\t2026-01-21 15:55:53\nback-foot-cone-tee\tTo provide tactile feedback on balance, ensuring the hitter maintains a vertical axis and doesn't \"leak\" weight backward.\t[\"Place cone behind back foot. Focus on hip rotation. Keep hands inside the ball.\"]\t2026-01-21 16:28:18\nbat-behind-hips\tActivate the hips into the swing by using only the lower half in the swing\t[]\t2026-01-22 03:38:25\n",
+  "stderr": "",
+  "execution_time_ms": 361
+}

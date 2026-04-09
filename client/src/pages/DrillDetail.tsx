@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";;
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink, Lock, LogIn, ChevronDown, AlertCircle, TrendingUp, Lightbulb, Star } from "lucide-react";
@@ -7,13 +7,10 @@ import { getLoginUrl, PREVIEW_MODE } from "@/const";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Link, useRoute, useSearch } from "wouter";
 import { useState, useMemo, useEffect } from "react";
-import drillsData from "@/data/drills";
-import { filterOptions } from "@/data/drills";
+import drillsData from "@/data/drills.json";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { EditDrillDetailsModal } from "@/components/EditDrillDetailsModal";
 import { InstructionsEditor } from "@/components/InstructionsEditor";
-import { TiptapEditor, TiptapRenderer } from "@/components/TiptapEditor";
-import { EditableStatBar, type StatCard } from "@/components/EditableStatBar";
 import { trpc } from "@/lib/trpc";
 import { Edit, Trash2, Pencil, Check, X } from "lucide-react";
 import { DrillQAForm } from "@/components/DrillQAForm";
@@ -21,6 +18,7 @@ import { DrillPageBuilderNotion } from "@/components/DrillPageBuilderNotion";
 import { CustomDrillLayout } from "@/components/CustomDrillLayout";
 import { Layout } from "lucide-react";
 import { usePreviewLimit, MAX_FREE_PREVIEWS } from "@/hooks/usePreviewLimit";
+import { DrillPreviewWall } from "@/components/DrillPreviewWall";
 import { InlineEdit } from "@/components/InlineEdit";
 
 // Collapsible section component
@@ -1195,23 +1193,7 @@ export default function DrillDetail() {
   );
   
   const details = dbDetails || (id && drillDetails[id as keyof typeof drillDetails]);
-
-  const descriptionSteps = useMemo(() => {
-    if (!details || typeof details !== "object") return [];
-    const d = details as Record<string, unknown>;
-    if (!("description" in d)) return [];
-    const desc = d.description;
-    return Array.isArray(desc) ? desc.filter((x): x is string => typeof x === "string") : [];
-  }, [details]);
-
-  const addDifficultySteps = useMemo(() => {
-    if (!details || typeof details !== "object") return [];
-    const d = details as Record<string, unknown>;
-    if (!("addDifficulty" in d)) return [];
-    const ad = d.addDifficulty;
-    return Array.isArray(ad) ? ad.filter((x): x is string => typeof x === "string") : [];
-  }, [details]);
-
+  
   const [savedVideos, setSavedVideos] = useState<Record<string, string>>({});
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState<any>(null);
@@ -1303,8 +1285,6 @@ export default function DrillDetail() {
         drillId: id,
         instructions: customInstructions
       });
-      // Invalidate so the page re-fetches the saved content immediately
-      trpcUtils.drillDetails.getDrillDetail.invalidate({ drillId: id });
     } catch (error) {
       console.error('Failed to save instructions:', error);
     }
@@ -1341,16 +1321,31 @@ export default function DrillDetail() {
     setEditGoalText('');
   };
 
-  // All content is public — no access check needed
-  const hasAccess = true;
+  // Check if user has access (or if preview mode is enabled)
+  const hasAccess = PREVIEW_MODE || (user && (user.role === 'admin' || user.isActiveClient === 1));
 
+  // Free preview logic: unauthenticated visitors get 2 free drill views
+  // If they're logged in (any role), bypass the preview limit entirely
   const isAnonymous = !user && !loading;
+  const currentSlugAlreadyViewed = id ? hasViewed(id) : false;
+  const showPreviewWall = isAnonymous && isLimitReached && !currentSlugAlreadyViewed;
+
+  // Record this drill view for anonymous users (only if they haven't hit the wall)
+  useEffect(() => {
+    if (isAnonymous && id && drill && !isLimitReached) {
+      recordView(id);
+    }
+    // Also allow viewing if they already viewed this slug before hitting limit
+    if (isAnonymous && id && drill && currentSlugAlreadyViewed) {
+      // No-op: they can revisit drills they already saw
+    }
+  }, [isAnonymous, id, drill?.name, isLimitReached, currentSlugAlreadyViewed]);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-12 w-12 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+          <div className="h-12 w-12 rounded-full border-2 border-[#DC143C]/30 border-t-[#DC143C] animate-spin" />
           <p className="text-muted-foreground animate-pulse">Loading drill...</p>
         </div>
       </div>
@@ -1377,78 +1372,111 @@ export default function DrillDetail() {
     );
   }
 
-
+  // Show the preview wall for anonymous users who have hit their free limit
+  if (showPreviewWall) {
+    return (
+      <DrillPreviewWall
+        drillName={drill.name}
+        viewedCount={viewedSlugs.length}
+        maxPreviews={MAX_FREE_PREVIEWS}
+        backHref={backHref}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-8 md:pb-12">
+      {/* Access Control Check - for logged-in users without active client status */}
+      {!hasAccess && !isAnonymous && (
+        <div className="container py-12">
+          <Card className="max-w-2xl mx-auto border-2">
+            <CardHeader className="text-center">
+              <div className="mx-auto bg-muted h-16 w-16 rounded-full flex items-center justify-center mb-4">
+                <Lock className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <CardTitle className="text-2xl">Client Access Required</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center space-y-4">
+              <p className="text-muted-foreground">
+                This drill content is only available to active clients. Please log in with an authorized account to view the full drill details.
+              </p>
+              {!user ? (
+                <a href={getLoginUrl()}>
+                  <Button size="lg" className="gap-2">
+                    <LogIn className="h-5 w-5" />
+                    Login to Access
+                  </Button>
+                </a>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    Your account does not have active client access. Please contact the administrator.
+                  </p>
+                  <Link href={backHref}>
+                    <Button variant="outline">Return to Directory</Button>
+                  </Link>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
-
-      {/* Header — matches directory / brand chrome */}
-      <header className="relative bg-brand-header text-brand-header-foreground border-b border-brand-header-foreground/10 mb-6 md:mb-8">
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-secondary/90 via-primary to-secondary/90 opacity-90" />
-        <div className="container relative py-6 md:py-10">
+      {/* Header */}
+      {(hasAccess || isAnonymous) && (
+      <>
+      <header className="relative overflow-hidden mb-6 md:mb-8">
+        <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.18_0.01_25)] via-[oklch(0.15_0.005_0)] to-[oklch(0.12_0.01_20)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.45_0.15_250/0.15),transparent_60%)]" />
+        <div className="container relative z-10 py-6 md:py-10">
           <Link href={backHref}>
-            <Button variant="ghost" className="text-brand-header-foreground/80 hover:text-brand-header-foreground hover:bg-brand-header-foreground/10 mb-4 pl-0 gap-2 text-sm">
+            <Button variant="ghost" className="text-white/70 hover:text-white hover:bg-white/10 mb-4 pl-0 gap-2 text-sm">
               <ArrowLeft className="h-4 w-4" />
               <span className="hidden sm:inline">Back to Directory</span>
               <span className="sm:hidden">Back</span>
             </Button>
           </Link>
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-5">
-            <div className="flex-1 w-full min-w-0">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="flex-1 w-full">
               <div className="flex flex-wrap items-center gap-2 mb-3">
-                <Badge
-                  className={`font-bold text-xs px-3 py-1 border ${
-                    drill.difficulty === "Easy"
-                      ? "bg-green-500/15 text-green-300 border-green-500/35"
-                      : drill.difficulty === "Medium"
-                        ? "bg-amber-500/15 text-amber-300 border-amber-500/35"
-                        : "bg-red-500/15 text-red-300 border-red-500/35"
-                  }`}
-                  variant="outline"
-                >
+                <Badge className={`font-bold text-xs px-3 py-1 ${
+                  drill.difficulty === 'Easy' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                  drill.difficulty === 'Medium' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' :
+                  'bg-red-500/20 text-red-400 border-red-500/30'
+                }`} variant="outline">
                   {drill.difficulty}
                 </Badge>
-                {drill.categories.map((cat) => (
-                  <Badge
-                    key={cat}
-                    variant="outline"
-                    className="bg-brand-header-foreground/8 text-brand-header-foreground/90 border-brand-header-foreground/15 font-medium text-xs"
-                  >
+                {drill.categories.map(cat => (
+                  <Badge key={cat} variant="outline" className="bg-white/[0.06] text-white/80 border-white/[0.12] font-medium text-xs">
                     {cat}
                   </Badge>
                 ))}
               </div>
-              <InlineEdit
-                contentKey={`drill.detail.${id}.title`}
-                defaultValue={drill.name}
-                as="h1"
-                className="text-3xl md:text-5xl font-heading font-black text-brand-header-foreground leading-tight tracking-tight"
-              />
+              <InlineEdit contentKey={`drill.detail.${id}.title`} defaultValue={drill.name} as="h1" className="text-3xl md:text-5xl font-heading font-black text-white leading-tight tracking-tight" />
             </div>
-
-            <div className="flex gap-2 w-full lg:w-auto shrink-0">
+            
+            <div className="flex gap-2 w-full md:w-auto">
+              {/* Add to Favorites Button */}
               {user && (
                 <Button
                   onClick={handleToggleFavorite}
                   disabled={toggleFavoriteMutation.isPending}
                   variant="outline"
-                  className={`flex-1 lg:flex-none gap-2 ${
-                    isFavorited
-                      ? "bg-secondary/25 hover:bg-secondary/35 text-secondary border-secondary/40"
-                      : "bg-brand-header-foreground/8 hover:bg-brand-header-foreground/14 text-brand-header-foreground border-brand-header-foreground/15"
+                  className={`flex-1 md:flex-none gap-2 ${
+                    isFavorited 
+                      ? "bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border-amber-500/30" 
+                      : "bg-white/[0.06] hover:bg-white/[0.12] text-white/80 border-white/[0.12]"
                   }`}
                 >
                   <Star className={`h-4 w-4 ${isFavorited ? "fill-current" : ""}`} />
                   {isFavorited ? "Favorited" : "Favorite"}
                 </Button>
               )}
+              
+              {/* Fallback to external link */}
               {!details && (
-                <a href={drill.url} target="_blank" rel="noopener noreferrer" className="flex-1 lg:flex-none">
-                  <Button
-                    variant="outline"
-                    className="w-full bg-brand-header-foreground/8 hover:bg-brand-header-foreground/14 text-brand-header-foreground border-brand-header-foreground/15 gap-2"
-                  >
+                <a href={drill.url} target="_blank" rel="noopener noreferrer" className="flex-1 md:flex-none">
+                  <Button variant="outline" className="w-full bg-white/[0.06] hover:bg-white/[0.12] text-white/80 border-white/[0.12] gap-2">
                     <span className="hidden sm:inline">View on USA Baseball</span>
                     <span className="sm:hidden">View</span>
                     <ExternalLink className="h-4 w-4" />
@@ -1460,7 +1488,7 @@ export default function DrillDetail() {
         </div>
       </header>
 
-      <div className="container max-w-6xl px-3 md:px-4">
+      <div className="container max-w-4xl px-3 md:px-4">
         {/* Check if custom page layout exists - if so, render ONLY that */}
         {pageLayout?.blocks && Array.isArray(pageLayout.blocks) && pageLayout.blocks.length > 0 ? (
           <div className="grid gap-6 md:gap-8">
@@ -1478,58 +1506,15 @@ export default function DrillDetail() {
             )}
             {/* Render the custom page layout */}
             <CustomDrillLayout blocks={pageLayout.blocks as any[]} />
-
-            {/* Editable Stat Cards Bar - shown on custom layouts too */}
-            {details && (
-              <EditableStatBar
-                drillId={id || "unknown"}
-                isCoach={!!(user && (user.role === 'admin' || user.role === 'coach'))}
-                defaultCards={[
-                  { id: `${id}-time`, label: "Time", value: details.time, icon: "clock" },
-                  { id: `${id}-athletes`, label: "Athletes", value: details.athletes.split(',')[0], icon: "users" },
-                  { id: `${id}-equipment`, label: "Equipment", value: details.equipment.split(',')[0], icon: "dumbbell" },
-                  { id: `${id}-skill`, label: "Skill Set", value: details.skillSet, icon: "target" },
-                ]}
-              />
-            )}
-
-            {/* Instructions Editor - shown on custom layouts too */}
-            <section>
-              <h2 className="text-2xl md:text-3xl font-heading font-black mb-3 md:mb-4 flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center">
-                  <Target className="h-4 w-4 text-green-400" />
-                </div>
-                <InlineEdit contentKey={`drill.detail.${id}.instructionsHeading`} defaultValue="Instructions" as="span" />
-              </h2>
-              <div className="glass-card rounded-xl p-4 md:p-6">
-                {user && (user.role === 'admin' || user.role === 'coach') ? (
-                  <TiptapEditor
-                    value={customInstructions}
-                    onChange={setCustomInstructions}
-                    onSave={saveCustomInstructions}
-                    isSaving={saveInstructionsMutation.isPending}
-                    placeholder="Write drill instructions here..."
-                  />
-                ) : (
-                  <div className="min-h-[60px]">
-                    {customInstructions ? (
-                      <TiptapRenderer content={customInstructions} />
-                    ) : (
-                      <p className="text-muted-foreground italic">No instructions provided for this drill yet.</p>
-                    )}
-                  </div>
-                )}
-              </div>
-            </section>
-
+            
             {/* Q&A Section for Athletes - also show on custom layouts */}
             {user?.role === 'athlete' && (
               <DrillQAForm drillId={id || ''} drillName={drill?.name || ''} />
             )}
           </div>
         ) : details ? (
-          <div className="grid gap-6 md:gap-8 lg:gap-10">
-            {/* Video */}
+          <div className="grid gap-6 md:gap-8">
+            {/* Video Section - Moved to Top */}
             {(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) ? (
               <VideoPlayer videoUrl={(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) as string} title={`${drill.name} Video`} />
             ) : (
@@ -1541,25 +1526,13 @@ export default function DrillDetail() {
               </div>
             )}
 
-            {/* Quick stats — directly under video */}
-            <EditableStatBar
-              drillId={id || "unknown"}
-              isCoach={!!(user && (user.role === 'admin' || user.role === 'coach'))}
-              defaultCards={[
-                { id: `${id}-time`, label: "Time", value: details.time, icon: "clock" },
-                { id: `${id}-athletes`, label: "Athletes", value: details.athletes.split(',')[0], icon: "users" },
-                { id: `${id}-equipment`, label: "Equipment", value: details.equipment.split(',')[0], icon: "dumbbell" },
-                { id: `${id}-skill`, label: "Skill Set", value: details.skillSet, icon: "target" },
-              ]}
-            />
-
-            {/* Goal */}
-            <div className="glass-card rounded-xl border-l-4 border-l-primary overflow-hidden">
+            {/* Coaching Cues - Above the Fold */}
+            <div className="glass-card rounded-xl border-l-4 border-l-[#DC143C] overflow-hidden">
               <div className="p-4 md:p-6">
                 <div className="flex items-center justify-between gap-2 mb-3">
                   <h3 className="flex items-center gap-2 text-xl md:text-2xl font-heading font-black">
-                    <div className="h-8 w-8 rounded-lg bg-primary/15 flex items-center justify-center border border-primary/25">
-                      <Lightbulb className="h-4 w-4 text-primary" />
+                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center">
+                      <Lightbulb className="h-4 w-4 text-[#E8425A]" />
                     </div>
                     <InlineEdit contentKey={`drill.detail.${id}.goalHeading`} defaultValue="Goal of Drill" as="span" />
                   </h3>
@@ -1594,7 +1567,7 @@ export default function DrillDetail() {
                     <textarea
                       value={editGoalText}
                       onChange={(e) => setEditGoalText(e.target.value)}
-                      className="w-full min-h-[80px] p-3 rounded-lg bg-background/80 border border-border text-base md:text-lg font-medium text-foreground/90 leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                      className="w-full min-h-[80px] p-3 rounded-lg bg-background/80 border border-border text-base md:text-lg font-medium text-foreground/90 leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-[#DC143C]/50 focus:border-[#DC143C]"
                       placeholder="Enter the goal of this drill..."
                       autoFocus
                     />
@@ -1609,7 +1582,7 @@ export default function DrillDetail() {
                       <button
                         onClick={handleSaveGoal}
                         disabled={saveGoalMutation.isPending}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground transition-colors text-sm font-medium disabled:opacity-50"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#DC143C] hover:bg-[#DC143C]/90 text-white transition-colors text-sm font-medium disabled:opacity-50"
                       >
                         <Check className="h-3.5 w-3.5" />
                         {saveGoalMutation.isPending ? 'Saving...' : 'Save'}
@@ -1633,19 +1606,39 @@ export default function DrillDetail() {
               </div>
             </div>
 
+            {/* Quick Info Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="glass-card rounded-xl p-3 md:p-4">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Clock className="h-3.5 w-3.5 text-[#E8425A]" />
+                  <InlineEdit contentKey={`drill.detail.${id}.label.time`} defaultValue="Time" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
+                </div>
+                <InlineEdit contentKey={`drill.detail.${id}.value.time`} defaultValue={details.time} as="div" className="font-bold text-foreground text-sm md:text-base" />
+              </div>
+              <div className="glass-card rounded-xl p-3 md:p-4">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Users className="h-3.5 w-3.5 text-purple-400" />
+                  <InlineEdit contentKey={`drill.detail.${id}.label.athletes`} defaultValue="Athletes" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
+                </div>
+                <InlineEdit contentKey={`drill.detail.${id}.value.athletes`} defaultValue={details.athletes.split(',')[0]} as="div" className="font-bold text-foreground text-xs md:text-sm" />
+              </div>
+              <div className="glass-card rounded-xl p-3 md:p-4">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Dumbbell className="h-3.5 w-3.5 text-amber-400" />
+                  <InlineEdit contentKey={`drill.detail.${id}.label.equipment`} defaultValue="Equipment" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
+                </div>
+                <InlineEdit contentKey={`drill.detail.${id}.value.equipment`} defaultValue={details.equipment.split(',')[0]} as="div" className="font-bold text-foreground text-xs md:text-sm" />
+              </div>
+              <div className="glass-card rounded-xl p-3 md:p-4">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Target className="h-3.5 w-3.5 text-green-400" />
+                  <InlineEdit contentKey={`drill.detail.${id}.label.skillSet`} defaultValue="Skill Set" as="span" className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider" />
+                </div>
+                <InlineEdit contentKey={`drill.detail.${id}.value.skillSet`} defaultValue={details.skillSet} as="div" className="font-bold text-foreground text-xs md:text-sm" />
+              </div>
+            </div>
 
-
-            {addDifficultySteps.length > 0 && (
-              <CollapsibleSection title="Added difficulty" icon={TrendingUp} defaultOpen={false}>
-                <ul className="space-y-2 text-sm md:text-base text-foreground/90 leading-relaxed list-disc pl-5">
-                  {addDifficultySteps.map((line, idx) => (
-                    <li key={idx}>{line}</li>
-                  ))}
-                </ul>
-              </CollapsibleSection>
-            )}
-
-            {/* Coach notes / rich instructions */}
+            {/* Custom Instructions */}
             <section>
               <h2 className="text-2xl md:text-3xl font-heading font-black mb-3 md:mb-4 flex items-center gap-2">
                 <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center">
@@ -1655,17 +1648,18 @@ export default function DrillDetail() {
               </h2>
               <div className="glass-card rounded-xl p-4 md:p-6">
                 {user && (user.role === 'admin' || user.role === 'coach') ? (
-                  <TiptapEditor
+                  <InstructionsEditor
                     value={customInstructions}
                     onChange={setCustomInstructions}
                     onSave={saveCustomInstructions}
                     isSaving={saveInstructionsMutation.isPending}
-                    placeholder="Write drill instructions here... Use the toolbar for bold, headings, lists, and more. Toggle &lt;/&gt; to paste raw HTML."
                   />
                 ) : (
-                  <div className="min-h-[60px]">
+                  <div className="prose prose-sm max-w-none">
                     {customInstructions ? (
-                      <TiptapRenderer content={customInstructions} />
+                      <div className="whitespace-pre-wrap text-foreground leading-relaxed">
+                        {customInstructions}
+                      </div>
                     ) : (
                       <p className="text-muted-foreground italic">No instructions provided for this drill yet.</p>
                     )}
@@ -1689,91 +1683,9 @@ export default function DrillDetail() {
             </a>
           </div>
         )}
-
-        {/* ── New Metadata Fields: always shown for static drills ── */}
-        {staticDrill && (staticDrill.drillType || (staticDrill.ageLevel?.length ?? 0) > 0 || (staticDrill.tags?.length ?? 0) > 0 || (staticDrill.problem?.length ?? 0) > 0 || (staticDrill.goal?.length ?? 0) > 0) && (
-          <div className="grid gap-4 mt-6">
-
-            {/* Drill Type + Age Level */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {staticDrill.drillType && (
-                <div className="glass-card rounded-xl p-4">
-                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Drill Type</div>
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                    {staticDrill.drillType}
-                  </span>
-                </div>
-              )}
-              {(staticDrill.ageLevel?.length ?? 0) > 0 && (
-                <div className="glass-card rounded-xl p-4">
-                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Age / Level</div>
-                  <div className="flex flex-wrap gap-2">
-                    {(staticDrill.ageLevel ?? []).filter((v: string) => v !== 'all').map((level: string) => {
-                      const label = filterOptions.ageLevel.find(o => o.value === level)?.label ?? level;
-                      return (
-                        <span key={level} className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-teal-500/20 text-teal-300 border border-teal-500/30">
-                          {label}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Focus Area Tags */}
-            {(staticDrill.tags?.length ?? 0) > 0 && (
-              <div className="glass-card rounded-xl p-4">
-                <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Focus Areas</div>
-                <div className="flex flex-wrap gap-2">
-                  {(staticDrill.tags ?? []).map((tag: string) => (
-                    <span key={tag} className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/[0.06] text-white/70 border border-white/[0.12]">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Problems + Goals */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {(staticDrill.problem?.length ?? 0) > 0 && (
-                <div className="glass-card rounded-xl p-4">
-                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Fixes These Problems</div>
-                  <div className="flex flex-wrap gap-2">
-                    {(staticDrill.problem ?? []).map((p: string) => {
-                      const label = filterOptions.problem.find(o => o.value === p)?.label ?? p;
-                      return (
-                        <span key={p} className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-500/15 text-red-300 border border-red-500/25">
-                          {label}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-              {(staticDrill.goal?.length ?? 0) > 0 && (
-                <div className="glass-card rounded-xl p-4">
-                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Helps You</div>
-                  <div className="flex flex-wrap gap-2">
-                    {(staticDrill.goal ?? []).map((g: string) => {
-                      const label = filterOptions.goal.find(o => o.value === g)?.label ?? g;
-                      return (
-                        <span key={g} className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-500/15 text-green-300 border border-green-500/25">
-                          {label}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-
-          </div>
-        )}
-
       </div>
-
+      </>
+      )}
       
       {/* Delete Confirmation Dialog */}
       {showDeleteConfirm && (
@@ -1809,7 +1721,12 @@ export default function DrillDetail() {
         </div>
       )}
       
-
+      {/* Q&A Section for Athletes */}
+      {hasAccess && user?.role === 'athlete' && (
+        <div className="container max-w-4xl mx-auto mb-8">
+          <DrillQAForm drillId={id || ''} drillName={drill?.name || ''} />
+        </div>
+      )}
       
       {/* Edit Drill Details Modal */}
       <EditDrillDetailsModal

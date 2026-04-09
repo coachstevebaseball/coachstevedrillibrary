@@ -10,7 +10,18 @@ import "./index.css";
 import "./styles/mobile-optimizations.css";
 import { SiteContentProvider } from "@/contexts/SiteContentContext";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 5000),
+    },
+    mutations: {
+      retry: 1,
+      retryDelay: 1000,
+    },
+  },
+});
 
 const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!(error instanceof TRPCClientError)) return;
@@ -44,11 +55,19 @@ const trpcClient = trpc.createClient({
     httpBatchLink({
       url: "/api/trpc",
       transformer: superjson,
-      fetch(input, init) {
-        return globalThis.fetch(input, {
+      async fetch(input, init) {
+        const res = await globalThis.fetch(input, {
           ...(init ?? {}),
           credentials: "include",
         });
+        // Guard against HTML responses (e.g., Vite SPA fallback on server restart)
+        const contentType = res.headers.get("content-type") || "";
+        if (!res.ok && contentType.includes("text/html")) {
+          throw new Error(
+            "Server temporarily unavailable. Please try again in a moment."
+          );
+        }
+        return res;
       },
     }),
   ],

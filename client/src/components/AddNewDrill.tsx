@@ -1,221 +1,213 @@
 import { useState } from "react";
-import { trpc } from "@/lib/trpc";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, CheckCircle2, Tag } from "lucide-react";
-import { filterOptions } from "@/data/drills";
-
-const DRILL_TYPES = ["Tee","Soft Toss","Front Toss","Live BP","Machine BP","Game Situation","Shadow","Overload/Underload","Partner","Solo"];
-const PILLARS = [
-  "Vision & Pitch Recognition","Bat Speed","On-Plane Efficiency","Attack Angle","Hip Rotation",
-  "Weight Transfer","Balance & Posture","Mental Approach","Situational Hitting","Two-Strike Approach",
-  "Power Development","Contact Rate",
-];
-const CATEGORIES = ["Hitting","Pitching","Fielding","Catching","Baserunning","Strength & Conditioning","General"];
-const DIFFICULTIES = ["Easy","Medium","Hard","Advanced"];
-const DURATIONS = ["5m","10m","15m","20m","30m","45m","60m"];
-
-function TagChip({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
-  return (
-    <button type="button" onClick={onClick}
-      className={`text-xs px-2 py-1 rounded-md border transition-colors ${
-        selected
-          ? "bg-[#e4002b]/20 border-[#e4002b]/40 text-[#e4002b]"
-          : "border-white/10 text-white/40 hover:border-white/30 hover:text-white/60"
-      }`}>
-      {selected && <CheckCircle2 className="inline h-2.5 w-2.5 mr-1" />}
-      {label}
-    </button>
-  );
-}
-
-const EMPTY = {
-  name: "", difficulty: "Medium", category: "Hitting", duration: "10m",
-  goal: "", instructions: "", videoUrl: "",
-  drillType: "", ageLevel: [] as string[], focusTags: [] as string[],
-  problemsFix: [] as string[], pillars: [] as string[],
-};
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Plus, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { trpc } from "@/lib/trpc";
 
 export function AddNewDrill() {
-  const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ ...EMPTY });
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [drillName, setDrillName] = useState("");
+  const [difficulty, setDifficulty] = useState("Medium");
+  const [category, setCategory] = useState("Hitting");
+  const [duration, setDuration] = useState("10m");
+  const [goal, setGoal] = useState("");
+  const [instructions, setInstructions] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
 
-  const set = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }));
-  const toggleTag = (field: string, val: string) => {
-    const arr = (form as any)[field] as string[];
-    set(field, arr.includes(val) ? arr.filter((v: string) => v !== val) : [...arr, val]);
-  };
-
-  const utils = trpc.useUtils();
-  const mutation = trpc.drillDetails.createNewDrill.useMutation({
-    onSuccess: (data) => {
-      toast.success(`Drill "${form.name}" created!`);
-      setForm({ ...EMPTY });
-      setOpen(false);
-      utils.drillDetails.getCustomDrills.invalidate();
-    },
-    onError: (err) => toast.error(`Failed: ${err.message}`),
-  });
+  const createDrillMutation = trpc.drillDetails.createNewDrill.useMutation();
 
   const handleSave = () => {
-    if (!form.name.trim()) { toast.error("Drill name is required"); return; }
-    mutation.mutate({
-      name: form.name.trim(),
-      difficulty: form.difficulty,
-      category: form.category,
-      duration: form.duration,
-      goal: form.goal || undefined,
-      instructions: form.instructions || undefined,
-      videoUrl: form.videoUrl || undefined,
-      drillType: form.drillType || undefined,
-      ageLevel: form.ageLevel.length ? form.ageLevel : undefined,
-      focusTags: form.focusTags.length ? form.focusTags : undefined,
-      problemsFix: form.problemsFix.length ? form.problemsFix : undefined,
-      pillars: form.pillars.length ? form.pillars : undefined,
-    });
+    if (!drillName.trim()) {
+      toast.error("Please enter a drill name");
+      return;
+    }
+
+    createDrillMutation.mutate(
+      {
+        name: drillName.trim(),
+        difficulty,
+        category,
+        duration,
+        goal: goal.trim(),
+        instructions: instructions.trim(),
+        videoUrl: videoUrl.trim(),
+      },
+      {
+        onSuccess: () => {
+          toast.success(`Drill "${drillName}" created successfully!`);
+          handleReset();
+          setDialogOpen(false);
+          // Reload the page to show the new drill
+          window.location.reload();
+        },
+        onError: (error: any) => {
+          toast.error(error.message || "Failed to create drill");
+        },
+      }
+    );
+  };
+
+  const handleReset = () => {
+    setDrillName("");
+    setDifficulty("Medium");
+    setCategory("Hitting");
+    setDuration("10m");
+    setGoal("");
+    setInstructions("");
+    setVideoUrl("");
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="gap-1.5 bg-[#e4002b] hover:bg-[#c0001f] text-white">
-          <Plus className="h-4 w-4" /> Add New Drill
+        <Button variant="outline" className="gap-2">
+          <Plus className="h-4 w-4" />
+          Add New Drill
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-[#0f1419] border-white/10 text-white">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-white flex items-center gap-2">
-            <Plus className="h-5 w-5 text-[#e4002b]" /> Create New Drill
+          <DialogTitle className="flex items-center gap-2">
+            <Plus className="h-5 w-5" />
+            Create New Drill
           </DialogTitle>
+          <DialogDescription>
+            Add a completely new drill to the directory with all details.
+          </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-5 py-2">
-          {/* Core Info */}
-          <div className="space-y-3">
-            <div>
-              <Label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Drill Name *</Label>
-              <Input value={form.name} onChange={e => set("name", e.target.value)}
-                placeholder="e.g., 3-Plate Adjustment Drill"
-                className="bg-white/[0.06] border-white/10 text-white" />
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              <div>
-                <Label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Difficulty</Label>
-                <Select value={form.difficulty} onValueChange={v => set("difficulty", v)}>
-                  <SelectTrigger className="bg-white/[0.06] border-white/10 text-white"><SelectValue /></SelectTrigger>
-                  <SelectContent>{DIFFICULTIES.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Category</Label>
-                <Select value={form.category} onValueChange={v => set("category", v)}>
-                  <SelectTrigger className="bg-white/[0.06] border-white/10 text-white"><SelectValue /></SelectTrigger>
-                  <SelectContent>{CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Duration</Label>
-                <Select value={form.duration} onValueChange={v => set("duration", v)}>
-                  <SelectTrigger className="bg-white/[0.06] border-white/10 text-white"><SelectValue /></SelectTrigger>
-                  <SelectContent>{DURATIONS.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div>
-              <Label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Goal / Objective</Label>
-              <Input value={form.goal} onChange={e => set("goal", e.target.value)}
-                placeholder="What is the main objective?"
-                className="bg-white/[0.06] border-white/10 text-white" />
-            </div>
-            <div>
-              <Label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Instructions</Label>
-              <Textarea value={form.instructions} onChange={e => set("instructions", e.target.value)}
-                placeholder="Step-by-step instructions..."
-                className="bg-white/[0.06] border-white/10 text-white min-h-[80px]" />
-            </div>
-            <div>
-              <Label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">YouTube URL (optional)</Label>
-              <Input value={form.videoUrl} onChange={e => set("videoUrl", e.target.value)}
-                placeholder="https://youtu.be/..."
-                className="bg-white/[0.06] border-white/10 text-white" />
-            </div>
+        <div className="space-y-4 py-4">
+          {/* Drill Name */}
+          <div className="space-y-2">
+            <Label htmlFor="drillName">Drill Name *</Label>
+            <Input
+              id="drillName"
+              placeholder="e.g., 3-Plate Adjustment Drill"
+              value={drillName}
+              onChange={(e) => setDrillName(e.target.value)}
+            />
           </div>
 
-          {/* Metadata / Tags */}
-          <div className="border-t border-white/[0.08] pt-4 space-y-4">
-            <p className="text-xs text-white/50 uppercase tracking-wider flex items-center gap-1.5">
-              <Tag className="h-3.5 w-3.5" /> Drill Tags & Metadata
-            </p>
-
-            <div>
-              <Label className="text-white/40 text-xs mb-1.5 block">Drill Type</Label>
-              <Select value={form.drillType} onValueChange={v => set("drillType", v)}>
-                <SelectTrigger className="w-44 bg-white/[0.06] border-white/10 text-white text-xs h-8">
-                  <SelectValue placeholder="Select type..." />
+          {/* Row: Difficulty, Category, Duration */}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label>Difficulty</Label>
+              <Select value={difficulty} onValueChange={setDifficulty}>
+                <SelectTrigger>
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">— None —</SelectItem>
-                  {DRILL_TYPES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                  <SelectItem value="Easy">Easy</SelectItem>
+                  <SelectItem value="Medium">Medium</SelectItem>
+                  <SelectItem value="Hard">Hard</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <div>
-              <Label className="text-white/40 text-xs mb-1.5 block">Age / Skill Level</Label>
-              <div className="flex flex-wrap gap-1.5">
-                {filterOptions.ageLevel.map(o => (
-                  <TagChip key={o.value} label={o.label}
-                    selected={form.ageLevel.includes(o.value)}
-                    onClick={() => toggleTag("ageLevel", o.value)} />
-                ))}
-              </div>
+            <div className="space-y-2">
+              <Label>Category</Label>
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Hitting">Hitting</SelectItem>
+                  <SelectItem value="Pitching">Pitching</SelectItem>
+                  <SelectItem value="Infield">Infield</SelectItem>
+                  <SelectItem value="Outfield">Outfield</SelectItem>
+                  <SelectItem value="Bunting">Bunting</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
-            <div>
-              <Label className="text-white/40 text-xs mb-1.5 block">Focus Tags</Label>
-              <div className="flex flex-wrap gap-1.5">
-                {filterOptions.tags.map(t => (
-                  <TagChip key={t} label={t}
-                    selected={form.focusTags.includes(t)}
-                    onClick={() => toggleTag("focusTags", t)} />
-                ))}
-              </div>
+            <div className="space-y-2">
+              <Label>Duration</Label>
+              <Select value={duration} onValueChange={setDuration}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="5m">5 min</SelectItem>
+                  <SelectItem value="10m">10 min</SelectItem>
+                  <SelectItem value="15m">15 min</SelectItem>
+                  <SelectItem value="20m">20 min</SelectItem>
+                  <SelectItem value="30m">30 min</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+          </div>
 
-            <div>
-              <Label className="text-white/40 text-xs mb-1.5 block">Problems This Drill Fixes</Label>
-              <div className="flex flex-wrap gap-1.5">
-                {filterOptions.problem.map(o => (
-                  <TagChip key={o.value} label={o.label}
-                    selected={form.problemsFix.includes(o.value)}
-                    onClick={() => toggleTag("problemsFix", o.value)} />
-                ))}
-              </div>
-            </div>
+          {/* Goal */}
+          <div className="space-y-2">
+            <Label htmlFor="goal">Goal</Label>
+            <Textarea
+              id="goal"
+              placeholder="What is the main objective of this drill?"
+              value={goal}
+              onChange={(e) => setGoal(e.target.value)}
+              rows={2}
+            />
+          </div>
 
-            <div>
-              <Label className="text-white/40 text-xs mb-1.5 block">Coaching Pillars</Label>
-              <div className="flex flex-wrap gap-1.5">
-                {PILLARS.map(p => (
-                  <TagChip key={p} label={p}
-                    selected={form.pillars.includes(p)}
-                    onClick={() => toggleTag("pillars", p)} />
-                ))}
-              </div>
-            </div>
+          {/* Instructions */}
+          <div className="space-y-2">
+            <Label htmlFor="instructions">Instructions</Label>
+            <Textarea
+              id="instructions"
+              placeholder="Step-by-step instructions for performing this drill..."
+              value={instructions}
+              onChange={(e) => setInstructions(e.target.value)}
+              rows={4}
+            />
+          </div>
+
+          {/* Video URL */}
+          <div className="space-y-2">
+            <Label htmlFor="videoUrl">YouTube Video URL (optional)</Label>
+            <Input
+              id="videoUrl"
+              placeholder="https://youtu.be/... or https://youtube.com/watch?v=..."
+              value={videoUrl}
+              onChange={(e) => setVideoUrl(e.target.value)}
+            />
           </div>
         </div>
 
-        <div className="flex gap-3 pt-2 border-t border-white/[0.08]">
-          <Button variant="ghost" onClick={() => setOpen(false)} className="text-white/50 hover:text-white">Cancel</Button>
-          <Button onClick={handleSave} disabled={mutation.isPending}
-            className="flex-1 bg-[#e4002b] hover:bg-[#c0001f] text-white">
-            {mutation.isPending ? "Creating..." : "Create Drill"}
+        {/* Actions */}
+        <div className="flex justify-end gap-3">
+          <Button variant="outline" onClick={handleReset}>
+            Reset
+          </Button>
+          <Button
+            onClick={handleSave}
+            disabled={createDrillMutation.isPending || !drillName.trim()}
+          >
+            {createDrillMutation.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              "Create Drill"
+            )}
           </Button>
         </div>
       </DialogContent>

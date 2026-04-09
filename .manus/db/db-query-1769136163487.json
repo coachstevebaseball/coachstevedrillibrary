@@ -1,0 +1,18 @@
+{
+  "query": "SELECT id, drillId, name, difficulty, category, duration FROM customDrills;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT id, drillId, name, difficulty, category, duration FROM customDrills;",
+  "rows": [
+    {
+      "id": "1",
+      "drillId": "slow---controlled---explode-drill",
+      "name": "Slow - Controlled - Explode Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "5m"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdrillId\tname\tdifficulty\tcategory\tduration\n1\tslow---controlled---explode-drill\tSlow - Controlled - Explode Drill\tMedium\tHitting\t5m\n",
+  "stderr": "",
+  "execution_time_ms": 59
+}

@@ -1,0 +1,40 @@
+{
+  "query": "SELECT id, name, email FROM users WHERE name LIKE '%Sean%' OR name LIKE '%Gavin%' OR name LIKE '%Yaegar%' OR name LIKE '%Jaeger%' OR name LIKE '%Goldstein%' OR name LIKE '%gavgol%' OR name LIKE '%seanjae%' OR email LIKE '%seanjae%' OR email LIKE '%gavgol%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT id, name, email FROM users WHERE name LIKE '%Sean%' OR name LIKE '%Gavin%' OR name LIKE '%Yaegar%' OR name LIKE '%Jaeger%' OR name LIKE '%Goldstein%' OR name LIKE '%gavgol%' OR name LIKE '%seanjae%' OR email LIKE '%seanjae%' OR email LIKE '%gavgol%';",
+  "rows": [
+    {
+      "id": "3390140",
+      "name": "Steven Goldstein",
+      "email": "coachstevengoldstein@gmail.com"
+    },
+    {
+      "id": "3570024",
+      "name": "Sean Jaeger",
+      "email": "seanjae4@gmail.com"
+    },
+    {
+      "id": "3780043",
+      "name": "gavgol789",
+      "email": "gavgol789@gmail.com"
+    },
+    {
+      "id": "5130618",
+      "name": "Sean Mack",
+      "email": "mack_s1@icloud.com"
+    },
+    {
+      "id": "7170118",
+      "name": "Steven Goldstein",
+      "email": "stevenlgoldstein16@gmail.com"
+    },
+    {
+      "id": "8100001",
+      "name": "Steven Goldstein",
+      "email": "sgoldsteindirect@gmail.com"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\n3390140\tSteven Goldstein\tcoachstevengoldstein@gmail.com\n3570024\tSean Jaeger\tseanjae4@gmail.com\n3780043\tgavgol789\tgavgol789@gmail.com\n5130618\tSean Mack\tmack_s1@icloud.com\n7170118\tSteven Goldstein\tstevenlgoldstein16@gmail.com\n8100001\tSteven Goldstein\tsgoldsteindirect@gmail.com\n",
+  "stderr": "",
+  "execution_time_ms": 86
+}

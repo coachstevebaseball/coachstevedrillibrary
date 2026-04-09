@@ -153,12 +153,12 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-brand-header text-brand-header-foreground border-b border-brand-header-foreground/10">
+      <header className="bg-primary text-primary-foreground border-b">
         <div className="container py-6">
           <div className="flex items-center justify-between">
             <div>
               <InlineEdit contentKey="admin.title" defaultValue="Admin Dashboard" as="h1" className="text-3xl font-heading font-bold mb-2" />
-              <InlineEdit contentKey="admin.subtitle" defaultValue="Manage client access to the drills directory" as="p" className="text-brand-header-foreground/80" />
+              <InlineEdit contentKey="admin.subtitle" defaultValue="Manage client access to the drills directory" as="p" className="text-primary-foreground/80" />
             </div>
             <div className="flex gap-3 flex-wrap">
               <AddNewDrill />

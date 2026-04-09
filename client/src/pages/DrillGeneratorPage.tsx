@@ -30,10 +30,10 @@ export default function DrillGeneratorPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-gradient-to-r from-brand-header to-brand-header/85 text-brand-header-foreground py-8 mb-8">
+      <header className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-8 mb-8">
         <div className="container">
           <Link href="/coach-dashboard">
-            <Button variant="ghost" className="text-brand-header-foreground/80 hover:text-brand-header-foreground hover:bg-brand-header-foreground/10 mb-4 pl-0">
+            <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 mb-4 pl-0">
               <Home className="mr-2 h-4 w-4" />
               Back to Coach Dashboard
             </Button>
@@ -43,7 +43,7 @@ export default function DrillGeneratorPage() {
               <Sparkles className="h-12 w-12" />
               AI Drill Generator
             </h1>
-            <p className="text-brand-header-foreground/90">Create custom drills powered by AI to address specific player issues and skill gaps.</p>
+            <p className="text-primary-foreground/90">Create custom drills powered by AI to address specific player issues and skill gaps.</p>
           </div>
         </div>
       </header>

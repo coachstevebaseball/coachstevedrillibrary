@@ -1,0 +1,29 @@
+{
+  "query": "SHOW CREATE TABLE drillCustomizations;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SHOW CREATE TABLE drillCustomizations;",
+  "rows": [
+    {
+      "Table": "drillCustomizations",
+      "Create Table": "CREATE TABLE `drillCustomizations` ("
+    }
+  ],
+  "messages": [
+    "  `id` int(11) NOT NULL AUTO_INCREMENT,",
+    "  `drillId` varchar(255) NOT NULL,",
+    "  `thumbnailUrl` text DEFAULT NULL,",
+    "  `briefDescription` text DEFAULT NULL,",
+    "  `difficulty` varchar(50) DEFAULT NULL,",
+    "  `category` varchar(100) DEFAULT NULL,",
+    "  `updatedBy` int(11) NOT NULL,",
+    "  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,",
+    "  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,",
+    "  `imageBase64` longtext DEFAULT NULL,",
+    "  `imageMimeType` varchar(50) DEFAULT NULL,",
+    "  PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,",
+    "  UNIQUE KEY `drillId` (`drillId`)",
+    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=30001"
+  ],
+  "stdout": "Table\tCreate Table\ndrillCustomizations\tCREATE TABLE `drillCustomizations` (\n  `id` int(11) NOT NULL AUTO_INCREMENT,\n  `drillId` varchar(255) NOT NULL,\n  `thumbnailUrl` text DEFAULT NULL,\n  `briefDescription` text DEFAULT NULL,\n  `difficulty` varchar(50) DEFAULT NULL,\n  `category` varchar(100) DEFAULT NULL,\n  `updatedBy` int(11) NOT NULL,\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  `imageBase64` longtext DEFAULT NULL,\n  `imageMimeType` varchar(50) DEFAULT NULL,\n  PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,\n  UNIQUE KEY `drillId` (`drillId`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=30001\n",
+  "stderr": "",
+  "execution_time_ms": 358
+}

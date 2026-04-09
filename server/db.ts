@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, notifications, notificationPreferences, InsertNotificationPreference, drillAssignments } from "../drizzle/schema";
+import { InsertUser, users, notifications, notificationPreferences, InsertNotificationPreference } from "../drizzle/schema";
 import { ENV } from './_core/env';
 import { eq, and, desc, count } from "drizzle-orm";
 
@@ -307,11 +307,6 @@ export async function saveDrillDetail(drillId: string, detail: {
   commonMistakes?: string[];
   progressions?: string[];
   instructions?: string;
-  drillType?: string;
-  ageLevel?: string[];
-  focusTags?: string[];
-  problemsFix?: string[];
-  pillars?: string[];
 }, userId: number): Promise<boolean> {
   const db = await getDb();
   if (!db) {
@@ -323,9 +318,11 @@ export async function saveDrillDetail(drillId: string, detail: {
     const { drillDetails } = await import("../drizzle/schema");
     const { eq } = await import("drizzle-orm");
     
+    // Check if detail already exists
     const existing = await db.select().from(drillDetails).where(eq(drillDetails.drillId, drillId));
     
     if (existing.length > 0) {
+      // Build partial update - only include fields that were provided
       const updateData: Record<string, any> = { updatedAt: new Date() };
       if (detail.skillSet !== undefined) updateData.skillSet = detail.skillSet;
       if (detail.difficulty !== undefined) updateData.difficulty = detail.difficulty;
@@ -337,14 +334,10 @@ export async function saveDrillDetail(drillId: string, detail: {
       if (detail.commonMistakes !== undefined) updateData.commonMistakes = detail.commonMistakes;
       if (detail.progressions !== undefined) updateData.progressions = detail.progressions;
       if (detail.instructions !== undefined) updateData.instructions = detail.instructions;
-      if (detail.drillType !== undefined) updateData.drillType = detail.drillType;
-      if (detail.ageLevel !== undefined) updateData.ageLevel = detail.ageLevel;
-      if (detail.focusTags !== undefined) updateData.focusTags = detail.focusTags;
-      if (detail.problemsFix !== undefined) updateData.problemsFix = detail.problemsFix;
-      if (detail.pillars !== undefined) updateData.pillars = detail.pillars;
       
       await db.update(drillDetails).set(updateData).where(eq(drillDetails.drillId, drillId));
     } else {
+      // Insert new - use provided values or sensible defaults
       await db.insert(drillDetails).values({
         drillId,
         skillSet: detail.skillSet || 'Custom',
@@ -357,11 +350,6 @@ export async function saveDrillDetail(drillId: string, detail: {
         commonMistakes: detail.commonMistakes || null,
         progressions: detail.progressions || null,
         instructions: detail.instructions || null,
-        drillType: detail.drillType || null,
-        ageLevel: detail.ageLevel || null,
-        focusTags: detail.focusTags || null,
-        problemsFix: detail.problemsFix || null,
-        pillars: detail.pillars || null,
         createdBy: userId,
       });
     }
@@ -1319,44 +1307,5 @@ export async function getParentOfChild(childUserId: number) {
   } catch (error) {
     console.error("[Database] Failed to get parent of child:", error);
     return null;
-  }
-}
-
-export async function deleteUser(userId: number): Promise<boolean> {
-  const db = await getDb();
-  if (!db) return false;
-  try {
-    // Delete associated data first
-    await db.delete(drillAssignments).where(eq(drillAssignments.userId, userId));
-    await db.delete(notifications).where(eq(notifications.userId, userId));
-    await db.delete(users).where(eq(users.id, userId));
-    return true;
-  } catch (error) {
-    console.error("[DB] Failed to delete user:", error);
-    return false;
-  }
-}
-
-export async function updateUserName(userId: number, name: string): Promise<boolean> {
-  const db = await getDb();
-  if (!db) return false;
-  try {
-    await db.update(users).set({ name }).where(eq(users.id, userId));
-    return true;
-  } catch (error) {
-    console.error("[DB] Failed to update user name:", error);
-    return false;
-  }
-}
-
-export async function updateUserEmail(userId: number, email: string): Promise<boolean> {
-  const db = await getDb();
-  if (!db) return false;
-  try {
-    await db.update(users).set({ email }).where(eq(users.id, userId));
-    return true;
-  } catch (error) {
-    console.error("[DB] Failed to update user email:", error);
-    return false;
   }
 }

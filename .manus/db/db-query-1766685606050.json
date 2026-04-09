@@ -1,0 +1,26 @@
+{
+  "query": "SELECT * FROM drillDetails WHERE drillId = '1-2-3-drill' LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT * FROM drillDetails WHERE drillId = '1-2-3-drill' LIMIT 1;",
+  "rows": [
+    {
+      "id": "1",
+      "drillId": "1-2-3-drill",
+      "skillSet": "Hitting",
+      "difficulty": "Medium",
+      "athletes": "2-4 athletes",
+      "time": "15 minutes",
+      "equipment": "Tee, baseballs, bats",
+      "goal": "Master the 1-2-3 Hitting Progression - Updated",
+      "description": "[\"Start with the bat held at shoulder height. Step forward with your front foot while keeping your back hip closed. Rotate your hips and shoulders through the ball, extending your arms fully.\"]",
+      "commonMistakes": "[]",
+      "progressions": "[]",
+      "createdBy": "1",
+      "createdAt": "2025-12-25 17:24:45",
+      "updatedAt": "2025-12-25 17:59:32"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdrillId\tskillSet\tdifficulty\tathletes\ttime\tequipment\tgoal\tdescription\tcommonMistakes\tprogressions\tcreatedBy\tcreatedAt\tupdatedAt\n1\t1-2-3-drill\tHitting\tMedium\t2-4 athletes\t15 minutes\tTee, baseballs, bats\tMaster the 1-2-3 Hitting Progression - Updated\t[\"Start with the bat held at shoulder height. Step forward with your front foot while keeping your back hip closed. Rotate your hips and shoulders through the ball, extending your arms fully.\"]\t[]\t[]\t1\t2025-12-25 17:24:45\t2025-12-25 17:59:32\n",
+  "stderr": "",
+  "execution_time_ms": 132
+}

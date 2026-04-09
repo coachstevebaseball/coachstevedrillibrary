@@ -1,0 +1,21 @@
+{
+  "query": "SELECT * FROM customDrills ORDER BY createdAt DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT * FROM customDrills ORDER BY createdAt DESC LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "drillId": "slow---controlled---explode-drill",
+      "name": "Slow - Controlled - Explode Drill",
+      "difficulty": "Medium",
+      "category": "Hitting",
+      "duration": "5m",
+      "createdBy": "1",
+      "createdAt": "2026-01-23 02:41:29",
+      "updatedAt": "2026-01-23 02:41:29"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdrillId\tname\tdifficulty\tcategory\tduration\tcreatedBy\tcreatedAt\tupdatedAt\n1\tslow---controlled---explode-drill\tSlow - Controlled - Explode Drill\tMedium\tHitting\t5m\t1\t2026-01-23 02:41:29\t2026-01-23 02:41:29\n",
+  "stderr": "",
+  "execution_time_ms": 130
+}

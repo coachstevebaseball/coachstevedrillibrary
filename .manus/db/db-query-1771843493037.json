@@ -1,0 +1,46 @@
+{
+  "query": "SELECT id, name, email, role FROM users WHERE name LIKE '%Sean%' OR name LIKE '%Gavin%' OR name LIKE '%Yaegar%' OR name LIKE '%Jaeger%' OR name LIKE '%Goldstein%' OR name LIKE '%gavgol%' OR name LIKE '%seanjae%' OR email LIKE '%seanjae%' OR email LIKE '%gavgol%' ORDER BY name;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute SELECT id, name, email, role FROM users WHERE name LIKE '%Sean%' OR name LIKE '%Gavin%' OR name LIKE '%Yaegar%' OR name LIKE '%Jaeger%' OR name LIKE '%Goldstein%' OR name LIKE '%gavgol%' OR name LIKE '%seanjae%' OR email LIKE '%seanjae%' OR email LIKE '%gavgol%' ORDER BY name;",
+  "rows": [
+    {
+      "id": "3570024",
+      "name": "Sean Jaeger",
+      "email": "seanjae4@gmail.com",
+      "role": "athlete"
+    },
+    {
+      "id": "5130618",
+      "name": "Sean Mack",
+      "email": "mack_s1@icloud.com",
+      "role": "athlete"
+    },
+    {
+      "id": "3390140",
+      "name": "Steven Goldstein",
+      "email": "coachstevengoldstein@gmail.com",
+      "role": "athlete"
+    },
+    {
+      "id": "7170118",
+      "name": "Steven Goldstein",
+      "email": "stevenlgoldstein16@gmail.com",
+      "role": "athlete"
+    },
+    {
+      "id": "8100001",
+      "name": "Steven Goldstein",
+      "email": "sgoldsteindirect@gmail.com",
+      "role": "athlete"
+    },
+    {
+      "id": "3780043",
+      "name": "gavgol789",
+      "email": "gavgol789@gmail.com",
+      "role": "athlete"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\n3570024\tSean Jaeger\tseanjae4@gmail.com\tathlete\n5130618\tSean Mack\tmack_s1@icloud.com\tathlete\n3390140\tSteven Goldstein\tcoachstevengoldstein@gmail.com\tathlete\n7170118\tSteven Goldstein\tstevenlgoldstein16@gmail.com\tathlete\n8100001\tSteven Goldstein\tsgoldsteindirect@gmail.com\tathlete\n3780043\tgavgol789\tgavgol789@gmail.com\tathlete\n",
+  "stderr": "",
+  "execution_time_ms": 61
+}

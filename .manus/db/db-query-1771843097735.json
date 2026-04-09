@@ -1,0 +1,9 @@
+{
+  "query": "DELETE FROM blastMetrics WHERE sessionId IN (SELECT id FROM blastSessions WHERE playerId NOT IN ('66666666-6666-6666-6666-666666666666', '33333333-3333-3333-3333-333333333333')); DELETE FROM blastSessions WHERE playerId NOT IN ('66666666-6666-6666-6666-666666666666', '33333333-3333-3333-3333-333333333333'); DELETE FROM blastPlayers WHERE id NOT IN ('66666666-6666-6666-6666-666666666666', '33333333-3333-3333-3333-333333333333');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute DELETE FROM blastMetrics WHERE sessionId IN (SELECT id FROM blastSessions WHERE playerId NOT IN ('66666666-6666-6666-6666-666666666666', '33333333-3333-3333-3333-333333333333')); DELETE FROM blastSessions WHERE playerId NOT IN ('66666666-6666-6666-6666-666666666666', '33333333-3333-3333-3333-333333333333'); DELETE FROM blastPlayers WHERE id NOT IN ('66666666-6666-6666-6666-666666666666', '33333333-3333-3333-3333-333333333333');",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 91
+}

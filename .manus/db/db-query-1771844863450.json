@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE blastPlayers SET userId = 3570024, fullName = 'Sean Jaeger', blastEmail = 'JKrichever@gmail.com' WHERE id = '66666666-6666-6666-6666-666666666666'; UPDATE blastPlayers SET userId = 3780043, fullName = 'Gavin Goldstein', blastEmail = 'adgold77@yahoo.com' WHERE id = '33333333-3333-3333-3333-333333333333';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3knp7kHgPS8ePkR.root --database 4gdCHRuKFjrDK3bmH43Eh2 --execute UPDATE blastPlayers SET userId = 3570024, fullName = 'Sean Jaeger', blastEmail = 'JKrichever@gmail.com' WHERE id = '66666666-6666-6666-6666-666666666666'; UPDATE blastPlayers SET userId = 3780043, fullName = 'Gavin Goldstein', blastEmail = 'adgold77@yahoo.com' WHERE id = '33333333-3333-3333-3333-333333333333';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 77
+}

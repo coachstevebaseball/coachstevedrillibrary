@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Video, Search } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo, useEffect } from "react";
-import drillsData from "@/data/drills";
+import drillsData from "@/data/drills.json";
 import { VideoUrlManager } from "@/components/VideoUrlManager";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -89,10 +89,10 @@ export function ManageDrillVideos() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-brand-header text-brand-header-foreground py-6 mb-8">
+      <header className="bg-primary text-primary-foreground py-6 mb-8">
         <div className="container">
           <Link href="/coach-dashboard">
-            <Button variant="ghost" className="text-brand-header-foreground/80 hover:text-brand-header-foreground hover:bg-brand-header-foreground/10 mb-4 pl-0">
+            <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 mb-4 pl-0">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Coach Dashboard
             </Button>
@@ -101,7 +101,7 @@ export function ManageDrillVideos() {
             <Video className="h-8 w-8" />
             <h1 className="text-4xl font-heading font-black">Manage Drill Videos</h1>
           </div>
-          <p className="text-brand-header-foreground/80 mt-2">Add instructional videos to your drills</p>
+          <p className="text-primary-foreground/80 mt-2">Add instructional videos to your drills</p>
         </div>
       </header>
 
