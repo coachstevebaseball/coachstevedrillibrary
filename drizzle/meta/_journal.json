@@ -309,6 +309,83 @@
       "when": 1772291846195,
       "tag": "0043_legal_impossible_man",
       "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "5",
+      "when": 1772380825522,
+      "tag": "0044_big_gladiator",
+      "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "5",
+      "when": 1772380943309,
+      "tag": "0045_square_thunderbolts",
+      "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "5",
+      "when": 1772405211274,
+      "tag": "0046_watery_malcolm_colcord",
+      "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "5",
+      "when": 1772802530492,
+      "tag": "0047_furry_triton",
+      "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "5",
+      "when": 1773003426113,
+      "tag": "0048_loose_miek",
+      "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "5",
+      "when": 1773003556666,
+      "tag": "0049_good_bruce_banner",
+      "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "5",
+      "when": 1773080197224,
+      "tag": "0050_superb_hardball",
+      "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "5",
+      "when": 1774686621982,
+      "tag": "0051_rapid_screwball",
+      "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "5",
+      "when": 1775452027336,
+      "tag": "0052_condemned_valeria_richards",
+      "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "5",
+      "when": 1775485314327,
+      "tag": "0053_famous_boom_boom",
+      "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "5",
+      "when": 1775726906852,
+      "tag": "0054_married_maria_hill",
+      "breakpoints": true
     }
   ]
 }
