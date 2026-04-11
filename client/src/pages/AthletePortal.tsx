@@ -1,4 +1,5 @@
 import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -233,15 +234,27 @@ export default function AthletePortal() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-electric/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-electric/5 rounded-full blur-3xl" />
         <div className="glass-card max-w-md w-full p-8 rounded-2xl animate-fade-in-up">
           <div className="w-16 h-16 bg-electric/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <AlertCircle className="w-8 h-8 text-electric" />
+            <User className="w-8 h-8 text-electric" />
           </div>
-          <h2 className="text-xl font-bold text-center mb-2">Please Log In</h2>
-          <p className="text-muted-foreground text-center mb-6">You need to be logged in to view your training.</p>
-          <Link href="/">
-            <Button variant="outline" className="w-full glass hover:bg-white/5">Back to Directory</Button>
-          </Link>
+          <h2 className="text-2xl font-heading font-bold text-center mb-2">Athlete Portal</h2>
+          <p className="text-muted-foreground text-center mb-8">Sign in to access your training dashboard, track progress, and view assigned drills.</p>
+          <div className="space-y-3">
+            <a href={getLoginUrl()} className="block">
+              <Button className="w-full btn-premium text-white font-semibold py-5 text-base gap-2">
+                <Zap className="w-4 h-4" />
+                Sign In to Your Portal
+              </Button>
+            </a>
+            <Link href="/">
+              <Button variant="outline" className="w-full glass hover:bg-white/5 gap-2">
+                <Home className="w-4 h-4" />
+                Back to Drill Library
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     );

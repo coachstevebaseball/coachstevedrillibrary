@@ -1702,3 +1702,9 @@
 - [x] Apply animation to primary CTA buttons across all pages
 - [x] Verify animation is subtle and not distracting
 - [x] Save checkpoint
+
+## Athlete Portal Login Fix
+- [x] Fix Athlete Portal tab to show proper sign-in button instead of error for unauthenticated users
+- [x] Ensure sign-in button redirects to OAuth login flow
+- [x] Verify authenticated athletes can access their portal after signing in
+- [x] Save checkpoint
