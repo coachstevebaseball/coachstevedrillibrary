@@ -1708,3 +1708,10 @@
 - [x] Ensure sign-in button redirects to OAuth login flow
 - [x] Verify authenticated athletes can access their portal after signing in
 - [x] Save checkpoint
+
+## Post-Login Redirect & TopNav Athlete Portal Link
+- [x] Implement post-login redirect so athletes land on /athlete-portal after sign-in
+- [x] Add Athlete Portal link to TopNav for easy access (already present)
+- [x] Verify mobile sign-in flow and responsive layout
+- [x] Save checkpoint
+- [x] Fix mobile layout: Athlete Portal sign-in buttons hidden behind sticky header (added TopNav + flex-col layout)
