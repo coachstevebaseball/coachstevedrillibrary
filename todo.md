@@ -1800,3 +1800,18 @@
 - [x] Ensure category filters only show Hitting-related subcategories
 - [x] Verify UI shows only Hitting drills and hidden data is inaccessible
 - [x] Add admin-only restoration mechanism for hidden drills (scripts/restore-non-hitting.mjs)
+
+## Fix Email Notification Delivery & User Linkage (Apr 12)
+- [x] Audit why Shannon Caputo drill assignment email was not delivered (old Resend API key)
+- [x] Debug email delivery pipeline (Resend integration, sendNotification flow)
+- [x] Resend Shannon Caputo's drill assignment email successfully
+- [x] Fix user-athlete ID linkage persistence — added email-based fallback to upsertUser
+- [x] Fix tinyint server error — not in our code, was from resolved migration
+- [x] Restore coach email alerts — activity tracking + email batching system already handles all types
+- [x] Ensure athletes receive emails — sendNotification engine delivers emails with Resend (new API key works)
+- [x] Add coach notification when athlete email delivery fails — notifyCoachOfFailedEmails runs every 5 min
+- [x] Add login activity email alerts — already handled by activityTracking + emailBatching
+- [x] Verify email delivery end-to-end — Shannon Caputo test email sent successfully
+- [x] Add retryFailedNotifications to scheduled jobs (every 5 min)
+- [x] Merge duplicate Sean Jaeger account (ID 105900149 → 3570024)
+- [x] Fix notificationEngine.test.ts import assertion

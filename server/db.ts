@@ -55,8 +55,29 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     // Debug logging
     console.log(`[Database] upsertUser called - openId: ${user.openId}, ENV.ownerOpenId: ${ENV.ownerOpenId}, match: ${user.openId === ENV.ownerOpenId}`);
     
-    // Check if user already exists and has admin role - preserve it
-    const existingUser = await db.select().from(users).where(eq(users.openId, user.openId)).limit(1);
+    // ─── EMAIL-BASED FALLBACK MATCHING ───────────────────────────────────
+    // If no user found by openId but one exists with the same email,
+    // update the existing user's openId instead of creating a duplicate.
+    // This prevents the "5 users resetting" problem when OAuth gives a
+    // slightly different openId on re-authentication.
+    let existingUser = await db.select().from(users).where(eq(users.openId, user.openId)).limit(1);
+    
+    if (existingUser.length === 0 && user.email) {
+      // No user with this openId — check by email
+      const emailMatch = await db.select().from(users).where(eq(users.email, user.email)).limit(1);
+      if (emailMatch.length > 0) {
+        const oldUser = emailMatch[0];
+        console.log(`[Database] Email-based match found: updating openId from ${oldUser.openId} to ${user.openId} for ${user.email} (userId: ${oldUser.id})`);
+        // Update the existing user's openId to the new one
+        await db.update(users)
+          .set({ openId: user.openId, lastSignedIn: new Date() })
+          .where(eq(users.id, oldUser.id));
+        // Re-fetch so the rest of the logic uses the correct existing user
+        existingUser = await db.select().from(users).where(eq(users.openId, user.openId)).limit(1);
+      }
+    }
+    // ────────────────────────────────────────────────────────────────────
+    
     const existingRole = existingUser.length > 0 ? existingUser[0].role : null;
     console.log(`[Database] Existing user role: ${existingRole}`);
     

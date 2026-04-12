@@ -21,7 +21,7 @@ import {
 } from "../drizzle/schema";
 import { sendDrillFollowUpReminder, getResend } from "./email";
 import { ENV } from "./_core/env";
-import { sendNotification } from "./notificationEngine";
+import { sendNotification, retryFailedNotifications } from "./notificationEngine";
 
 const BASE_URL = ENV.appUrl;
 
@@ -499,11 +499,99 @@ export function startScheduledJobs(): void {
   }, 6 * 60 * 60 * 1000);
   scheduledJobIntervals.push(inactivityInterval);
 
-  console.log("[NotificationService] Scheduled jobs started (deadline: 1h, inactivity: 6h)");
+  // Retry failed email notifications — every 5 minutes
+  const retryInterval = setInterval(async () => {
+    const result = await retryFailedNotifications();
+    if (result.retried > 0) {
+      console.log(`[NotificationService] Retried ${result.retried} failed emails, ${result.succeeded} succeeded`);
+      // Notify coach if any emails permanently failed (retried 3 times)
+      await notifyCoachOfFailedEmails();
+    }
+  }, 5 * 60 * 1000);
+  scheduledJobIntervals.push(retryInterval);
+
+  console.log("[NotificationService] Scheduled jobs started (deadline: 1h, inactivity: 6h, retry: 5m)");
 
   // Run immediately on startup
   runDrillDeadlineReminderJob();
   runInactivityCheckerJob();
+  retryFailedNotifications();
+}
+
+// ============================================================
+// Notify Coach When Athlete Emails Permanently Fail
+// ============================================================
+
+async function notifyCoachOfFailedEmails(): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+
+  try {
+    // Find notifications that have failed 3+ times and coach hasn't been notified yet
+    const permanentlyFailed = await db
+      .select({
+        id: notifications.id,
+        userId: notifications.userId,
+        recipientEmail: notifications.recipientEmail,
+        title: notifications.title,
+        type: notifications.type,
+        lastError: notifications.lastError,
+        retryCount: notifications.retryCount,
+        metadata: notifications.metadata,
+      })
+      .from(notifications)
+      .where(
+        and(
+          eq(notifications.emailStatus, "failed"),
+          gte(notifications.retryCount, 3)
+        )
+      )
+      .limit(20);
+
+    if (permanentlyFailed.length === 0) return;
+
+    // Get all coaches
+    const coaches = await db
+      .select({ id: users.id, email: users.email, name: users.name })
+      .from(users)
+      .where(sql`${users.role} IN ('admin', 'coach')`);
+
+    for (const failedNotif of permanentlyFailed) {
+      // Look up the athlete name
+      const [athlete] = await db
+        .select({ name: users.name, email: users.email })
+        .from(users)
+        .where(eq(users.id, failedNotif.userId))
+        .limit(1);
+
+      const athleteName = athlete?.name || athlete?.email || `User #${failedNotif.userId}`;
+      const dedupeKey = `failed_email_alert_${failedNotif.id}`;
+
+      for (const coach of coaches) {
+        await sendNotification({
+          userId: coach.id,
+          type: "system",
+          title: "Email Delivery Failed",
+          message: `Failed to deliver email to ${athleteName} (${failedNotif.recipientEmail}): "${failedNotif.title}". Error: ${failedNotif.lastError || "Unknown"}. Retried ${failedNotif.retryCount} times.`,
+          relatedId: String(failedNotif.id),
+          relatedType: "email_failure",
+          linkUrl: "/coach-dashboard",
+          dedupeKey,
+          portalOnly: false, // Email the coach about the failure
+        });
+      }
+
+      // Mark the failed notification so we don't keep alerting about it
+      // Set retryCount to a high number to prevent further retries
+      await db.update(notifications)
+        .set({ retryCount: 99 })
+        .where(eq(notifications.id, failedNotif.id));
+    }
+
+    console.log(`[NotificationService] Notified coaches about ${permanentlyFailed.length} permanently failed emails`);
+  } catch (err) {
+    console.error("[NotificationService] notifyCoachOfFailedEmails error:", err);
+  }
 }
 
 export function stopScheduledJobs(): void {

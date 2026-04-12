@@ -141,7 +141,7 @@ describe("Notification Wiring", () => {
   it("drillAssignments.ts should import sendNotification", async () => {
     const fs = await import("fs");
     const content = fs.readFileSync("server/drillAssignments.ts", "utf-8");
-    expect(content).toContain('import { sendNotification } from "./notificationEngine"');
+    expect(content).toContain('from "./notificationEngine"');
     expect(content).toContain("sendNotification({");
     // Should NOT have direct db.insert(notifications)
     expect(content).not.toContain("db.insert(notifications)");
@@ -150,21 +150,21 @@ describe("Notification Wiring", () => {
   it("routers-video-analysis.ts should import sendNotification", async () => {
     const fs = await import("fs");
     const content = fs.readFileSync("server/routers-video-analysis.ts", "utf-8");
-    expect(content).toContain('import { sendNotification } from "./notificationEngine"');
+    expect(content).toContain('from "./notificationEngine"');
     expect(content).toContain("sendNotification({");
   });
 
   it("routers-submissions.ts should import sendNotification", async () => {
     const fs = await import("fs");
     const content = fs.readFileSync("server/routers-submissions.ts", "utf-8");
-    expect(content).toContain('import { sendNotification } from "./notificationEngine"');
+    expect(content).toContain('from "./notificationEngine"');
     expect(content).toContain("sendNotification({");
   });
 
   it("activityTracking.ts should import sendNotification", async () => {
     const fs = await import("fs");
     const content = fs.readFileSync("server/activityTracking.ts", "utf-8");
-    expect(content).toContain('import { sendNotification } from "./notificationEngine"');
+    expect(content).toContain('from "./notificationEngine"');
     expect(content).toContain("sendNotification({");
     // Should use portalOnly for activity notifications
     expect(content).toContain("portalOnly: true");
@@ -173,7 +173,7 @@ describe("Notification Wiring", () => {
   it("notificationService.ts should import sendNotification", async () => {
     const fs = await import("fs");
     const content = fs.readFileSync("server/notificationService.ts", "utf-8");
-    expect(content).toContain('import { sendNotification } from "./notificationEngine"');
+    expect(content).toContain('from "./notificationEngine"');
     expect(content).toContain("sendNotification({");
     // Should NOT have direct db.insert(notifications)
     expect(content).not.toContain("db.insert(notifications)");
