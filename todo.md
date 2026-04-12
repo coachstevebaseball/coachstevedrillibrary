@@ -1721,3 +1721,11 @@
 - [x] Verify drillStatCards queries match current Drizzle schema (added table to schema + migration)
 - [x] Verify Supabase connection works with new CS-16-ENGINE credentials
 - [x] Save checkpoint and redeploy
+
+## Supabase CS-16-ENGINE Connection Verification
+- [x] Verify Supabase client picks up NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY (added envPrefix to vite.config.ts)
+- [x] Test a live query against the Supabase drills table (drills table empty but drillStatCards works with 3 rows)
+- [x] Check /drill/[slug] page fetches data correctly (loads from static data + tRPC)
+- [x] Check /manage-drill-videos page fetches data correctly (loads from static data + tRPC)
+- [x] Fix any schema mismatches between frontend and database (no mismatches found — supabaseClient.ts not imported anywhere, app uses tRPC/Drizzle)
+- [x] Redeploy
