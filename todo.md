@@ -1715,3 +1715,9 @@
 - [x] Verify mobile sign-in flow and responsive layout
 - [x] Save checkpoint
 - [x] Fix mobile layout: Athlete Portal sign-in buttons hidden behind sticky header (added TopNav + flex-col layout)
+
+## Supabase Client Verification & Environment Variables
+- [x] Update supabaseClient.ts to use env vars instead of hardcoded credentials
+- [x] Verify drillStatCards queries match current Drizzle schema (added table to schema + migration)
+- [x] Verify Supabase connection works with new CS-16-ENGINE credentials
+- [x] Save checkpoint and redeploy

@@ -798,3 +798,17 @@ export const coachActivityLog = mysqlTable("coachActivityLog", {
 });
 export type CoachActivityLog = typeof coachActivityLog.$inferSelect;
 export type InsertCoachActivityLog = typeof coachActivityLog.$inferInsert;
+
+export const drillStatCards = mysqlTable("drillStatCards", {
+  id: int("id").autoincrement().primaryKey(),
+  drillId: varchar("drillId", { length: 255 }).notNull(),
+  label: varchar("label", { length: 255 }).notNull(),
+  value: varchar("value", { length: 255 }).notNull(),
+  icon: varchar("icon", { length: 50 }).default("info").notNull(),
+  position: int("position").default(0).notNull(),
+  isVisible: int("isVisible").default(1).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type DrillStatCard = typeof drillStatCards.$inferSelect;
+export type InsertDrillStatCard = typeof drillStatCards.$inferInsert;
