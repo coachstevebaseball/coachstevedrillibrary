@@ -83,10 +83,11 @@ export async function assignDrill(
     try {
       await db.insert(notifications).values({
         userId,
-        type: "assignment",
+        type: "drill_assigned",
         title: "New Drill Assigned",
         message: `You have been assigned the drill: ${drillName}`,
-        isRead: 0,
+        portalStatus: "unread",
+        emailStatus: "pending",
       });
     } catch (err) {
       console.error("[Notification] Failed to create in-app notification:", err);
@@ -123,10 +124,11 @@ export async function linkInviteAssignmentsToUser(inviteId: number, userId: numb
     try {
       await db.insert(notifications).values({
         userId,
-        type: "assignment",
+        type: "drill_assigned",
         title: "Drill Waiting for You",
         message: `You have a drill assigned: ${assignment.drillName}`,
-        isRead: 0,
+        portalStatus: "unread",
+        emailStatus: "pending",
       });
     } catch (err) {
       console.error("[Notification] Failed to create notification for linked assignment:", err);

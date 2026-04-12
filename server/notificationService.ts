@@ -317,7 +317,7 @@ export async function runInactivityCheckerJob(): Promise<number> {
           .where(
             and(
               eq(notifications.userId, coach.id),
-              eq(notifications.relatedId, athlete.id),
+              eq(notifications.relatedId, String(athlete.id)),
               gte(notifications.createdAt, todayStart),
               sql`${notifications.relatedType} = 'inactivity_flag'`
             )
@@ -331,10 +331,11 @@ export async function runInactivityCheckerJob(): Promise<number> {
           type: "system",
           title: "Athlete Inactive",
           message: `${athlete.name || athlete.email} has been inactive for ${daysSince ?? "7+"} days`,
-          relatedId: athlete.id,
+          relatedId: String(athlete.id),
           relatedType: "inactivity_flag",
-          isRead: 0,
-          actionUrl: `/coach-dashboard?athlete=${athlete.id}`,
+          portalStatus: "unread",
+          emailStatus: "pending",
+          linkUrl: `/coach-dashboard?athlete=${athlete.id}`,
         });
       }
 

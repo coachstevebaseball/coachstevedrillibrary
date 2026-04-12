@@ -670,26 +670,42 @@ export async function deleteCoachFeedback(feedbackId: number) {
 
 export async function createNotification(data: {
   userId: number;
-  type: "submission" | "feedback" | "badge" | "assignment" | "system";
+  type: "drill_assigned" | "notes_added" | "recap_posted" | "swing_analysis_ready" | "new_feature_available" | "feedback_received" | "submission_received" | "badge_earned" | "practice_plan_shared" | "welcome" | "system";
   title: string;
   message: string;
-  relatedId?: number;
+  relatedId?: string | number;
   relatedType?: string;
-  actionUrl?: string;
+  linkUrl?: string;
+  recipientEmail?: string;
+  dedupeKey?: string;
+  metadata?: Record<string, unknown>;
 }) {
   const db = await getDb();
   if (!db) return null;
 
   try {
+    // Deduplication check
+    if (data.dedupeKey) {
+      const existing = await db.select({ id: notifications.id })
+        .from(notifications)
+        .where(eq(notifications.dedupeKey, data.dedupeKey))
+        .limit(1);
+      if (existing.length > 0) return existing[0];
+    }
+
     const result = await db.insert(notifications).values({
       userId: data.userId,
       type: data.type,
       title: data.title,
       message: data.message,
-      relatedId: data.relatedId || null,
+      relatedId: data.relatedId != null ? String(data.relatedId) : null,
       relatedType: data.relatedType || null,
-      actionUrl: data.actionUrl || null,
-      isRead: 0,
+      linkUrl: data.linkUrl || null,
+      recipientEmail: data.recipientEmail || null,
+      emailStatus: "pending",
+      portalStatus: "unread",
+      dedupeKey: data.dedupeKey || null,
+      metadata: data.metadata || null,
     });
     return result;
   } catch (error) {
@@ -723,7 +739,7 @@ export async function getUnreadNotifications(userId: number) {
     const result = await db
       .select()
       .from(notifications)
-      .where(and(eq(notifications.userId, userId), eq(notifications.isRead, 0)))
+      .where(and(eq(notifications.userId, userId), eq(notifications.portalStatus, "unread")))
       .orderBy(desc(notifications.createdAt));
     return result;
   } catch (error) {
@@ -739,7 +755,7 @@ export async function markNotificationAsRead(notificationId: number) {
   try {
     await db
       .update(notifications)
-      .set({ isRead: 1, readAt: new Date() })
+      .set({ portalStatus: "read", readAt: new Date() })
       .where(eq(notifications.id, notificationId));
     return true;
   } catch (error) {
@@ -812,7 +828,7 @@ export async function getUnreadNotificationCount(userId: number) {
     const result = await db
       .select({ count: count() })
       .from(notifications)
-      .where(and(eq(notifications.userId, userId), eq(notifications.isRead, 0)));
+      .where(and(eq(notifications.userId, userId), eq(notifications.portalStatus, "unread")));
     return result[0]?.count || 0;
   } catch (error) {
     console.error("[DB] Error getting unread notification count:", error);

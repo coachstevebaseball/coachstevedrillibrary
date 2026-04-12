@@ -99,10 +99,11 @@ export async function logActivity(
           type: "system",
           title: activityTitles[activityType],
           message,
-          relatedId: athleteId,
+          relatedId: String(athleteId),
           relatedType: "athlete_activity",
-          isRead: 0,
-          actionUrl,
+          portalStatus: "unread",
+          emailStatus: "pending",
+          linkUrl: actionUrl,
         });
       }
       

@@ -169,15 +169,44 @@ export type InsertCoachFeedback = typeof coachFeedback.$inferInsert;
 export const notifications = mysqlTable("notifications", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(), // Recipient user ID
-  type: mysqlEnum("type", ["submission", "feedback", "badge", "assignment", "system"]).notNull(),
+  recipientEmail: varchar("recipientEmail", { length: 320 }), // Email address for delivery
+  type: mysqlEnum("type", [
+    "drill_assigned",
+    "notes_added",
+    "recap_posted",
+    "swing_analysis_ready",
+    "new_feature_available",
+    "feedback_received",
+    "submission_received",
+    "badge_earned",
+    "practice_plan_shared",
+    "welcome",
+    "system",
+  ]).notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),
-  relatedId: int("relatedId"), // ID of related entity (submission, feedback, etc.)
-  relatedType: varchar("relatedType", { length: 50 }), // Type of related entity
-  isRead: int("isRead").default(0).notNull(), // 0 = unread, 1 = read
-  actionUrl: varchar("actionUrl", { length: 500 }), // URL to navigate to when clicked
+  relatedId: varchar("relatedId", { length: 255 }), // ID of related entity
+  relatedType: varchar("relatedType", { length: 50 }), // Type: "drill", "assignment", "submission", "session_note", "video_analysis"
+  linkUrl: varchar("linkUrl", { length: 500 }), // Direct CTA link to the item in the portal
+  // Email delivery tracking
+  emailStatus: mysqlEnum("emailStatus", [
+    "pending", "queued", "sent", "failed", "delivered", "opened", "clicked"
+  ]).default("pending").notNull(),
+  // Portal read status
+  portalStatus: mysqlEnum("portalStatus", ["unread", "read"]).default("unread").notNull(),
+  // Timestamps
   createdAt: timestamp("createdAt").defaultNow().notNull(),
+  queuedAt: timestamp("queuedAt"),
+  sentAt: timestamp("sentAt"),
   readAt: timestamp("readAt"),
+  failedAt: timestamp("failedAt"),
+  // Retry tracking
+  retryCount: int("retryCount").default(0).notNull(),
+  lastError: text("lastError"),
+  // Deduplication key: prevents duplicate notifications for the same event
+  dedupeKey: varchar("dedupeKey", { length: 255 }),
+  // Flexible metadata JSON
+  metadata: json("metadata"),
 });
 
 export type Notification = typeof notifications.$inferSelect;
@@ -186,13 +215,19 @@ export type InsertNotification = typeof notifications.$inferInsert;
 export const notificationPreferences = mysqlTable("notificationPreferences", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull().unique(),
-  submissionNotifications: int("submissionNotifications").default(1).notNull(), // 0 = off, 1 = on
-  feedbackNotifications: int("feedbackNotifications").default(1).notNull(),
-  badgeNotifications: int("badgeNotifications").default(1).notNull(),
-  assignmentNotifications: int("assignmentNotifications").default(1).notNull(),
-  systemNotifications: int("systemNotifications").default(1).notNull(),
-  emailNotifications: int("emailNotifications").default(1).notNull(),
-  inAppNotifications: int("inAppNotifications").default(1).notNull(),
+  // Master toggle
+  emailNotifications: int("emailNotifications").default(1).notNull(), // 0 = all emails off, 1 = on
+  // Per-type toggles
+  drillAssignments: int("drillAssignments").default(1).notNull(),
+  notesUpdates: int("notesUpdates").default(1).notNull(),
+  recapUpdates: int("recapUpdates").default(1).notNull(),
+  swingAnalysis: int("swingAnalysis").default(1).notNull(),
+  featureAnnouncements: int("featureAnnouncements").default(1).notNull(),
+  feedbackUpdates: int("feedbackUpdates").default(1).notNull(),
+  submissionUpdates: int("submissionUpdates").default(1).notNull(),
+  badgeUpdates: int("badgeUpdates").default(1).notNull(),
+  practicePlanUpdates: int("practicePlanUpdates").default(1).notNull(),
+  systemUpdates: int("systemUpdates").default(1).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

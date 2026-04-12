@@ -513,12 +513,12 @@ export const videoAnalysisRouter = router({
       try {
         await db.createNotification({
           userId: record.athleteId,
-          type: "feedback",
+          type: "swing_analysis_ready",
           title: "Video Feedback Ready",
           message: `Coach has reviewed your video submission${record.drillId ? ` for ${record.drillId}` : ""} and provided feedback.`,
-          relatedId: record.id,
+          relatedId: String(record.id),
           relatedType: "videoAnalysis",
-          actionUrl: "/athlete-portal",
+          linkUrl: "/athlete-portal",
         });
       } catch {
         // Non-critical

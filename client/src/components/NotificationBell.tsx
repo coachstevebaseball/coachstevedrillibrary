@@ -72,7 +72,7 @@ export function NotificationBell() {
                 <div
                   key={notification.id}
                   className={`border-b border-gray-100 p-4 hover:bg-gray-50 transition-colors ${
-                    notification.isRead === 0 ? 'bg-red-50' : ''
+                    notification.portalStatus === 'unread' ? 'bg-red-50' : ''
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -90,7 +90,7 @@ export function NotificationBell() {
 
                     {/* Actions */}
                     <div className="flex gap-2 flex-shrink-0">
-                      {notification.isRead === 0 && (
+                      {notification.portalStatus === 'unread' && (
                         <button
                           onClick={() => handleMarkAsRead(notification.id)}
                           className="p-1 text-[#DC143C] hover:bg-red-100 rounded transition-colors"

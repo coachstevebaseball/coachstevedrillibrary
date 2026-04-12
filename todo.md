@@ -1745,3 +1745,24 @@
 - [x] Fix RESEND_API_KEY secret (updated via webdev_request_secrets, tests pass)
 - [x] Test all pages load correctly with Supabase data (443 tests pass, zero TS errors)
 - [x] Save checkpoint and redeploy
+
+## Centralized Notification System (Email-First)
+- [ ] Review existing codebase: schema, email setup, Resend integration
+- [ ] Create notifications table in database schema
+- [ ] Create notification_preferences table in database schema
+- [ ] Push database migrations
+- [ ] Build notification engine: createNotification(), queueDelivery(), sendEmail(), retryFailed()
+- [ ] Create branded email templates (drill_assigned, notes_added, recap_posted, swing_analysis_ready, new_feature_available)
+- [ ] Wire triggers into drill assignment flow
+- [ ] Wire triggers into notes/recap posting flow
+- [ ] Wire triggers into swing analysis posting flow
+- [ ] Wire triggers into new feature announcements
+- [ ] Build portal notification center UI (bell icon in TopNav, dropdown feed)
+- [ ] Add unread/read state management
+- [ ] Add click-through links to related items
+- [ ] Build notification preferences page for users
+- [ ] Add duplicate prevention for same-event notifications
+- [ ] Add retry logic for failed email sends
+- [ ] Write vitest tests for notification engine
+- [ ] Test end-to-end flow
+- [ ] Save checkpoint and redeploy

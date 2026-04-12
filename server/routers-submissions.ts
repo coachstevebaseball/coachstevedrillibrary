@@ -221,12 +221,12 @@ export async function createSubmissionNotification(data: {
   try {
     await db.createNotification({
       userId: data.userId,
-      type: 'submission',
+      type: 'submission_received',
       title: `New Submission from ${data.athleteName}`,
       message: `${data.athleteName} submitted their work for ${data.drillName}`,
-      relatedId: data.submissionId,
+      relatedId: String(data.submissionId),
       relatedType: 'submission',
-      actionUrl: `/submissions`,
+      linkUrl: `/submissions`,
     });
   } catch (error) {
     console.error('Error creating submission notification:', error);
@@ -243,12 +243,12 @@ export async function createFeedbackNotification(data: {
   try {
     await db.createNotification({
       userId: data.userId,
-      type: 'feedback',
+      type: 'feedback_received',
       title: `Feedback from ${data.coachName}`,
       message: `${data.coachName} provided feedback on your ${data.drillName} submission`,
-      relatedId: data.feedbackId,
+      relatedId: String(data.feedbackId),
       relatedType: 'feedback',
-      actionUrl: `/athlete-portal`,
+      linkUrl: `/athlete-portal`,
     });
   } catch (error) {
     console.error('Error creating feedback notification:', error);
