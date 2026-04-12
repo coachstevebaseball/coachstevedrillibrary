@@ -16,7 +16,8 @@ const PILLARS = [
   "Weight Transfer","Balance & Posture","Mental Approach","Situational Hitting","Two-Strike Approach",
   "Power Development","Contact Rate",
 ];
-const CATEGORIES = ["Hitting","Pitching","Fielding","Catching","Baserunning","Strength & Conditioning","General"];
+// Only Hitting drills are active for now. Other categories are archived and can be restored later.
+const CATEGORIES = ["Hitting"];
 const DIFFICULTIES = ["Easy","Medium","Hard","Advanced"];
 const DURATIONS = ["5m","10m","15m","20m","30m","45m","60m"];
 

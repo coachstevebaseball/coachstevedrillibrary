@@ -115,6 +115,7 @@ export const drillDetails = mysqlTable("drillDetails", {
   focusTags: json("focusTags").$type<string[]>(), // e.g. ["bat speed","hip rotation"]
   problemsFix: json("problemsFix").$type<string[]>(), // maps to drills.ts problem[]
   pillars: json("pillars").$type<string[]>(), // coaching pillars/goals
+  isHidden: boolean("isHidden").notNull().default(false), // true = hidden from public, preserved for restoration
   createdBy: int("createdBy").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -267,6 +268,7 @@ export const customDrills = mysqlTable("customDrills", {
   difficulty: varchar("difficulty", { length: 50 }).notNull(),
   category: varchar("category", { length: 100 }).notNull(),
   duration: varchar("duration", { length: 50 }).notNull(),
+  isHidden: boolean("isHidden").notNull().default(false), // true = hidden from public, preserved for restoration
   createdBy: int("createdBy").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),

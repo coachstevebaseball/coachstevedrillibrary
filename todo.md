@@ -1784,3 +1784,19 @@
 - [x] Create /notifications/preferences page with master email toggle and per-type toggles
 - [x] Add routes for /notifications and /notifications/preferences in App.tsx
 - [x] Write 15 vitest tests for notification engine exports, wiring verification, and router procedures
+
+## User/Athlete Notification Audit
+- [x] Query all users and verify IDs, emails, roles are correct
+- [x] Check notifications table for proper userId linkage
+- [x] Verify notification preferences exist for all users
+- [x] Confirm email delivery status for sent notifications
+- [x] Fix any orphaned or mislinked notifications
+
+## Hide Non-Hitting Drills (Focus on Hitting Only)
+- [x] Audit all drill data sources (JSON + DB) to account for 122 Hitting drills
+- [x] Create archived backup of all non-Hitting drills for future restoration
+- [x] Filter static JSON data files to only include Hitting drills
+- [x] Update any server/DB references to exclude non-Hitting drills
+- [x] Ensure category filters only show Hitting-related subcategories
+- [x] Verify UI shows only Hitting drills and hidden data is inaccessible
+- [x] Add admin-only restoration mechanism for hidden drills (scripts/restore-non-hitting.mjs)

@@ -1243,7 +1243,8 @@ export async function getCustomDrills() {
 
   try {
     const { customDrills } = await import("../drizzle/schema");
-    return await db.select().from(customDrills);
+    const { eq } = await import("drizzle-orm");
+    return await db.select().from(customDrills).where(eq(customDrills.isHidden, false));
   } catch (error) {
     console.error("[Database] Failed to get custom drills:", error);
     return [];

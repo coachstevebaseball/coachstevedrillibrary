@@ -40,7 +40,8 @@ const DIFFICULTY_CONFIG: Record<string, { label: string; class: string; dotClass
 };
 
 // Category config
-const CATEGORIES = ["All", "Hitting", "Bunting", "Pitching", "Infield", "Outfield", "Catching", "Base Running"];
+// Only Hitting drills are active for now. Other categories are archived and can be restored later.
+const CATEGORIES = ["All", "Hitting"];
 
 /**
  * Save scroll position to sessionStorage keyed by the current query string.
