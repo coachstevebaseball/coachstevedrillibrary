@@ -237,36 +237,113 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
   // ── Compact sticky nav (used on non-Home pages) ───────────────────────────
   if (variant === "compact") {
     return (
-      <header className="sticky top-0 z-40 glass border-b border-white/10 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/">
-            <a className="flex items-center gap-2.5 group">
-              <div className="h-8 w-8 bg-gradient-to-br from-primary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-sm text-white shadow-md shadow-electric/20 group-hover:shadow-electric/40 transition-shadow">
-                CS
-              </div>
-              <span className="font-heading font-bold text-sm text-foreground hidden sm:block group-hover:text-electric transition-colors">
-                Coach Steve Baseball
-              </span>
-            </a>
-          </Link>
+      <>
+        <header className="sticky top-0 z-40 glass border-b border-white/10 shadow-sm">
+          <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+            {/* Logo */}
+            <Link href="/">
+              <a className="flex items-center gap-2.5 group">
+                <div className="h-8 w-8 bg-gradient-to-br from-primary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-sm text-white shadow-md shadow-electric/20 group-hover:shadow-electric/40 transition-shadow">
+                  CS
+                </div>
+                <span className="font-heading font-bold text-sm text-foreground hidden sm:block group-hover:text-electric transition-colors">
+                  Coach Steve Baseball
+                </span>
+              </a>
+            </Link>
 
-          {/* Desktop tabs */}
-          <div className="hidden sm:flex">{renderDesktopActions()}</div>
+            {/* Desktop tabs */}
+            <div className="hidden sm:flex">{renderDesktopActions()}</div>
 
-          {/* Mobile hamburger */}
-          <button
-            className="sm:hidden flex items-center justify-center w-9 h-9 rounded-lg text-foreground/60 hover:text-foreground hover:bg-white/8 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-electric/50"
-            onClick={() => setMobileOpen((o) => !o)}
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
+            {/* Mobile hamburger */}
+            <button
+              className="sm:hidden flex items-center justify-center w-9 h-9 rounded-lg text-foreground/60 hover:text-foreground hover:bg-white/8 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-electric/50"
+              onClick={() => setMobileOpen((o) => !o)}
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </header>
 
-        {/* Mobile dropdown */}
-        <div className="relative sm:hidden">{renderMobileMenu()}</div>
-      </header>
+        {/* Mobile dropdown — rendered OUTSIDE header to avoid z-index stacking issues */}
+        {mobileOpen && (
+          <div className="fixed top-14 left-0 right-0 z-[9999] border-b border-white/10 shadow-xl sm:hidden animate-fade-in-down" style={{background: "oklch(0.13 0.02 260 / 0.97)", backdropFilter: "blur(20px)"}}>
+            <div className="max-w-6xl mx-auto px-4 py-2 flex flex-col gap-1">
+              {user && isAdmin && (
+                <>
+                  <MobileLink
+                    href="/coach-dashboard"
+                    label="Dashboard"
+                    icon={LayoutDashboard}
+                    active={isActive("/coach-dashboard")}
+                    onClick={() => setMobileOpen(false)}
+                  />
+                  <MobileLink
+                    href="/admin"
+                    label="Admin Panel"
+                    icon={Shield}
+                    active={isActive("/admin")}
+                    accent
+                    onClick={() => setMobileOpen(false)}
+                  />
+                  <button
+                    onClick={() => { logout(); setMobileOpen(false); }}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all text-left"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </button>
+                </>
+              )}
+
+              {user && isAthlete && (
+                <>
+                  <MobileLink
+                    href="/athlete-portal"
+                    label="My Portal"
+                    icon={User}
+                    active={isActive("/athlete-portal")}
+                    accent
+                    onClick={() => setMobileOpen(false)}
+                  />
+                  <button
+                    onClick={() => { logout(); setMobileOpen(false); }}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all text-left"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </button>
+                </>
+              )}
+
+              {!user && (
+                <>
+                  <MobileLink
+                    href="/athlete-portal"
+                    label="Athlete Portal"
+                    icon={User}
+                    active={isActive("/athlete-portal")}
+                    accent
+                    onClick={() => setMobileOpen(false)}
+                  />
+                  <a
+                    href={loginUrl}
+                    className="flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 border border-white/15 transition-all"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Shield className="h-4 w-4" />
+                      Admin Login
+                    </div>
+                    <ChevronRight className="h-4 w-4 text-foreground/30" />
+                  </a>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+      </>
     );
   }
 
@@ -300,7 +377,76 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
       {/* Mobile dropdown — fixed to viewport so it escapes overflow:hidden on hero */}
       {mobileOpen && (
         <div className="fixed top-16 right-3 w-64 z-[9999] rounded-xl border border-white/20 shadow-2xl p-2 flex flex-col gap-1 animate-fade-in-down sm:hidden" style={{background: "oklch(0.12 0.02 260 / 0.98)", backdropFilter: "blur(24px)"}}>
-          {renderMobileMenu()}
+          {user && isAdmin && (
+            <>
+              <MobileLink
+                href="/coach-dashboard"
+                label="Dashboard"
+                icon={LayoutDashboard}
+                active={isActive("/coach-dashboard")}
+                onClick={() => setMobileOpen(false)}
+              />
+              <MobileLink
+                href="/admin"
+                label="Admin Panel"
+                icon={Shield}
+                active={isActive("/admin")}
+                accent
+                onClick={() => setMobileOpen(false)}
+              />
+              <button
+                onClick={() => { logout(); setMobileOpen(false); }}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all text-left"
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </button>
+            </>
+          )}
+
+          {user && isAthlete && (
+            <>
+              <MobileLink
+                href="/athlete-portal"
+                label="My Portal"
+                icon={User}
+                active={isActive("/athlete-portal")}
+                accent
+                onClick={() => setMobileOpen(false)}
+              />
+              <button
+                onClick={() => { logout(); setMobileOpen(false); }}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all text-left"
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </button>
+            </>
+          )}
+
+          {!user && (
+            <>
+              <MobileLink
+                href="/athlete-portal"
+                label="Athlete Portal"
+                icon={User}
+                active={isActive("/athlete-portal")}
+                accent
+                onClick={() => setMobileOpen(false)}
+              />
+              <a
+                href={loginUrl}
+                className="flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 border border-white/15 transition-all"
+                onClick={() => setMobileOpen(false)}
+              >
+                <div className="flex items-center gap-3">
+                  <Shield className="h-4 w-4" />
+                  Admin Login
+                </div>
+                <ChevronRight className="h-4 w-4 text-foreground/30" />
+              </a>
+            </>
+          )}
         </div>
       )}
     </nav>

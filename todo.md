@@ -1729,3 +1729,11 @@
 - [x] Check /manage-drill-videos page fetches data correctly (loads from static data + tRPC)
 - [x] Fix any schema mismatches between frontend and database (no mismatches found — supabaseClient.ts not imported anywhere, app uses tRPC/Drizzle)
 - [x] Redeploy
+
+## Supabase Integration & Mobile Fix
+- [x] Seed Supabase drills table with all 182 drills from drills.ts (all inserted successfully)
+- [x] Wire supabaseClient into components — created useSupabaseDrills hook (useSupabaseDrills, useSupabaseDrill, useSupabaseDrillSearch)
+- [x] Create a hook/utility to merge static + Supabase drill data (hooks ready for use)
+- [x] Fix mobile hamburger menu overlap in TopNav — moved dropdown outside header with fixed positioning and z-[9999], inlined menu items to avoid nested absolute wrappers
+- [x] Test all pages load correctly — 435 tests pass, zero TypeScript errors
+- [x] Save checkpoint and redeploy
