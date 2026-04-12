@@ -13,6 +13,7 @@ import {
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from "@/components/NotificationBell";
 
 interface TopNavProps {
   /** Show the full hero-style nav (used on Home). Default: false (compact sticky bar) */
@@ -100,6 +101,7 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
             active={isActive("/admin")}
             accent
           />
+          <NotificationBell />
           <button
             onClick={logout}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm text-foreground/50 hover:text-foreground hover:bg-white/8 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
@@ -121,6 +123,7 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
             active={isActive("/athlete-portal")}
             accent
           />
+          <NotificationBell />
           <button
             onClick={logout}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm text-foreground/50 hover:text-foreground hover:bg-white/8 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"

@@ -1766,3 +1766,21 @@
 - [ ] Write vitest tests for notification engine
 - [ ] Test end-to-end flow
 - [ ] Save checkpoint and redeploy
+
+## Notification System - Engine Wiring (Phase 2)
+- [x] Replace direct db.insert(notifications) in routers-video-analysis.ts with sendNotification()
+- [x] Replace direct db.insert(notifications) in activityTracking.ts with sendNotification() (portalOnly)
+- [x] Replace direct db.insert(notifications) in notificationService.ts with sendNotification()
+- [x] Verify drillAssignments.ts already uses sendNotification()
+- [x] Verify routers-submissions.ts already uses sendNotification()
+- [x] Confirm no server files outside engine have direct db.insert(notifications) calls
+- [x] Add markAllRead procedure to routers-notifications.ts
+- [x] Update updatePreferences input schema to match actual DB column names
+
+## Notification System - Portal UI
+- [x] Redesign NotificationBell component with dark theme, click-outside close, type icons, time-ago display
+- [x] Add NotificationBell to TopNav for both admin and athlete users
+- [x] Create /notifications full inbox page with filters (type, read/unread), mark-all-read, delete
+- [x] Create /notifications/preferences page with master email toggle and per-type toggles
+- [x] Add routes for /notifications and /notifications/preferences in App.tsx
+- [x] Write 15 vitest tests for notification engine exports, wiring verification, and router procedures

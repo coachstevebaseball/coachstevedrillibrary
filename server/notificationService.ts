@@ -21,6 +21,7 @@ import {
 } from "../drizzle/schema";
 import { sendDrillFollowUpReminder, getResend } from "./email";
 import { ENV } from "./_core/env";
+import { sendNotification } from "./notificationEngine";
 
 const BASE_URL = ENV.appUrl;
 
@@ -326,16 +327,15 @@ export async function runInactivityCheckerJob(): Promise<number> {
 
         if (alreadyFlagged.length > 0) continue;
 
-        await db.insert(notifications).values({
+        await sendNotification({
           userId: coach.id,
           type: "system",
           title: "Athlete Inactive",
           message: `${athlete.name || athlete.email} has been inactive for ${daysSince ?? "7+"} days`,
           relatedId: String(athlete.id),
           relatedType: "inactivity_flag",
-          portalStatus: "unread",
-          emailStatus: "pending",
           linkUrl: `/coach-dashboard?athlete=${athlete.id}`,
+          portalOnly: true, // Coach-facing alert, no email
         });
       }
 

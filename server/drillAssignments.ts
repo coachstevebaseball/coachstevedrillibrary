@@ -1,5 +1,6 @@
 import { eq, and, or, isNull, inArray, desc, lte, gte, sql } from "drizzle-orm";
 import { drillAssignments, assignmentProgress, InsertDrillAssignment, InsertAssignmentProgress, users, notifications, invites } from "../drizzle/schema";
+import { sendNotification } from "./notificationEngine";
 import { getDb } from "./db";
 import { ENV } from "./_core/env";
 import { sendDrillAssignmentEmail } from "./email";
@@ -78,19 +79,21 @@ export async function assignDrill(
     console.warn(`[Email] ⚠️ No email address for userId=${userId} inviteId=${inviteId}, skipping notification`);
   }
 
-  // Create in-app notification for athlete (only if userId exists)
+  // Create notification + email via centralized engine
   if (userId) {
     try {
-      await db.insert(notifications).values({
+      await sendNotification({
         userId,
         type: "drill_assigned",
         title: "New Drill Assigned",
         message: `You have been assigned the drill: ${drillName}`,
-        portalStatus: "unread",
-        emailStatus: "pending",
+        linkUrl: `/athlete-portal`,
+        relatedId: drillId,
+        relatedType: "drill",
+        dedupeKey: `drill-assign-${userId}-${drillId}`,
       });
     } catch (err) {
-      console.error("[Notification] Failed to create in-app notification:", err);
+      console.error("[Notification] Failed to create notification:", err);
     }
   }
 
@@ -122,13 +125,15 @@ export async function linkInviteAssignmentsToUser(inviteId: number, userId: numb
   
   for (const assignment of linkedAssignments) {
     try {
-      await db.insert(notifications).values({
+      await sendNotification({
         userId,
         type: "drill_assigned",
         title: "Drill Waiting for You",
         message: `You have a drill assigned: ${assignment.drillName}`,
-        portalStatus: "unread",
-        emailStatus: "pending",
+        linkUrl: `/athlete-portal`,
+        relatedId: assignment.drillId,
+        relatedType: "drill",
+        dedupeKey: `drill-link-${userId}-${assignment.drillId}`,
       });
     } catch (err) {
       console.error("[Notification] Failed to create notification for linked assignment:", err);

@@ -22,6 +22,7 @@ import { videoAnalysis } from "../drizzle/schema";
 import { eq, and, desc, inArray } from "drizzle-orm";
 import { analyzeAthleteVideoWithFallback, formatAnalysisForCoachEdit } from "./videoAnalysisService";
 import * as db from "./db";
+import { sendNotification } from "./notificationEngine";
 
 // ── Helpers ──────────────────────────────────────────────────
 
@@ -509,9 +510,9 @@ export const videoAnalysisRouter = router({
         })
         .where(eq(videoAnalysis.id, input.analysisId));
 
-      // Create in-app notification for athlete
+      // Create notification + email via centralized engine
       try {
-        await db.createNotification({
+        await sendNotification({
           userId: record.athleteId,
           type: "swing_analysis_ready",
           title: "Video Feedback Ready",
@@ -519,6 +520,7 @@ export const videoAnalysisRouter = router({
           relatedId: String(record.id),
           relatedType: "videoAnalysis",
           linkUrl: "/athlete-portal",
+          dedupeKey: `swing-analysis-${record.id}`,
         });
       } catch {
         // Non-critical
