@@ -23,6 +23,7 @@ import ParentDashboard from "./pages/ParentDashboard";
 import ActivityFeed from "./pages/ActivityFeed";
 import DrillComparison from "./pages/DrillComparison";
 import AthleteAssessment from "./pages/AthleteAssessment";
+import ManageDrillContent from "./pages/ManageDrillContent";
 import MyProfile from "./pages/MyProfile";
 import HittingCoach from "./pages/HittingCoach";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -143,6 +144,12 @@ function Router() {
       <Route path={"/athlete-assessment"}>
         <ProtectedRoute requiredRole="admin">
           <AthleteAssessment />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path={"/manage-drill-content"}>
+        <ProtectedRoute requiredRole="admin">
+          <ManageDrillContent />
         </ProtectedRoute>
       </Route>
       

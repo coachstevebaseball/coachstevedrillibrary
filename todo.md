@@ -1737,3 +1737,11 @@
 - [x] Fix mobile hamburger menu overlap in TopNav — moved dropdown outside header with fixed positioning and z-[9999], inlined menu items to avoid nested absolute wrappers
 - [x] Test all pages load correctly — 435 tests pass, zero TypeScript errors
 - [x] Save checkpoint and redeploy
+
+## Replace Static Drills with Supabase Queries + Admin Editing + Resend Fix
+- [x] Replace static drills.ts imports with Supabase queries on Home page (hybrid merge in useAllDrills)
+- [x] Replace static drills.ts imports with Supabase queries on DrillsDirectory (merged into Home)
+- [x] Add admin form for editing drill instructions and equipment (ManageDrillContent page with search, inline editing, save)
+- [x] Fix RESEND_API_KEY secret (updated via webdev_request_secrets, tests pass)
+- [x] Test all pages load correctly with Supabase data (443 tests pass, zero TS errors)
+- [x] Save checkpoint and redeploy
