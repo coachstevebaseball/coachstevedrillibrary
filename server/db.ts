@@ -99,11 +99,11 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.role = existingRole;
       // Don't update role if it already exists
     } else {
-      // Assign 'athlete' role to new OAuth users by default (this is an athlete platform)
-      values.role = 'athlete';
-      values.isActiveClient = 1;
-      updateSet.role = 'athlete';
-      updateSet.isActiveClient = 1;
+      // New visitors get 'user' role — only invited/pre-registered athletes get 'athlete'
+      values.role = 'user';
+      values.isActiveClient = 0;
+      updateSet.role = 'user';
+      updateSet.isActiveClient = 0;
     }
 
     if (!values.lastSignedIn) {
@@ -143,6 +143,18 @@ export async function getUserById(userId: number) {
   }
 
   const result = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getUserByEmail(email: string) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get user by email: database not available");
+    return undefined;
+  }
+
+  const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
   return result.length > 0 ? result[0] : undefined;
 }

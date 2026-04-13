@@ -378,7 +378,7 @@ export default function Home() {
             <div className="flex justify-center gap-8 md:gap-16 animate-fade-in-up stagger-4">
               {[
                 { valueKey: "home.stat.drills.value", valueDefault: `${allDrills.length}+`, labelKey: "home.stat.drills.label", labelDefault: "Drills", icon: Target },
-                { valueKey: "home.stat.categories.value", valueDefault: "8", labelKey: "home.stat.categories.label", labelDefault: "Categories", icon: Sparkles },
+                { valueKey: "home.stat.categories.value", valueDefault: "1", labelKey: "home.stat.categories.label", labelDefault: "Focus: Hitting", icon: Sparkles },
                 { valueKey: "home.stat.levels.value", valueDefault: "3", labelKey: "home.stat.levels.label", labelDefault: "Levels", icon: TrendingUp },
               ].map((stat, i) => (
                 <div key={i} className="text-center">

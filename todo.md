@@ -1815,3 +1815,14 @@
 - [x] Add retryFailedNotifications to scheduled jobs (every 5 min)
 - [x] Merge duplicate Sean Jaeger account (ID 105900149 → 3570024)
 - [x] Fix notificationEngine.test.ts import assertion
+
+## Fix Athlete Portal Login & User Role Assignment (Apr 12)
+- [x] Audit Athlete Portal tab vs Admin tab login paths to find duplication cause
+- [x] Fix Athlete Portal tab to use correct OAuth login path (same as Admin tab) — both use same getLoginUrl() with different returnTo
+- [x] Ensure existing athletes retain their ID when logging in via Athlete Portal — email-based fallback in upsertUser prevents duplication
+- [x] Ensure new visitors/random people are created as "user" role (not "athlete") — changed default from 'athlete' to 'user' in db.ts
+- [x] Notify Coach Steve when a new user registers (with name and email) — notifyCoachOfNewUser in oauth.ts sends system notification
+- [x] Verify no duplicate accounts are created on login — email-based fallback + openId matching
+- [x] Add getUserByEmail function to db.ts for pre-upsert check
+- [x] Update hero stats: changed '8 CATEGORIES' to '1 Focus: Hitting'
+- [x] Write 16 vitest tests for role assignment, OAuth notification, and schema validation
