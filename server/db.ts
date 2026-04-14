@@ -1197,6 +1197,11 @@ export async function createNewDrill(
     goal?: string;
     instructions?: string;
     videoUrl?: string;
+    drillType?: string;
+    ageLevel?: string[];
+    focusTags?: string[];
+    problemsFix?: string[];
+    pillars?: string[];
   },
   userId: number
 ): Promise<{ success: boolean; drillId: string; error?: string }> {
@@ -1257,6 +1262,11 @@ export async function createNewDrill(
       difficulty: drillData.difficulty,
       category: drillData.category,
       duration: drillData.duration,
+      drillType: drillData.drillType || null,
+      ageLevel: drillData.ageLevel?.length ? JSON.stringify(drillData.ageLevel) : null,
+      focusTags: drillData.focusTags?.length ? JSON.stringify(drillData.focusTags) : null,
+      problemsFix: drillData.problemsFix?.length ? JSON.stringify(drillData.problemsFix) : null,
+      pillars: drillData.pillars?.length ? JSON.stringify(drillData.pillars) : null,
       createdBy: userId,
     });
     

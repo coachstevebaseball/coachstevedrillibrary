@@ -400,6 +400,13 @@
       "when": 1776002997974,
       "tag": "0056_regular_eternity",
       "breakpoints": true
+    },
+    {
+      "idx": 57,
+      "version": "5",
+      "when": 1776183154304,
+      "tag": "0057_typical_steve_rogers",
+      "breakpoints": true
     }
   ]
 }

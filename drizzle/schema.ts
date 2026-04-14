@@ -268,6 +268,11 @@ export const customDrills = mysqlTable("customDrills", {
   difficulty: varchar("difficulty", { length: 50 }).notNull(),
   category: varchar("category", { length: 100 }).notNull(),
   duration: varchar("duration", { length: 50 }).notNull(),
+  drillType: varchar("drillType", { length: 100 }),
+  ageLevel: text("ageLevel"), // JSON stringified array
+  focusTags: text("focusTags"), // JSON stringified array
+  problemsFix: text("problemsFix"), // JSON stringified array
+  pillars: text("pillars"), // JSON stringified array
   isHidden: boolean("isHidden").notNull().default(false), // true = hidden from public, preserved for restoration
   createdBy: int("createdBy").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

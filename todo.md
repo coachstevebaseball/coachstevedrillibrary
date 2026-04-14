@@ -1826,3 +1826,12 @@
 - [x] Add getUserByEmail function to db.ts for pre-upsert check
 - [x] Update hero stats: changed '8 CATEGORIES' to '1 Focus: Hitting'
 - [x] Write 16 vitest tests for role assignment, OAuth notification, and schema validation
+
+## Fix Add New Drill Admin Dashboard Error (Apr 14)
+- [x] Identified root cause: createNewDrill function was missing metadata field parameters (drillType, ageLevel, focusTags, problemsFix, pillars)
+- [x] Updated createNewDrill function signature to accept all metadata fields from form
+- [x] Added metadata columns to customDrills schema (drillType, ageLevel, focusTags, problemsFix, pillars)
+- [x] Updated customDrills insert to store all metadata fields as JSON strings
+- [x] Pushed database migration (columns already existed from previous session)
+- [x] Verified TypeScript compiles with 0 errors
+- [x] Dev server running and healthy
