@@ -91,4 +91,28 @@ describe("Add New Drill Feature", () => {
     expect(dbSource).toContain("ageLevel?.length");
     expect(dbSource).toContain("JSON.stringify");
   });
+
+  it("createNewDrill should set isHidden to false when inserting", async () => {
+    const fs = await import("fs");
+    const path = await import("path");
+    const dbSource = fs.readFileSync(
+      path.resolve(__dirname, "db.ts"),
+      "utf-8"
+    );
+
+    // Verify isHidden: false is set in the insert statement
+    expect(dbSource).toContain("isHidden: false");
+  });
+
+  it("getCustomDrills should filter by isHidden = false", async () => {
+    const fs = await import("fs");
+    const path = await import("path");
+    const dbSource = fs.readFileSync(
+      path.resolve(__dirname, "db.ts"),
+      "utf-8"
+    );
+
+    // Verify the WHERE clause filters by isHidden
+    expect(dbSource).toContain("eq(customDrills.isHidden, false)");
+  });
 });

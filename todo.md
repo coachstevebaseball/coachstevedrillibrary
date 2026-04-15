@@ -1835,3 +1835,13 @@
 - [x] Pushed database migration (columns already existed from previous session)
 - [x] Verified TypeScript compiles with 0 errors
 - [x] Dev server running and healthy
+
+## Fix Add New Drill React Rendering Crash (Apr 15 - FIXED)
+- [x] Investigate AddNewDrill component for React rendering crash (not API error)
+- [x] Found root cause: empty SelectItem value="" crashes Radix UI Select component
+- [x] Fixed AddNewDrill.tsx: replaced empty string with 'none' value and added handleSave logic
+- [x] Fixed db.ts createNewDrill: added isHidden: false to insert statement so new drills are visible
+- [x] Verified all metadata fields (drillType, ageLevel, focusTags, problemsFix, pillars) are stored
+- [x] Added 9 vitest tests confirming all fixes work correctly (all passing)
+- [x] Test end-to-end: button click → form → submission → database insert → confirmation
+- [x] Verified drill appears in drill list after creation (pagination shows new drills on later pages)

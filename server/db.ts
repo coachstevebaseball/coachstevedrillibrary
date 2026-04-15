@@ -1267,6 +1267,7 @@ export async function createNewDrill(
       focusTags: drillData.focusTags?.length ? JSON.stringify(drillData.focusTags) : null,
       problemsFix: drillData.problemsFix?.length ? JSON.stringify(drillData.problemsFix) : null,
       pillars: drillData.pillars?.length ? JSON.stringify(drillData.pillars) : null,
+      isHidden: false,
       createdBy: userId,
     });
     

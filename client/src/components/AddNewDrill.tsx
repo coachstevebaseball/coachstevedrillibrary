@@ -73,7 +73,7 @@ export function AddNewDrill() {
       goal: form.goal || undefined,
       instructions: form.instructions || undefined,
       videoUrl: form.videoUrl || undefined,
-      drillType: form.drillType || undefined,
+      drillType: form.drillType && form.drillType !== "none" ? form.drillType : undefined,
       ageLevel: form.ageLevel.length ? form.ageLevel : undefined,
       focusTags: form.focusTags.length ? form.focusTags : undefined,
       problemsFix: form.problemsFix.length ? form.problemsFix : undefined,
@@ -160,7 +160,7 @@ export function AddNewDrill() {
                   <SelectValue placeholder="Select type..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">— None —</SelectItem>
+                  <SelectItem value="none">— None —</SelectItem>
                   {DRILL_TYPES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                 </SelectContent>
               </Select>
