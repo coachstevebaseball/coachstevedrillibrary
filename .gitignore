@@ -15,11 +15,15 @@ build/
 .env.production.local
 
 # IDE and editor files
+.cursor/
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+
+# Manus Desktop local exports / query cache
+.manus/
 
 # OS generated files
 .DS_Store

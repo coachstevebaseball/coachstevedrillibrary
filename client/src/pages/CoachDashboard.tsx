@@ -8,7 +8,7 @@ import {
   ArrowLeft, Plus, Trash2, CheckCircle, Clock, AlertCircle, Search, 
   Sparkles, Video, Upload, MessageSquare, BarChart3, Activity, Users, 
   LayoutTemplate, Edit3, ArrowLeftRight, FileText, ChevronRight,
-  Zap, Target, TrendingUp, Shield, Table2
+  Zap, Target, TrendingUp, Shield, Table2, Bell, Tag, Mail
 } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
@@ -24,6 +24,13 @@ import PracticePlanner from "@/components/PracticePlanner";
 import { SessionNotesTab } from "@/components/SessionNotesTab";
 import { VideoAnalysisTab } from "@/components/VideoAnalysisTab";
 import { BlastMetricsTab } from "@/components/BlastMetricsTab";
+import { PlayerReportTab } from "@/components/PlayerReportTab";
+import { ActivityFeedTab } from "@/components/ActivityFeedTab";
+import { DuplicateDetectionPanel } from "@/components/DuplicateDetectionPanel";
+import { FixBrokenIdsPanel } from "@/components/FixBrokenIdsPanel";
+import { DrillTagEditor } from "@/components/DrillTagEditor";
+import { EmailSettingsPanel } from "@/components/EmailSettingsPanel";
+import { TabErrorBoundary } from "@/components/TabErrorBoundary";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { InlineEdit } from "@/components/InlineEdit";
 
@@ -49,7 +56,7 @@ export default function CoachDashboard() {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [searchDrill, setSearchDrill] = useState("");
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts" | "athletes" | "planner" | "session-notes" | "video-analysis" | "blast-metrics">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "assign" | "bulk-import" | "bulk-goals" | "page-layouts" | "athletes" | "planner" | "session-notes" | "video-analysis" | "blast-metrics" | "player-report" | "activity-feed" | "dedup" | "drill-tags" | "email-settings">("overview");
   const [editingLayoutDrill, setEditingLayoutDrill] = useState<{ id: string; name: string } | null>(null);
   const [layoutSearchQuery, setLayoutSearchQuery] = useState("");
   const [isBulkGoalOpen, setIsBulkGoalOpen] = useState(false);
@@ -249,8 +256,8 @@ export default function CoachDashboard() {
 
           {/* Title */}
           <div className="mb-8">
-            <InlineEdit contentKey="coach.title" defaultValue="Coach Dashboard" as="h1" className="text-3xl md:text-5xl font-heading font-black text-white tracking-tight" />
-            <InlineEdit contentKey="coach.subtitle" defaultValue="Manage your athletes, assign drills, and track progress all in one place." as="p" className="text-white/60 mt-2 text-sm md:text-base max-w-lg" />
+            <h1 className="text-3xl md:text-5xl font-heading font-black text-white tracking-tight">Coach Dashboard</h1>
+            <p className="text-white/60 mt-2 text-sm md:text-base max-w-lg">Manage your athletes, assign drills, and track progress all in one place.</p>
           </div>
 
           {/* Stats Row */}
@@ -290,8 +297,13 @@ export default function CoachDashboard() {
             </div>
           )}
 
-          {/* Tab Navigation */}
-          <div className="w-full overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1">
+        </div>
+      </header>
+
+      {/* Sticky Tab Navigation - outside hero so it's always visible on mobile */}
+      <div className="sticky top-0 z-30 bg-[oklch(0.15_0.008_0)]/95 backdrop-blur-md border-b border-white/[0.08]">
+        <div className="container">
+          <div className="w-full overflow-x-auto scrollbar-hide py-2">
             <nav role="tablist" aria-label="Coach Dashboard Navigation" className="flex gap-1 bg-white/[0.06] backdrop-blur-sm rounded-xl p-1 border border-white/[0.08] w-max md:w-fit">
               {[
                 { key: "overview" as const, label: "Athlete Overview", shortLabel: "Overview", icon: Users },
@@ -302,6 +314,11 @@ export default function CoachDashboard() {
                 { key: "session-notes" as const, label: "Session Notes", shortLabel: "Notes", icon: FileText },
                 { key: "video-analysis" as const, label: "Video Analysis", shortLabel: "AI Video", icon: Sparkles },
                 { key: "blast-metrics" as const, label: "Blast Metrics", shortLabel: "Blast", icon: Activity },
+                { key: "player-report" as const, label: "Player Report", shortLabel: "Report", icon: FileText },
+                { key: "activity-feed" as const, label: "Activity Feed", shortLabel: "Feed", icon: Bell },
+                { key: "dedup" as const, label: "Dedup Athletes", shortLabel: "Dedup", icon: Users },
+                { key: "drill-tags" as const, label: "Drill Tags", shortLabel: "Tags", icon: Tag },
+                { key: "email-settings" as const, label: "Email Settings", shortLabel: "Email", icon: Mail },
               ].map((tab) => (
                 <button
                   key={tab.key}
@@ -317,19 +334,20 @@ export default function CoachDashboard() {
                   }`}
                 >
                   <tab.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-                  <span className="hidden sm:inline"><InlineEdit contentKey={`coach.tab.${tab.key}.label`} defaultValue={tab.label} as="span" /></span>
-                  <span className="sm:hidden"><InlineEdit contentKey={`coach.tab.${tab.key}.short`} defaultValue={tab.shortLabel} as="span" /></span>
+                  <span className="hidden sm:inline">{tab.label}</span>
+                  <span className="sm:hidden">{tab.shortLabel}</span>
                 </button>
               ))}
             </nav>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
       <main role="tabpanel" aria-label={`${activeTab} panel`} className="container max-w-7xl pb-8 md:pb-12 px-3 md:px-4 py-6 md:py-8">
         <BulkGoalUpload isOpen={isBulkGoalOpen} onClose={() => setIsBulkGoalOpen(false)} />
         
+        <TabErrorBoundary tabName={activeTab} key={activeTab}>
         {activeTab === "overview" ? (
           <AthleteAssignmentOverview 
             onSelectAthlete={(athleteId) => {
@@ -347,6 +365,50 @@ export default function CoachDashboard() {
           <VideoAnalysisTab />
         ) : activeTab === "blast-metrics" ? (
           <BlastMetricsTab />
+        ) : activeTab === "player-report" ? (
+          <PlayerReportTab />
+        ) : activeTab === "activity-feed" ? (
+          <ActivityFeedTab />
+        ) : activeTab === "drill-tags" ? (
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <Tag className="h-6 w-6 text-[#e4002b]" />
+                Drill Tag Editor
+              </h2>
+              <p className="text-white/50 mt-1 text-sm">
+                Tag existing drills with type, age level, focus areas, and coaching pillars.
+              </p>
+            </div>
+            <DrillTagEditor />
+          </div>
+        ) : activeTab === "email-settings" ? (
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <Mail className="h-6 w-6 text-teal-400" />
+                Email Settings & Diagnostics
+              </h2>
+              <p className="text-white/50 mt-1 text-sm">
+                Check email config, test delivery, and fix notification issues.
+              </p>
+            </div>
+            <EmailSettingsPanel />
+          </div>
+        ) : activeTab === "dedup" ? (
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <Users className="h-6 w-6 text-amber-400" />
+                Duplicate Athlete Detection
+              </h2>
+              <p className="text-white/50 mt-1 text-sm">
+                Scan for duplicate records by email or name. Keep the first, remove extras.
+              </p>
+            </div>
+            <DuplicateDetectionPanel />
+            <FixBrokenIdsPanel />
+          </div>
         ) : activeTab === "page-layouts" ? (
           <div className="space-y-6">
             {editingLayoutDrill ? (
@@ -618,6 +680,7 @@ export default function CoachDashboard() {
             </div>
           </div>
         )}
+        </TabErrorBoundary>
       </main>
     </div>
   );

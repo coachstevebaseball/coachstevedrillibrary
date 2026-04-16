@@ -58,9 +58,13 @@ export function EditDrillDetailsModal({
     }
   }, [existingDetails]);
 
+  const utils = trpc.useUtils();
+
   const saveMutation = trpc.drillDetails.saveDrillInstructions.useMutation({
     onSuccess: () => {
-      alert("Drill details updated successfully!");
+      // Invalidate all drill detail queries so UI reflects changes immediately
+      utils.drillDetails.getDrillDetail.invalidate({ drillId });
+      utils.drillDetails.invalidate();
       onOpenChange(false);
       onSuccess?.();
     },

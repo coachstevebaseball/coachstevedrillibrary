@@ -1,6 +1,7 @@
 import { router, protectedProcedure } from "./_core/trpc";
 import { z } from "zod";
 import * as db from "./db";
+import { markAllNotificationsRead } from "./notificationEngine";
 
 export const notificationsRouter = router({
   getUnread: protectedProcedure.query(async ({ ctx }) => {
@@ -20,6 +21,12 @@ export const notificationsRouter = router({
       return { success };
     }),
 
+  markAllRead: protectedProcedure.mutation(async ({ ctx }) => {
+    if (!ctx.user) return { success: false };
+    const success = await markAllNotificationsRead(ctx.user.id);
+    return { success };
+  }),
+
   delete: protectedProcedure
     .input(z.object({ notificationId: z.number() }))
     .mutation(async ({ input }) => {
@@ -35,13 +42,17 @@ export const notificationsRouter = router({
   updatePreferences: protectedProcedure
     .input(
       z.object({
-        submissionNotifications: z.number().optional(),
-        feedbackNotifications: z.number().optional(),
-        badgeNotifications: z.number().optional(),
-        assignmentNotifications: z.number().optional(),
-        systemNotifications: z.number().optional(),
         emailNotifications: z.number().optional(),
-        inAppNotifications: z.number().optional(),
+        drillAssignments: z.number().optional(),
+        notesUpdates: z.number().optional(),
+        recapUpdates: z.number().optional(),
+        swingAnalysis: z.number().optional(),
+        featureAnnouncements: z.number().optional(),
+        feedbackUpdates: z.number().optional(),
+        submissionUpdates: z.number().optional(),
+        badgeUpdates: z.number().optional(),
+        practicePlanUpdates: z.number().optional(),
+        systemUpdates: z.number().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
