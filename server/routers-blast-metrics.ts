@@ -5,7 +5,6 @@ import { getDb } from "./db";
 import { blastPlayers, blastSessions, blastMetrics, users, sessionNotes } from "../drizzle/schema";
 import { eq, asc, and, sql, desc } from "drizzle-orm";
 import * as sessionNotesDb from "./sessionNotes";
-import { sendBlastMetricsUpdateEmail } from "./notificationService";
 
 async function requireDb() {
   const db = await getDb();
@@ -95,12 +94,6 @@ export const blastMetricsRouter = router({
           onPlaneEfficiencyPercent: blastMetrics.onPlaneEfficiencyPercent,
           attackAngleDeg: blastMetrics.attackAngleDeg,
           exitVelocityMph: blastMetrics.exitVelocityMph,
-          peakHandSpeedMph: blastMetrics.peakHandSpeedMph,
-          rotationalAccelerationG: blastMetrics.rotationalAccelerationG,
-          connectionAtImpactDeg: blastMetrics.connectionAtImpactDeg,
-          earlyConnectionDeg: blastMetrics.earlyConnectionDeg,
-          powerKpi: blastMetrics.powerKpi,
-          timeToContactSec: blastMetrics.timeToContactSec,
           linkedNoteId: sessionNotes.id,
         })
         .from(blastSessions)
@@ -158,12 +151,6 @@ export const blastMetricsRouter = router({
           onPlaneEfficiencyPercent: blastMetrics.onPlaneEfficiencyPercent,
           attackAngleDeg: blastMetrics.attackAngleDeg,
           exitVelocityMph: blastMetrics.exitVelocityMph,
-          peakHandSpeedMph: blastMetrics.peakHandSpeedMph,
-          rotationalAccelerationG: blastMetrics.rotationalAccelerationG,
-          connectionAtImpactDeg: blastMetrics.connectionAtImpactDeg,
-          earlyConnectionDeg: blastMetrics.earlyConnectionDeg,
-          powerKpi: blastMetrics.powerKpi,
-          timeToContactSec: blastMetrics.timeToContactSec,
         })
         .from(blastSessions)
         .leftJoin(blastMetrics, eq(blastMetrics.sessionId, blastSessions.id))
@@ -295,12 +282,6 @@ export const blastMetricsRouter = router({
           onPlaneEfficiencyPercent: z.string().optional(),
           attackAngleDeg: z.string().optional(),
           exitVelocityMph: z.string().optional(),
-          peakHandSpeedMph: z.string().optional(),
-          rotationalAccelerationG: z.string().optional(),
-          connectionAtImpactDeg: z.string().optional(),
-          earlyConnectionDeg: z.string().optional(),
-          powerKpi: z.string().optional(),
-          timeToContactSec: z.string().optional(),
         }),
       })
     )
@@ -322,22 +303,9 @@ export const blastMetricsRouter = router({
         onPlaneEfficiencyPercent: input.metrics.onPlaneEfficiencyPercent ?? null,
         attackAngleDeg: input.metrics.attackAngleDeg ?? null,
         exitVelocityMph: input.metrics.exitVelocityMph ?? null,
-        peakHandSpeedMph: input.metrics.peakHandSpeedMph ?? null,
-        rotationalAccelerationG: input.metrics.rotationalAccelerationG ?? null,
-        connectionAtImpactDeg: input.metrics.connectionAtImpactDeg ?? null,
-        earlyConnectionDeg: input.metrics.earlyConnectionDeg ?? null,
-        powerKpi: input.metrics.powerKpi ?? null,
-        timeToContactSec: input.metrics.timeToContactSec ?? null,
       });
 
-      // Auto-email the linked athlete when metrics are posted (Use Case B)
-      sendBlastMetricsUpdateEmail(
-        input.playerId,
-        sessionId,
-        input.metrics,
-        input.sessionType,
-        input.sessionDate
-      ).catch(err => console.error("[BlastMetrics] Failed to send metrics email:", err));
+      // Auto-create a linked session note if the player is linked to a portal user
       let linkedSessionNoteId: number | null = null;
       const shouldCreateNote = input.createSessionNote !== false; // default true
       if (shouldCreateNote) {
@@ -394,12 +362,6 @@ export const blastMetricsRouter = router({
           onPlaneEfficiencyPercent: z.string().nullable().optional(),
           attackAngleDeg: z.string().nullable().optional(),
           exitVelocityMph: z.string().nullable().optional(),
-          peakHandSpeedMph: z.string().nullable().optional(),
-          rotationalAccelerationG: z.string().nullable().optional(),
-          connectionAtImpactDeg: z.string().nullable().optional(),
-          earlyConnectionDeg: z.string().nullable().optional(),
-          powerKpi: z.string().nullable().optional(),
-          timeToContactSec: z.string().nullable().optional(),
         }).optional(),
       })
     )
@@ -425,12 +387,6 @@ export const blastMetricsRouter = router({
           onPlaneEfficiencyPercent: m.onPlaneEfficiencyPercent ?? null,
           attackAngleDeg: m.attackAngleDeg ?? null,
           exitVelocityMph: m.exitVelocityMph ?? null,
-          peakHandSpeedMph: m.peakHandSpeedMph ?? null,
-          rotationalAccelerationG: m.rotationalAccelerationG ?? null,
-          connectionAtImpactDeg: m.connectionAtImpactDeg ?? null,
-          earlyConnectionDeg: m.earlyConnectionDeg ?? null,
-          powerKpi: m.powerKpi ?? null,
-          timeToContactSec: m.timeToContactSec ?? null,
         }).where(eq(blastMetrics.sessionId, input.sessionId));
       }
 
@@ -698,33 +654,6 @@ export const blastMetricsRouter = router({
         totalUnlinked: unlinkedSessions.length,
         alreadyLinked: linkedIds.size,
       };
-    }),
-
-  /** Get all-time highest value for each metric for a player */
-  getHighestMetrics: protectedProcedure
-    .input(z.object({ playerId: z.string() }))
-    .query(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin") {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" });
-      }
-      const db = await requireDb();
-      const [result] = await db
-        .select({
-          maxBatSpeed: sql<string>`MAX(CAST(${blastMetrics.batSpeedMph} AS DECIMAL(6,2)))`,
-          maxOnPlane: sql<string>`MAX(CAST(${blastMetrics.onPlaneEfficiencyPercent} AS DECIMAL(6,2)))`,
-          maxAttackAngle: sql<string>`MAX(CAST(${blastMetrics.attackAngleDeg} AS DECIMAL(6,2)))`,
-          maxExitVelo: sql<string>`MAX(CAST(${blastMetrics.exitVelocityMph} AS DECIMAL(6,2)))`,
-          maxPeakHandSpeed: sql<string>`MAX(CAST(${blastMetrics.peakHandSpeedMph} AS DECIMAL(6,2)))`,
-          maxRotationalAccel: sql<string>`MAX(CAST(${blastMetrics.rotationalAccelerationG} AS DECIMAL(6,2)))`,
-          maxConnectionAtImpact: sql<string>`MAX(CAST(${blastMetrics.connectionAtImpactDeg} AS DECIMAL(6,2)))`,
-          maxEarlyConnection: sql<string>`MAX(CAST(${blastMetrics.earlyConnectionDeg} AS DECIMAL(6,2)))`,
-          maxPowerKpi: sql<string>`MAX(CAST(${blastMetrics.powerKpi} AS DECIMAL(6,2)))`,
-          minTimeToContact: sql<string>`MIN(CAST(${blastMetrics.timeToContactSec} AS DECIMAL(6,3)))`,
-        })
-        .from(blastSessions)
-        .leftJoin(blastMetrics, eq(blastMetrics.sessionId, blastSessions.id))
-        .where(eq(blastSessions.playerId, input.playerId));
-      return result ?? null;
     }),
 
   /** Delete a session, its metrics, and any linked session note */

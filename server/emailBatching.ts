@@ -1,8 +1,11 @@
 import { eq, and, lte, desc } from "drizzle-orm";
 import { pendingEmailAlerts, users, InsertPendingEmailAlert } from "../drizzle/schema";
 import { getDb } from "./db";
-import { sendActivityAlertEmail, ActivityAlertEmailData, getResend } from "./email";
+import { sendActivityAlertEmail, ActivityAlertEmailData } from "./email";
 import { ENV } from "./_core/env";
+import { Resend } from "resend";
+
+const resend = new Resend(ENV.resendApiKey);
 
 // Batch window in milliseconds (5 minutes)
 const BATCH_WINDOW_MS = 5 * 60 * 1000;
@@ -258,7 +261,7 @@ async function sendBatchedActivityEmail(
 </html>
     `;
 
-    const result = await getResend().emails.send({
+    const result = await resend.emails.send({
       from: "coach@coachstevemobilecoach.com",
       to: coachEmail,
       subject: `📊 ${athleteName} - ${activityCount} new activities`,

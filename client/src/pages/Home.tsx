@@ -1,25 +1,17 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription,
-} from "@/components/ui/sheet";
-import {
-  Search, Users, ChevronRight, Sparkles,
-  Clock, Target, TrendingUp, SlidersHorizontal, X, Pencil,
-} from "lucide-react";
+import { Search, LogIn, LogOut, Shield, Users, Activity, ChevronRight, Sparkles, Settings, Clock, Zap, Target, TrendingUp } from "lucide-react";
 import { HomePageSkeleton } from "@/components/Skeleton";
+import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { trpc } from "@/lib/trpc";
 import { useAllDrills } from "@/hooks/useAllDrills";
 import { DrillEditModal } from "@/components/DrillEditModal";
+import { Pencil } from "lucide-react";
 import { useDrillListParams } from "@/hooks/useDrillListParams";
-import { TopNav } from "@/components/TopNav";
 import { InlineEdit } from "@/components/InlineEdit";
-import { filterOptions, drillTypeOptions } from "@/data/drills";
 
 interface Drill {
   id: string;
@@ -39,7 +31,7 @@ const DIFFICULTY_CONFIG: Record<string, { label: string; class: string; dotClass
   Hard: { label: "Hard", class: "badge-hard", dotClass: "bg-rose-400" },
 };
 
-// Category config
+// Category config with icons
 const CATEGORIES = ["All", "Hitting", "Bunting", "Pitching", "Infield", "Outfield", "Catching", "Base Running"];
 
 /**
@@ -62,41 +54,26 @@ function restoreScrollPosition(queryKey: string) {
 export default function Home() {
   const { user, loading, isAuthenticated, logout } = useAuth();
 
-  // URL-synced filter/pagination state (all 7 dimensions)
+  // URL-synced filter/pagination state
   const {
     page: currentPage,
     category: categoryFilter,
     difficulty: difficultyFilter,
     search: searchQuery,
     sort,
-    ageLevel: ageLevelFilter,
-    drillType: drillTypeFilter,
-    problem: problemFilter,
-    goal: goalFilter,
-    tag: tagFilter,
     setPage: setCurrentPage,
     setCategory: setCategoryFilter,
     setDifficulty: setDifficultyFilter,
     setSearch: setSearchQuery,
     setSort,
-    setAgeLevel: setAgeLevelFilter,
-    setDrillType: setDrillTypeFilter,
-    setProblem: setProblemFilter,
-    setGoal: setGoalFilter,
-    setTag: setTagFilter,
     resetAll,
     currentQuery,
-    activeFilterCount,
-    hasActiveFilters,
   } = useDrillListParams();
 
   const [scrollY, setScrollY] = useState(0);
   const heroRef = useRef<HTMLDivElement>(null);
   const DRILLS_PER_PAGE = 21;
   const hasRestoredScroll = useRef(false);
-
-  // Mobile "More Filters" sheet state
-  const [moreFiltersOpen, setMoreFiltersOpen] = useState(false);
 
   // Edit modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -111,7 +88,7 @@ export default function Home() {
     return map;
   }, [drillCustomizations]);
 
-  // Set SEO-friendly document title
+  // Set SEO-friendly document title (30-60 characters)
   useEffect(() => {
     document.title = "Baseball Training Drills | Coach Steve's Library";
   }, []);
@@ -132,20 +109,14 @@ export default function Home() {
     return ["All", ...Array.from(categories).sort()];
   }, [allDrills]);
 
-  // Full 7-dimension filtering
   const filteredDrills = useMemo(() => {
     return allDrills.filter(drill => {
       const matchesSearch = drill.name.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesDifficulty = difficultyFilter === "All" || drill.difficulty === difficultyFilter;
       const matchesCategory = categoryFilter === "All" || drill.categories.includes(categoryFilter);
-      const matchesAgeLevel = ageLevelFilter === "all-levels" || (drill.ageLevel ?? []).includes(ageLevelFilter);
-      const matchesDrillType = drillTypeFilter === "all-types" || drill.drillType === drillTypeFilter;
-      const matchesProblem = problemFilter === "all-problems" || (drill.problem ?? []).includes(problemFilter);
-      const matchesGoal = goalFilter === "all-goals" || (drill.goal ?? []).includes(goalFilter);
-      const matchesTag = tagFilter === "all-tags" || (drill.tags ?? []).includes(tagFilter);
-      return matchesSearch && matchesDifficulty && matchesCategory && matchesAgeLevel && matchesDrillType && matchesProblem && matchesGoal && matchesTag;
+      return matchesSearch && matchesDifficulty && matchesCategory;
     });
-  }, [allDrills, searchQuery, difficultyFilter, categoryFilter, ageLevelFilter, drillTypeFilter, problemFilter, goalFilter, tagFilter]);
+  }, [allDrills, searchQuery, difficultyFilter, categoryFilter]);
 
   const totalPages = Math.ceil(filteredDrills.length / DRILLS_PER_PAGE);
   const startIndex = (currentPage - 1) * DRILLS_PER_PAGE;
@@ -156,172 +127,70 @@ export default function Home() {
     if (hasRestoredScroll.current) return;
     if (paginatedDrills.length === 0) return;
     hasRestoredScroll.current = true;
+    // Small delay to ensure DOM is painted
     const timer = setTimeout(() => {
       restoreScrollPosition(currentQuery || '__default__');
     }, 80);
     return () => clearTimeout(timer);
   }, [paginatedDrills.length, currentQuery]);
 
-  // Count advanced filters (ageLevel, drillType, problem, goal, tag) — those behind "More Filters" on mobile
-  const advancedFilterCount = [
-    ageLevelFilter !== "all-levels",
-    drillTypeFilter !== "all-types",
-    problemFilter !== "all-problems",
-    goalFilter !== "all-goals",
-    tagFilter !== "all-tags",
-  ].filter(Boolean).length;
-
   if (loading) return <HomePageSkeleton />;
+
+  // Unauthenticated view
+  if (!loading && !isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 relative overflow-hidden">
+        <div className="absolute inset-0 gradient-mesh" />
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-secondary/15 rounded-full blur-[100px] animate-pulse-glow" />
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-electric/8 rounded-full blur-[80px] animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
+        
+        <div className="text-center max-w-lg relative z-10 animate-fade-in-up">
+          <div className="glass-card p-10 rounded-2xl">
+            <div className="w-16 h-16 mx-auto mb-6 rounded-xl bg-gradient-to-br from-secondary to-electric flex items-center justify-center shadow-lg">
+              <Zap className="h-8 w-8 text-white" />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4 text-gradient">Access Restricted</h1>
+            <h2 className="text-lg text-muted-foreground mb-8 leading-relaxed font-normal">
+              Exclusive baseball training drills for invited athletes. Log in to access the full drill library.
+            </h2>
+            <Button 
+              onClick={() => window.location.href = getLoginUrl()} 
+              size="lg"
+              className="btn-premium text-white font-semibold px-8 py-3 text-base"
+            >
+              <LogIn className="h-5 w-5 mr-2" />
+              Log In to Continue
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Inactive athlete view
+  if (!loading && isAuthenticated && user?.role === 'athlete' && !user?.isActiveClient) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 relative overflow-hidden">
+        <div className="absolute top-1/3 left-1/3 w-80 h-80 bg-destructive/10 rounded-full blur-[80px]" />
+        <div className="text-center max-w-md relative z-10 animate-fade-in-up">
+          <div className="glass-card p-10 rounded-2xl">
+            <h1 className="text-4xl font-heading font-bold mb-4">Account Inactive</h1>
+            <p className="text-lg text-muted-foreground mb-8">
+              Your account has been deactivated. Please contact your coach for more information.
+            </p>
+            <Button onClick={() => logout()} variant="outline" size="lg" className="hover-lift">
+              <LogOut className="h-5 w-5 mr-2" />
+              Log Out
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   /** Handle drill card click: save scroll position, then navigate */
   const handleDrillClick = (drillId: string) => {
     saveScrollPosition(currentQuery || '__default__');
-  };
-
-  /** Render the 5 advanced filter selects (used in both desktop and mobile sheet) */
-  const renderAdvancedFilters = (inSheet = false) => (
-    <div className={inSheet ? "space-y-5" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"}>
-      {/* Age / Level */}
-      <div>
-        <label className="text-[10px] font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Age / Level</label>
-        <Select value={ageLevelFilter} onValueChange={setAgeLevelFilter}>
-          <SelectTrigger className="w-full text-sm bg-card/80 border-border/50 hover:border-electric/30 transition-colors">
-            <SelectValue placeholder="All Levels" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all-levels">All Levels</SelectItem>
-            {filterOptions.ageLevel.map(opt => (
-              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Drill Type */}
-      <div>
-        <label className="text-[10px] font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Drill Type</label>
-        <Select value={drillTypeFilter} onValueChange={setDrillTypeFilter}>
-          <SelectTrigger className="w-full text-sm bg-card/80 border-border/50 hover:border-electric/30 transition-colors">
-            <SelectValue placeholder="All Drill Types" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all-types">All Drill Types</SelectItem>
-            {drillTypeOptions.map(group => (
-              <div key={group.label}>
-                <div className="px-2 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{group.label}</div>
-                {group.options.map(opt => (
-                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                ))}
-              </div>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Fix a Problem */}
-      <div>
-        <label className="text-[10px] font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Fix a Problem</label>
-        <Select value={problemFilter} onValueChange={setProblemFilter}>
-          <SelectTrigger className="w-full text-sm bg-card/80 border-border/50 hover:border-electric/30 transition-colors">
-            <SelectValue placeholder="All Problems" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all-problems">All Problems</SelectItem>
-            {filterOptions.problem.map(opt => (
-              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Training Goal */}
-      <div>
-        <label className="text-[10px] font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Training Goal</label>
-        <Select value={goalFilter} onValueChange={setGoalFilter}>
-          <SelectTrigger className="w-full text-sm bg-card/80 border-border/50 hover:border-electric/30 transition-colors">
-            <SelectValue placeholder="All Goals" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all-goals">All Goals</SelectItem>
-            {filterOptions.goal.map(opt => (
-              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Tag / Focus Area */}
-      <div>
-        <label className="text-[10px] font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Tag / Focus Area</label>
-        <Select value={tagFilter} onValueChange={setTagFilter}>
-          <SelectTrigger className="w-full text-sm bg-card/80 border-border/50 hover:border-electric/30 transition-colors">
-            <SelectValue placeholder="All Tags" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all-tags">All Tags</SelectItem>
-            {filterOptions.tags.map(tag => (
-              <SelectItem key={tag} value={tag}>{tag.charAt(0).toUpperCase() + tag.slice(1)}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
-  );
-
-  /** Build active filter pills */
-  const renderFilterPills = () => {
-    if (!hasActiveFilters) return null;
-
-    const pills: { label: string; onRemove: () => void }[] = [];
-
-    if (searchQuery) {
-      pills.push({ label: `Search: "${searchQuery}"`, onRemove: () => setSearchQuery("") });
-    }
-    if (difficultyFilter !== "All") {
-      pills.push({ label: difficultyFilter, onRemove: () => setDifficultyFilter("All") });
-    }
-    if (categoryFilter !== "All") {
-      pills.push({ label: categoryFilter, onRemove: () => setCategoryFilter("All") });
-    }
-    if (ageLevelFilter !== "all-levels") {
-      const opt = filterOptions.ageLevel.find(o => o.value === ageLevelFilter);
-      pills.push({ label: opt?.label || ageLevelFilter, onRemove: () => setAgeLevelFilter("all-levels") });
-    }
-    if (drillTypeFilter !== "all-types") {
-      pills.push({ label: `Type: ${drillTypeFilter}`, onRemove: () => setDrillTypeFilter("all-types") });
-    }
-    if (problemFilter !== "all-problems") {
-      const opt = filterOptions.problem.find(o => o.value === problemFilter);
-      pills.push({ label: `Fix: ${opt?.label || problemFilter}`, onRemove: () => setProblemFilter("all-problems") });
-    }
-    if (goalFilter !== "all-goals") {
-      const opt = filterOptions.goal.find(o => o.value === goalFilter);
-      pills.push({ label: `Goal: ${opt?.label || goalFilter}`, onRemove: () => setGoalFilter("all-goals") });
-    }
-    if (tagFilter !== "all-tags") {
-      pills.push({ label: `Tag: ${tagFilter}`, onRemove: () => setTagFilter("all-tags") });
-    }
-
-    return (
-      <div className="flex flex-wrap items-center gap-2 mb-6 animate-fade-in-up">
-        {pills.map((pill, i) => (
-          <button
-            key={i}
-            onClick={pill.onRemove}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-electric/10 text-electric border border-electric/20 hover:bg-electric/20 hover:border-electric/40 transition-all duration-300 group"
-          >
-            {pill.label}
-            <X className="h-3 w-3 opacity-60 group-hover:opacity-100 transition-opacity" />
-          </button>
-        ))}
-        <button
-          onClick={resetAll}
-          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-all duration-300"
-        >
-          Clear all
-        </button>
-      </div>
-    );
   };
 
   return (
@@ -351,8 +220,62 @@ export default function Home() {
         
         <div className="container relative z-10 pt-6 pb-12 md:pt-8 md:pb-20">
           {/* Top Navigation Bar */}
-          <TopNav variant="hero" />
-
+          <nav className="flex justify-between items-center mb-10 md:mb-16 animate-fade-in-down">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-gradient-to-br from-secondary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-lg text-white shadow-lg shadow-secondary/20">
+                CS
+              </div>
+              <span className="font-heading font-bold text-lg text-foreground hidden sm:block">Coach Steve</span>
+            </div>
+            
+            <div className="flex items-center gap-2 flex-wrap">
+              {user ? (
+                <>
+                  {user.role === 'admin' && (
+                    <>
+                      <Link href="/coach-dashboard">
+                        <Button variant="outline" size="sm" className="gap-1.5 text-xs glass border-white/10 hover:border-electric/30 hover:bg-electric/10 transition-all duration-300">
+                          <Users className="h-3.5 w-3.5" />
+                          <span className="hidden sm:inline">Dashboard</span>
+                        </Button>
+                      </Link>
+                      <Link href="/admin">
+                        <Button variant="outline" size="sm" className="gap-1.5 text-xs glass border-white/10 hover:border-electric/30 hover:bg-electric/10 transition-all duration-300">
+                          <Shield className="h-3.5 w-3.5" />
+                          <span className="hidden sm:inline">Admin</span>
+                        </Button>
+                      </Link>
+                    </>
+                  )}
+                  {user.role === 'athlete' && (
+                    <Link href="/athlete-portal">
+                      <Button size="sm" className="gap-1.5 text-xs btn-premium text-white">
+                        <Activity className="h-3.5 w-3.5" />
+                        My Drills
+                      </Button>
+                    </Link>
+                  )}
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={logout} 
+                    className="gap-1.5 text-xs glass border-white/10 hover:border-white/20 hover:bg-white/5 transition-all duration-300"
+                  >
+                    <LogOut className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">Logout</span>
+                  </Button>
+                </>
+              ) : (
+                <a href={getLoginUrl()}>
+                  <Button size="sm" className="gap-1.5 text-xs btn-premium text-white">
+                    <LogIn className="h-3.5 w-3.5" />
+                    Login
+                  </Button>
+                </a>
+              )}
+            </div>
+          </nav>
+          
           {/* Hero Content */}
           <div className="max-w-4xl mx-auto text-center">
             {/* Badge */}
@@ -374,7 +297,7 @@ export default function Home() {
             <InlineEdit contentKey="home.hero.tagline" defaultValue="Professional training drills designed to build elite mechanics, explosive power, and game-ready confidence." as="h2" className="text-sm md:text-lg text-muted-foreground mt-6 mb-8 max-w-xl mx-auto leading-relaxed animate-fade-in-up stagger-3 font-normal" />
             
             {/* Stats row */}
-            <div className="flex justify-center gap-8 md:gap-16 animate-fade-in-up stagger-4">
+            <div className="flex justify-center gap-8 md:gap-12 animate-fade-in-up stagger-4">
               {[
                 { valueKey: "home.stat.drills.value", valueDefault: `${allDrills.length}+`, labelKey: "home.stat.drills.label", labelDefault: "Drills", icon: Target },
                 { valueKey: "home.stat.categories.value", valueDefault: "8", labelKey: "home.stat.categories.label", labelDefault: "Categories", icon: Sparkles },
@@ -416,7 +339,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Primary Filters: Level + Skill (always visible) */}
+          {/* Filters */}
           <div className="space-y-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             {/* Difficulty */}
             <div className="flex flex-wrap items-center gap-2">
@@ -456,37 +379,7 @@ export default function Home() {
                 </button>
               ))}
             </div>
-
-            {/* Mobile: "More Filters" button */}
-            <div className="lg:hidden">
-              <button
-                onClick={() => setMoreFiltersOpen(true)}
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 ${
-                  advancedFilterCount > 0
-                    ? "bg-electric/15 text-electric border border-electric/30 shadow-sm"
-                    : "bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/50"
-                }`}
-              >
-                <SlidersHorizontal className="h-3.5 w-3.5" />
-                More Filters
-                {advancedFilterCount > 0 && (
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-electric text-white text-[10px] font-bold">
-                    {advancedFilterCount}
-                  </span>
-                )}
-              </button>
-            </div>
-
-            {/* Desktop: Advanced filters inline */}
-            <div className="hidden lg:block">
-              {renderAdvancedFilters(false)}
-            </div>
           </div>
-        </div>
-
-        {/* Active Filter Pills */}
-        <div className="max-w-5xl mx-auto">
-          {renderFilterPills()}
         </div>
 
         {/* Results Header */}
@@ -610,7 +503,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="text-center py-16 glass-card rounded-2xl border-dashed border border-border/30 max-w-md mx-auto">
-            <div className="bg-muted/30 h-14 w-14 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="bg-accent/50 h-14 w-14 rounded-xl flex items-center justify-center mx-auto mb-4">
               <Search className="h-6 w-6 text-muted-foreground" />
             </div>
             <h3 className="text-lg font-heading font-bold mb-2">No drills found</h3>
@@ -686,7 +579,7 @@ export default function Home() {
         <div className="container relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 bg-gradient-to-br from-primary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-sm text-white">
+              <div className="h-8 w-8 bg-gradient-to-br from-secondary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-sm text-white">
                 CS
               </div>
               <div>
@@ -701,50 +594,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
-      {/* ===== MOBILE BOTTOM SHEET: More Filters ===== */}
-      <Sheet open={moreFiltersOpen} onOpenChange={setMoreFiltersOpen}>
-        <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto rounded-t-2xl pb-8">
-          <SheetHeader className="pb-4 border-b border-border/30">
-            <SheetTitle className="font-heading text-lg flex items-center gap-2">
-              <SlidersHorizontal className="h-5 w-5 text-electric" />
-              Advanced Filters
-              {advancedFilterCount > 0 && (
-                <Badge className="bg-electric text-white text-[10px] h-5 px-1.5">
-                  {advancedFilterCount} active
-                </Badge>
-              )}
-            </SheetTitle>
-            <SheetDescription className="text-xs text-muted-foreground">
-              Narrow down drills by age level, type, problem, goal, or focus area.
-            </SheetDescription>
-          </SheetHeader>
-          <div className="pt-5 space-y-5">
-            {renderAdvancedFilters(true)}
-            <div className="flex gap-3 pt-4 border-t border-border/30">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => {
-                  setAgeLevelFilter("all-levels");
-                  setDrillTypeFilter("all-types");
-                  setProblemFilter("all-problems");
-                  setGoalFilter("all-goals");
-                  setTagFilter("all-tags");
-                }}
-              >
-                Reset Advanced
-              </Button>
-              <Button
-                className="flex-1 btn-premium text-white"
-                onClick={() => setMoreFiltersOpen(false)}
-              >
-                Show {filteredDrills.length} Drills
-              </Button>
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
 
       {/* Drill Edit Modal */}
       {editingDrill && (
