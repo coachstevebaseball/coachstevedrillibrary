@@ -28,9 +28,15 @@ interface DrillEditModalProps {
   onSaved: () => void;
 }
 
-// Only Hitting drills are active for now. Other categories are archived and can be restored later.
 const CATEGORIES = [
   "Hitting",
+  "Bunting",
+  "Pitching",
+  "Infield",
+  "Outfield",
+  "Catching",
+  "Base Running",
+  "General",
 ];
 
 const DIFFICULTIES = ["Easy", "Medium", "Hard"];

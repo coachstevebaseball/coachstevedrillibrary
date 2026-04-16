@@ -358,17 +358,15 @@
     transform: translateY(0);
   }
   
-  /* Premium button with gradient border + pulsing glow */
+  /* Premium button with gradient border */
   .btn-premium {
     position: relative;
     background: linear-gradient(135deg, oklch(0.48 0.22 25), oklch(0.56 0.24 25));
     border: none;
     transition: all 0.35s ease;
-    animation: cta-pulse 3s ease-in-out infinite;
   }
   
   .btn-premium:hover {
-    animation: none;
     box-shadow: 
       0 4px 20px oklch(0.56 0.24 25 / 0.4),
       0 0 40px oklch(0.56 0.24 25 / 0.15);
@@ -460,22 +458,6 @@
     0%, 100% { border-color: oklch(0.56 0.24 25 / 0.2); }
     50% { border-color: oklch(0.56 0.24 25 / 0.5); }
   }
-
-  /* Subtle pulsing red glow for primary CTA buttons */
-  @keyframes cta-pulse {
-    0%, 100% {
-      box-shadow:
-        0 0 8px oklch(0.56 0.24 25 / 0.15),
-        0 0 20px oklch(0.56 0.24 25 / 0.08),
-        0 4px 12px oklch(0 0 0 / 0.25);
-    }
-    50% {
-      box-shadow:
-        0 0 16px oklch(0.56 0.24 25 / 0.30),
-        0 0 36px oklch(0.56 0.24 25 / 0.14),
-        0 4px 12px oklch(0 0 0 / 0.25);
-    }
-  }
   
   @keyframes count-up {
     from { opacity: 0; transform: translateY(10px); }
@@ -526,14 +508,6 @@
   
   .animate-pulse-glow {
     animation: pulse-glow 3s ease-in-out infinite;
-  }
-
-  .animate-cta-pulse {
-    animation: cta-pulse 3s ease-in-out infinite;
-  }
-
-  .animate-cta-pulse:hover {
-    animation: none;
   }
   
   .animate-float {

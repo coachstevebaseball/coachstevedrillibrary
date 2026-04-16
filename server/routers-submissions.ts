@@ -3,7 +3,6 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import * as db from "./db";
 import { sendSubmissionNotificationToCoach, sendFeedbackNotificationToAthlete } from "./email";
-import { sendNotification } from "./notificationEngine";
 import { videoAnalysis } from "../drizzle/schema";
 
 export const submissionsRouter = router({
@@ -220,15 +219,14 @@ export async function createSubmissionNotification(data: {
   submissionId: number;
 }) {
   try {
-    await sendNotification({
+    await db.createNotification({
       userId: data.userId,
-      type: 'submission_received',
+      type: 'submission',
       title: `New Submission from ${data.athleteName}`,
       message: `${data.athleteName} submitted their work for ${data.drillName}`,
-      relatedId: String(data.submissionId),
+      relatedId: data.submissionId,
       relatedType: 'submission',
-      linkUrl: `/submissions`,
-      dedupeKey: `submission-${data.submissionId}`,
+      actionUrl: `/submissions`,
     });
   } catch (error) {
     console.error('Error creating submission notification:', error);
@@ -243,15 +241,14 @@ export async function createFeedbackNotification(data: {
   feedbackId: number;
 }) {
   try {
-    await sendNotification({
+    await db.createNotification({
       userId: data.userId,
-      type: 'feedback_received',
+      type: 'feedback',
       title: `Feedback from ${data.coachName}`,
       message: `${data.coachName} provided feedback on your ${data.drillName} submission`,
-      relatedId: String(data.feedbackId),
+      relatedId: data.feedbackId,
       relatedType: 'feedback',
-      linkUrl: `/athlete-portal`,
-      dedupeKey: `feedback-${data.feedbackId}`,
+      actionUrl: `/athlete-portal`,
     });
   } catch (error) {
     console.error('Error creating feedback notification:', error);

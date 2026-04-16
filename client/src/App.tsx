@@ -23,10 +23,7 @@ import ParentDashboard from "./pages/ParentDashboard";
 import ActivityFeed from "./pages/ActivityFeed";
 import DrillComparison from "./pages/DrillComparison";
 import AthleteAssessment from "./pages/AthleteAssessment";
-import ManageDrillContent from "./pages/ManageDrillContent";
 import MyProfile from "./pages/MyProfile";
-import NotificationsInbox from "./pages/NotificationsInbox";
-import NotificationPreferences from "./pages/NotificationPreferences";
 import HittingCoach from "./pages/HittingCoach";
 import ProtectedRoute from "./components/ProtectedRoute";
 import EmbedHome from "./pages/EmbedHome";
@@ -79,8 +76,6 @@ function Router() {
       <Route path={"/athlete-portal"} component={AthletePortal} />
       <Route path={"/athlete-messaging"} component={AthleteMessaging} />
       <Route path={"/my-profile"} component={MyProfile} />
-      <Route path={"/notifications"} component={NotificationsInbox} />
-      <Route path={"/notifications/preferences"} component={NotificationPreferences} />
       <Route path={"/hitting-coach"} component={HittingCoach} />
       <Route path={"/parent-dashboard"} component={ParentDashboard} />
       
@@ -148,12 +143,6 @@ function Router() {
       <Route path={"/athlete-assessment"}>
         <ProtectedRoute requiredRole="admin">
           <AthleteAssessment />
-        </ProtectedRoute>
-      </Route>
-      
-      <Route path={"/manage-drill-content"}>
-        <ProtectedRoute requiredRole="admin">
-          <ManageDrillContent />
         </ProtectedRoute>
       </Route>
       

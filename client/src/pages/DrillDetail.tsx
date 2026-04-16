@@ -9,7 +9,6 @@ import { Link, useRoute, useSearch } from "wouter";
 import { useState, useMemo, useEffect } from "react";
 import drillsData from "@/data/drills";
 import { filterOptions } from "@/data/drills";
-import { useSupabaseDrill } from "@/hooks/useSupabaseDrills";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { EditDrillDetailsModal } from "@/components/EditDrillDetailsModal";
 import { InstructionsEditor } from "@/components/InstructionsEditor";
@@ -1236,27 +1235,6 @@ export default function DrillDetail() {
     { drillId: id || '' },
     { enabled: !!id }
   );
-
-  // Supabase enrichment — fetch by matching title for instructions/equipment fallback
-  const [supabaseId, setSupabaseId] = useState<number | null>(null);
-  useEffect(() => {
-    if (!drill?.name) return;
-    let cancelled = false;
-    (async () => {
-      try {
-        const { supabase } = await import("@/supabaseClient");
-        const { data } = await supabase
-          .from("drills")
-          .select("id")
-          .ilike("title", drill.name)
-          .limit(1)
-          .single();
-        if (!cancelled && data) setSupabaseId(data.id);
-      } catch {}
-    })();
-    return () => { cancelled = true; };
-  }, [drill?.name]);
-  const { drill: supabaseDrill } = useSupabaseDrill(supabaseId);
   
   // Load custom page layout
   const { data: pageLayout } = trpc.drillDetails.getPageLayout.useQuery(

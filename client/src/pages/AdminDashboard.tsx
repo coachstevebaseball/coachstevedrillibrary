@@ -167,9 +167,6 @@ export default function AdminDashboard() {
               <Link href="/coach">
                 <Button variant="secondary"><InlineEdit contentKey="admin.btn.coachDashboard" defaultValue="Coach Dashboard" as="span" /></Button>
               </Link>
-              <Link href="/manage-drill-content">
-                <Button variant="secondary">Manage Drill Content</Button>
-              </Link>
               <Link href="/drills">
                 <Button variant="secondary"><InlineEdit contentKey="admin.btn.viewDrills" defaultValue="View Drills" as="span" /></Button>
               </Link>

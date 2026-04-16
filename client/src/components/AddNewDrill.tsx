@@ -16,8 +16,7 @@ const PILLARS = [
   "Weight Transfer","Balance & Posture","Mental Approach","Situational Hitting","Two-Strike Approach",
   "Power Development","Contact Rate",
 ];
-// Only Hitting drills are active for now. Other categories are archived and can be restored later.
-const CATEGORIES = ["Hitting"];
+const CATEGORIES = ["Hitting","Pitching","Fielding","Catching","Baserunning","Strength & Conditioning","General"];
 const DIFFICULTIES = ["Easy","Medium","Hard","Advanced"];
 const DURATIONS = ["5m","10m","15m","20m","30m","45m","60m"];
 
@@ -73,7 +72,7 @@ export function AddNewDrill() {
       goal: form.goal || undefined,
       instructions: form.instructions || undefined,
       videoUrl: form.videoUrl || undefined,
-      drillType: form.drillType && form.drillType !== "none" ? form.drillType : undefined,
+      drillType: form.drillType || undefined,
       ageLevel: form.ageLevel.length ? form.ageLevel : undefined,
       focusTags: form.focusTags.length ? form.focusTags : undefined,
       problemsFix: form.problemsFix.length ? form.problemsFix : undefined,
@@ -160,7 +159,7 @@ export function AddNewDrill() {
                   <SelectValue placeholder="Select type..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">— None —</SelectItem>
+                  <SelectItem value="">— None —</SelectItem>
                   {DRILL_TYPES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                 </SelectContent>
               </Select>

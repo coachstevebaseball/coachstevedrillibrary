@@ -297,13 +297,8 @@ export default function CoachDashboard() {
             </div>
           )}
 
-        </div>
-      </header>
-
-      {/* Sticky Tab Navigation - outside hero so it's always visible on mobile */}
-      <div className="sticky top-0 z-30 bg-[oklch(0.15_0.008_0)]/95 backdrop-blur-md border-b border-white/[0.08]">
-        <div className="container">
-          <div className="w-full overflow-x-auto scrollbar-hide py-2">
+          {/* Tab Navigation */}
+          <div className="w-full overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1">
             <nav role="tablist" aria-label="Coach Dashboard Navigation" className="flex gap-1 bg-white/[0.06] backdrop-blur-sm rounded-xl p-1 border border-white/[0.08] w-max md:w-fit">
               {[
                 { key: "overview" as const, label: "Athlete Overview", shortLabel: "Overview", icon: Users },
@@ -341,7 +336,7 @@ export default function CoachDashboard() {
             </nav>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Main Content */}
       <main role="tabpanel" aria-label={`${activeTab} panel`} className="container max-w-7xl pb-8 md:pb-12 px-3 md:px-4 py-6 md:py-8">

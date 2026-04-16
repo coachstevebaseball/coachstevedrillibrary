@@ -115,7 +115,6 @@ export const drillDetails = mysqlTable("drillDetails", {
   focusTags: json("focusTags").$type<string[]>(), // e.g. ["bat speed","hip rotation"]
   problemsFix: json("problemsFix").$type<string[]>(), // maps to drills.ts problem[]
   pillars: json("pillars").$type<string[]>(), // coaching pillars/goals
-  isHidden: boolean("isHidden").notNull().default(false), // true = hidden from public, preserved for restoration
   createdBy: int("createdBy").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -170,44 +169,15 @@ export type InsertCoachFeedback = typeof coachFeedback.$inferInsert;
 export const notifications = mysqlTable("notifications", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(), // Recipient user ID
-  recipientEmail: varchar("recipientEmail", { length: 320 }), // Email address for delivery
-  type: mysqlEnum("type", [
-    "drill_assigned",
-    "notes_added",
-    "recap_posted",
-    "swing_analysis_ready",
-    "new_feature_available",
-    "feedback_received",
-    "submission_received",
-    "badge_earned",
-    "practice_plan_shared",
-    "welcome",
-    "system",
-  ]).notNull(),
+  type: mysqlEnum("type", ["submission", "feedback", "badge", "assignment", "system"]).notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),
-  relatedId: varchar("relatedId", { length: 255 }), // ID of related entity
-  relatedType: varchar("relatedType", { length: 50 }), // Type: "drill", "assignment", "submission", "session_note", "video_analysis"
-  linkUrl: varchar("linkUrl", { length: 500 }), // Direct CTA link to the item in the portal
-  // Email delivery tracking
-  emailStatus: mysqlEnum("emailStatus", [
-    "pending", "queued", "sent", "failed", "delivered", "opened", "clicked"
-  ]).default("pending").notNull(),
-  // Portal read status
-  portalStatus: mysqlEnum("portalStatus", ["unread", "read"]).default("unread").notNull(),
-  // Timestamps
+  relatedId: int("relatedId"), // ID of related entity (submission, feedback, etc.)
+  relatedType: varchar("relatedType", { length: 50 }), // Type of related entity
+  isRead: int("isRead").default(0).notNull(), // 0 = unread, 1 = read
+  actionUrl: varchar("actionUrl", { length: 500 }), // URL to navigate to when clicked
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  queuedAt: timestamp("queuedAt"),
-  sentAt: timestamp("sentAt"),
   readAt: timestamp("readAt"),
-  failedAt: timestamp("failedAt"),
-  // Retry tracking
-  retryCount: int("retryCount").default(0).notNull(),
-  lastError: text("lastError"),
-  // Deduplication key: prevents duplicate notifications for the same event
-  dedupeKey: varchar("dedupeKey", { length: 255 }),
-  // Flexible metadata JSON
-  metadata: json("metadata"),
 });
 
 export type Notification = typeof notifications.$inferSelect;
@@ -216,19 +186,13 @@ export type InsertNotification = typeof notifications.$inferInsert;
 export const notificationPreferences = mysqlTable("notificationPreferences", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull().unique(),
-  // Master toggle
-  emailNotifications: int("emailNotifications").default(1).notNull(), // 0 = all emails off, 1 = on
-  // Per-type toggles
-  drillAssignments: int("drillAssignments").default(1).notNull(),
-  notesUpdates: int("notesUpdates").default(1).notNull(),
-  recapUpdates: int("recapUpdates").default(1).notNull(),
-  swingAnalysis: int("swingAnalysis").default(1).notNull(),
-  featureAnnouncements: int("featureAnnouncements").default(1).notNull(),
-  feedbackUpdates: int("feedbackUpdates").default(1).notNull(),
-  submissionUpdates: int("submissionUpdates").default(1).notNull(),
-  badgeUpdates: int("badgeUpdates").default(1).notNull(),
-  practicePlanUpdates: int("practicePlanUpdates").default(1).notNull(),
-  systemUpdates: int("systemUpdates").default(1).notNull(),
+  submissionNotifications: int("submissionNotifications").default(1).notNull(), // 0 = off, 1 = on
+  feedbackNotifications: int("feedbackNotifications").default(1).notNull(),
+  badgeNotifications: int("badgeNotifications").default(1).notNull(),
+  assignmentNotifications: int("assignmentNotifications").default(1).notNull(),
+  systemNotifications: int("systemNotifications").default(1).notNull(),
+  emailNotifications: int("emailNotifications").default(1).notNull(),
+  inAppNotifications: int("inAppNotifications").default(1).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -268,12 +232,6 @@ export const customDrills = mysqlTable("customDrills", {
   difficulty: varchar("difficulty", { length: 50 }).notNull(),
   category: varchar("category", { length: 100 }).notNull(),
   duration: varchar("duration", { length: 50 }).notNull(),
-  drillType: varchar("drillType", { length: 100 }),
-  ageLevel: text("ageLevel"), // JSON stringified array
-  focusTags: text("focusTags"), // JSON stringified array
-  problemsFix: text("problemsFix"), // JSON stringified array
-  pillars: text("pillars"), // JSON stringified array
-  isHidden: boolean("isHidden").notNull().default(false), // true = hidden from public, preserved for restoration
   createdBy: int("createdBy").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -840,17 +798,3 @@ export const coachActivityLog = mysqlTable("coachActivityLog", {
 });
 export type CoachActivityLog = typeof coachActivityLog.$inferSelect;
 export type InsertCoachActivityLog = typeof coachActivityLog.$inferInsert;
-
-export const drillStatCards = mysqlTable("drillStatCards", {
-  id: int("id").autoincrement().primaryKey(),
-  drillId: varchar("drillId", { length: 255 }).notNull(),
-  label: varchar("label", { length: 255 }).notNull(),
-  value: varchar("value", { length: 255 }).notNull(),
-  icon: varchar("icon", { length: 50 }).default("info").notNull(),
-  position: int("position").default(0).notNull(),
-  isVisible: int("isVisible").default(1).notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-export type DrillStatCard = typeof drillStatCards.$inferSelect;
-export type InsertDrillStatCard = typeof drillStatCards.$inferInsert;

@@ -3,7 +3,6 @@ import { athleteActivity, coachAlertPreferences, notifications, users, InsertAth
 import { getDb } from "./db";
 import { sendActivityAlertEmail } from "./email";
 import { queueActivityAlert } from "./emailBatching";
-import { sendNotification } from "./notificationEngine";
 
 // Activity types that can be tracked
 export type ActivityType = 
@@ -93,17 +92,17 @@ export async function logActivity(
       const message = `${athleteName} ${activityMessages[activityType](options?.metadata)}`;
       const actionUrl = getActionUrl(activityType, options?.relatedId);
       
-      // Send in-app notification via centralized engine (portal-only since email is batched separately)
+      // Send in-app notification
       if (shouldNotifyInApp) {
-        await sendNotification({
+        await db.insert(notifications).values({
           userId: coach.id,
           type: "system",
           title: activityTitles[activityType],
           message,
-          relatedId: String(athleteId),
+          relatedId: athleteId,
           relatedType: "athlete_activity",
-          linkUrl: actionUrl,
-          portalOnly: true, // Email handled by batching system
+          isRead: 0,
+          actionUrl,
         });
       }
       
