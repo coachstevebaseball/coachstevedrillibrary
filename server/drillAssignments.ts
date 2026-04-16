@@ -1,8 +1,6 @@
 import { eq, and, or, isNull, inArray, desc, lte, gte, sql } from "drizzle-orm";
 import { drillAssignments, assignmentProgress, InsertDrillAssignment, InsertAssignmentProgress, users, notifications, invites } from "../drizzle/schema";
-import { sendNotification } from "./notificationEngine";
 import { getDb } from "./db";
-import { ENV } from "./_core/env";
 import { sendDrillAssignmentEmail } from "./email";
 
 /**
@@ -52,48 +50,32 @@ export async function assignDrill(
   const result = await db.insert(drillAssignments).values(assignment);
 
   // Send email notification
-  let emailResult: { success: boolean; error?: string } = { success: false, error: "No email address" };
   if (email) {
-    const portalUrl = `${ENV.appUrl}/athlete-portal`;
-    try {
-      emailResult = await sendDrillAssignmentEmail({
-        athleteEmail: email,
-        athleteName: name || "Athlete",
-        drillName,
-        drillDifficulty: drillDetails?.difficulty || "Unknown",
-        drillDuration: drillDetails?.duration || "Unknown",
-        coachNotes: notes,
-        coachName,
-        portalUrl,
-      });
-      if (emailResult.success) {
-        console.log(`[Email] ✅ Drill assignment email sent to ${email} for drill: ${drillName}`);
-      } else {
-        console.error(`[Email] ❌ Failed to send to ${email}: ${emailResult.error}`);
-      }
-    } catch (err) {
-      console.error(`[Email] ❌ Exception sending to ${email}:`, err);
-      emailResult = { success: false, error: err instanceof Error ? err.message : String(err) };
-    }
-  } else {
-    console.warn(`[Email] ⚠️ No email address for userId=${userId} inviteId=${inviteId}, skipping notification`);
+    const portalUrl = `https://coachstevemobilecoach.com/athlete-portal`;
+    await sendDrillAssignmentEmail({
+      athleteEmail: email,
+      athleteName: name || "Athlete",
+      drillName,
+      drillDifficulty: drillDetails?.difficulty || "Unknown",
+      drillDuration: drillDetails?.duration || "Unknown",
+      coachNotes: notes,
+      coachName,
+      portalUrl,
+    });
   }
 
-  // Create notification + email via centralized engine
+  // Create in-app notification for athlete (only if userId exists)
   if (userId) {
     try {
-      await sendNotification({
+      await db.insert(notifications).values({
         userId,
-        type: "drill_assigned",
+        type: "assignment",
         title: "New Drill Assigned",
         message: `You have been assigned the drill: ${drillName}`,
-        linkUrl: `/athlete-portal`,
-        relatedId: drillId,
-        relatedType: "drill",
-        dedupeKey: `drill-assign-${userId}-${drillId}`,
+        isRead: 0,
       });
     } catch (err) {
-      console.error("[Notification] Failed to create notification:", err);
+      console.error("[Notification] Failed to create in-app notification:", err);
     }
   }
 
@@ -125,15 +107,12 @@ export async function linkInviteAssignmentsToUser(inviteId: number, userId: numb
   
   for (const assignment of linkedAssignments) {
     try {
-      await sendNotification({
+      await db.insert(notifications).values({
         userId,
-        type: "drill_assigned",
+        type: "assignment",
         title: "Drill Waiting for You",
         message: `You have a drill assigned: ${assignment.drillName}`,
-        linkUrl: `/athlete-portal`,
-        relatedId: assignment.drillId,
-        relatedType: "drill",
-        dedupeKey: `drill-link-${userId}-${assignment.drillId}`,
+        isRead: 0,
       });
     } catch (err) {
       console.error("[Notification] Failed to create notification for linked assignment:", err);

@@ -174,7 +174,7 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
         <CardHeader className="pb-3">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <CardTitle className="text-lg flex items-center gap-2">
-              <Target className="h-5 w-5 text-electric" />
+              <Target className="h-5 w-5 text-secondary" />
               <InlineEdit contentKey="coach.overview.listTitle" defaultValue="Athlete Assignment Status" as="span" />
             </CardTitle>
             <div className="flex items-center gap-2">

@@ -70,23 +70,23 @@ export default function AthleteMessaging() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-gradient-to-r from-brand-header to-brand-header/85 text-brand-header-foreground py-8 mb-8">
+      <header className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-8 mb-8">
         <div className="container">
           <div className="flex items-center justify-between mb-4">
             <Link href="/athlete-portal">
-              <Button variant="ghost" className="text-brand-header-foreground/80 hover:text-brand-header-foreground hover:bg-brand-header-foreground/10 pl-0">
+              <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 pl-0">
                 <Home className="mr-2 h-4 w-4" />
                 Athlete Portal
               </Button>
             </Link>
-            <Button onClick={() => logout()} variant="ghost" className="text-brand-header-foreground/80 hover:text-brand-header-foreground hover:bg-brand-header-foreground/10">
+            <Button onClick={() => logout()} variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">
               <LogOut className="mr-2 h-4 w-4" />
               Log Out
             </Button>
           </div>
           <div className="space-y-2">
             <h1 className="text-4xl md:text-5xl font-heading font-black">My Messages</h1>
-            <p className="text-brand-header-foreground/90">View your questions and Coach Steve's responses</p>
+            <p className="text-primary-foreground/90">View your questions and Coach Steve's responses</p>
           </div>
         </div>
       </header>
@@ -105,7 +105,7 @@ export default function AthleteMessaging() {
           <Card>
             <CardContent className="pt-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-electric">
+                <div className="text-3xl font-bold text-secondary">
                   {filteredQuestions.filter((q: any) => q.answers.length > 0).length}
                 </div>
                 <p className="text-sm text-muted-foreground">Answered</p>

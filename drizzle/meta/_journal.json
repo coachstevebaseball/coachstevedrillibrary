@@ -365,48 +365,6 @@
       "when": 1774686621982,
       "tag": "0051_rapid_screwball",
       "breakpoints": true
-    },
-    {
-      "idx": 52,
-      "version": "5",
-      "when": 1775452027336,
-      "tag": "0052_condemned_valeria_richards",
-      "breakpoints": true
-    },
-    {
-      "idx": 53,
-      "version": "5",
-      "when": 1775485314327,
-      "tag": "0053_famous_boom_boom",
-      "breakpoints": true
-    },
-    {
-      "idx": 54,
-      "version": "5",
-      "when": 1775727527459,
-      "tag": "0054_complex_scream",
-      "breakpoints": true
-    },
-    {
-      "idx": 55,
-      "version": "5",
-      "when": 1775952393967,
-      "tag": "0055_great_thanos",
-      "breakpoints": true
-    },
-    {
-      "idx": 56,
-      "version": "5",
-      "when": 1776002997974,
-      "tag": "0056_regular_eternity",
-      "breakpoints": true
-    },
-    {
-      "idx": 57,
-      "version": "5",
-      "when": 1776183154304,
-      "tag": "0057_typical_steve_rogers",
-      "breakpoints": true
     }
   ]
 }

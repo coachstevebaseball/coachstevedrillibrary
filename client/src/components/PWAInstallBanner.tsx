@@ -26,7 +26,7 @@ export function PWAInstallBanner() {
 
     if (!showIOSInstructions) {
       return (
-        <div className="fixed bottom-0 left-0 right-0 bg-brand-header text-brand-header-foreground p-4 shadow-lg z-50 safe-area-inset-bottom">
+        <div className="fixed bottom-0 left-0 right-0 bg-primary text-primary-foreground p-4 shadow-lg z-50 safe-area-inset-bottom">
           <div className="container flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="bg-white/20 p-2 rounded-lg">
@@ -34,7 +34,7 @@ export function PWAInstallBanner() {
               </div>
               <div>
                 <p className="font-semibold text-sm">Install App</p>
-                <p className="text-xs text-brand-header-foreground/80">Add to your home screen for quick access</p>
+                <p className="text-xs text-primary-foreground/80">Add to your home screen for quick access</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -135,7 +135,7 @@ export function PWAInstallBanner() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-brand-header text-brand-header-foreground p-4 shadow-lg z-50 safe-area-inset-bottom">
+    <div className="fixed bottom-0 left-0 right-0 bg-primary text-primary-foreground p-4 shadow-lg z-50 safe-area-inset-bottom">
       <div className="container flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="bg-white/20 p-2 rounded-lg">
@@ -143,7 +143,7 @@ export function PWAInstallBanner() {
           </div>
           <div>
             <p className="font-semibold text-sm">Install App</p>
-            <p className="text-xs text-brand-header-foreground/80">Quick access from your home screen</p>
+            <p className="text-xs text-primary-foreground/80">Quick access from your home screen</p>
           </div>
         </div>
         <div className="flex items-center gap-2">

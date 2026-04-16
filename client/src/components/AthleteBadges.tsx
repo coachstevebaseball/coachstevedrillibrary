@@ -163,7 +163,7 @@ export function AthleteBadges({
               </div>
               <div className="w-full bg-muted rounded-full h-2">
                 <div
-                  className="bg-electric h-2 rounded-full transition-all"
+                  className="bg-secondary h-2 rounded-full transition-all"
                   style={{
                     width: `${((submissionCount % 5) / 5) * 100}%`,
                   }}
@@ -186,7 +186,7 @@ export function AthleteBadges({
               <p className="text-xs text-muted-foreground">Submissions</p>
             </div>
             <div>
-              <p className="text-2xl font-bold text-electric">{completedDrillCount}</p>
+              <p className="text-2xl font-bold text-secondary">{completedDrillCount}</p>
               <p className="text-xs text-muted-foreground">Completed</p>
             </div>
             {consecutiveDays > 0 && (

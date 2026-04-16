@@ -44,10 +44,6 @@ export const drillAssignments = mysqlTable("drillAssignments", {
   status: mysqlEnum("status", ["assigned", "in-progress", "completed"]).default("assigned").notNull(),
   notes: text("notes"),
   assignedAt: timestamp("assignedAt").defaultNow().notNull(),
-  /** Optional due date for the assignment (for deadline reminders) */
-  dueDate: timestamp("dueDate"),
-  /** Whether a 24h reminder has already been sent for this assignment */
-  reminderSent: int("reminderSent").default(0).notNull(),
   completedAt: timestamp("completedAt"),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -109,13 +105,6 @@ export const drillDetails = mysqlTable("drillDetails", {
   commonMistakes: json("commonMistakes").$type<string[]>(), // Array of common mistakes
   progressions: json("progressions").$type<string[]>(), // Array of progression steps
   instructions: text("instructions"), // Custom instructions entered by coach
-  // Metadata / tagging fields
-  drillType: varchar("drillType", { length: 100 }), // e.g. "Tee", "Soft Toss", "Live BP"
-  ageLevel: json("ageLevel").$type<string[]>(), // e.g. ["beginner-drills","intermediate-drills"]
-  focusTags: json("focusTags").$type<string[]>(), // e.g. ["bat speed","hip rotation"]
-  problemsFix: json("problemsFix").$type<string[]>(), // maps to drills.ts problem[]
-  pillars: json("pillars").$type<string[]>(), // coaching pillars/goals
-  isHidden: boolean("isHidden").notNull().default(false), // true = hidden from public, preserved for restoration
   createdBy: int("createdBy").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -170,44 +159,15 @@ export type InsertCoachFeedback = typeof coachFeedback.$inferInsert;
 export const notifications = mysqlTable("notifications", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(), // Recipient user ID
-  recipientEmail: varchar("recipientEmail", { length: 320 }), // Email address for delivery
-  type: mysqlEnum("type", [
-    "drill_assigned",
-    "notes_added",
-    "recap_posted",
-    "swing_analysis_ready",
-    "new_feature_available",
-    "feedback_received",
-    "submission_received",
-    "badge_earned",
-    "practice_plan_shared",
-    "welcome",
-    "system",
-  ]).notNull(),
+  type: mysqlEnum("type", ["submission", "feedback", "badge", "assignment", "system"]).notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),
-  relatedId: varchar("relatedId", { length: 255 }), // ID of related entity
-  relatedType: varchar("relatedType", { length: 50 }), // Type: "drill", "assignment", "submission", "session_note", "video_analysis"
-  linkUrl: varchar("linkUrl", { length: 500 }), // Direct CTA link to the item in the portal
-  // Email delivery tracking
-  emailStatus: mysqlEnum("emailStatus", [
-    "pending", "queued", "sent", "failed", "delivered", "opened", "clicked"
-  ]).default("pending").notNull(),
-  // Portal read status
-  portalStatus: mysqlEnum("portalStatus", ["unread", "read"]).default("unread").notNull(),
-  // Timestamps
+  relatedId: int("relatedId"), // ID of related entity (submission, feedback, etc.)
+  relatedType: varchar("relatedType", { length: 50 }), // Type of related entity
+  isRead: int("isRead").default(0).notNull(), // 0 = unread, 1 = read
+  actionUrl: varchar("actionUrl", { length: 500 }), // URL to navigate to when clicked
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  queuedAt: timestamp("queuedAt"),
-  sentAt: timestamp("sentAt"),
   readAt: timestamp("readAt"),
-  failedAt: timestamp("failedAt"),
-  // Retry tracking
-  retryCount: int("retryCount").default(0).notNull(),
-  lastError: text("lastError"),
-  // Deduplication key: prevents duplicate notifications for the same event
-  dedupeKey: varchar("dedupeKey", { length: 255 }),
-  // Flexible metadata JSON
-  metadata: json("metadata"),
 });
 
 export type Notification = typeof notifications.$inferSelect;
@@ -216,19 +176,13 @@ export type InsertNotification = typeof notifications.$inferInsert;
 export const notificationPreferences = mysqlTable("notificationPreferences", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull().unique(),
-  // Master toggle
-  emailNotifications: int("emailNotifications").default(1).notNull(), // 0 = all emails off, 1 = on
-  // Per-type toggles
-  drillAssignments: int("drillAssignments").default(1).notNull(),
-  notesUpdates: int("notesUpdates").default(1).notNull(),
-  recapUpdates: int("recapUpdates").default(1).notNull(),
-  swingAnalysis: int("swingAnalysis").default(1).notNull(),
-  featureAnnouncements: int("featureAnnouncements").default(1).notNull(),
-  feedbackUpdates: int("feedbackUpdates").default(1).notNull(),
-  submissionUpdates: int("submissionUpdates").default(1).notNull(),
-  badgeUpdates: int("badgeUpdates").default(1).notNull(),
-  practicePlanUpdates: int("practicePlanUpdates").default(1).notNull(),
-  systemUpdates: int("systemUpdates").default(1).notNull(),
+  submissionNotifications: int("submissionNotifications").default(1).notNull(), // 0 = off, 1 = on
+  feedbackNotifications: int("feedbackNotifications").default(1).notNull(),
+  badgeNotifications: int("badgeNotifications").default(1).notNull(),
+  assignmentNotifications: int("assignmentNotifications").default(1).notNull(),
+  systemNotifications: int("systemNotifications").default(1).notNull(),
+  emailNotifications: int("emailNotifications").default(1).notNull(),
+  inAppNotifications: int("inAppNotifications").default(1).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -268,12 +222,6 @@ export const customDrills = mysqlTable("customDrills", {
   difficulty: varchar("difficulty", { length: 50 }).notNull(),
   category: varchar("category", { length: 100 }).notNull(),
   duration: varchar("duration", { length: 50 }).notNull(),
-  drillType: varchar("drillType", { length: 100 }),
-  ageLevel: text("ageLevel"), // JSON stringified array
-  focusTags: text("focusTags"), // JSON stringified array
-  problemsFix: text("problemsFix"), // JSON stringified array
-  pillars: text("pillars"), // JSON stringified array
-  isHidden: boolean("isHidden").notNull().default(false), // true = hidden from public, preserved for restoration
   createdBy: int("createdBy").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -747,18 +695,10 @@ export type InsertBlastSession = typeof blastSessions.$inferInsert;
 export const blastMetrics = mysqlTable("blastMetrics", {
   id: int("id").autoincrement().primaryKey(),
   sessionId: varchar("sessionId", { length: 36 }).notNull(),
-  // Core metrics
   batSpeedMph: varchar("batSpeedMph", { length: 10 }),
   onPlaneEfficiencyPercent: varchar("onPlaneEfficiencyPercent", { length: 10 }),
   attackAngleDeg: varchar("attackAngleDeg", { length: 10 }),
   exitVelocityMph: varchar("exitVelocityMph", { length: 10 }),
-  // Extended Blast Motion metrics
-  peakHandSpeedMph: varchar("peakHandSpeedMph", { length: 10 }),
-  rotationalAccelerationG: varchar("rotationalAccelerationG", { length: 10 }),
-  connectionAtImpactDeg: varchar("connectionAtImpactDeg", { length: 10 }),
-  earlyConnectionDeg: varchar("earlyConnectionDeg", { length: 10 }),
-  powerKpi: varchar("powerKpi", { length: 10 }),
-  timeToContactSec: varchar("timeToContactSec", { length: 10 }),
 });
 export type BlastMetric = typeof blastMetrics.$inferSelect;
 export type InsertBlastMetric = typeof blastMetrics.$inferInsert;
@@ -780,77 +720,3 @@ export const siteContent = mysqlTable("siteContent", {
 });
 export type SiteContent = typeof siteContent.$inferSelect;
 export type InsertSiteContent = typeof siteContent.$inferInsert;
-
-
-// ============================================================
-// Email Notification Log — Track all outbound athlete/parent emails
-// ============================================================
-export const emailNotificationLog = mysqlTable("emailNotificationLog", {
-  id: int("id").autoincrement().primaryKey(),
-  /** Recipient user ID (athlete) */
-  recipientId: int("recipientId"),
-  /** Recipient email address */
-  recipientEmail: varchar("recipientEmail", { length: 320 }).notNull(),
-  /** Recipient name */
-  recipientName: varchar("recipientName", { length: 255 }),
-  /** Email type for categorization */
-  emailType: varchar("emailType", { length: 100 }).notNull(), // e.g. "drill_assignment", "metrics_update", "drill_reminder", "milestone", "custom_note"
-  /** Email subject line */
-  subject: varchar("subject", { length: 500 }).notNull(),
-  /** Brief description of what triggered this email */
-  description: text("description"),
-  /** Additional metadata (drill name, metric values, etc.) */
-  metadata: json("metadata"),
-  /** Whether the email was sent successfully */
-  success: int("success").default(1).notNull(), // 0 = failed, 1 = success
-  /** Error message if sending failed */
-  errorMessage: text("errorMessage"),
-  /** Resend email ID for tracking */
-  resendId: varchar("resendId", { length: 255 }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
-export type EmailNotificationLog = typeof emailNotificationLog.$inferSelect;
-export type InsertEmailNotificationLog = typeof emailNotificationLog.$inferInsert;
-
-
-// ============================================================
-// Coach Activity Log — System-generated events for the coach's Activity Feed
-// (Separate from athleteActivity which tracks athlete-initiated actions)
-// ============================================================
-export const coachActivityLog = mysqlTable("coachActivityLog", {
-  id: int("id").autoincrement().primaryKey(),
-  /** Event type */
-  eventType: varchar("eventType", { length: 100 }).notNull(),
-  // e.g. "inactivity_flag", "milestone_reached", "email_sent", "metrics_updated", "assignment_reminder_sent"
-  /** Human-readable title */
-  title: varchar("title", { length: 255 }).notNull(),
-  /** Detailed message */
-  message: text("message").notNull(),
-  /** Related athlete ID (if applicable) */
-  athleteId: int("athleteId"),
-  /** Related athlete name */
-  athleteName: varchar("athleteName", { length: 255 }),
-  /** Additional metadata */
-  metadata: json("metadata"),
-  /** Severity: info, warning, success */
-  severity: varchar("severity", { length: 20 }).default("info").notNull(),
-  /** Whether the coach has seen/acknowledged this event */
-  isRead: int("isRead").default(0).notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
-export type CoachActivityLog = typeof coachActivityLog.$inferSelect;
-export type InsertCoachActivityLog = typeof coachActivityLog.$inferInsert;
-
-export const drillStatCards = mysqlTable("drillStatCards", {
-  id: int("id").autoincrement().primaryKey(),
-  drillId: varchar("drillId", { length: 255 }).notNull(),
-  label: varchar("label", { length: 255 }).notNull(),
-  value: varchar("value", { length: 255 }).notNull(),
-  icon: varchar("icon", { length: 50 }).default("info").notNull(),
-  position: int("position").default(0).notNull(),
-  isVisible: int("isVisible").default(1).notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-export type DrillStatCard = typeof drillStatCards.$inferSelect;
-export type InsertDrillStatCard = typeof drillStatCards.$inferInsert;
