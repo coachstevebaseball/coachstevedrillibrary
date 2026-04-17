@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,25 +14,33 @@ import {
 } from "@/components/ui/dialog";
 import {
   Search, Pencil, Save, X, ChevronLeft, ChevronRight, FileText,
-  Wrench, Loader2, CheckCircle2, AlertCircle, ArrowLeft,
+  Wrench, Loader2, CheckCircle2, AlertCircle, ArrowLeft, Target,
 } from "lucide-react";
 import { Link } from "wouter";
 import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { supabase } from "@/supabaseClient";
 import { TopNav } from "@/components/TopNav";
+import { trpc } from "@/lib/trpc";
+import drillsData from "@/data/drills.json";
 
-interface SupabaseDrill {
-  id: number;
-  title: string;
-  video_url: string | null;
-  difficulty_level: string | null;
-  skill_category: string | null;
-  duration_minutes: number | null;
-  goal_of_drill: string | null;
+interface StaticDrill {
+  id: string;
+  name: string;
+  difficulty: string;
+  categories: string[];
+  duration: string;
+  url: string;
+  is_direct_link: boolean;
+}
+
+interface MergedDrill {
+  id: string;
+  name: string;
+  difficulty: string;
+  duration: string;
+  goal: string | null;
   instructions: string | null;
   equipment: string | null;
-  created_at: string;
 }
 
 const PAGE_SIZE = 20;
@@ -41,55 +49,63 @@ export default function ManageDrillContent() {
   const { user, loading: authLoading } = useAuth();
   const isAdmin = user?.role === "admin";
 
-  const [drills, setDrills] = useState<SupabaseDrill[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
-  const [editingDrill, setEditingDrill] = useState<SupabaseDrill | null>(null);
+  const [editingDrill, setEditingDrill] = useState<MergedDrill | null>(null);
+  const [editGoal, setEditGoal] = useState("");
   const [editInstructions, setEditInstructions] = useState("");
   const [editEquipment, setEditEquipment] = useState("");
-  const [saving, setSaving] = useState(false);
   const [filterStatus, setFilterStatus] = useState<"all" | "filled" | "empty">("all");
 
-  // Fetch all drills from Supabase
-  useEffect(() => {
-    async function fetchDrills() {
-      setLoading(true);
-      setError(null);
-      const { data, error: fetchError } = await supabase
-        .from("drills")
-        .select("*")
-        .order("title", { ascending: true });
+  // Fetch all drill details from the database via tRPC
+  const { data: drillDetails, isLoading, error, refetch } = trpc.drillDetails.getAllDrillDetails.useQuery(
+    undefined,
+    { enabled: isAdmin }
+  );
 
-      if (fetchError) {
-        setError(fetchError.message);
-        setDrills([]);
-      } else {
-        setDrills(data ?? []);
+  // Merge static drills with database details
+  const mergedDrills: MergedDrill[] = useMemo(() => {
+    const detailsMap = new Map<string, { goal: string | null; instructions: string | null; equipment: string | null }>();
+    if (drillDetails) {
+      for (const d of drillDetails) {
+        detailsMap.set(d.drillId, {
+          goal: d.goal || null,
+          instructions: d.instructions || null,
+          equipment: d.equipment || null,
+        });
       }
-      setLoading(false);
     }
-    fetchDrills();
-  }, []);
+    return (drillsData as StaticDrill[]).map((drill) => {
+      const detail = detailsMap.get(drill.id);
+      return {
+        id: drill.id,
+        name: drill.name,
+        difficulty: drill.difficulty,
+        duration: drill.duration,
+        goal: detail?.goal ?? null,
+        instructions: detail?.instructions ?? null,
+        equipment: detail?.equipment ?? null,
+      };
+    });
+  }, [drillDetails]);
 
   // Filter and search
   const filteredDrills = useMemo(() => {
-    let result = drills;
+    let result = mergedDrills;
 
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      result = result.filter((d) => d.title.toLowerCase().includes(q));
+      result = result.filter((d) => d.name.toLowerCase().includes(q));
     }
 
     if (filterStatus === "filled") {
-      result = result.filter((d) => d.instructions || d.equipment);
+      result = result.filter((d) => d.instructions || d.equipment || d.goal);
     } else if (filterStatus === "empty") {
-      result = result.filter((d) => !d.instructions && !d.equipment);
+      result = result.filter((d) => !d.instructions && !d.equipment && !d.goal);
     }
 
     return result;
-  }, [drills, searchQuery, filterStatus]);
+  }, [mergedDrills, searchQuery, filterStatus]);
 
   // Pagination
   const totalPages = Math.ceil(filteredDrills.length / PAGE_SIZE);
@@ -99,44 +115,37 @@ export default function ManageDrillContent() {
   );
 
   // Stats
-  const filledCount = drills.filter((d) => d.instructions || d.equipment).length;
-  const emptyCount = drills.length - filledCount;
+  const filledCount = mergedDrills.filter((d) => d.instructions || d.equipment || d.goal).length;
+  const emptyCount = mergedDrills.length - filledCount;
 
   // Open edit dialog
-  const openEdit = (drill: SupabaseDrill) => {
+  const openEdit = (drill: MergedDrill) => {
     setEditingDrill(drill);
+    setEditGoal(drill.goal || "");
     setEditInstructions(drill.instructions || "");
     setEditEquipment(drill.equipment || "");
   };
 
-  // Save to Supabase
-  const handleSave = async () => {
-    if (!editingDrill) return;
-    setSaving(true);
-
-    const { error: updateError } = await supabase
-      .from("drills")
-      .update({
-        instructions: editInstructions || null,
-        equipment: editEquipment || null,
-      })
-      .eq("id", editingDrill.id);
-
-    if (updateError) {
-      toast.error("Failed to save: " + updateError.message);
-    } else {
-      toast.success(`Updated "${editingDrill.title}" successfully`);
-      // Update local state
-      setDrills((prev) =>
-        prev.map((d) =>
-          d.id === editingDrill.id
-            ? { ...d, instructions: editInstructions || null, equipment: editEquipment || null }
-            : d
-        )
-      );
+  // Save via tRPC
+  const updateMutation = trpc.drillDetails.updateDrillContent.useMutation({
+    onSuccess: () => {
+      toast.success(`Updated "${editingDrill?.name}" successfully`);
       setEditingDrill(null);
-    }
-    setSaving(false);
+      refetch();
+    },
+    onError: (err) => {
+      toast.error("Failed to save: " + err.message);
+    },
+  });
+
+  const handleSave = () => {
+    if (!editingDrill) return;
+    updateMutation.mutate({
+      drillId: editingDrill.id,
+      goal: editGoal || undefined,
+      instructions: editInstructions || undefined,
+      equipment: editEquipment || undefined,
+    });
   };
 
   if (authLoading) {
@@ -192,8 +201,7 @@ export default function ManageDrillContent() {
             Manage Drill Content
           </h1>
           <p className="text-muted-foreground">
-            Edit instructions and equipment for each drill in the Supabase database.
-            Changes appear in real-time on drill detail pages.
+            Edit goal, instructions, and equipment for each drill. Changes appear in real-time on drill detail pages.
           </p>
         </div>
       </header>
@@ -202,12 +210,12 @@ export default function ManageDrillContent() {
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Card
-            className={`cursor-pointer transition-all ${filterStatus === "all" ? "ring-2 ring-electric" : "hover:ring-1 hover:ring-white/20"}`}
+            className={`cursor-pointer transition-all ${filterStatus === "all" ? "ring-2 ring-primary" : "hover:ring-1 hover:ring-white/20"}`}
             onClick={() => { setFilterStatus("all"); setPage(1); }}
           >
             <CardHeader className="pb-3">
               <CardDescription>Total Drills</CardDescription>
-              <CardTitle className="text-3xl">{drills.length}</CardTitle>
+              <CardTitle className="text-3xl">{mergedDrills.length}</CardTitle>
             </CardHeader>
           </Card>
           <Card
@@ -255,21 +263,21 @@ export default function ManageDrillContent() {
             <CardContent className="pt-6">
               <p className="text-destructive flex items-center gap-2">
                 <AlertCircle className="h-4 w-4" />
-                Failed to load drills: {error}
+                Failed to load drill details: {error.message}
               </p>
             </CardContent>
           </Card>
         )}
 
         {/* Loading state */}
-        {loading && (
+        {isLoading && (
           <div className="flex items-center justify-center py-16">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         )}
 
         {/* Drills Table */}
-        {!loading && !error && (
+        {!isLoading && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
@@ -285,6 +293,7 @@ export default function ManageDrillContent() {
                   <TableRow>
                     <TableHead className="w-[40%]">Drill Name</TableHead>
                     <TableHead>Difficulty</TableHead>
+                    <TableHead>Goal</TableHead>
                     <TableHead>Instructions</TableHead>
                     <TableHead>Equipment</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -293,11 +302,21 @@ export default function ManageDrillContent() {
                 <TableBody>
                   {paginatedDrills.map((drill) => (
                     <TableRow key={drill.id} className="group">
-                      <TableCell className="font-medium">{drill.title}</TableCell>
+                      <TableCell className="font-medium">{drill.name}</TableCell>
                       <TableCell>
                         <Badge variant="outline" className="text-xs">
-                          {drill.difficulty_level || "—"}
+                          {drill.difficulty || "—"}
                         </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {drill.goal ? (
+                          <span className="flex items-center gap-1 text-emerald-500 text-sm">
+                            <Target className="h-3.5 w-3.5" />
+                            Filled
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground text-sm">Empty</span>
+                        )}
                       </TableCell>
                       <TableCell>
                         {drill.instructions ? (
@@ -334,7 +353,7 @@ export default function ManageDrillContent() {
                   ))}
                   {paginatedDrills.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                         No drills found matching your criteria.
                       </TableCell>
                     </TableRow>
@@ -382,15 +401,32 @@ export default function ManageDrillContent() {
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Pencil className="h-5 w-5 text-electric" />
-              Edit: {editingDrill?.title}
+              <Pencil className="h-5 w-5 text-primary" />
+              Edit: {editingDrill?.name}
             </DialogTitle>
             <DialogDescription>
-              Update the instructions and equipment for this drill. Changes save directly to Supabase.
+              Update the goal, instructions, and equipment for this drill. Changes save to the database and appear on drill detail pages.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-6 pt-4">
+            {/* Goal */}
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">
+                Drill Goal
+              </label>
+              <Textarea
+                value={editGoal}
+                onChange={(e) => setEditGoal(e.target.value)}
+                placeholder="What is the primary goal of this drill? (e.g., Develop hip rotation and bat speed through the zone)"
+                rows={3}
+                className="resize-y"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                A concise statement of what the athlete will develop or improve.
+              </p>
+            </div>
+
             {/* Instructions */}
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">
@@ -430,17 +466,17 @@ export default function ManageDrillContent() {
               <Button
                 variant="outline"
                 onClick={() => setEditingDrill(null)}
-                disabled={saving}
+                disabled={updateMutation.isPending}
               >
                 <X className="h-4 w-4 mr-1" />
                 Cancel
               </Button>
               <Button
                 onClick={handleSave}
-                disabled={saving}
+                disabled={updateMutation.isPending}
                 className="gap-2"
               >
-                {saving ? (
+                {updateMutation.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <Save className="h-4 w-4" />

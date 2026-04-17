@@ -868,6 +868,43 @@ export const appRouter = router({
       .query(async () => {
         return await db.getCustomDrills();
       }),
+    getAllDrillDetails: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        return await db.getAllDrillDetails();
+      }),
+    updateDrillContent: protectedProcedure
+      .input(z.object({
+        drillId: z.string(),
+        goal: z.string().optional(),
+        instructions: z.string().optional(),
+        equipment: z.string().optional(),
+        description: z.array(z.string()).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const existing = await db.getDrillDetail(input.drillId);
+        await db.saveDrillDetail(input.drillId, {
+          skillSet: (existing as any)?.skillSet || 'Hitting',
+          difficulty: (existing as any)?.difficulty || 'Medium',
+          athletes: (existing as any)?.athletes || '',
+          time: (existing as any)?.time || '',
+          equipment: input.equipment ?? (existing as any)?.equipment ?? '',
+          goal: input.goal ?? (existing as any)?.goal ?? '',
+          description: input.description ?? (existing as any)?.description ?? [],
+          instructions: input.instructions ?? (existing as any)?.instructions ?? '',
+          drillType: (existing as any)?.drillType,
+          ageLevel: (existing as any)?.ageLevel,
+          focusTags: (existing as any)?.focusTags,
+          problemsFix: (existing as any)?.problemsFix,
+          pillars: (existing as any)?.pillars,
+        }, ctx.user.id);
+        return { success: true };
+      }),
     // Drill page layout procedures
     savePageLayout: protectedProcedure
       .input(z.object({

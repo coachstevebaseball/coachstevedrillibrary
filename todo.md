@@ -1852,3 +1852,15 @@
 - [x] Match dark sophisticated design theme with glassmorphism
 - [x] Show correct tabs based on auth state (admin/athlete/visitor)
 - [x] Remove all hamburger/dropdown mobile menu code
+
+## Fix Manage Drill Content - TypeError: Load failed (Apr 17 - FIXED)
+- [x] Investigated ManageDrillContent component - was using Supabase (no longer connected)
+- [x] Root cause: page called supabase.from('drills').select('*') which fails with TypeError: Load failed
+- [x] Added getAllDrillDetails() to db.ts (returns all rows from drillDetails table)
+- [x] Added getAllDrillDetails tRPC procedure to routers.ts (protectedProcedure)
+- [x] Rewrote ManageDrillContent.tsx to use tRPC + MySQL database
+- [x] Page now shows 87 drills (74 with content, 13 needing content) with pagination
+- [x] Edit dialog works - can update goal, instructions, equipment for any drill
+- [x] Added 8 vitest tests for getAllDrillDetails and data merging logic
+- [x] Removed stale supabase-integration.test.ts and directImport.test.ts
+- [x] All 483 tests passing across 40 test files

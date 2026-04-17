@@ -424,6 +424,22 @@ export async function getDrillDetail(drillId: string) {
   }
 }
 
+export async function getAllDrillDetails() {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get all drill details: database not available");
+    return [];
+  }
+
+  try {
+    const { drillDetails } = await import("../drizzle/schema");
+    return await db.select().from(drillDetails);
+  } catch (error) {
+    console.error("[Database] Failed to get all drill details:", error);
+    return [];
+  }
+}
+
 export async function deleteDrillDetail(drillId: string): Promise<boolean> {
   const db = await getDb();
   if (!db) {
