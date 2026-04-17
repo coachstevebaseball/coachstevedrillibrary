@@ -1864,3 +1864,16 @@
 - [x] Added 8 vitest tests for getAllDrillDetails and data merging logic
 - [x] Removed stale supabase-integration.test.ts and directImport.test.ts
 - [x] All 483 tests passing across 40 test files
+
+## Simplify Drill Detail Page Layout (Apr 17 - DONE)
+- [x] Remove Time card from drill detail page
+- [x] Remove Athletes card from drill detail page
+- [x] Remove Equipment card from drill detail page
+- [x] Remove Skill Set card from drill detail page
+- [x] Remove Instructions heading and content section entirely
+- [x] Reorder layout: Video → Tags → Goal of Drill
+- [x] Tags (drillType, ageLevel, focus tags, problem tags, goal tags) sit immediately below video
+- [x] No empty space where removed cards were
+- [x] Dark, polished, athletic mobile-first design preserved
+- [x] Also removed addDifficulty collapsible section
+- [x] Removed old bottom metadata grid (Drill Type, Age/Level, Fixes These Problems, Helps You)
