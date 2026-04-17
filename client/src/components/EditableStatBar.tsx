@@ -252,7 +252,7 @@ export function EditableStatBar({ drillId, defaultCards, isCoach }: EditableStat
             variant="ghost"
             size="sm"
             onClick={() => setIsEditMode(!isEditMode)}
-            className={`h-7 text-xs gap-1.5 ${isEditMode ? "text-secondary" : "text-muted-foreground"}`}
+            className={`h-7 text-xs gap-1.5 ${isEditMode ? "text-electric" : "text-muted-foreground"}`}
           >
             <Pencil className="h-3 w-3" />
             {isEditMode ? "Done Editing" : "Edit Stats"}

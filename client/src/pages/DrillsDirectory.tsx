@@ -118,109 +118,55 @@ export default function DrillsDirectory() {
     tagFilter !== "all-tags",
   ].filter(Boolean).length;
 
-  if (!loading && !isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
-        <div className="text-center max-w-md">
-          <h1 className="text-4xl font-bold mb-4">Access Restricted</h1>
-          <p className="text-lg text-muted-foreground mb-8">
-            This content is exclusive to invited athletes. Please log in to access the drill library.
-          </p>
-          <Button onClick={() => window.location.href = getLoginUrl()} size="lg">
-            <LogIn className="h-5 w-5 mr-2" />
-            Log In
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
-  if (!loading && isAuthenticated && user?.role === 'athlete' && !user?.isActiveClient) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
-        <div className="text-center max-w-md">
-          <h1 className="text-4xl font-bold mb-4">Account Inactive</h1>
-          <p className="text-lg text-muted-foreground mb-8">
-            Your account has been deactivated. Please contact your coach for more information.
-          </p>
-          <Button onClick={() => logout()} variant="outline" size="lg">
-            <LogOut className="h-5 w-5 mr-2" />
-            Log Out
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Hero Section */}
-      <header className="relative bg-primary text-primary-foreground overflow-hidden">
+      <header className="relative bg-brand-header text-brand-header-foreground overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
             src="/images/hero-bg.jpg"
             alt="Baseball Field"
             className="w-full h-full object-cover opacity-40 mix-blend-overlay"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/80 to-primary/95" />
+          <div className="absolute inset-0 bg-gradient-to-b from-brand-header/80 to-brand-header/95" />
         </div>
 
         <div className="container relative z-10 py-8 md:py-20">
-          {/* Auth & Admin Controls */}
-          <div className="flex justify-end gap-2 mb-6 flex-wrap">
-            {user ? (
-              <>
-                {user.role === 'admin' && (
-                  <>
-                    <Link href="/coach">
-                      <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
-                        <Users className="h-4 w-4" />
-                        Coach Dashboard
-                      </Button>
-                    </Link>
-                    <Link href="/admin">
-                      <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
-                        <Shield className="h-4 w-4" />
-                        <span className="hidden sm:inline">Admin Dashboard</span>
-                        <span className="sm:hidden">Admin</span>
-                      </Button>
-                    </Link>
-                  </>
-                )}
-                {user.role === 'athlete' && (
-                  <Link href="/athlete-portal">
-                    <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
-                      <Activity className="h-4 w-4" />
-                      <span className="hidden sm:inline">My Drills</span>
-                      <span className="sm:hidden">Drills</span>
-                    </Button>
-                  </Link>
-                )}
-                <Button variant="outline" size="sm" onClick={logout} className="gap-2 bg-background/20 hover:bg-background/30 text-xs md:text-sm">
-                  <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline">Logout</span>
-                  <span className="sm:hidden">Exit</span>
-                </Button>
-              </>
-            ) : (
-              <a href={getLoginUrl()}>
+          {/* Admin Controls - only visible to admin */}
+          {user && user.role === 'admin' && (
+            <div className="flex justify-end gap-2 mb-6 flex-wrap">
+              <Link href="/coach-dashboard">
                 <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
-                  <LogIn className="h-4 w-4" />
-                  Login
+                  <Users className="h-4 w-4" />
+                  Coach Dashboard
                 </Button>
-              </a>
-            )}
-          </div>
+              </Link>
+              <Link href="/admin">
+                <Button variant="secondary" size="sm" className="gap-2 text-xs md:text-sm">
+                  <Shield className="h-4 w-4" />
+                  <span className="hidden sm:inline">Admin Dashboard</span>
+                  <span className="sm:hidden">Admin</span>
+                </Button>
+              </Link>
+              <Button variant="outline" size="sm" onClick={logout} className="gap-2 bg-background/20 hover:bg-background/30 text-xs md:text-sm">
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Logout</span>
+                <span className="sm:hidden">Exit</span>
+              </Button>
+            </div>
+          )}
 
           <div className="max-w-4xl">
             <div className="flex items-center gap-3 mb-3">
-              <div className="h-1 w-12 bg-secondary rounded-full" />
-              <span className="text-secondary font-bold tracking-wider uppercase text-xs">Coach Steve's Mobile Coach</span>
+              <div className="h-1 w-12 bg-electric rounded-full" />
+              <span className="text-electric font-bold tracking-wider uppercase text-xs">Coach Steve's Mobile Coach</span>
             </div>
             <h1 className="text-4xl md:text-7xl font-heading font-black mb-3 md:mb-4 leading-tight">
               Drills Directory
             </h1>
-            <p className="text-base md:text-lg text-primary-foreground/90 mb-6 md:mb-10 max-w-3xl leading-relaxed font-medium">
+            <p className="text-base md:text-lg text-brand-header-foreground/90 mb-6 md:mb-10 max-w-3xl leading-relaxed font-medium">
               {allDrills.length} professional baseball drills. Filter by skill set, difficulty, age level, drill type, and more.
             </p>
 
@@ -232,7 +178,7 @@ export default function DrillsDirectory() {
               <Input
                 type="text"
                 placeholder="Search drills..."
-                className="pl-11 py-5 md:py-7 text-sm md:text-base bg-background/95 text-foreground border-0 shadow-2xl rounded-xl md:rounded-2xl focus-visible:ring-2 focus-visible:ring-secondary font-medium"
+                className="pl-11 py-5 md:py-7 text-sm md:text-base bg-background/95 text-foreground border-0 shadow-2xl rounded-xl md:rounded-2xl focus-visible:ring-2 focus-visible:ring-electric font-medium"
                 value={searchQuery}
                 onChange={(e) => handleFilterChange(setSearchQuery, e.target.value)}
               />
@@ -250,7 +196,7 @@ export default function DrillsDirectory() {
             <Filter className="h-4 w-4" />
             Filters
             {activeFilterCount > 0 && (
-              <Badge className="bg-secondary text-secondary-foreground h-5 w-5 p-0 flex items-center justify-center text-xs rounded-full">
+              <Badge className="bg-electric text-white h-5 w-5 p-0 flex items-center justify-center text-xs rounded-full">
                 {activeFilterCount}
               </Badge>
             )}

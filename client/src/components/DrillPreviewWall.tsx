@@ -25,7 +25,7 @@ export function DrillPreviewWall({
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="max-w-lg w-full space-y-6">
         {/* Main Card */}
-        <Card className="border-2 border-secondary/30 overflow-hidden">
+        <Card className="border-2 border-electric/30 overflow-hidden">
           {/* Gradient top bar */}
           <div className="h-1.5 bg-gradient-to-r from-[#DC143C] via-[#FF4444] to-[#DC143C]" />
 

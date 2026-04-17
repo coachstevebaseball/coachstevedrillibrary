@@ -87,7 +87,7 @@ function AssessmentReport({ athleteId, athleteName }: { athleteId: number; athle
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="animate-spin h-8 w-8 border-2 border-secondary border-t-transparent rounded-full" />
+        <div className="animate-spin h-8 w-8 border-2 border-electric border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -180,7 +180,7 @@ function AssessmentReport({ athleteId, athleteName }: { athleteId: number; athle
       {/* Core Metrics Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard
-          icon={<Target className="h-5 w-5 text-secondary" />}
+          icon={<Target className="h-5 w-5 text-electric" />}
           label="Total Assigned"
           value={coreMetrics.totalAssigned}
           subtitle="drills"
@@ -371,7 +371,7 @@ function AssessmentReport({ athleteId, athleteName }: { athleteId: number; athle
           <div className="space-y-3">
             {recommendations.map((rec, i) => (
               <div key={i} className="flex items-start gap-3 py-2">
-                <ChevronRight className="h-4 w-4 text-secondary mt-0.5 shrink-0" />
+                <ChevronRight className="h-4 w-4 text-electric mt-0.5 shrink-0" />
                 <p className="text-sm text-foreground">{rec}</p>
               </div>
             ))}
@@ -471,7 +471,7 @@ export default function AthleteAssessment() {
             {overview && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 max-w-2xl mx-auto">
                 <StatCard
-                  icon={<User className="h-5 w-5 text-secondary" />}
+                  icon={<User className="h-5 w-5 text-electric" />}
                   label="Total Athletes"
                   value={overview.summary.totalAthletes}
                 />

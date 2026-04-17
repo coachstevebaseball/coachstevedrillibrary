@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Loader2, Zap, Target, Crosshair, Gauge, FileText, Link2 } from "lucide-react";
 
 const SESSION_TYPES = [
+  "Blast Motion Training Session with Coach Steve",
   "Tee",
   "Soft Toss",
   "Front Toss",
@@ -27,12 +28,18 @@ const SESSION_TYPES = [
   "General",
 ];
 
-// Metric field definitions with labels, units, and placeholder values
+// Metric field definitions — all Blast Motion metrics
 const METRIC_FIELDS = [
   { key: "batSpeedMph", label: "Bat Speed", unit: "mph", placeholder: "65.0", icon: Zap, color: "text-[#E8425A]" },
   { key: "onPlaneEfficiencyPercent", label: "On-Plane Efficiency", unit: "%", placeholder: "85.0", icon: Target, color: "text-teal-400" },
   { key: "attackAngleDeg", label: "Attack Angle", unit: "deg", placeholder: "10.5", icon: Crosshair, color: "text-lime-400" },
   { key: "exitVelocityMph", label: "Exit Velocity", unit: "mph", placeholder: "80.0", icon: Gauge, color: "text-violet-400" },
+  { key: "peakHandSpeedMph", label: "Peak Hand Speed", unit: "mph", placeholder: "28.0", icon: Zap, color: "text-orange-400" },
+  { key: "rotationalAccelerationG", label: "Rotational Accel.", unit: "g", placeholder: "14.0", icon: Gauge, color: "text-pink-400" },
+  { key: "connectionAtImpactDeg", label: "Connection @ Impact", unit: "deg", placeholder: "96.0", icon: Target, color: "text-cyan-400" },
+  { key: "earlyConnectionDeg", label: "Early Connection", unit: "deg", placeholder: "90.0", icon: Crosshair, color: "text-lime-300" },
+  { key: "powerKpi", label: "Power KPI", unit: "", placeholder: "1.2", icon: Gauge, color: "text-amber-400" },
+  { key: "timeToContactSec", label: "Time to Contact", unit: "sec", placeholder: "0.145", icon: Target, color: "text-slate-400" },
 ] as const;
 
 type MetricKey = typeof METRIC_FIELDS[number]["key"];
@@ -51,7 +58,7 @@ export function AddBlastSession({ open, onOpenChange, playerId, playerName, isLi
     const today = new Date();
     return today.toISOString().split("T")[0];
   });
-  const [sessionType, setSessionType] = useState("");
+  const [sessionType, setSessionType] = useState("Blast Motion Training Session with Coach Steve");
   const [metrics, setMetrics] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [createNote, setCreateNote] = useState(true); // default on when linked
@@ -211,7 +218,7 @@ export function AddBlastSession({ open, onOpenChange, playerId, playerName, isLi
           </div>
 
           {/* Metrics Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {METRIC_FIELDS.map((field) => {
               const Icon = field.icon;
               return (

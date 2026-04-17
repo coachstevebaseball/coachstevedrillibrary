@@ -1,3 +1,4 @@
+import { ENV } from "./_core/env";
 import { getDb } from "./db";
 import { invites } from "../drizzle/schema";
 import { eq, and, lt, gt } from "drizzle-orm";
@@ -37,7 +38,7 @@ export async function createInvite(
     createdByUserId,
   });
 
-  const inviteUrl = `https://coachstevemobilecoach.com/accept-invite/${inviteToken}`;
+  const inviteUrl = `${ENV.appUrl}/accept-invite/${inviteToken}`;
 
   // Send invite email if enabled
   if (sendEmail) {
@@ -273,7 +274,7 @@ export async function generateEmailVerificationToken(userId: number, email: stri
   const user = userResult[0];
 
   // Send verification email
-  const verificationLink = `https://coachstevemobilecoach.com/verify-email/${verificationToken}`;
+  const verificationLink = `${ENV.appUrl}/verify-email/${verificationToken}`;
   await sendEmailVerificationEmail({
     toEmail: email,
     verificationLink,
@@ -371,7 +372,7 @@ export async function sendExpirationReminder(inviteId: number) {
   }
 
   const invite = inviteResult[0];
-  const inviteUrl = `https://coachstevemobilecoach.com/accept-invite/${invite.inviteToken}`;
+  const inviteUrl = `${ENV.appUrl}/accept-invite/${invite.inviteToken}`;
 
   // Send reminder email
   await sendInviteExpirationReminderEmail({

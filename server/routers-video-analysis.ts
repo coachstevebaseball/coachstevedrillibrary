@@ -20,8 +20,9 @@ import { z } from "zod";
 import { getDb } from "./db";
 import { videoAnalysis } from "../drizzle/schema";
 import { eq, and, desc, inArray } from "drizzle-orm";
-import { analyzeAthleteVideo, formatAnalysisForCoachEdit } from "./videoAnalysisService";
+import { analyzeAthleteVideoWithFallback, formatAnalysisForCoachEdit } from "./videoAnalysisService";
 import * as db from "./db";
+import { sendNotification } from "./notificationEngine";
 
 // ── Helpers ──────────────────────────────────────────────────
 
@@ -180,8 +181,8 @@ export const videoAnalysisRouter = router({
           // Profile lookup is optional
         }
 
-        // Run Gemini analysis
-        const aiFeedback = await analyzeAthleteVideo({
+        // Run Gemini analysis (with forge text-based fallback if Gemini unavailable)
+        const aiFeedback = await analyzeAthleteVideoWithFallback({
           videoUrl: record.videoUrl,
           drillName: record.drillId || "Swing Analysis",
           athleteName: athlete?.name || undefined,
@@ -509,16 +510,17 @@ export const videoAnalysisRouter = router({
         })
         .where(eq(videoAnalysis.id, input.analysisId));
 
-      // Create in-app notification for athlete
+      // Create notification + email via centralized engine
       try {
-        await db.createNotification({
+        await sendNotification({
           userId: record.athleteId,
-          type: "feedback",
+          type: "swing_analysis_ready",
           title: "Video Feedback Ready",
           message: `Coach has reviewed your video submission${record.drillId ? ` for ${record.drillId}` : ""} and provided feedback.`,
-          relatedId: record.id,
+          relatedId: String(record.id),
           relatedType: "videoAnalysis",
-          actionUrl: "/athlete-portal",
+          linkUrl: "/athlete-portal",
+          dedupeKey: `swing-analysis-${record.id}`,
         });
       } catch {
         // Non-critical
