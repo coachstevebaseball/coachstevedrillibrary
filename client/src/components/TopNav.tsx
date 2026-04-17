@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
@@ -7,12 +6,8 @@ import {
   Shield,
   LayoutDashboard,
   LogOut,
-  Menu,
-  X,
-  ChevronRight,
   Zap,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/NotificationBell";
 
 interface TopNavProps {
@@ -23,473 +18,149 @@ interface TopNavProps {
 export function TopNav({ variant = "compact" }: TopNavProps) {
   const { user, logout } = useAuth();
   const [location] = useLocation();
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   const isActive = (path: string) => location === path;
-
   const loginUrl = getLoginUrl();
 
-  // ── Logged-in states ─────────────────────────────────────────────────────
   const isAdmin = user?.role === "admin";
   const isAthlete = user?.role === "athlete" || user?.role === "user";
 
-  // ── Nav link helper ───────────────────────────────────────────────────────
-  const NavTab = ({
-    href,
-    label,
-    icon: Icon,
-    active,
-    accent,
-    external,
-    onClick,
-  }: {
-    href: string;
-    label: string;
-    icon: React.ElementType;
-    active?: boolean;
-    accent?: boolean;
-    external?: boolean;
-    onClick?: () => void;
-  }) => {
-    const base =
-      "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-electric/60";
+  // ── Tab definitions based on auth state ──────────────────────────────────
+  const getTabs = () => {
+    if (user && isAdmin) {
+      return [
+        { href: "/coach-dashboard", label: "Dashboard", icon: LayoutDashboard, active: isActive("/coach-dashboard"), accent: false, external: false },
+        { href: "/admin", label: "Admin", icon: Shield, active: isActive("/admin"), accent: true, external: false },
+      ];
+    }
+    if (user && isAthlete) {
+      return [
+        { href: "/athlete-portal", label: "My Portal", icon: User, active: isActive("/athlete-portal"), accent: true, external: false },
+      ];
+    }
+    // Not logged in
+    return [
+      { href: "/athlete-portal", label: "Athlete Portal", icon: User, active: isActive("/athlete-portal"), accent: true, external: false },
+      { href: loginUrl, label: "Admin", icon: Shield, active: false, accent: false, external: true },
+    ];
+  };
 
-    const activeClass = accent
+  const tabs = getTabs();
+
+  // ── Shared tab pill renderer ──────────────────────────────────────────────
+  const renderTab = (tab: typeof tabs[0], size: "sm" | "xs" = "sm") => {
+    const base = size === "xs"
+      ? "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-electric/60 whitespace-nowrap"
+      : "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-electric/60 whitespace-nowrap";
+
+    const activeClass = tab.accent
       ? "bg-electric text-white shadow-md shadow-electric/30"
       : "bg-white/10 text-foreground border border-white/15";
 
-    const inactiveClass = accent
+    const inactiveClass = tab.accent
       ? "text-foreground/70 hover:text-foreground hover:bg-electric/15 border border-transparent hover:border-electric/30"
       : "text-foreground/60 hover:text-foreground hover:bg-white/8 border border-transparent hover:border-white/15";
 
-    const cls = `${base} ${active ? activeClass : inactiveClass}`;
+    const cls = `${base} ${tab.active ? activeClass : inactiveClass}`;
+    const Icon = tab.icon;
 
-    if (external) {
+    if (tab.external) {
       return (
-        <a href={href} className={cls} onClick={onClick}>
-          <Icon className="h-4 w-4 flex-shrink-0" />
-          {label}
+        <a key={tab.href} href={tab.href} className={cls}>
+          <Icon className={size === "xs" ? "h-3.5 w-3.5 flex-shrink-0" : "h-4 w-4 flex-shrink-0"} />
+          {tab.label}
         </a>
       );
     }
 
     return (
-      <Link href={href}>
-        <a className={cls} onClick={onClick}>
-          <Icon className="h-4 w-4 flex-shrink-0" />
-          {label}
+      <Link key={tab.href} href={tab.href}>
+        <a className={cls}>
+          <Icon className={size === "xs" ? "h-3.5 w-3.5 flex-shrink-0" : "h-4 w-4 flex-shrink-0"} />
+          {tab.label}
         </a>
       </Link>
     );
   };
 
-  // ── Right-side actions ────────────────────────────────────────────────────
-  const renderDesktopActions = () => {
-    if (user && isAdmin) {
-      return (
-        <div className="flex items-center gap-2">
-          <NavTab
-            href="/coach-dashboard"
-            label="Dashboard"
-            icon={LayoutDashboard}
-            active={isActive("/coach-dashboard")}
-          />
-          <NavTab
-            href="/admin"
-            label="Admin"
-            icon={Shield}
-            active={isActive("/admin")}
-            accent
-          />
-          <NotificationBell />
-          <button
-            onClick={logout}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm text-foreground/50 hover:text-foreground hover:bg-white/8 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
-          >
-            <LogOut className="h-4 w-4" />
-            <span className="hidden sm:inline">Logout</span>
-          </button>
-        </div>
-      );
-    }
-
-    if (user && isAthlete) {
-      return (
-        <div className="flex items-center gap-2">
-          <NavTab
-            href="/athlete-portal"
-            label="My Portal"
-            icon={User}
-            active={isActive("/athlete-portal")}
-            accent
-          />
-          <NotificationBell />
-          <button
-            onClick={logout}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm text-foreground/50 hover:text-foreground hover:bg-white/8 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
-          >
-            <LogOut className="h-4 w-4" />
-            <span className="hidden sm:inline">Logout</span>
-          </button>
-        </div>
-      );
-    }
-
-    // Not logged in — show both login tabs
+  const renderLogoutBtn = (size: "sm" | "xs" = "sm") => {
+    if (!user) return null;
+    const base = size === "xs"
+      ? "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs text-foreground/50 hover:text-foreground hover:bg-white/8 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 whitespace-nowrap"
+      : "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm text-foreground/50 hover:text-foreground hover:bg-white/8 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 whitespace-nowrap";
     return (
-      <div className="flex items-center gap-2">
-        <NavTab
-          href="/athlete-portal"
-          label="Athlete Portal"
-          icon={User}
-          active={isActive("/athlete-portal")}
-          accent
-        />
-        <NavTab
-          href={loginUrl}
-          label="Admin"
-          icon={Shield}
-          active={false}
-          external
-        />
-      </div>
-    );
-  };
-
-  const renderMobileMenu = () => {
-    if (!mobileOpen) return null;
-
-    return (
-      <div className="absolute top-full left-0 right-0 z-50 border-t border-white/10 shadow-xl animate-fade-in-down" style={{background: "oklch(0.13 0.02 260 / 0.97)", backdropFilter: "blur(20px)"}}>
-        <div className="flex flex-col gap-1">
-          {user && isAdmin && (
-            <>
-              <MobileLink
-                href="/coach-dashboard"
-                label="Dashboard"
-                icon={LayoutDashboard}
-                active={isActive("/coach-dashboard")}
-                onClick={() => setMobileOpen(false)}
-              />
-              <MobileLink
-                href="/admin"
-                label="Admin Panel"
-                icon={Shield}
-                active={isActive("/admin")}
-                accent
-                onClick={() => setMobileOpen(false)}
-              />
-              <button
-                onClick={() => { logout(); setMobileOpen(false); }}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all text-left"
-              >
-                <LogOut className="h-4 w-4" />
-                Logout
-              </button>
-            </>
-          )}
-
-          {user && isAthlete && (
-            <>
-              <MobileLink
-                href="/athlete-portal"
-                label="My Portal"
-                icon={User}
-                active={isActive("/athlete-portal")}
-                accent
-                onClick={() => setMobileOpen(false)}
-              />
-              <button
-                onClick={() => { logout(); setMobileOpen(false); }}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all text-left"
-              >
-                <LogOut className="h-4 w-4" />
-                Logout
-              </button>
-            </>
-          )}
-
-          {!user && (
-            <>
-              <MobileLink
-                href="/athlete-portal"
-                label="Athlete Portal"
-                icon={User}
-                active={isActive("/athlete-portal")}
-                accent
-                onClick={() => setMobileOpen(false)}
-              />
-              <a
-                href={loginUrl}
-                className="flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 border border-white/15 transition-all"
-                onClick={() => setMobileOpen(false)}
-              >
-                <div className="flex items-center gap-3">
-                  <Shield className="h-4 w-4" />
-                  Admin Login
-                </div>
-                <ChevronRight className="h-4 w-4 text-foreground/30" />
-              </a>
-            </>
-          )}
-        </div>
-      </div>
+      <button onClick={logout} className={base}>
+        <LogOut className={size === "xs" ? "h-3.5 w-3.5" : "h-4 w-4"} />
+        <span>Logout</span>
+      </button>
     );
   };
 
   // ── Compact sticky nav (used on non-Home pages) ───────────────────────────
   if (variant === "compact") {
     return (
-      <>
-        <header className="sticky top-0 z-40 glass border-b border-white/10 shadow-sm">
-          <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-            {/* Logo */}
-            <Link href="/">
-              <a className="flex items-center gap-2.5 group">
-                <div className="h-8 w-8 bg-gradient-to-br from-primary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-sm text-white shadow-md shadow-electric/20 group-hover:shadow-electric/40 transition-shadow">
-                  CS
-                </div>
-                <span className="font-heading font-bold text-sm text-foreground hidden sm:block group-hover:text-electric transition-colors">
-                  Coach Steve Baseball
-                </span>
-              </a>
-            </Link>
+      <header className="sticky top-0 z-40 glass border-b border-white/10 shadow-sm">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 h-12 sm:h-14 flex items-center justify-between gap-2">
+          {/* Logo */}
+          <Link href="/">
+            <a className="flex items-center gap-2 group flex-shrink-0">
+              <div className="h-7 w-7 sm:h-8 sm:w-8 bg-gradient-to-br from-primary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-xs sm:text-sm text-white shadow-md shadow-electric/20 group-hover:shadow-electric/40 transition-shadow">
+                CS
+              </div>
+              <span className="font-heading font-bold text-xs sm:text-sm text-foreground hidden md:block group-hover:text-electric transition-colors">
+                Coach Steve
+              </span>
+            </a>
+          </Link>
 
-            {/* Desktop tabs */}
-            <div className="hidden sm:flex">{renderDesktopActions()}</div>
-
-            {/* Mobile hamburger */}
-            <button
-              className="sm:hidden flex items-center justify-center w-9 h-9 rounded-lg text-foreground/60 hover:text-foreground hover:bg-white/8 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-electric/50"
-              onClick={() => setMobileOpen((o) => !o)}
-              aria-label="Toggle menu"
-            >
-              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
-          </div>
-        </header>
-
-        {/* Mobile dropdown — rendered OUTSIDE header to avoid z-index stacking issues */}
-        {mobileOpen && (
-          <div className="fixed top-14 left-0 right-0 z-[9999] border-b border-white/10 shadow-xl sm:hidden animate-fade-in-down" style={{background: "oklch(0.13 0.02 260 / 0.97)", backdropFilter: "blur(20px)"}}>
-            <div className="max-w-6xl mx-auto px-4 py-2 flex flex-col gap-1">
-              {user && isAdmin && (
-                <>
-                  <MobileLink
-                    href="/coach-dashboard"
-                    label="Dashboard"
-                    icon={LayoutDashboard}
-                    active={isActive("/coach-dashboard")}
-                    onClick={() => setMobileOpen(false)}
-                  />
-                  <MobileLink
-                    href="/admin"
-                    label="Admin Panel"
-                    icon={Shield}
-                    active={isActive("/admin")}
-                    accent
-                    onClick={() => setMobileOpen(false)}
-                  />
-                  <button
-                    onClick={() => { logout(); setMobileOpen(false); }}
-                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all text-left"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Logout
-                  </button>
-                </>
-              )}
-
-              {user && isAthlete && (
-                <>
-                  <MobileLink
-                    href="/athlete-portal"
-                    label="My Portal"
-                    icon={User}
-                    active={isActive("/athlete-portal")}
-                    accent
-                    onClick={() => setMobileOpen(false)}
-                  />
-                  <button
-                    onClick={() => { logout(); setMobileOpen(false); }}
-                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all text-left"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Logout
-                  </button>
-                </>
-              )}
-
-              {!user && (
-                <>
-                  <MobileLink
-                    href="/athlete-portal"
-                    label="Athlete Portal"
-                    icon={User}
-                    active={isActive("/athlete-portal")}
-                    accent
-                    onClick={() => setMobileOpen(false)}
-                  />
-                  <a
-                    href={loginUrl}
-                    className="flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 border border-white/15 transition-all"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Shield className="h-4 w-4" />
-                      Admin Login
-                    </div>
-                    <ChevronRight className="h-4 w-4 text-foreground/30" />
-                  </a>
-                </>
-              )}
+          {/* Pinned tabs — always visible on all screen sizes */}
+          <div className="flex items-center gap-1 sm:gap-2 flex-wrap justify-end">
+            {/* Mobile: xs size tabs */}
+            <div className="flex sm:hidden items-center gap-1">
+              {tabs.map(tab => renderTab(tab, "xs"))}
+              {user && <NotificationBell />}
+              {renderLogoutBtn("xs")}
+            </div>
+            {/* Desktop: sm size tabs */}
+            <div className="hidden sm:flex items-center gap-2">
+              {tabs.map(tab => renderTab(tab, "sm"))}
+              {user && <NotificationBell />}
+              {renderLogoutBtn("sm")}
             </div>
           </div>
-        )}
-      </>
+        </div>
+      </header>
     );
   }
 
   // ── Hero inline nav (used inside Home page header) ────────────────────────
   return (
-    <nav className="flex justify-between items-center mb-10 md:mb-16 animate-fade-in-down relative">
+    <nav className="flex justify-between items-center mb-6 md:mb-10 animate-fade-in-down relative">
       {/* Logo */}
-      <div className="flex items-center gap-3">
-        <div className="h-10 w-10 bg-gradient-to-br from-primary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-lg text-white shadow-lg shadow-primary/20">
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="h-8 w-8 sm:h-10 sm:w-10 bg-gradient-to-br from-primary to-electric rounded-lg flex items-center justify-center font-heading font-bold text-sm sm:text-lg text-white shadow-lg shadow-primary/20">
           CS
         </div>
-        <span className="font-heading font-bold text-lg text-foreground hidden sm:block">
+        <span className="font-heading font-bold text-sm sm:text-lg text-foreground hidden sm:block">
           Coach Steve
         </span>
       </div>
 
-      {/* Desktop tabs */}
-      <div className="hidden sm:flex items-center gap-2">
-        {renderDesktopActions()}
+      {/* Pinned tabs — always visible on all screen sizes */}
+      <div className="flex items-center gap-1 sm:gap-2">
+        {/* Mobile: xs size tabs */}
+        <div className="flex sm:hidden items-center gap-1">
+          {tabs.map(tab => renderTab(tab, "xs"))}
+          {user && <NotificationBell />}
+          {renderLogoutBtn("xs")}
+        </div>
+        {/* Desktop: sm size tabs */}
+        <div className="hidden sm:flex items-center gap-2">
+          {tabs.map(tab => renderTab(tab, "sm"))}
+          {user && <NotificationBell />}
+          {renderLogoutBtn("sm")}
+        </div>
       </div>
-
-      {/* Mobile hamburger */}
-      <button
-        className="sm:hidden flex items-center justify-center w-9 h-9 rounded-lg text-foreground/60 hover:text-foreground hover:bg-white/8 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-electric/50"
-        onClick={() => setMobileOpen((o) => !o)}
-        aria-label="Toggle menu"
-      >
-        {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-      </button>
-
-      {/* Mobile dropdown — fixed to viewport so it escapes overflow:hidden on hero */}
-      {mobileOpen && (
-        <div className="fixed top-16 right-3 w-64 z-[9999] rounded-xl border border-white/20 shadow-2xl p-2 flex flex-col gap-1 animate-fade-in-down sm:hidden" style={{background: "oklch(0.12 0.02 260 / 0.98)", backdropFilter: "blur(24px)"}}>
-          {user && isAdmin && (
-            <>
-              <MobileLink
-                href="/coach-dashboard"
-                label="Dashboard"
-                icon={LayoutDashboard}
-                active={isActive("/coach-dashboard")}
-                onClick={() => setMobileOpen(false)}
-              />
-              <MobileLink
-                href="/admin"
-                label="Admin Panel"
-                icon={Shield}
-                active={isActive("/admin")}
-                accent
-                onClick={() => setMobileOpen(false)}
-              />
-              <button
-                onClick={() => { logout(); setMobileOpen(false); }}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all text-left"
-              >
-                <LogOut className="h-4 w-4" />
-                Logout
-              </button>
-            </>
-          )}
-
-          {user && isAthlete && (
-            <>
-              <MobileLink
-                href="/athlete-portal"
-                label="My Portal"
-                icon={User}
-                active={isActive("/athlete-portal")}
-                accent
-                onClick={() => setMobileOpen(false)}
-              />
-              <button
-                onClick={() => { logout(); setMobileOpen(false); }}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all text-left"
-              >
-                <LogOut className="h-4 w-4" />
-                Logout
-              </button>
-            </>
-          )}
-
-          {!user && (
-            <>
-              <MobileLink
-                href="/athlete-portal"
-                label="Athlete Portal"
-                icon={User}
-                active={isActive("/athlete-portal")}
-                accent
-                onClick={() => setMobileOpen(false)}
-              />
-              <a
-                href={loginUrl}
-                className="flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 border border-white/15 transition-all"
-                onClick={() => setMobileOpen(false)}
-              >
-                <div className="flex items-center gap-3">
-                  <Shield className="h-4 w-4" />
-                  Admin Login
-                </div>
-                <ChevronRight className="h-4 w-4 text-foreground/30" />
-              </a>
-            </>
-          )}
-        </div>
-      )}
     </nav>
-  );
-}
-
-// ── Helper: mobile link row ───────────────────────────────────────────────────
-function MobileLink({
-  href,
-  label,
-  icon: Icon,
-  active,
-  accent,
-  onClick,
-}: {
-  href: string;
-  label: string;
-  icon: React.ElementType;
-  active?: boolean;
-  accent?: boolean;
-  onClick?: () => void;
-}) {
-  const base =
-    "flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all";
-  const activeClass = accent
-    ? "bg-electric text-white"
-    : "bg-white/10 text-foreground border border-white/15";
-  const inactiveClass = accent
-    ? "text-foreground/80 hover:bg-electric/15 hover:text-foreground border border-electric/20"
-    : "text-foreground/70 hover:text-foreground hover:bg-white/8 border border-white/10";
-
-  return (
-    <Link href={href}>
-      <a className={`${base} ${active ? activeClass : inactiveClass}`} onClick={onClick}>
-        <div className="flex items-center gap-3">
-          <Icon className="h-4 w-4" />
-          {label}
-        </div>
-        <ChevronRight className="h-4 w-4 text-white/40" />
-      </a>
-    </Link>
   );
 }

@@ -1845,3 +1845,10 @@
 - [x] Added 9 vitest tests confirming all fixes work correctly (all passing)
 - [x] Test end-to-end: button click → form → submission → database insert → confirmation
 - [x] Verified drill appears in drill list after creation (pagination shows new drills on later pages)
+
+## Mobile Navigation: Replace Hamburger with Pinned Tabs (Apr 17)
+- [x] Replace hamburger menu with pinned tab bar at top of page on mobile
+- [x] Tabs should be always visible (no dropdown), pinned/sticky at top
+- [x] Match dark sophisticated design theme with glassmorphism
+- [x] Show correct tabs based on auth state (admin/athlete/visitor)
+- [x] Remove all hamburger/dropdown mobile menu code
