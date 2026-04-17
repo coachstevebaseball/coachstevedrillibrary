@@ -1888,3 +1888,9 @@
 - [x] Limit visible tags to 4, hide rest behind "Show More Tags"
 - [x] Final layout: Video → Label → Tags → Goal of Drill
 - [x] Confirm no overlapping tags remain
+
+## Remove Test Drills (Apr 17)
+- [x] Delete "Test Video URL Drill" (id: 120003) from customDrills DB
+- [x] Delete "Test Drill - Delete Me" (id: 570001) from customDrills DB
+- [x] Delete "Simple Test" (id: 600001) from customDrills DB
+- [x] Delete "Test Drill Fix Verification" (id: 600002) from customDrills DB
