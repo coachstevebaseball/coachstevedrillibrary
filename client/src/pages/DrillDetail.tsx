@@ -24,6 +24,45 @@ import { Layout } from "lucide-react";
 import { usePreviewLimit, MAX_FREE_PREVIEWS } from "@/hooks/usePreviewLimit";
 import { InlineEdit } from "@/components/InlineEdit";
 
+// DrillTagSection component — shows Problems (red) and Outcomes (green) with Show More
+const MAX_VISIBLE_TAGS = 4;
+function DrillTagSection({ problems, outcomes }: { problems: string[]; outcomes: string[] }) {
+  const [showAll, setShowAll] = useState(false);
+  const allTags: Array<{ label: string; type: 'problem' | 'outcome' }> = [
+    ...problems.map(p => ({ label: p, type: 'problem' as const })),
+    ...outcomes.map(o => ({ label: o, type: 'outcome' as const })),
+  ];
+  const visibleTags = showAll ? allTags : allTags.slice(0, MAX_VISIBLE_TAGS);
+  const hasMore = allTags.length > MAX_VISIBLE_TAGS;
+  return (
+    <div className="px-1">
+      <p className="text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">What this drill fixes &amp; improves</p>
+      <div className="flex flex-wrap gap-2">
+        {visibleTags.map((tag, i) => (
+          <span
+            key={i}
+            className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold tracking-wide border ${
+              tag.type === 'problem'
+                ? 'bg-red-500/15 text-red-300 border-red-500/30'
+                : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+            }`}
+          >
+            {tag.label}
+          </span>
+        ))}
+        {hasMore && (
+          <button
+            onClick={() => setShowAll(v => !v)}
+            className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-white/[0.07] text-white/60 border border-white/[0.15] hover:bg-white/[0.12] transition-colors"
+          >
+            {showAll ? 'Show Less' : `+${allTags.length - MAX_VISIBLE_TAGS} More`}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // Collapsible section component
 function CollapsibleSection({ title, icon: Icon, children, defaultOpen = false }: { title: string; icon: any; children: React.ReactNode; defaultOpen?: boolean }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
@@ -1563,44 +1602,12 @@ export default function DrillDetail() {
               </div>
             )}
 
-            {/* Tags — immediately below video */}
-            {staticDrill && ((staticDrill.tags?.length ?? 0) > 0 || (staticDrill.ageLevel?.length ?? 0) > 0 || staticDrill.drillType || (staticDrill.problem?.length ?? 0) > 0 || (staticDrill.goal?.length ?? 0) > 0) && (
-              <div className="flex flex-wrap gap-2 px-1">
-                {staticDrill.drillType && (
-                  <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30 tracking-wide">
-                    {staticDrill.drillType}
-                  </span>
-                )}
-                {(staticDrill.ageLevel ?? []).filter((v: string) => v !== 'all').map((level: string) => {
-                  const label = filterOptions.ageLevel.find(o => o.value === level)?.label ?? level;
-                  return (
-                    <span key={level} className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-teal-500/20 text-teal-300 border border-teal-500/30 tracking-wide">
-                      {label}
-                    </span>
-                  );
-                })}
-                {(staticDrill.tags ?? []).map((tag: string) => (
-                  <span key={tag} className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-white/[0.07] text-white/75 border border-white/[0.13] tracking-wide">
-                    {tag}
-                  </span>
-                ))}
-                {(staticDrill.problem ?? []).map((p: string) => {
-                  const label = filterOptions.problem.find(o => o.value === p)?.label ?? p;
-                  return (
-                    <span key={p} className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-red-500/15 text-red-300 border border-red-500/25 tracking-wide">
-                      {label}
-                    </span>
-                  );
-                })}
-                {(staticDrill.goal ?? []).map((g: string) => {
-                  const label = filterOptions.goal.find(o => o.value === g)?.label ?? g;
-                  return (
-                    <span key={g} className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-green-500/15 text-green-300 border border-green-500/25 tracking-wide">
-                      {label}
-                    </span>
-                  );
-                })}
-              </div>
+            {/* Tags — Problems + Outcomes immediately below video */}
+            {staticDrill && ((staticDrill.problems?.length ?? 0) > 0 || (staticDrill.outcomes?.length ?? 0) > 0) && (
+              <DrillTagSection
+                problems={staticDrill.problems ?? []}
+                outcomes={staticDrill.outcomes ?? []}
+              />
             )}
 
             {/* Goal of Drill */}

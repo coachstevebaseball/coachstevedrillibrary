@@ -11,6 +11,8 @@ export interface Drill {
   problem: string[];
   goal: string[];
   drillType: string;
+  problems: string[];
+  outcomes: string[];
 }
 
 export const filterOptions = {
@@ -78,6 +80,18 @@ export const filterOptions = {
     { value: 'plate-coverage', label: 'Plate Coverage' },
     { value: 'power', label: 'Increase Power' },
     { value: 'improve-rhythm-timing', label: 'Improve Rhythm & Timing' },
+  ],
+  // New canonical tag lists
+  problems: [
+    'Timing Issues', 'Bat Path Issues', 'Poor Load', 'Lunging', 'Collapsing Backside',
+    'Weak Contact', 'No Hip Rotation', 'Early Extension', 'Rolling Over', 'Arm Barring',
+    'Head Drifting', 'Pushing Hands', 'No Extension', 'Balance Issues', 'Improper Grip',
+    'Twisting Shoulders', 'No Rhythm', 'Bat Drag',
+  ],
+  outcomes: [
+    'Improve Barrel Path', 'Improve Timing', 'Increase Bat Speed', 'Improve Swing Mechanics',
+    'Build Lower Half', 'Better Contact Quality', 'Add Power', 'Improve Load',
+    'Pitch Recognition', 'Decision Making', 'Plate Coverage', 'Game Transfer',
   ],
 };
 
@@ -157,7 +171,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "timing", "bat path", "swing mechanics"],
     problem: ["timing-issues", "bat-path-issues", "no-rhythm"],
     goal: ["improve-barrel-path", "improve-rhythm-timing", "swing-mechanics"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Timing Issues", "Bat Path Issues", "No Rhythm"],
+    outcomes: ["Improve Barrel Path", "Improve Timing"],
   },
   {
     id: "1-2-3-rhythm-tee",
@@ -171,7 +187,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "timing", "tee focus", "swing mechanics"],
     problem: ["no-rhythm", "timing-issues", "poor-load"],
     goal: ["improve-rhythm-timing", "swing-mechanics", "load"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["No Rhythm", "Timing Issues", "Poor Load"],
+    outcomes: ["Improve Timing", "Improve Load"],
   },
   {
     id: "4-corners-bunting",
@@ -185,7 +203,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "contact points", "variation training"],
     problem: ["timing-issues"],
     goal: ["game-transfer", "improve-contact-quality"],
-    drillType: "Situational Hitting"
+    drillType: "Situational Hitting",
+    problems: ["Timing Issues"],
+    outcomes: ["Game Transfer", "Better Contact Quality"],
   },
   {
     id: "7-ball-front-toss",
@@ -199,7 +219,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "timing", "swing mechanics"],
     problem: ["timing-issues", "bat-path-issues"],
     goal: ["improve-contact-quality", "improve-barrel-path", "improve-rhythm-timing"],
-    drillType: "Front Toss"
+    drillType: "Front Toss",
+    problems: ["Timing Issues", "Bat Path Issues"],
+    outcomes: ["Better Contact Quality", "Improve Barrel Path"],
   },
   {
     id: "9045even-progression-tee",
@@ -213,7 +235,9 @@ const drillsData: Drill[] = [
     tags: ["tee focus", "bat path", "contact points", "swing mechanics"],
     problem: ["bat-path-issues", "rolling-over", "casting"],
     goal: ["improve-barrel-path", "improve-contact-quality", "up-exit-velocity"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Bat Path Issues", "Rolling Over", "Arm Barring"],
+    outcomes: ["Improve Barrel Path", "Better Contact Quality"],
   },
   {
     id: "angle-flips",
@@ -227,7 +251,9 @@ const drillsData: Drill[] = [
     tags: ["timing", "contact points", "swing mechanics"],
     problem: ["bat-path-issues", "timing-issues", "casting"],
     goal: ["improve-barrel-path", "improve-contact-quality"],
-    drillType: "Soft Toss"
+    drillType: "Soft Toss",
+    problems: ["Bat Path Issues", "Timing Issues"],
+    outcomes: ["Improve Barrel Path", "Better Contact Quality"],
   },
   {
     id: "angled-force-plate-tee-back-foot",
@@ -241,7 +267,9 @@ const drillsData: Drill[] = [
     tags: ["lower half", "hip hinge / side bend", "tee focus"],
     problem: ["collapsing-back-side", "little-or-no-weight-transfer", "no-hip-hinge"],
     goal: ["lower-half", "power", "swing-mechanics"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Collapsing Backside", "No Hip Rotation"],
+    outcomes: ["Build Lower Half", "Add Power"],
   },
   {
     id: "back-foot-cone-tee",
@@ -255,7 +283,9 @@ const drillsData: Drill[] = [
     tags: ["lower half", "balance", "hip hinge / side bend", "tee focus"],
     problem: ["collapsing-back-side", "little-or-no-weight-transfer"],
     goal: ["lower-half", "swing-mechanics"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Collapsing Backside", "Balance Issues"],
+    outcomes: ["Build Lower Half", "Improve Swing Mechanics"],
   },
   {
     id: "back-hip-load-tee",
@@ -269,7 +299,9 @@ const drillsData: Drill[] = [
     tags: ["lower half", "hip hinge / side bend", "tee focus"],
     problem: ["poor-load", "no-hip-hinge", "little-or-no-weight-transfer"],
     goal: ["load", "lower-half", "power"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Poor Load", "No Hip Rotation"],
+    outcomes: ["Improve Load", "Build Lower Half"],
   },
   {
     id: "back-net-constraint-tee",
@@ -283,7 +315,9 @@ const drillsData: Drill[] = [
     tags: ["bat path", "tee focus", "swing mechanics"],
     problem: ["casting", "bat-drag-racing-back-elbow", "bat-path-issues"],
     goal: ["improve-barrel-path", "increase-bat-speed"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Arm Barring", "Bat Drag", "Bat Path Issues"],
+    outcomes: ["Improve Barrel Path", "Increase Bat Speed"],
   },
   {
     id: "backside-angle-toss",
@@ -297,7 +331,9 @@ const drillsData: Drill[] = [
     tags: ["bat path", "contact points", "swing mechanics"],
     problem: ["collapsing-back-side", "rolling-over", "bat-path-issues"],
     goal: ["improve-barrel-path", "improve-contact-quality"],
-    drillType: "Soft Toss"
+    drillType: "Soft Toss",
+    problems: ["Collapsing Backside", "Rolling Over", "Bat Path Issues"],
+    outcomes: ["Improve Barrel Path", "Better Contact Quality"],
   },
   {
     id: "balance-beam",
@@ -311,7 +347,9 @@ const drillsData: Drill[] = [
     tags: ["balance", "lower half", "stride focused"],
     problem: ["balance-issues", "lunging", "reaching-with-front-foot"],
     goal: ["lower-half", "swing-mechanics", "load"],
-    drillType: "Balance Drill"
+    drillType: "Balance Drill",
+    problems: ["Balance Issues", "Lunging"],
+    outcomes: ["Build Lower Half", "Improve Load"],
   },
   {
     id: "ball-down-front-toss",
@@ -325,7 +363,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "timing", "contact points"],
     problem: ["timing-issues", "bat-path-issues"],
     goal: ["improve-contact-quality", "improve-barrel-path"],
-    drillType: "Front Toss"
+    drillType: "Front Toss",
+    problems: ["Timing Issues", "Bat Path Issues"],
+    outcomes: ["Better Contact Quality", "Improve Barrel Path"],
   },
   {
     id: "ball-hit-front-toss",
@@ -339,7 +379,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "timing", "contact points"],
     problem: ["timing-issues"],
     goal: ["improve-contact-quality", "improve-rhythm-timing"],
-    drillType: "Front Toss"
+    drillType: "Front Toss",
+    problems: ["Timing Issues"],
+    outcomes: ["Better Contact Quality", "Improve Timing"],
   },
   {
     id: "bat-behind-hips",
@@ -353,7 +395,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "lower half", "hip hinge / side bend"],
     problem: ["no-hip-hinge", "no-hip-turn", "little-or-no-hip-rotation"],
     goal: ["lower-half", "swing-mechanics"],
-    drillType: "Load and Stride"
+    drillType: "Load and Stride",
+    problems: ["No Hip Rotation"],
+    outcomes: ["Build Lower Half", "Improve Swing Mechanics"],
   },
   {
     id: "behind-the-hitter-toss-1-2-3",
@@ -367,7 +411,9 @@ const drillsData: Drill[] = [
     tags: ["timing", "bat path", "variation training"],
     problem: ["timing-issues", "bat-path-issues", "casting"],
     goal: ["improve-barrel-path", "improve-rhythm-timing", "game-transfer"],
-    drillType: "Soft Toss"
+    drillType: "Soft Toss",
+    problems: ["Timing Issues", "Bat Path Issues", "Arm Barring"],
+    outcomes: ["Improve Barrel Path", "Game Transfer"],
   },
   {
     id: "belly-button-tee",
@@ -381,7 +427,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "tee focus", "contact points"],
     problem: ["bat-path-issues", "early-extension"],
     goal: ["improve-barrel-path", "improve-contact-quality"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Bat Path Issues", "Early Extension"],
+    outcomes: ["Improve Barrel Path", "Better Contact Quality"],
   },
   {
     id: "bottom-hand-tee",
@@ -395,7 +443,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "tee focus", "bat path"],
     problem: ["casting", "bat-path-issues", "rolling-over"],
     goal: ["improve-barrel-path", "swing-mechanics"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Arm Barring", "Bat Path Issues", "Rolling Over"],
+    outcomes: ["Improve Barrel Path", "Improve Swing Mechanics"],
   },
   {
     id: "change-up-front-toss",
@@ -409,7 +459,9 @@ const drillsData: Drill[] = [
     tags: ["timing", "pitch recognition", "variation training"],
     problem: ["timing-issues", "no-rhythm"],
     goal: ["pitch-recognition", "improve-rhythm-timing", "decision-making"],
-    drillType: "Front Toss"
+    drillType: "Front Toss",
+    problems: ["Timing Issues", "No Rhythm"],
+    outcomes: ["Pitch Recognition", "Decision Making"],
   },
   {
     id: "change-up-tee",
@@ -423,7 +475,9 @@ const drillsData: Drill[] = [
     tags: ["timing", "tee focus", "variation training"],
     problem: ["timing-issues", "lunging", "no-rhythm"],
     goal: ["improve-rhythm-timing", "decision-making", "game-transfer"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Timing Issues", "Lunging", "No Rhythm"],
+    outcomes: ["Decision Making", "Game Transfer"],
   },
   {
     id: "color-front-toss",
@@ -437,7 +491,9 @@ const drillsData: Drill[] = [
     tags: ["vision", "pitch recognition", "timing"],
     problem: ["timing-issues", "no-rhythm"],
     goal: ["pitch-recognition", "decision-making", "game-transfer"],
-    drillType: "Front Toss"
+    drillType: "Front Toss",
+    problems: ["Timing Issues", "No Rhythm"],
+    outcomes: ["Pitch Recognition", "Decision Making"],
   },
   {
     id: "decline-swings",
@@ -451,7 +507,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "bat path", "swing mechanics"],
     problem: ["uppercut", "bat-path-issues"],
     goal: ["improve-barrel-path", "swing-mechanics"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Bat Path Issues"],
+    outcomes: ["Improve Barrel Path", "Improve Swing Mechanics"],
   },
   {
     id: "directional-tee",
@@ -465,7 +523,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "tee focus", "contact points"],
     problem: ["bat-path-issues", "pulling-front-shoulder-head"],
     goal: ["improve-barrel-path", "plate-coverage"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Bat Path Issues", "Twisting Shoulders"],
+    outcomes: ["Improve Barrel Path", "Plate Coverage"],
   },
   {
     id: "double-tee",
@@ -479,7 +539,9 @@ const drillsData: Drill[] = [
     tags: ["two tee", "bat path", "tee focus"],
     problem: ["bat-path-issues", "casting", "rolling-over"],
     goal: ["improve-barrel-path", "improve-contact-quality"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Bat Path Issues", "Arm Barring", "Rolling Over"],
+    outcomes: ["Improve Barrel Path", "Better Contact Quality"],
   },
   {
     id: "double-tee-decision-making",
@@ -493,7 +555,9 @@ const drillsData: Drill[] = [
     tags: ["two tee", "vision", "pitch recognition"],
     problem: ["timing-issues"],
     goal: ["decision-making", "pitch-recognition", "improve-contact-quality"],
-    drillType: "Decision Making"
+    drillType: "Decision Making",
+    problems: ["Timing Issues"],
+    outcomes: ["Decision Making", "Pitch Recognition"],
   },
   {
     id: "extended-tee",
@@ -507,7 +571,9 @@ const drillsData: Drill[] = [
     tags: ["tee focus", "contact points", "bat path"],
     problem: ["no-extension-getting-through-the-ball", "weak-contact"],
     goal: ["improve-contact-quality", "improve-barrel-path", "up-exit-velocity"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["No Extension", "Weak Contact"],
+    outcomes: ["Better Contact Quality", "Improve Barrel Path"],
   },
   {
     id: "fastball-front-toss",
@@ -521,7 +587,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "timing", "swing mechanics"],
     problem: ["timing-issues"],
     goal: ["improve-contact-quality", "improve-rhythm-timing"],
-    drillType: "Front Toss"
+    drillType: "Front Toss",
+    problems: ["Timing Issues"],
+    outcomes: ["Better Contact Quality", "Improve Timing"],
   },
   {
     id: "flaw-casting-the-hands-outside-of-the-ball",
@@ -535,7 +603,9 @@ const drillsData: Drill[] = [
     tags: ["bat path", "swing mechanics"],
     problem: ["casting", "bat-path-issues", "arm-barring"],
     goal: ["improve-barrel-path", "increase-bat-speed"],
-    drillType: "Flaw Fix"
+    drillType: "Flaw Fix",
+    problems: ["Arm Barring", "Bat Path Issues"],
+    outcomes: ["Improve Barrel Path", "Increase Bat Speed"],
   },
   {
     id: "flaw-chopping-at-the-ball",
@@ -549,7 +619,9 @@ const drillsData: Drill[] = [
     tags: ["bat path", "swing mechanics"],
     problem: ["uppercut", "bat-path-issues"],
     goal: ["improve-barrel-path", "swing-mechanics"],
-    drillType: "Flaw Fix"
+    drillType: "Flaw Fix",
+    problems: ["Bat Path Issues"],
+    outcomes: ["Improve Barrel Path", "Improve Swing Mechanics"],
   },
   {
     id: "flaw-collapsing-the-backside",
@@ -563,7 +635,9 @@ const drillsData: Drill[] = [
     tags: ["collapsing backside", "lower half", "hip hinge / side bend"],
     problem: ["collapsing-back-side", "little-or-no-weight-transfer"],
     goal: ["lower-half", "swing-mechanics", "power"],
-    drillType: "Flaw Fix"
+    drillType: "Flaw Fix",
+    problems: ["Collapsing Backside"],
+    outcomes: ["Build Lower Half", "Add Power"],
   },
   {
     id: "flaw-contact-point-too-far-out-front",
@@ -577,7 +651,9 @@ const drillsData: Drill[] = [
     tags: ["contact points", "timing", "bat path"],
     problem: ["timing-issues", "lunging", "early-extension"],
     goal: ["improve-contact-quality", "improve-barrel-path", "plate-coverage"],
-    drillType: "Flaw Fix"
+    drillType: "Flaw Fix",
+    problems: ["Timing Issues", "Lunging", "Early Extension"],
+    outcomes: ["Better Contact Quality", "Plate Coverage"],
   },
   {
     id: "flaw-hands-dropping-too-low",
@@ -591,7 +667,9 @@ const drillsData: Drill[] = [
     tags: ["bat path", "swing mechanics"],
     problem: ["hands-dropping", "bat-path-issues", "uppercut"],
     goal: ["improve-barrel-path", "swing-mechanics"],
-    drillType: "Flaw Fix"
+    drillType: "Flaw Fix",
+    problems: ["Bat Path Issues", "Pushing Hands"],
+    outcomes: ["Improve Barrel Path", "Improve Swing Mechanics"],
   },
   {
     id: "flaw-improper-stance",
@@ -605,7 +683,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "balance"],
     problem: ["balance-issues", "improper-grip"],
     goal: ["swing-mechanics", "load"],
-    drillType: "Flaw Fix"
+    drillType: "Flaw Fix",
+    problems: ["Balance Issues", "Improper Grip"],
+    outcomes: ["Improve Swing Mechanics", "Improve Load"],
   },
   {
     id: "flaw-lack-of-separation",
@@ -619,7 +699,9 @@ const drillsData: Drill[] = [
     tags: ["lower half", "hip hinge / side bend", "swing mechanics"],
     problem: ["no-coil-in-torso", "little-or-no-hip-rotation", "twisting-shoulders"],
     goal: ["lower-half", "power", "increase-bat-speed"],
-    drillType: "Flaw Fix"
+    drillType: "Flaw Fix",
+    problems: ["Twisting Shoulders", "No Hip Rotation"],
+    outcomes: ["Build Lower Half", "Add Power"],
   },
   {
     id: "flaw-loop-in-the-barrel",
@@ -633,7 +715,9 @@ const drillsData: Drill[] = [
     tags: ["bat path", "swing mechanics"],
     problem: ["bat-path-issues", "bat-drag-racing-back-elbow", "hands-dropping"],
     goal: ["improve-barrel-path", "increase-bat-speed"],
-    drillType: "Flaw Fix"
+    drillType: "Flaw Fix",
+    problems: ["Bat Path Issues", "Bat Drag"],
+    outcomes: ["Improve Barrel Path", "Increase Bat Speed"],
   },
   {
     id: "flaw-lunging-to-the-ball",
@@ -647,7 +731,9 @@ const drillsData: Drill[] = [
     tags: ["lunging", "balance", "stride focused"],
     problem: ["lunging", "head-drifting-forward-at-launch", "reaching-with-front-foot"],
     goal: ["load", "swing-mechanics", "improve-rhythm-timing"],
-    drillType: "Flaw Fix"
+    drillType: "Flaw Fix",
+    problems: ["Lunging", "Head Drifting"],
+    outcomes: ["Improve Load", "Improve Timing"],
   },
   {
     id: "flaw-no-lower-half",
@@ -661,7 +747,9 @@ const drillsData: Drill[] = [
     tags: ["lower half", "hip hinge / side bend"],
     problem: ["little-or-no-hip-rotation", "no-hip-turn", "no-hip-hinge"],
     goal: ["lower-half", "power", "swing-mechanics"],
-    drillType: "Flaw Fix"
+    drillType: "Flaw Fix",
+    problems: ["No Hip Rotation"],
+    outcomes: ["Build Lower Half", "Add Power"],
   },
   {
     id: "flaw-soft-front-knee",
@@ -675,7 +763,9 @@ const drillsData: Drill[] = [
     tags: ["lower half", "balance", "stride focused"],
     problem: ["landing-with-locked-front-knee", "early-extension", "little-or-no-weight-transfer"],
     goal: ["lower-half", "swing-mechanics", "power"],
-    drillType: "Flaw Fix"
+    drillType: "Flaw Fix",
+    problems: ["Early Extension", "Balance Issues"],
+    outcomes: ["Build Lower Half", "Add Power"],
   },
   {
     id: "flaw-stepping-in-the-bucket",
@@ -689,7 +779,9 @@ const drillsData: Drill[] = [
     tags: ["stride focused", "balance", "lower half"],
     problem: ["stride-to-open-stride-to-closed", "pulling-front-shoulder-head"],
     goal: ["lower-half", "swing-mechanics", "plate-coverage"],
-    drillType: "Flaw Fix"
+    drillType: "Flaw Fix",
+    problems: ["Twisting Shoulders", "Balance Issues"],
+    outcomes: ["Plate Coverage", "Improve Swing Mechanics"],
   },
   {
     id: "follow-through-swing",
@@ -703,7 +795,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "swing mechanics", "bat path"],
     problem: ["no-extension-getting-through-the-ball", "rolling-over"],
     goal: ["swing-mechanics", "improve-barrel-path"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["No Extension", "Rolling Over"],
+    outcomes: ["Improve Swing Mechanics", "Improve Barrel Path"],
   },
   {
     id: "front-hip-toss",
@@ -717,7 +811,9 @@ const drillsData: Drill[] = [
     tags: ["lower half", "hip hinge / side bend", "swing mechanics"],
     problem: ["little-or-no-hip-rotation", "no-hip-turn", "early-extension"],
     goal: ["lower-half", "power", "swing-mechanics"],
-    drillType: "Soft Toss"
+    drillType: "Soft Toss",
+    problems: ["No Hip Rotation", "Early Extension"],
+    outcomes: ["Build Lower Half", "Add Power"],
   },
   {
     id: "fungo-for-hitters",
@@ -731,7 +827,9 @@ const drillsData: Drill[] = [
     tags: ["timing", "contact points", "swing mechanics"],
     problem: ["timing-issues", "bat-path-issues"],
     goal: ["improve-contact-quality", "improve-rhythm-timing"],
-    drillType: "Live BP"
+    drillType: "Live BP",
+    problems: ["Timing Issues", "Bat Path Issues"],
+    outcomes: ["Better Contact Quality", "Improve Timing"],
   },
   {
     id: "half-swing-drill",
@@ -745,7 +843,9 @@ const drillsData: Drill[] = [
     tags: ["bat path", "swing mechanics", "contact points"],
     problem: ["bat-path-issues", "casting", "rolling-over"],
     goal: ["improve-barrel-path", "swing-mechanics"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Bat Path Issues", "Arm Barring", "Rolling Over"],
+    outcomes: ["Improve Barrel Path", "Improve Swing Mechanics"],
   },
   {
     id: "high-tee",
@@ -759,7 +859,9 @@ const drillsData: Drill[] = [
     tags: ["tee focus", "contact points", "bat path"],
     problem: ["bat-path-issues", "rolling-over", "uppercut"],
     goal: ["improve-barrel-path", "improve-contact-quality", "plate-coverage"],
-    drillType: "High Tee"
+    drillType: "High Tee",
+    problems: ["Bat Path Issues", "Rolling Over"],
+    outcomes: ["Improve Barrel Path", "Plate Coverage"],
   },
   {
     id: "hip-loading-balance-disc-tee",
@@ -773,7 +875,9 @@ const drillsData: Drill[] = [
     tags: ["lower half", "hip hinge / side bend", "balance", "tee focus"],
     problem: ["no-hip-hinge", "poor-load", "balance-issues"],
     goal: ["lower-half", "load", "power"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Poor Load", "No Hip Rotation", "Balance Issues"],
+    outcomes: ["Build Lower Half", "Improve Load"],
   },
   {
     id: "hit-and-run",
@@ -787,7 +891,9 @@ const drillsData: Drill[] = [
     tags: ["timing", "variation training", "contact points"],
     problem: ["timing-issues"],
     goal: ["game-transfer", "decision-making", "improve-contact-quality"],
-    drillType: "Situational Hitting"
+    drillType: "Situational Hitting",
+    problems: ["Timing Issues"],
+    outcomes: ["Game Transfer", "Decision Making"],
   },
   {
     id: "insideoutside-tee",
@@ -801,7 +907,9 @@ const drillsData: Drill[] = [
     tags: ["tee focus", "contact points", "bat path"],
     problem: ["bat-path-issues", "casting"],
     goal: ["plate-coverage", "improve-barrel-path", "improve-contact-quality"],
-    drillType: "Inside Tee"
+    drillType: "Inside Tee",
+    problems: ["Bat Path Issues", "Arm Barring"],
+    outcomes: ["Plate Coverage", "Improve Barrel Path"],
   },
   {
     id: "knee-to-knee-tee",
@@ -815,7 +923,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "tee focus", "lower half"],
     problem: ["little-or-no-hip-rotation", "no-hip-turn"],
     goal: ["lower-half", "swing-mechanics"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["No Hip Rotation"],
+    outcomes: ["Build Lower Half", "Improve Swing Mechanics"],
   },
   {
     id: "knob-inside-the-ball-toss",
@@ -829,7 +939,9 @@ const drillsData: Drill[] = [
     tags: ["bat path", "foundation", "swing mechanics"],
     problem: ["casting", "bat-path-issues", "pushing-hands-to-the-ball"],
     goal: ["improve-barrel-path", "swing-mechanics"],
-    drillType: "Soft Toss"
+    drillType: "Soft Toss",
+    problems: ["Arm Barring", "Pushing Hands", "Bat Path Issues"],
+    outcomes: ["Improve Barrel Path", "Improve Swing Mechanics"],
   },
   {
     id: "location-tee",
@@ -843,7 +955,9 @@ const drillsData: Drill[] = [
     tags: ["tee focus", "contact points", "bat path"],
     problem: ["bat-path-issues"],
     goal: ["plate-coverage", "improve-contact-quality", "improve-barrel-path"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Bat Path Issues"],
+    outcomes: ["Plate Coverage", "Better Contact Quality"],
   },
   {
     id: "long-tee",
@@ -857,7 +971,9 @@ const drillsData: Drill[] = [
     tags: ["tee focus", "bat speed", "swing mechanics"],
     problem: ["weak-contact", "no-extension-getting-through-the-ball"],
     goal: ["up-exit-velocity", "power", "increase-bat-speed"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Weak Contact", "No Extension"],
+    outcomes: ["Add Power", "Increase Bat Speed"],
   },
   {
     id: "low-tee",
@@ -871,7 +987,9 @@ const drillsData: Drill[] = [
     tags: ["tee focus", "contact points", "bat path"],
     problem: ["bat-path-issues", "uppercut", "hands-dropping"],
     goal: ["improve-barrel-path", "improve-contact-quality", "plate-coverage"],
-    drillType: "Low Tee"
+    drillType: "Low Tee",
+    problems: ["Bat Path Issues", "Pushing Hands"],
+    outcomes: ["Improve Barrel Path", "Plate Coverage"],
   },
   {
     id: "low-tee-mini-bat",
@@ -885,7 +1003,9 @@ const drillsData: Drill[] = [
     tags: ["tee focus", "bat path", "bat speed"],
     problem: ["bat-path-issues", "uppercut"],
     goal: ["improve-barrel-path", "increase-bat-speed"],
-    drillType: "Low Tee"
+    drillType: "Low Tee",
+    problems: ["Bat Path Issues"],
+    outcomes: ["Improve Barrel Path", "Increase Bat Speed"],
   },
   {
     id: "no-stride-tee",
@@ -899,7 +1019,9 @@ const drillsData: Drill[] = [
     tags: ["tee focus", "stride focused", "lower half"],
     problem: ["lunging", "reaching-with-front-foot", "balance-issues"],
     goal: ["load", "lower-half", "swing-mechanics"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Lunging", "Balance Issues"],
+    outcomes: ["Improve Load", "Build Lower Half"],
   },
   {
     id: "off-speed-front-toss",
@@ -913,7 +1035,9 @@ const drillsData: Drill[] = [
     tags: ["timing", "pitch recognition", "variation training"],
     problem: ["timing-issues", "lunging", "no-rhythm"],
     goal: ["pitch-recognition", "improve-rhythm-timing", "decision-making"],
-    drillType: "Front Toss"
+    drillType: "Front Toss",
+    problems: ["Timing Issues", "Lunging", "No Rhythm"],
+    outcomes: ["Pitch Recognition", "Decision Making"],
   },
   {
     id: "one-handed-hitting",
@@ -927,7 +1051,9 @@ const drillsData: Drill[] = [
     tags: ["bat speed", "bat path", "swing mechanics"],
     problem: ["casting", "bat-drag-racing-back-elbow", "weak-contact"],
     goal: ["increase-bat-speed", "improve-barrel-path", "up-exit-velocity"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Arm Barring", "Bat Drag", "Weak Contact"],
+    outcomes: ["Increase Bat Speed", "Improve Barrel Path"],
   },
   {
     id: "outside-angle-toss",
@@ -941,7 +1067,9 @@ const drillsData: Drill[] = [
     tags: ["contact points", "bat path", "tee focus"],
     problem: ["bat-path-issues", "pulling-front-shoulder-head"],
     goal: ["plate-coverage", "improve-barrel-path"],
-    drillType: "Soft Toss"
+    drillType: "Soft Toss",
+    problems: ["Bat Path Issues", "Twisting Shoulders"],
+    outcomes: ["Plate Coverage", "Improve Barrel Path"],
   },
   {
     id: "outside-tee",
@@ -955,7 +1083,9 @@ const drillsData: Drill[] = [
     tags: ["tee focus", "contact points", "bat path"],
     problem: ["bat-path-issues", "pulling-front-shoulder-head"],
     goal: ["plate-coverage", "improve-barrel-path", "improve-contact-quality"],
-    drillType: "Outside Tee"
+    drillType: "Outside Tee",
+    problems: ["Bat Path Issues", "Twisting Shoulders"],
+    outcomes: ["Plate Coverage", "Better Contact Quality"],
   },
   {
     id: "overload-bat-soft-toss",
@@ -969,7 +1099,9 @@ const drillsData: Drill[] = [
     tags: ["bat speed", "swing mechanics"],
     problem: ["weak-contact", "add-more-power"],
     goal: ["increase-bat-speed", "power", "up-exit-velocity"],
-    drillType: "Soft Toss"
+    drillType: "Soft Toss",
+    problems: ["Weak Contact"],
+    outcomes: ["Increase Bat Speed", "Add Power"],
   },
   {
     id: "random-front-toss",
@@ -983,7 +1115,9 @@ const drillsData: Drill[] = [
     tags: ["timing", "variation training", "pitch recognition"],
     problem: ["timing-issues", "no-rhythm"],
     goal: ["pitch-recognition", "decision-making", "improve-rhythm-timing"],
-    drillType: "Variation Training"
+    drillType: "Variation Training",
+    problems: ["Timing Issues", "No Rhythm"],
+    outcomes: ["Pitch Recognition", "Decision Making"],
   },
   {
     id: "rapid-fire-toss",
@@ -997,7 +1131,9 @@ const drillsData: Drill[] = [
     tags: ["timing", "bat speed", "variation training"],
     problem: ["timing-issues", "no-rhythm"],
     goal: ["increase-bat-speed", "improve-rhythm-timing", "game-transfer"],
-    drillType: "Soft Toss"
+    drillType: "Soft Toss",
+    problems: ["Timing Issues", "No Rhythm"],
+    outcomes: ["Increase Bat Speed", "Game Transfer"],
   },
   {
     id: "reverse-stride",
@@ -1011,7 +1147,9 @@ const drillsData: Drill[] = [
     tags: ["stride focused", "lower half", "balance"],
     problem: ["lunging", "reaching-with-front-foot", "stride-to-open-stride-to-closed"],
     goal: ["load", "lower-half", "swing-mechanics"],
-    drillType: "Load and Stride"
+    drillType: "Load and Stride",
+    problems: ["Lunging", "Balance Issues"],
+    outcomes: ["Improve Load", "Build Lower Half"],
   },
   {
     id: "rhythm-tee",
@@ -1025,7 +1163,9 @@ const drillsData: Drill[] = [
     tags: ["timing", "tee focus", "foundation"],
     problem: ["no-rhythm", "timing-issues", "poor-load"],
     goal: ["improve-rhythm-timing", "load", "swing-mechanics"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["No Rhythm", "Timing Issues", "Poor Load"],
+    outcomes: ["Improve Timing", "Improve Load"],
   },
   {
     id: "scissor-tee-and-soft-toss",
@@ -1039,7 +1179,9 @@ const drillsData: Drill[] = [
     tags: ["lower half", "hip hinge / side bend", "tee focus"],
     problem: ["no-hip-hinge", "little-or-no-hip-rotation"],
     goal: ["lower-half", "swing-mechanics"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["No Hip Rotation"],
+    outcomes: ["Build Lower Half", "Improve Swing Mechanics"],
   },
   {
     id: "separation-progression-tee",
@@ -1053,7 +1195,9 @@ const drillsData: Drill[] = [
     tags: ["lower half", "hip hinge / side bend", "tee focus"],
     problem: ["no-coil-in-torso", "twisting-shoulders", "little-or-no-hip-rotation"],
     goal: ["lower-half", "power", "increase-bat-speed"],
-    drillType: "Separation Drill"
+    drillType: "Separation Drill",
+    problems: ["Twisting Shoulders", "No Hip Rotation"],
+    outcomes: ["Build Lower Half", "Add Power"],
   },
   {
     id: "short-bat-bottom-hand-front-toss",
@@ -1067,7 +1211,9 @@ const drillsData: Drill[] = [
     tags: ["bat path", "bat speed", "swing mechanics"],
     problem: ["casting", "bat-path-issues", "rolling-over"],
     goal: ["improve-barrel-path", "increase-bat-speed"],
-    drillType: "Front Toss"
+    drillType: "Front Toss",
+    problems: ["Arm Barring", "Bat Path Issues", "Rolling Over"],
+    outcomes: ["Improve Barrel Path", "Increase Bat Speed"],
   },
   {
     id: "short-bat-bottom-hand-tee",
@@ -1081,7 +1227,9 @@ const drillsData: Drill[] = [
     tags: ["bat path", "tee focus", "swing mechanics"],
     problem: ["casting", "bat-path-issues"],
     goal: ["improve-barrel-path", "swing-mechanics"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Arm Barring", "Bat Path Issues"],
+    outcomes: ["Improve Barrel Path", "Improve Swing Mechanics"],
   },
   {
     id: "short-bat-top-hand-front-toss",
@@ -1095,7 +1243,9 @@ const drillsData: Drill[] = [
     tags: ["bat path", "bat speed", "swing mechanics"],
     problem: ["rolling-over", "bat-path-issues", "casting"],
     goal: ["improve-barrel-path", "increase-bat-speed"],
-    drillType: "Front Toss"
+    drillType: "Front Toss",
+    problems: ["Rolling Over", "Bat Path Issues", "Arm Barring"],
+    outcomes: ["Improve Barrel Path", "Increase Bat Speed"],
   },
   {
     id: "short-bat-top-hand-tee",
@@ -1109,7 +1259,9 @@ const drillsData: Drill[] = [
     tags: ["bat path", "tee focus", "swing mechanics"],
     problem: ["rolling-over", "bat-path-issues"],
     goal: ["improve-barrel-path", "swing-mechanics"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Rolling Over", "Bat Path Issues"],
+    outcomes: ["Improve Barrel Path", "Improve Swing Mechanics"],
   },
   {
     id: "side-toss",
@@ -1123,7 +1275,9 @@ const drillsData: Drill[] = [
     tags: ["timing", "contact points", "swing mechanics"],
     problem: ["timing-issues", "bat-path-issues"],
     goal: ["improve-contact-quality", "improve-rhythm-timing"],
-    drillType: "Soft Toss"
+    drillType: "Soft Toss",
+    problems: ["Timing Issues", "Bat Path Issues"],
+    outcomes: ["Better Contact Quality", "Improve Timing"],
   },
   {
     id: "soft-toss",
@@ -1137,7 +1291,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "timing", "swing mechanics"],
     problem: ["timing-issues", "bat-path-issues"],
     goal: ["improve-contact-quality", "improve-rhythm-timing", "swing-mechanics"],
-    drillType: "Soft Toss"
+    drillType: "Soft Toss",
+    problems: ["Timing Issues", "Bat Path Issues"],
+    outcomes: ["Better Contact Quality", "Improve Timing"],
   },
   {
     id: "stance-distance-check",
@@ -1151,7 +1307,9 @@ const drillsData: Drill[] = [
     tags: ["foundation", "balance"],
     problem: ["balance-issues", "improper-grip"],
     goal: ["swing-mechanics", "load"],
-    drillType: "Flaw Fix"
+    drillType: "Flaw Fix",
+    problems: ["Balance Issues", "Improper Grip"],
+    outcomes: ["Improve Swing Mechanics", "Improve Load"],
   },
   {
     id: "target-tee",
@@ -1165,7 +1323,9 @@ const drillsData: Drill[] = [
     tags: ["tee focus", "bat path", "contact points"],
     problem: ["bat-path-issues", "casting", "weak-contact"],
     goal: ["improve-barrel-path", "improve-contact-quality", "up-exit-velocity"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Bat Path Issues", "Arm Barring", "Weak Contact"],
+    outcomes: ["Improve Barrel Path", "Better Contact Quality"],
   },
   {
     id: "tees-with-timing",
@@ -1179,7 +1339,9 @@ const drillsData: Drill[] = [
     tags: ["timing", "tee focus", "foundation"],
     problem: ["timing-issues", "no-rhythm"],
     goal: ["improve-rhythm-timing", "swing-mechanics"],
-    drillType: "Timing Drill"
+    drillType: "Timing Drill",
+    problems: ["Timing Issues", "No Rhythm"],
+    outcomes: ["Improve Timing", "Improve Swing Mechanics"],
   },
   {
     id: "three-plate-front-toss",
@@ -1193,7 +1355,9 @@ const drillsData: Drill[] = [
     tags: ["contact points", "variation training", "bat path"],
     problem: ["bat-path-issues", "timing-issues"],
     goal: ["plate-coverage", "improve-barrel-path", "improve-contact-quality"],
-    drillType: "Front Toss"
+    drillType: "Front Toss",
+    problems: ["Bat Path Issues", "Timing Issues"],
+    outcomes: ["Plate Coverage", "Improve Barrel Path"],
   },
   {
     id: "throw-the-bat",
@@ -1207,7 +1371,9 @@ const drillsData: Drill[] = [
     tags: ["bat speed", "swing mechanics", "bat path"],
     problem: ["no-extension-getting-through-the-ball", "weak-contact"],
     goal: ["increase-bat-speed", "improve-barrel-path"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["No Extension", "Weak Contact"],
+    outcomes: ["Increase Bat Speed", "Improve Barrel Path"],
   },
   {
     id: "tight-tee",
@@ -1221,7 +1387,9 @@ const drillsData: Drill[] = [
     tags: ["tee focus", "bat path", "contact points"],
     problem: ["casting", "bat-path-issues", "bat-drag-racing-back-elbow"],
     goal: ["improve-barrel-path", "increase-bat-speed"],
-    drillType: "Inside Tee"
+    drillType: "Inside Tee",
+    problems: ["Arm Barring", "Bat Drag", "Bat Path Issues"],
+    outcomes: ["Improve Barrel Path", "Increase Bat Speed"],
   },
   {
     id: "top-drop-drill",
@@ -1235,7 +1403,9 @@ const drillsData: Drill[] = [
     tags: ["bat path", "swing mechanics"],
     problem: ["bat-path-issues", "rolling-over", "hands-dropping"],
     goal: ["improve-barrel-path", "swing-mechanics"],
-    drillType: "Bat Path"
+    drillType: "Bat Path",
+    problems: ["Bat Path Issues", "Rolling Over", "Pushing Hands"],
+    outcomes: ["Improve Barrel Path", "Improve Swing Mechanics"],
   },
   {
     id: "top-hand-tee",
@@ -1249,7 +1419,9 @@ const drillsData: Drill[] = [
     tags: ["bat path", "tee focus", "swing mechanics"],
     problem: ["rolling-over", "bat-path-issues"],
     goal: ["improve-barrel-path", "swing-mechanics"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Rolling Over", "Bat Path Issues"],
+    outcomes: ["Improve Barrel Path", "Improve Swing Mechanics"],
   },
   {
     id: "two-ball-front-toss",
@@ -1263,7 +1435,9 @@ const drillsData: Drill[] = [
     tags: ["vision", "pitch recognition", "timing"],
     problem: ["timing-issues", "no-rhythm"],
     goal: ["pitch-recognition", "decision-making", "game-transfer"],
-    drillType: "Decision Making"
+    drillType: "Decision Making",
+    problems: ["Timing Issues", "No Rhythm"],
+    outcomes: ["Pitch Recognition", "Decision Making"],
   },
   {
     id: "underload-bat-soft-toss",
@@ -1277,7 +1451,9 @@ const drillsData: Drill[] = [
     tags: ["bat speed", "swing mechanics"],
     problem: ["weak-contact"],
     goal: ["increase-bat-speed", "up-exit-velocity"],
-    drillType: "Soft Toss"
+    drillType: "Soft Toss",
+    problems: ["Weak Contact"],
+    outcomes: ["Increase Bat Speed", "Add Power"],
   },
   {
     id: "volleyball-between-knees",
@@ -1291,7 +1467,9 @@ const drillsData: Drill[] = [
     tags: ["lower half", "hip hinge / side bend", "balance"],
     problem: ["no-hip-hinge", "collapsing-back-side", "too-tall-throughout-swing"],
     goal: ["lower-half", "swing-mechanics"],
-    drillType: "Load and Stride"
+    drillType: "Load and Stride",
+    problems: ["Collapsing Backside", "No Hip Rotation"],
+    outcomes: ["Build Lower Half", "Improve Swing Mechanics"],
   },
   {
     id: "weighted-ball-front-toss",
@@ -1305,7 +1483,9 @@ const drillsData: Drill[] = [
     tags: ["bat speed", "timing", "swing mechanics"],
     problem: ["weak-contact", "add-more-power"],
     goal: ["increase-bat-speed", "power", "up-exit-velocity"],
-    drillType: "Front Toss"
+    drillType: "Front Toss",
+    problems: ["Weak Contact"],
+    outcomes: ["Increase Bat Speed", "Add Power"],
   },
   {
     id: "wrist-strength-tee",
@@ -1319,7 +1499,9 @@ const drillsData: Drill[] = [
     tags: ["bat speed", "tee focus", "swing mechanics"],
     problem: ["weak-contact", "add-more-power"],
     goal: ["increase-bat-speed", "power"],
-    drillType: "Tee Work"
+    drillType: "Tee Work",
+    problems: ["Weak Contact"],
+    outcomes: ["Increase Bat Speed", "Add Power"],
   },
   {
     id: "3-plate-adjustment-drill",
@@ -1333,7 +1515,9 @@ const drillsData: Drill[] = [
     tags: ["contact points", "variation training", "bat path"],
     problem: ["bat-path-issues", "timing-issues"],
     goal: ["plate-coverage", "improve-barrel-path", "improve-contact-quality"],
-    drillType: "Variation Training"
+    drillType: "Variation Training",
+    problems: ["Bat Path Issues", "Timing Issues"],
+    outcomes: ["Plate Coverage", "Better Contact Quality"],
   },
   {
     id: "stride-separation-drill",
@@ -1347,7 +1531,9 @@ const drillsData: Drill[] = [
     tags: ["stride focused", "lower half", "hip hinge / side bend"],
     problem: ["no-coil-in-torso", "little-or-no-hip-rotation", "lunging"],
     goal: ["lower-half", "load", "swing-mechanics"],
-    drillType: "Separation Drill"
+    drillType: "Separation Drill",
+    problems: ["Lunging", "No Hip Rotation"],
+    outcomes: ["Build Lower Half", "Improve Load"],
   }
 ];
 

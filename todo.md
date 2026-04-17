@@ -1877,3 +1877,14 @@
 - [x] Dark, polished, athletic mobile-first design preserved
 - [x] Also removed addDifficulty collapsible section
 - [x] Removed old bottom metadata grid (Drill Type, Age/Level, Fixes These Problems, Helps You)
+
+## Tag System Full Restructure (Apr 17)
+- [x] Design canonical Problem tags (15-25 max) by merging all existing problem/focus/tag overlaps
+- [x] Design canonical Outcome tags (12-20 max) by merging all existing goal/focus overlaps
+- [x] Update all 87 drills in drills.ts with new problem + outcome tags (max 4 per drill)
+- [x] Remove drillType, ageLevel, tags, problem, goal fields from drill display (keep in data for filtering)
+- [x] Update DrillDetail page: show only Problems + Outcomes tags
+- [x] Add "What this drill fixes & improves" label above tags
+- [x] Limit visible tags to 4, hide rest behind "Show More Tags"
+- [x] Final layout: Video → Label → Tags → Goal of Drill
+- [x] Confirm no overlapping tags remain
