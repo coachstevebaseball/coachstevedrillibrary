@@ -350,43 +350,43 @@ export default function Home() {
           style={{ animationDelay: '3.5s' }}
         />
         
-        <div className="container relative z-10 pt-6 pb-12 md:pt-8 md:pb-20">
+        <div className="container relative z-10 pt-4 pb-6 md:pt-5 md:pb-8">
           {/* Top Navigation Bar */}
           <TopNav variant="hero" />
 
           {/* Hero Content */}
           <div className="max-w-4xl mx-auto text-center">
             {/* Badge */}
-            <div className="flex justify-center mb-6 animate-fade-in-down stagger-1">
+            <div className="flex justify-center mb-3 animate-fade-in-down stagger-1">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-electric/20 bg-electric/5 backdrop-blur-sm">
                 <div className="w-1.5 h-1.5 rounded-full bg-electric animate-pulse-glow" />
-                <InlineEdit contentKey="home.hero.badge" defaultValue="Player Development Platform" as="span" className="text-electric text-xs font-semibold tracking-wider uppercase" />
+                <InlineEdit contentKey="home.hero.badge" defaultValue="Player Development Platform" as="span" className="text-electric text-[10px] font-semibold tracking-wider uppercase" />
               </div>
             </div>
             
             {/* Main heading */}
             <div className="animate-fade-in-up stagger-2">
               <h1 className="font-heading font-black tracking-tight leading-none">
-                <InlineEdit contentKey="home.hero.headline1" defaultValue="UNLEASH YOUR" as="span" className="block text-foreground text-5xl sm:text-6xl md:text-7xl lg:text-8xl" />
-                <InlineEdit contentKey="home.hero.headline2" defaultValue="POTENTIAL" as="span" className="block text-6xl sm:text-7xl md:text-8xl lg:text-9xl mt-1 text-gradient" />
+                <InlineEdit contentKey="home.hero.headline1" defaultValue="UNLEASH YOUR" as="span" className="block text-foreground text-3xl sm:text-4xl md:text-5xl" />
+                <InlineEdit contentKey="home.hero.headline2" defaultValue="POTENTIAL" as="span" className="block text-4xl sm:text-5xl md:text-6xl mt-0.5 text-gradient" />
               </h1>
             </div>
             
-            <InlineEdit contentKey="home.hero.tagline" defaultValue="Professional training drills designed to build elite mechanics, explosive power, and game-ready confidence." as="h2" className="text-sm md:text-lg text-muted-foreground mt-6 mb-8 max-w-xl mx-auto leading-relaxed animate-fade-in-up stagger-3 font-normal" />
+            <InlineEdit contentKey="home.hero.tagline" defaultValue="Professional training drills designed to build elite mechanics, explosive power, and game-ready confidence." as="h2" className="text-xs md:text-sm text-muted-foreground mt-3 mb-4 max-w-xl mx-auto leading-relaxed animate-fade-in-up stagger-3 font-normal" />
             
             {/* Stats row */}
-            <div className="flex justify-center gap-8 md:gap-16 animate-fade-in-up stagger-4">
+            <div className="flex justify-center gap-6 md:gap-12 animate-fade-in-up stagger-4">
               {[
                 { valueKey: "home.stat.drills.value", valueDefault: `${allDrills.length}+`, labelKey: "home.stat.drills.label", labelDefault: "Drills", icon: Target },
                 { valueKey: "home.stat.categories.value", valueDefault: "1", labelKey: "home.stat.categories.label", labelDefault: "Focus: Hitting", icon: Sparkles },
                 { valueKey: "home.stat.levels.value", valueDefault: "3", labelKey: "home.stat.levels.label", labelDefault: "Levels", icon: TrendingUp },
               ].map((stat, i) => (
                 <div key={i} className="text-center">
-                  <div className="flex items-center justify-center gap-1.5 mb-1">
-                    <stat.icon className="h-4 w-4 text-electric" />
-                    <InlineEdit contentKey={stat.valueKey} defaultValue={stat.valueDefault} as="span" className="text-2xl md:text-3xl font-heading font-bold text-foreground" />
+                  <div className="flex items-center justify-center gap-1 mb-0.5">
+                    <stat.icon className="h-3 w-3 text-electric" />
+                    <InlineEdit contentKey={stat.valueKey} defaultValue={stat.valueDefault} as="span" className="text-lg md:text-xl font-heading font-bold text-foreground" />
                   </div>
-                  <InlineEdit contentKey={stat.labelKey} defaultValue={stat.labelDefault} as="span" className="text-xs text-muted-foreground uppercase tracking-wider" />
+                  <InlineEdit contentKey={stat.labelKey} defaultValue={stat.labelDefault} as="span" className="text-[10px] text-muted-foreground uppercase tracking-wider" />
                 </div>
               ))}
             </div>
