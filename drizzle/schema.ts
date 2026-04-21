@@ -854,3 +854,48 @@ export const drillStatCards = mysqlTable("drillStatCards", {
 });
 export type DrillStatCard = typeof drillStatCards.$inferSelect;
 export type InsertDrillStatCard = typeof drillStatCards.$inferInsert;
+
+// ============================================================
+// Unified Drills Table — single source of truth for all drills
+// Replaces the static drills.ts file and the customDrills table
+// as the canonical list of drills shown in the directory.
+// ============================================================
+export const drills = mysqlTable("drills", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Slug-style unique identifier, e.g. "1-2-3-drill" */
+  drillId: varchar("drillId", { length: 255 }).notNull().unique(),
+  name: varchar("name", { length: 255 }).notNull(),
+  difficulty: varchar("difficulty", { length: 50 }).notNull().default("Medium"),
+  /** JSON array of category strings, e.g. ["Hitting"] */
+  categories: json("categories").$type<string[]>().notNull(),
+  /** Human-readable duration, e.g. "10m" */
+  duration: varchar("duration", { length: 50 }).notNull().default(""),
+  /** External source URL (usabdevelops.com) */
+  url: text("url"),
+  /** Whether the URL is a direct deep-link to the drill page */
+  isDirectLink: boolean("isDirectLink").notNull().default(false),
+  /** JSON array of age/level slugs, e.g. ["beginner-drills","intermediate-drills"] */
+  ageLevel: json("ageLevel").$type<string[]>(),
+  /** JSON array of free-form focus tags */
+  tags: json("tags").$type<string[]>(),
+  /** JSON array of problem slug strings (legacy filter keys) */
+  problem: json("problem").$type<string[]>(),
+  /** JSON array of goal slug strings (legacy filter keys) */
+  goal: json("goal").$type<string[]>(),
+  /** Drill type category, e.g. "Tee Work", "Front Toss" */
+  drillType: varchar("drillType", { length: 100 }),
+  /** JSON array of canonical problem display labels, e.g. ["Timing Issues","Bat Path Issues"] */
+  problems: json("problems").$type<string[]>(),
+  /** JSON array of canonical outcome display labels, e.g. ["Improve Barrel Path"] */
+  outcomes: json("outcomes").$type<string[]>(),
+  /** "static" = seeded from drills.ts, "custom" = coach-created */
+  source: varchar("source", { length: 20 }).notNull().default("static"),
+  /** Soft-delete: hidden from public listing but preserved in DB */
+  isHidden: boolean("isHidden").notNull().default(false),
+  /** Admin/coach who created or last modified this drill (null for seeded static drills) */
+  createdBy: int("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type Drill = typeof drills.$inferSelect;
+export type InsertDrill = typeof drills.$inferInsert;

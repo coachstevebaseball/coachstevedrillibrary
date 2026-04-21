@@ -365,6 +365,13 @@
       "when": 1774686621982,
       "tag": "0051_rapid_screwball",
       "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "5",
+      "when": 1776755152158,
+      "tag": "0052_add_drills_table",
+      "breakpoints": true
     }
   ]
 }

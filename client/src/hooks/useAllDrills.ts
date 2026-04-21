@@ -1,7 +1,5 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import drillsData from "@/data/drills";
-import { supabase } from "@/supabaseClient";
 
 export interface UnifiedDrill {
   id: string;
@@ -17,103 +15,82 @@ export interface UnifiedDrill {
   problem?: string[];
   goal?: string[];
   drillType?: string;
-  /** Enriched from Supabase */
+  problems?: string[];
+  outcomes?: string[];
+  /** Enriched from drillDetails table */
   instructions?: string | null;
   equipment?: string | null;
-  supabaseId?: number;
 }
 
 /**
- * Shared hook that merges:
- * 1. Static drills (from drills.ts) — rich filter metadata (tags, ageLevel, problem, goal, drillType)
- * 2. Custom drills (from the database via tRPC) — user-created drills
- * 3. Supabase drills — enrichment data (instructions, equipment, video_url)
+ * Unified hook that loads all visible drills from the backend database.
  *
- * Static drills are matched to Supabase rows by title for enrichment.
- * Use this everywhere drills are listed to ensure all sources are merged.
+ * The backend `drills` table is the single source of truth — it was seeded
+ * from the static drills.ts file and will be maintained via the admin UI.
+ *
+ * Returns an empty array while loading so callers can show skeletons.
+ *
+ * BACKWARD COMPATIBLE: returns UnifiedDrill[] directly (same as before).
+ * Use `useAllDrillsQuery()` if you need access to isLoading / error state.
  */
 export function useAllDrills(): UnifiedDrill[] {
-  const { data: customDrills = [] } = trpc.drillDetails.getCustomDrills.useQuery();
+  const { data: dbDrills = [] } = trpc.drillsDirectory.list.useQuery(undefined, {
+    staleTime: 5 * 60 * 1000, // 5 minutes — drills change infrequently
+  });
 
-  // Fetch Supabase drills for enrichment
-  const [supabaseDrills, setSupabaseDrills] = useState<any[]>([]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function fetchSupabase() {
-      try {
-        const { data, error } = await supabase
-          .from("drills")
-          .select("id,title,instructions,equipment,video_url,difficulty_level,skill_category,duration_minutes,goal_of_drill");
-
-        if (!cancelled && data && !error) {
-          setSupabaseDrills(data);
-        }
-      } catch {
-        // Supabase enrichment is optional — fail silently
-      }
-    }
-
-    fetchSupabase();
-    return () => { cancelled = true; };
-  }, []);
-
-  return useMemo(() => {
-    // Build a lookup map from Supabase drills by normalized title
-    const supabaseByTitle = new Map<string, any>();
-    for (const sd of supabaseDrills) {
-      if (sd.title) {
-        supabaseByTitle.set(sd.title.toLowerCase().trim(), sd);
-      }
-    }
-
-    const staticDrills: UnifiedDrill[] = drillsData.map((d) => {
-      // Try to match with Supabase row by title
-      const sbDrill = supabaseByTitle.get(d.name.toLowerCase().trim());
-
-      return {
-        id: String(d.id),
-        name: d.name,
-        difficulty: d.difficulty,
-        categories: d.categories,
-        duration: d.duration,
-        url: d.url,
-        is_direct_link: d.is_direct_link,
-        isCustom: false,
-        ageLevel: d.ageLevel,
-        tags: d.tags,
-        problem: d.problem,
-        goal: d.goal,
-        drillType: d.drillType,
-        // Enrichment from Supabase
-        instructions: sbDrill?.instructions ?? null,
-        equipment: sbDrill?.equipment ?? null,
-        supabaseId: sbDrill?.id ?? undefined,
-      };
-    });
-
-    const customDrillsFormatted: UnifiedDrill[] = customDrills.map((cd: any) => ({
-      id: cd.drillId,
-      name: cd.name,
-      difficulty: cd.difficulty,
-      categories: [cd.category],
-      duration: cd.duration,
-      url: `/drill/${cd.drillId}`,
-      is_direct_link: true,
-      isCustom: true,
-      ageLevel: [],
-      tags: [],
-      problem: [],
-      goal: [],
-      drillType: cd.drillType || "Game Simulation",
+  return useMemo<UnifiedDrill[]>(() => {
+    return dbDrills.map((d) => ({
+      id: d.drillId,
+      name: d.name,
+      difficulty: d.difficulty,
+      categories: (d.categories as string[]) ?? [],
+      duration: d.duration,
+      url: d.url ?? undefined,
+      is_direct_link: d.isDirectLink,
+      isCustom: d.source === "custom",
+      ageLevel: (d.ageLevel as string[] | null) ?? [],
+      tags: (d.tags as string[] | null) ?? [],
+      problem: (d.problem as string[] | null) ?? [],
+      goal: (d.goal as string[] | null) ?? [],
+      drillType: d.drillType ?? undefined,
+      problems: (d.problems as string[] | null) ?? [],
+      outcomes: (d.outcomes as string[] | null) ?? [],
       instructions: null,
       equipment: null,
     }));
+  }, [dbDrills]);
+}
 
-    // Merge and sort alphabetically by name (case-insensitive)
-    return [...staticDrills, ...customDrillsFormatted].sort((a, b) =>
-      a.name.localeCompare(b.name, undefined, { sensitivity: "base" })
-    );
-  }, [customDrills, supabaseDrills]);
+/**
+ * Extended form that also exposes loading / error state.
+ * Use this in components that need to show loading skeletons.
+ */
+export function useAllDrillsQuery(): { drills: UnifiedDrill[]; isLoading: boolean; error: unknown } {
+  const { data: dbDrills = [], isLoading, error } = trpc.drillsDirectory.list.useQuery(undefined, {
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const drills = useMemo<UnifiedDrill[]>(() => {
+    return dbDrills.map((d) => ({
+      id: d.drillId,
+      name: d.name,
+      difficulty: d.difficulty,
+      categories: (d.categories as string[]) ?? [],
+      duration: d.duration,
+      url: d.url ?? undefined,
+      is_direct_link: d.isDirectLink,
+      isCustom: d.source === "custom",
+      ageLevel: (d.ageLevel as string[] | null) ?? [],
+      tags: (d.tags as string[] | null) ?? [],
+      problem: (d.problem as string[] | null) ?? [],
+      goal: (d.goal as string[] | null) ?? [],
+      drillType: d.drillType ?? undefined,
+      problems: (d.problems as string[] | null) ?? [],
+      outcomes: (d.outcomes as string[] | null) ?? [],
+      instructions: null,
+      equipment: null,
+    }));
+  }, [dbDrills]);
+
+  return { drills, isLoading, error };
 }

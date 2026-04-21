@@ -1261,6 +1261,97 @@ export const appRouter = router({
         return await drillAssignmentDb.getAthleteProgressStats(input.childUserId);
       }),
   }),
+
+  // ── Unified Drills Directory ──────────────────────────────────────────────
+  drillsDirectory: router({
+    /** List all visible drills (public) */
+    list: publicProcedure.query(async () => {
+      return await db.getAllDrills();
+    }),
+
+    /** Get a single drill by slug (public) */
+    get: publicProcedure
+      .input(z.object({ drillId: z.string() }))
+      .query(async ({ input }) => {
+        return await db.getDrillBySlug(input.drillId);
+      }),
+
+    /** List all drills including hidden ones (admin only) */
+    listAdmin: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== 'admin') {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+      }
+      return await db.getAllDrillsAdmin();
+    }),
+
+    /** Create or update a drill (admin only) */
+    upsert: protectedProcedure
+      .input(z.object({
+        drillId: z.string(),
+        name: z.string(),
+        difficulty: z.string().default('Medium'),
+        categories: z.array(z.string()).default([]),
+        duration: z.string().default(''),
+        url: z.string().nullable().optional(),
+        isDirectLink: z.boolean().default(false),
+        ageLevel: z.array(z.string()).optional(),
+        tags: z.array(z.string()).optional(),
+        problem: z.array(z.string()).optional(),
+        goal: z.array(z.string()).optional(),
+        drillType: z.string().nullable().optional(),
+        problems: z.array(z.string()).optional(),
+        outcomes: z.array(z.string()).optional(),
+        source: z.enum(['static', 'custom']).default('custom'),
+        isHidden: z.boolean().default(false),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const result = await db.upsertDrill({
+          ...input,
+          createdBy: ctx.user.id,
+        });
+        if (!result) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to upsert drill' });
+        return result;
+      }),
+
+    /** Soft-delete a drill (admin only) */
+    hide: protectedProcedure
+      .input(z.object({ drillId: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const ok = await db.hideDrill(input.drillId);
+        if (!ok) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to hide drill' });
+        return { success: true };
+      }),
+
+    /** Restore a soft-deleted drill (admin only) */
+    restore: protectedProcedure
+      .input(z.object({ drillId: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const ok = await db.restoreDrill(input.drillId);
+        if (!ok) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to restore drill' });
+        return { success: true };
+      }),
+
+    /** Permanently delete a drill (admin only) */
+    deletePermanently: protectedProcedure
+      .input(z.object({ drillId: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const ok = await db.deleteDrillPermanently(input.drillId);
+        if (!ok) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to delete drill' });
+        return { success: true };
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

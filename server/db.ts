@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, notifications, notificationPreferences, InsertNotificationPreference, drillAssignments } from "../drizzle/schema";
+import { InsertUser, users, notifications, notificationPreferences, InsertNotificationPreference, drillAssignments, drills, type Drill, type InsertDrill } from "../drizzle/schema";
 import { ENV } from './_core/env';
-import { eq, and, desc, count } from "drizzle-orm";
+import { eq, and, desc, count, asc } from "drizzle-orm";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -1435,5 +1435,138 @@ export async function updateUserEmail(userId: number, email: string): Promise<bo
   } catch (error) {
     console.error("[DB] Failed to update user email:", error);
     return false;
+  }
+}
+
+// ============================================================
+// Unified Drills Table — CRUD helpers
+// ============================================================
+
+/** Return all visible drills, sorted alphabetically. */
+export async function getAllDrills(): Promise<Drill[]> {
+  const db = await getDb();
+  if (!db) return [];
+  try {
+    return await db
+      .select()
+      .from(drills)
+      .where(eq(drills.isHidden, false))
+      .orderBy(asc(drills.name));
+  } catch (error) {
+    console.error("[DB] Failed to get all drills:", error);
+    return [];
+  }
+}
+
+/** Return a single drill by its slug drillId. */
+export async function getDrillBySlug(drillId: string): Promise<Drill | null> {
+  const db = await getDb();
+  if (!db) return null;
+  try {
+    const rows = await db
+      .select()
+      .from(drills)
+      .where(eq(drills.drillId, drillId))
+      .limit(1);
+    return rows[0] ?? null;
+  } catch (error) {
+    console.error("[DB] Failed to get drill by slug:", error);
+    return null;
+  }
+}
+
+/** Upsert a drill (insert or update on duplicate drillId). */
+export async function upsertDrill(
+  data: Omit<InsertDrill, "id" | "createdAt" | "updatedAt">
+): Promise<Drill | null> {
+  const db = await getDb();
+  if (!db) return null;
+  try {
+    await db
+      .insert(drills)
+      .values({
+        ...data,
+        categories: data.categories ?? [],
+      })
+      .onDuplicateKeyUpdate({
+        set: {
+          name: data.name,
+          difficulty: data.difficulty,
+          categories: data.categories ?? [],
+          duration: data.duration,
+          url: data.url,
+          isDirectLink: data.isDirectLink,
+          ageLevel: data.ageLevel,
+          tags: data.tags,
+          problem: data.problem,
+          goal: data.goal,
+          drillType: data.drillType,
+          problems: data.problems,
+          outcomes: data.outcomes,
+          source: data.source,
+          isHidden: data.isHidden,
+        },
+      });
+    return await getDrillBySlug(data.drillId);
+  } catch (error) {
+    console.error("[DB] Failed to upsert drill:", error);
+    return null;
+  }
+}
+
+/** Soft-delete a drill (set isHidden = true). */
+export async function hideDrill(drillId: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    await db
+      .update(drills)
+      .set({ isHidden: true })
+      .where(eq(drills.drillId, drillId));
+    return true;
+  } catch (error) {
+    console.error("[DB] Failed to hide drill:", error);
+    return false;
+  }
+}
+
+/** Restore a soft-deleted drill (set isHidden = false). */
+export async function restoreDrill(drillId: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    await db
+      .update(drills)
+      .set({ isHidden: false })
+      .where(eq(drills.drillId, drillId));
+    return true;
+  } catch (error) {
+    console.error("[DB] Failed to restore drill:", error);
+    return false;
+  }
+}
+
+/** Hard-delete a drill (permanent). Use with caution. */
+export async function deleteDrillPermanently(drillId: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    await db.delete(drills).where(eq(drills.drillId, drillId));
+    return true;
+  } catch (error) {
+    console.error("[DB] Failed to delete drill:", error);
+    return false;
+  }
+}
+
+/** Return all drills including hidden ones (admin only). */
+export async function getAllDrillsAdmin(): Promise<Drill[]> {
+  const db = await getDb();
+  if (!db) return [];
+  try {
+    return await db.select().from(drills).orderBy(asc(drills.name));
+  } catch (error) {
+    console.error("[DB] Failed to get all drills (admin):", error);
+    return [];
   }
 }

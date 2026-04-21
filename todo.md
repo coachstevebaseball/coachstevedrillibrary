@@ -1919,3 +1919,13 @@
 - [x] Active selections render as crimson pill chips below the card stack with × to clear
 - [x] Keep "NARROW BY PROBLEM, GOAL & MORE" header and "Clear all" action
 - [x] Wire multi-select checkbox values into the drill filtering logic
+
+## Backend DB Migration — Unified Drills Table (Apr 21)
+- [x] Audit existing data sources (drills.ts, customDrills table, drillDetails table)
+- [x] Add unified `drills` table to Drizzle schema with all fields from drills.ts
+- [x] Push migration to TiDB (0052_add_drills_table.sql)
+- [x] Write seed script (seed-drills.mjs) and import all 86 static drills into DB
+- [x] Add CRUD query helpers to server/db.ts (getAllDrills, getDrillBySlug, upsertDrill, hideDrill, restoreDrill, deleteDrillPermanently, getAllDrillsAdmin)
+- [x] Add tRPC drillsDirectory router (list, get, listAdmin, upsert, hide, restore, deletePermanently)
+- [x] Update useAllDrills hook to load from backend DB instead of static drills.ts
+- [x] Verify frontend loads 86 drills from DB (backward-compatible, TypeScript clean)
