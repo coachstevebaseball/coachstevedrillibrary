@@ -99,12 +99,13 @@ interface BulkRow {
   categories?: string;
   duration?: string;
   url?: string;
+  ageLevel?: string;
+  drillType?: string;
   problems?: string;
   outcomes?: string;
   tags?: string;
   problem?: string;
   goal?: string;
-  drillType?: string;
 }
 
 function parseBulkCSV(raw: string): BulkRow[] {
@@ -398,19 +399,49 @@ function EditDrillModal({
 
 // ─── Bulk Import Modal ────────────────────────────────────────────────────────
 
+// Full field template for new drill creation
+const FULL_CSV_TEMPLATE = `drillId,name,difficulty,categories,duration,url,ageLevel,drillType,problems,outcomes,tags
+new-drill-example,My New Drill,Medium,"Hitting",10m,https://example.com/drill,"Youth,High School",Constraint,"Timing Issues, Poor Load","Improve Timing, Improve Barrel Path","timing, rhythm"
+existing-drill-id,,,,,,,,"Bat Path Issues",,`;
+
+const FULL_JSON_TEMPLATE = JSON.stringify([
+  {
+    drillId: "new-drill-example",
+    name: "My New Drill",
+    difficulty: "Medium",
+    categories: ["Hitting"],
+    duration: "10m",
+    url: "https://example.com/drill",
+    ageLevel: ["Youth", "High School"],
+    drillType: "Constraint",
+    problems: ["Timing Issues", "Poor Load"],
+    outcomes: ["Improve Timing", "Improve Barrel Path"],
+    tags: ["timing", "rhythm"]
+  },
+  {
+    drillId: "existing-drill-id",
+    problems: ["Bat Path Issues"]
+  }
+], null, 2);
+
 function BulkImportModal({ onClose, onDone }: { onClose: () => void; onDone: () => void }) {
   const utils = trpc.useUtils();
   const [raw, setRaw] = useState("");
-  const [format, setFormat] = useState<"csv" | "json">("csv");
+  const [format, setFormat] = useState<"csv" | "json">("json");
   const [preview, setPreview] = useState<BulkRow[]>([]);
   const [parsed, setParsed] = useState(false);
+  const [importResult, setImportResult] = useState<{ created: number; updated: number; skipped: number; errors: Array<{ drillId: string; reason: string }> } | null>(null);
 
   const bulkUpsert = trpc.drillsDirectory.bulkUpsert.useMutation({
-    onSuccess: (res: { updated: number; skipped: number }) => {
-      toast.success(`Bulk import complete: ${res.updated} drills updated`);
+    onSuccess: (res) => {
+      setImportResult(res);
+      const parts = [];
+      if (res.created > 0) parts.push(`${res.created} new drills created`);
+      if (res.updated > 0) parts.push(`${res.updated} drills updated`);
+      if (res.skipped > 0) parts.push(`${res.skipped} rows skipped`);
+      toast.success(`Import complete: ${parts.join(', ') || 'nothing changed'}`);
       utils.drillsDirectory.listAdmin.invalidate();
       utils.drillsDirectory.list.invalidate();
-      onDone();
     },
     onError: (e: { message: string }) => toast.error(`Bulk import failed: ${e.message}`),
   });
@@ -419,41 +450,52 @@ function BulkImportModal({ onClose, onDone }: { onClose: () => void; onDone: () 
     const rows = format === "csv" ? parseBulkCSV(raw) : parseBulkJSON(raw);
     setPreview(rows);
     setParsed(true);
+    setImportResult(null);
   }
 
   function handleImport() {
     const rows = preview.map((r) => ({
       drillId: (r.drillId ?? "").trim(),
-      name: r.name,
-      difficulty: r.difficulty,
+      name: r.name || undefined,
+      difficulty: r.difficulty || undefined,
       categories: r.categories ? parseJsonArr(r.categories) : undefined,
-      duration: r.duration,
-      url: r.url,
+      duration: r.duration || undefined,
+      url: r.url || undefined,
+      ageLevel: r.ageLevel ? parseJsonArr(r.ageLevel) : undefined,
+      drillType: r.drillType || undefined,
       problems: r.problems ? parseJsonArr(r.problems) : undefined,
       outcomes: r.outcomes ? parseJsonArr(r.outcomes) : undefined,
       tags: r.tags ? parseJsonArr(r.tags) : undefined,
       problem: r.problem ? parseJsonArr(r.problem) : undefined,
       goal: r.goal ? parseJsonArr(r.goal) : undefined,
-      drillType: r.drillType,
     }));
     bulkUpsert.mutate({ rows });
   }
 
-  const csvTemplate = `drillId,name,difficulty,duration,problems,outcomes,tags
-1-2-3-drill,1-2-3 Drill,Medium,10m,"Timing Issues, Poor Load","Improve Timing, Improve Barrel Path","timing, rhythm"`;
+  function downloadTemplate(fmt: 'csv' | 'json') {
+    const content = fmt === 'csv' ? FULL_CSV_TEMPLATE : FULL_JSON_TEMPLATE;
+    const blob = new Blob([content], { type: fmt === 'csv' ? 'text/csv' : 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `drill-import-template.${fmt}`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-3xl bg-[#0f1419] border-[#1e2a3a] text-gray-100 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-white font-bold">Bulk Import / Update Drills</DialogTitle>
+          <DialogTitle className="text-white font-bold">Bulk Import / Create & Update Drills</DialogTitle>
           <DialogDescription className="text-gray-400">
-            Paste CSV or JSON to update multiple drills at once. Only fields you provide will be updated — omitted fields are left unchanged.
+            Paste CSV or JSON to <strong className="text-gray-200">create new drills or update existing ones</strong> in one shot.
+            New drills are inserted; existing drills (matched by drillId) are updated with only the fields you provide.
           </DialogDescription>
         </DialogHeader>
 
-        {/* Format toggle */}
-        <div className="flex gap-2 mt-2">
+        {/* Format toggle + template buttons */}
+        <div className="flex flex-wrap gap-2 mt-2 items-center">
           {(["csv", "json"] as const).map((f) => (
             <button
               key={f}
@@ -467,24 +509,39 @@ function BulkImportModal({ onClose, onDone }: { onClose: () => void; onDone: () 
               {f.toUpperCase()}
             </button>
           ))}
-          <button
-            onClick={() => setRaw(csvTemplate)}
-            className="ml-auto text-xs text-gray-500 hover:text-gray-300 underline"
-          >
-            Load CSV template
-          </button>
+          <div className="ml-auto flex gap-3">
+            <button
+              onClick={() => { setRaw(format === 'csv' ? FULL_CSV_TEMPLATE : FULL_JSON_TEMPLATE); setParsed(false); }}
+              className="text-xs text-gray-500 hover:text-gray-300 underline"
+            >
+              Load {format.toUpperCase()} template
+            </button>
+            <button
+              onClick={() => downloadTemplate(format)}
+              className="text-xs text-[#e4002b] hover:text-[#ff3355] underline"
+            >
+              ↓ Download template
+            </button>
+          </div>
+        </div>
+
+        {/* Field reference */}
+        <div className="bg-[#0A1628] border border-[#1e2a3a] rounded p-3 text-xs text-gray-400">
+          <p className="font-semibold text-gray-300 mb-1">Accepted fields:</p>
+          <p><span className="text-[#e4002b] font-mono">drillId</span> (required) · <span className="text-yellow-400 font-mono">name</span> (required for new drills) · difficulty · categories · duration · url · ageLevel · drillType · problems · outcomes · tags</p>
+          <p className="mt-1 text-gray-500">Arrays: use JSON array syntax <code>["A","B"]</code> or comma-separated string <code>"A, B"</code> in CSV.</p>
         </div>
 
         <textarea
           value={raw}
-          onChange={(e) => { setRaw(e.target.value); setParsed(false); }}
+          onChange={(e) => { setRaw(e.target.value); setParsed(false); setImportResult(null); }}
           rows={8}
           placeholder={format === "csv" ? "Paste CSV here…" : "Paste JSON array here…"}
           className="w-full bg-[#0A1628] border border-[#1e2a3a] rounded p-3 text-sm font-mono text-gray-200 resize-y focus:outline-none focus:border-[#e4002b]"
         />
 
         {/* Preview */}
-        {parsed && preview.length > 0 && (
+        {parsed && preview.length > 0 && !importResult && (
           <div className="mt-2">
             <p className="text-xs text-gray-400 mb-2">{preview.length} rows parsed — preview (first 5):</p>
             <div className="overflow-x-auto rounded border border-[#1e2a3a]">
@@ -500,7 +557,7 @@ function BulkImportModal({ onClose, onDone }: { onClose: () => void; onDone: () 
                   {preview.slice(0, 5).map((r, i) => (
                     <tr key={i} className="border-t border-[#1e2a3a]">
                       <td className="px-3 py-1.5 font-mono text-gray-300">{r.drillId}</td>
-                      <td className="px-3 py-1.5 text-gray-200">{r.name || "—"}</td>
+                      <td className="px-3 py-1.5 text-gray-200">{r.name || <span className="text-gray-600 italic">update only</span>}</td>
                       <td className="px-3 py-1.5 text-gray-400">{r.difficulty || "—"}</td>
                       <td className="px-3 py-1.5 text-gray-400 max-w-[160px] truncate">{r.problems || "—"}</td>
                       <td className="px-3 py-1.5 text-gray-400 max-w-[160px] truncate">{r.outcomes || "—"}</td>
@@ -515,22 +572,45 @@ function BulkImportModal({ onClose, onDone }: { onClose: () => void; onDone: () 
           <p className="text-red-400 text-sm mt-2">No valid rows found. Check your format and that drillId column exists.</p>
         )}
 
+        {/* Import result summary */}
+        {importResult && (
+          <div className="mt-3 p-3 rounded border border-[#1e2a3a] bg-[#0A1628] space-y-2">
+            <div className="flex gap-4 text-sm">
+              <span className="text-green-400 font-semibold">✓ {importResult.created} created</span>
+              <span className="text-blue-400 font-semibold">↑ {importResult.updated} updated</span>
+              {importResult.skipped > 0 && <span className="text-yellow-400 font-semibold">⚠ {importResult.skipped} skipped</span>}
+            </div>
+            {importResult.errors.length > 0 && (
+              <div className="text-xs text-gray-400">
+                <p className="text-yellow-300 font-medium mb-1">Skipped rows:</p>
+                {importResult.errors.map((e, i) => (
+                  <p key={i}><span className="font-mono text-gray-300">{e.drillId}</span>: {e.reason}</p>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         <DialogFooter className="mt-4 gap-2">
-          <Button variant="outline" onClick={onClose} className="border-[#1e2a3a] text-gray-400">Cancel</Button>
-          {!parsed ? (
-            <Button onClick={handleParse} className="bg-[#0A1628] border border-[#1e2a3a] text-white hover:bg-[#1e2a3a]">
-              Parse & Preview
-            </Button>
-          ) : (
-            <Button
-              onClick={handleImport}
-              disabled={preview.length === 0 || bulkUpsert.isPending}
-              className="bg-[#e4002b] hover:bg-[#c0001f] text-white"
-            >
-              {bulkUpsert.isPending
-                ? <><RefreshCw className="h-4 w-4 animate-spin mr-2" />Importing…</>
-                : <><Upload className="h-4 w-4 mr-2" />Import {preview.length} rows</>}
-            </Button>
+          <Button variant="outline" onClick={onClose} className="border-[#1e2a3a] text-gray-400">
+            {importResult ? 'Close' : 'Cancel'}
+          </Button>
+          {!importResult && (
+            !parsed ? (
+              <Button onClick={handleParse} className="bg-[#0A1628] border border-[#1e2a3a] text-white hover:bg-[#1e2a3a]">
+                Parse & Preview
+              </Button>
+            ) : (
+              <Button
+                onClick={handleImport}
+                disabled={preview.length === 0 || bulkUpsert.isPending}
+                className="bg-[#e4002b] hover:bg-[#c0001f] text-white"
+              >
+                {bulkUpsert.isPending
+                  ? <><RefreshCw className="h-4 w-4 animate-spin mr-2" />Importing…</>
+                  : <><Upload className="h-4 w-4 mr-2" />Import {preview.length} rows</>}
+              </Button>
+            )
           )}
         </DialogFooter>
       </DialogContent>

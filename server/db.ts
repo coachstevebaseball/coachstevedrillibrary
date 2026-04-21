@@ -1571,50 +1571,73 @@ export async function getAllDrillsAdmin(): Promise<Drill[]> {
   }
 }
 
-/** Bulk upsert drills — only updates fields that are explicitly provided.
- *  Each row must have a drillId; all other fields are optional patches.
- *  Returns { updated: number, skipped: number }.
+/** Bulk upsert drills — true upsert: updates existing drills, inserts brand-new ones.
+ *  Each row must have a drillId; name is required for new drills.
+ *  Returns { created, updated, skipped, errors } with per-row error details.
  */
 export async function bulkUpsertDrills(
   rows: Array<Partial<InsertDrill> & { drillId: string }>
-): Promise<{ updated: number; skipped: number }> {
+): Promise<{ created: number; updated: number; skipped: number; errors: Array<{ drillId: string; reason: string }> }> {
   const db = await getDb();
-  if (!db) return { updated: 0, skipped: rows.length };
+  if (!db) return { created: 0, updated: 0, skipped: rows.length, errors: rows.map(r => ({ drillId: r.drillId, reason: 'Database unavailable' })) };
+  let created = 0;
   let updated = 0;
   let skipped = 0;
+  const errors: Array<{ drillId: string; reason: string }> = [];
   for (const row of rows) {
     try {
       const { drillId, ...patch } = row;
+      if (!drillId || drillId.trim() === '') {
+        skipped++;
+        errors.push({ drillId: '(empty)', reason: 'Missing required field: drillId' });
+        continue;
+      }
       // Remove undefined values so we only set what was provided
       const cleanPatch: Record<string, unknown> = {};
       for (const [k, v] of Object.entries(patch)) {
         if (v !== undefined) cleanPatch[k] = v;
       }
-      if (Object.keys(cleanPatch).length === 0) { skipped++; continue; }
-      // Try update first; if no rows affected, insert
+      if (Object.keys(cleanPatch).length === 0) {
+        skipped++;
+        errors.push({ drillId, reason: 'No fields to update — row was empty' });
+        continue;
+      }
+      // Try update first; if no rows affected, insert as new drill
       const result = await db
         .update(drills)
         .set(cleanPatch as Partial<InsertDrill>)
         .where(eq(drills.drillId, drillId));
       const affected = (result as any)[0]?.affectedRows ?? 0;
       if (affected === 0) {
-        // Insert new drill with defaults
+        // New drill — name is required
+        const drillName = (cleanPatch.name as string | undefined)?.trim();
+        if (!drillName) {
+          skipped++;
+          errors.push({ drillId, reason: 'New drill requires a name — no existing drill found with this ID and no name was provided' });
+          continue;
+        }
+        // Insert new drill with sensible defaults for omitted fields
         await db.insert(drills).values({
           drillId,
-          name: (cleanPatch.name as string) ?? drillId,
-          difficulty: (cleanPatch.difficulty as string) ?? "Medium",
+          name: drillName,
+          difficulty: (cleanPatch.difficulty as string) ?? 'Medium',
           categories: (cleanPatch.categories as string[]) ?? [],
-          duration: (cleanPatch.duration as string) ?? "",
-          source: "custom",
+          duration: (cleanPatch.duration as string) ?? '',
+          url: (cleanPatch.url as string | null) ?? null,
+          isDirectLink: (cleanPatch.isDirectLink as boolean) ?? false,
+          source: 'custom',
           isHidden: false,
           ...cleanPatch,
         });
+        created++;
+      } else {
+        updated++;
       }
-      updated++;
     } catch (error) {
       console.error(`[DB] bulkUpsertDrills failed for ${row.drillId}:`, error);
       skipped++;
+      errors.push({ drillId: row.drillId, reason: String(error instanceof Error ? error.message : error) });
     }
   }
-  return { updated, skipped };
+  return { created, updated, skipped, errors };
 }

@@ -1356,18 +1356,25 @@ export const appRouter = router({
     bulkUpsert: protectedProcedure
       .input(z.object({
         rows: z.array(z.object({
+          // Required for matching (update) or creating (insert)
           drillId: z.string(),
+          // Required for new drills; optional for updates
           name: z.string().optional(),
+          // All other fields optional — omitted fields are left unchanged on update
           difficulty: z.string().optional(),
           categories: z.array(z.string()).optional(),
           duration: z.string().optional(),
           url: z.string().nullable().optional(),
+          isDirectLink: z.boolean().optional(),
+          ageLevel: z.array(z.string()).optional(),
+          drillType: z.string().nullable().optional(),
           problems: z.array(z.string()).optional(),
           outcomes: z.array(z.string()).optional(),
           tags: z.array(z.string()).optional(),
           problem: z.array(z.string()).optional(),
           goal: z.array(z.string()).optional(),
-          drillType: z.string().nullable().optional(),
+          description: z.string().nullable().optional(),
+          equipment: z.array(z.string()).optional(),
         }))
       }))
       .mutation(async ({ ctx, input }) => {
