@@ -1894,3 +1894,10 @@
 - [x] Delete "Test Drill - Delete Me" (id: 570001) from customDrills DB
 - [x] Delete "Simple Test" (id: 600001) from customDrills DB
 - [x] Delete "Test Drill Fix Verification" (id: 600002) from customDrills DB
+
+## Embed Layout Sync + OG Images (Apr 20)
+- [x] Update embed drill detail: add DrillTagSection (problems + outcomes pills)
+- [x] Update embed drill detail: remove stat cards (TIME / ATHLETES / EQUIPMENT / SKILL SET)
+- [x] Add dynamic OG meta tags to non-embed DrillDetail.tsx (title, description, image)
+- [x] Add dynamic OG meta tags to embed drill detail component
+- [x] Create server-side /api/og/drill/:id endpoint that generates OG image with drill name, category, difficulty

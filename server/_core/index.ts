@@ -10,6 +10,7 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { startBatchProcessor } from "../emailBatching";
 import { startScheduledJobs } from "../notificationService";
+import { registerOgRoutes } from "../ogImage";
 import { storageDownload, storagePut } from "../storage";
 import { sdk } from "./sdk";
 
@@ -146,6 +147,9 @@ async function startServer() {
       res.status(500).json({ error: "Failed to proxy image" });
     }
   });
+  // Dynamic OG image generation for drill detail pages
+  registerOgRoutes(app);
+
   // tRPC API
   app.use(
     "/api/trpc",

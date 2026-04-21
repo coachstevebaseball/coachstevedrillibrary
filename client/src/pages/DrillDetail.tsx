@@ -23,6 +23,7 @@ import { CustomDrillLayout } from "@/components/CustomDrillLayout";
 import { Layout } from "lucide-react";
 import { usePreviewLimit, MAX_FREE_PREVIEWS } from "@/hooks/usePreviewLimit";
 import { InlineEdit } from "@/components/InlineEdit";
+import { Helmet } from "react-helmet-async";
 
 // DrillTagSection component — shows Problems (red) and Outcomes (green) with Show More
 const MAX_VISIBLE_TAGS = 4;
@@ -1442,7 +1443,23 @@ export default function DrillDetail() {
 
   return (
     <div className="min-h-screen bg-background pb-8 md:pb-12">
-
+      <Helmet>
+        <title>{drill.name} — Coach Steve's Hitters Lab</title>
+        <meta name="description" content={`${drill.difficulty} ${drill.categories.join(', ')} drill. Train your swing with Coach Steve's Hitters Lab.`} />
+        {/* Open Graph */}
+        <meta property="og:title" content={`${drill.name} — Coach Steve's Hitters Lab`} />
+        <meta property="og:description" content={`${drill.difficulty} ${drill.categories.join(', ')} drill. Train your swing with Coach Steve's Hitters Lab.`} />
+        <meta property="og:image" content={`/api/og/drill/${drill.id}`} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://coachstevemobilecoach.com/drill/${drill.id}`} />
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${drill.name} — Coach Steve's Hitters Lab`} />
+        <meta name="twitter:description" content={`${drill.difficulty} ${drill.categories.join(', ')} drill. Train your swing with Coach Steve's Hitters Lab.`} />
+        <meta name="twitter:image" content={`/api/og/drill/${drill.id}`} />
+      </Helmet>
 
       {/* Header — matches directory / brand chrome */}
       <header className="relative bg-brand-header text-brand-header-foreground border-b border-brand-header-foreground/10 mb-6 md:mb-8">
