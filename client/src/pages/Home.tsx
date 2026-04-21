@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 // Sheet import removed — advanced filters are always visible inline
 import {
   Search, Users, ChevronRight, Sparkles,
-  Clock, Target, TrendingUp, SlidersHorizontal, X, Pencil,
+  Clock, Target, TrendingUp, SlidersHorizontal, X, Pencil, ChevronDown,
 } from "lucide-react";
 import { HomePageSkeleton } from "@/components/Skeleton";
 import { Link } from "wouter";
@@ -94,6 +94,16 @@ export default function Home() {
   const DRILLS_PER_PAGE = 21;
   const hasRestoredScroll = useRef(false);
 
+  // Accordion open/close state for the 3 visible filter sections
+  const [problemOpen, setProblemOpen] = useState(false);
+  const [goalOpen, setGoalOpen] = useState(false);
+  const [tagOpen, setTagOpen] = useState(false);
+
+  // Multi-select state for accordion filters (arrays of selected values)
+  const [selectedProblems, setSelectedProblems] = useState<string[]>([]);
+  const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
   // Mobile "More Filters" sheet state
   // moreFiltersOpen removed — advanced filters are always visible
 
@@ -139,12 +149,13 @@ export default function Home() {
       const matchesCategory = categoryFilter === "All" || drill.categories.includes(categoryFilter);
       const matchesAgeLevel = ageLevelFilter === "all-levels" || (drill.ageLevel ?? []).includes(ageLevelFilter);
       const matchesDrillType = drillTypeFilter === "all-types" || drill.drillType === drillTypeFilter;
-      const matchesProblem = problemFilter === "all-problems" || (drill.problem ?? []).includes(problemFilter);
-      const matchesGoal = goalFilter === "all-goals" || (drill.goal ?? []).includes(goalFilter);
-      const matchesTag = tagFilter === "all-tags" || (drill.tags ?? []).includes(tagFilter);
+      // Multi-select: match if no selections OR drill has at least one selected value
+      const matchesProblem = selectedProblems.length === 0 || selectedProblems.some(p => (drill.problem ?? []).includes(p));
+      const matchesGoal = selectedGoals.length === 0 || selectedGoals.some(g => (drill.goal ?? []).includes(g));
+      const matchesTag = selectedTags.length === 0 || selectedTags.some(t => (drill.tags ?? []).includes(t));
       return matchesSearch && matchesDifficulty && matchesCategory && matchesAgeLevel && matchesDrillType && matchesProblem && matchesGoal && matchesTag;
     });
-  }, [allDrills, searchQuery, difficultyFilter, categoryFilter, ageLevelFilter, drillTypeFilter, problemFilter, goalFilter, tagFilter]);
+  }, [allDrills, searchQuery, difficultyFilter, categoryFilter, ageLevelFilter, drillTypeFilter, selectedProblems, selectedGoals, selectedTags]);
 
   const totalPages = Math.ceil(filteredDrills.length / DRILLS_PER_PAGE);
   const startIndex = (currentPage - 1) * DRILLS_PER_PAGE;
@@ -161,13 +172,13 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, [paginatedDrills.length, currentQuery]);
 
-  // Count advanced filters (ageLevel, drillType, problem, goal, tag) — those behind "More Filters" on mobile
+  // Count advanced filters
   const advancedFilterCount = [
     ageLevelFilter !== "all-levels",
     drillTypeFilter !== "all-types",
-    problemFilter !== "all-problems",
-    goalFilter !== "all-goals",
-    tagFilter !== "all-tags",
+    ...selectedProblems,
+    ...selectedGoals,
+    ...selectedTags,
   ].filter(Boolean).length;
 
   if (loading) return <HomePageSkeleton />;
@@ -177,101 +188,185 @@ export default function Home() {
     saveScrollPosition(currentQuery || '__default__');
   };
 
-  /** Render the 5 advanced filter selects (used in both desktop and mobile sheet) */
-  const renderAdvancedFilters = (inSheet = false) => (
-    <div className={inSheet ? "space-y-5" : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3"}>
-      {/* Age / Level */}
-      <div>
-        <label className="text-[10px] font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Age / Level</label>
-        <Select value={ageLevelFilter} onValueChange={setAgeLevelFilter}>
-          <SelectTrigger className="w-full text-sm bg-card/80 border-border/50 hover:border-electric/30 transition-colors">
-            <SelectValue placeholder="All Levels" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all-levels">All Levels</SelectItem>
-            {filterOptions.ageLevel.map(opt => (
-              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+  /** Helper: toggle a value in a multi-select array */
+  const toggleMultiSelect = (arr: string[], val: string, setArr: (v: string[]) => void) => {
+    setArr(arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val]);
+  };
 
-      {/* Drill Type */}
-      <div>
-        <label className="text-[10px] font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Drill Type</label>
-        <Select value={drillTypeFilter} onValueChange={setDrillTypeFilter}>
-          <SelectTrigger className="w-full text-sm bg-card/80 border-border/50 hover:border-electric/30 transition-colors">
-            <SelectValue placeholder="All Drill Types" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all-types">All Drill Types</SelectItem>
-            {drillTypeOptions.map(group => (
-              <div key={group.label}>
-                <div className="px-2 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{group.label}</div>
-                {group.options.map(opt => (
-                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                ))}
-              </div>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+  /** Accordion filter card used for Fix a Problem / Build a Skill / Focus Areas */
+  const AccordionFilterCard = ({
+    label, subtitle, options, selected, onToggle, isOpen, onToggleOpen,
+  }: {
+    label: string;
+    subtitle: string;
+    options: { value: string; label: string }[];
+    selected: string[];
+    onToggle: (v: string) => void;
+    isOpen: boolean;
+    onToggleOpen: () => void;
+  }) => (
+    <div className="rounded-xl border border-white/8 bg-[#0A1628] overflow-hidden">
+      {/* Header row */}
+      <button
+        type="button"
+        onClick={onToggleOpen}
+        className="w-full flex items-center justify-between px-4 py-3.5 text-left group"
+      >
+        <div>
+          <span className="block text-[11px] font-bold uppercase tracking-widest text-[#e4002b]">
+            {label}
+            {selected.length > 0 && (
+              <span className="ml-2 inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#e4002b] text-white text-[9px] font-bold">
+                {selected.length}
+              </span>
+            )}
+          </span>
+          <span className="block text-[11px] text-muted-foreground mt-0.5">{subtitle}</span>
+        </div>
+        <ChevronDown
+          className={`h-4 w-4 text-muted-foreground transition-transform duration-200 flex-shrink-0 ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        />
+      </button>
 
-      {/* Fix a Problem */}
-      <div>
-        <label className="text-[10px] font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Fix a Problem</label>
-        <Select value={problemFilter} onValueChange={setProblemFilter}>
-          <SelectTrigger className="w-full text-sm bg-card/80 border-border/50 hover:border-electric/30 transition-colors">
-            <SelectValue placeholder="All Problems" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all-problems">All Problems</SelectItem>
-            {filterOptions.problem.map(opt => (
-              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      {/* Expandable checkbox grid */}
+      {isOpen && (
+        <div className="px-4 pb-4 border-t border-white/8">
+          <div className="grid grid-cols-2 gap-x-3 gap-y-2 mt-3">
+            {options.map(opt => {
+              const checked = selected.includes(opt.value);
+              return (
+                <label
+                  key={opt.value}
+                  className="flex items-center gap-2 cursor-pointer group/cb"
+                >
+                  <span
+                    className={`flex-shrink-0 w-4 h-4 rounded border transition-all duration-150 flex items-center justify-center ${
+                      checked
+                        ? "bg-[#e4002b] border-[#e4002b]"
+                        : "border-white/20 bg-white/5 group-hover/cb:border-[#e4002b]/50"
+                    }`}
+                    onClick={() => onToggle(opt.value)}
+                  >
+                    {checked && (
+                      <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 10 8">
+                        <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </span>
+                  <span
+                    className={`text-[11px] leading-tight transition-colors ${
+                      checked ? "text-foreground font-medium" : "text-muted-foreground group-hover/cb:text-foreground"
+                    }`}
+                    onClick={() => onToggle(opt.value)}
+                  >
+                    {opt.label}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 
-      {/* Training Goal */}
-      <div>
-        <label className="text-[10px] font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Training Goal</label>
-        <Select value={goalFilter} onValueChange={setGoalFilter}>
-          <SelectTrigger className="w-full text-sm bg-card/80 border-border/50 hover:border-electric/30 transition-colors">
-            <SelectValue placeholder="All Goals" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all-goals">All Goals</SelectItem>
-            {filterOptions.goal.map(opt => (
-              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+  /** Render the advanced filter panel */
+  const renderAdvancedFilters = (_inSheet = false) => (
+    <div className="space-y-3">
+      {/* AGE / LEVEL — hidden but kept in code for future re-enable */}
+      {/* FEATURE FLAG: set to true to re-enable Age/Level filter */}
+      {false && (
+        <div>
+          <label className="text-[10px] font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Age / Level</label>
+          <Select value={ageLevelFilter} onValueChange={setAgeLevelFilter}>
+            <SelectTrigger className="w-full text-sm bg-card/80 border-border/50">
+              <SelectValue placeholder="All Levels" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all-levels">All Levels</SelectItem>
+              {filterOptions.ageLevel.map(opt => (
+                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
-      {/* Tag / Focus Area */}
-      <div>
-        <label className="text-[10px] font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Tag / Focus Area</label>
-        <Select value={tagFilter} onValueChange={setTagFilter}>
-          <SelectTrigger className="w-full text-sm bg-card/80 border-border/50 hover:border-electric/30 transition-colors">
-            <SelectValue placeholder="All Tags" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all-tags">All Tags</SelectItem>
-            {filterOptions.tags.map(tag => (
-              <SelectItem key={tag} value={tag}>{tag.charAt(0).toUpperCase() + tag.slice(1)}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      {/* DRILL TYPE — hidden but kept in code for future re-enable */}
+      {/* FEATURE FLAG: set to true to re-enable Drill Type filter */}
+      {false && (
+        <div>
+          <label className="text-[10px] font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Drill Type</label>
+          <Select value={drillTypeFilter} onValueChange={setDrillTypeFilter}>
+            <SelectTrigger className="w-full text-sm bg-card/80 border-border/50">
+              <SelectValue placeholder="All Drill Types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all-types">All Drill Types</SelectItem>
+              {drillTypeOptions.map(group => (
+                <div key={group.label}>
+                  <div className="px-2 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{group.label}</div>
+                  {group.options.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  ))}
+                </div>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {/* FIX A PROBLEM */}
+      <AccordionFilterCard
+        label="Fix a Problem"
+        subtitle="What are you trying to fix?"
+        options={filterOptions.problem}
+        selected={selectedProblems}
+        onToggle={(v) => toggleMultiSelect(selectedProblems, v, setSelectedProblems)}
+        isOpen={problemOpen}
+        onToggleOpen={() => setProblemOpen(o => !o)}
+      />
+
+      {/* BUILD A SKILL (was: Training Goal) */}
+      <AccordionFilterCard
+        label="Build a Skill"
+        subtitle="What are you building?"
+        options={filterOptions.goal}
+        selected={selectedGoals}
+        onToggle={(v) => toggleMultiSelect(selectedGoals, v, setSelectedGoals)}
+        isOpen={goalOpen}
+        onToggleOpen={() => setGoalOpen(o => !o)}
+      />
+
+      {/* FOCUS AREAS (was: Tag / Focus Area) */}
+      <AccordionFilterCard
+        label="Focus Areas"
+        subtitle="Pick a focus area"
+        options={filterOptions.tags.map(t => ({ value: t, label: t.charAt(0).toUpperCase() + t.slice(1) }))}
+        selected={selectedTags}
+        onToggle={(v) => toggleMultiSelect(selectedTags, v, setSelectedTags)}
+        isOpen={tagOpen}
+        onToggleOpen={() => setTagOpen(o => !o)}
+      />
     </div>
   );
 
   /** Build active filter pills */
-  const renderFilterPills = () => {
-    if (!hasActiveFilters) return null;
+  const hasAnyActiveFilters = hasActiveFilters || selectedProblems.length > 0 || selectedGoals.length > 0 || selectedTags.length > 0;
 
-    const pills: { label: string; onRemove: () => void }[] = [];
+  const handleClearAll = () => {
+    resetAll();
+    setSelectedProblems([]);
+    setSelectedGoals([]);
+    setSelectedTags([]);
+  };
+
+  const renderFilterPills = () => {
+    if (!hasAnyActiveFilters) return null;
+
+    const pills: { label: string; onRemove: () => void; variant?: 'crimson' | 'default' }[] = [];
 
     if (searchQuery) {
       pills.push({ label: `Search: "${searchQuery}"`, onRemove: () => setSearchQuery("") });
@@ -289,17 +384,32 @@ export default function Home() {
     if (drillTypeFilter !== "all-types") {
       pills.push({ label: `Type: ${drillTypeFilter}`, onRemove: () => setDrillTypeFilter("all-types") });
     }
-    if (problemFilter !== "all-problems") {
-      const opt = filterOptions.problem.find(o => o.value === problemFilter);
-      pills.push({ label: `Fix: ${opt?.label || problemFilter}`, onRemove: () => setProblemFilter("all-problems") });
-    }
-    if (goalFilter !== "all-goals") {
-      const opt = filterOptions.goal.find(o => o.value === goalFilter);
-      pills.push({ label: `Goal: ${opt?.label || goalFilter}`, onRemove: () => setGoalFilter("all-goals") });
-    }
-    if (tagFilter !== "all-tags") {
-      pills.push({ label: `Tag: ${tagFilter}`, onRemove: () => setTagFilter("all-tags") });
-    }
+    // Multi-select: Fix a Problem
+    selectedProblems.forEach(val => {
+      const opt = filterOptions.problem.find(o => o.value === val);
+      pills.push({
+        label: `Fix: ${opt?.label || val}`,
+        onRemove: () => setSelectedProblems(prev => prev.filter(x => x !== val)),
+        variant: 'crimson',
+      });
+    });
+    // Multi-select: Build a Skill
+    selectedGoals.forEach(val => {
+      const opt = filterOptions.goal.find(o => o.value === val);
+      pills.push({
+        label: `Skill: ${opt?.label || val}`,
+        onRemove: () => setSelectedGoals(prev => prev.filter(x => x !== val)),
+        variant: 'crimson',
+      });
+    });
+    // Multi-select: Focus Areas
+    selectedTags.forEach(val => {
+      pills.push({
+        label: `Focus: ${val.charAt(0).toUpperCase() + val.slice(1)}`,
+        onRemove: () => setSelectedTags(prev => prev.filter(x => x !== val)),
+        variant: 'crimson',
+      });
+    });
 
     return (
       <div className="flex flex-wrap items-center gap-2 mb-6 animate-fade-in-up">
@@ -307,14 +417,18 @@ export default function Home() {
           <button
             key={i}
             onClick={pill.onRemove}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-electric/10 text-electric border border-electric/20 hover:bg-electric/20 hover:border-electric/40 transition-all duration-300 group"
+            className={
+              pill.variant === 'crimson'
+                ? "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-[#e4002b]/15 text-[#e4002b] border border-[#e4002b]/30 hover:bg-[#e4002b]/25 hover:border-[#e4002b]/50 transition-all duration-300 group"
+                : "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-electric/10 text-electric border border-electric/20 hover:bg-electric/20 hover:border-electric/40 transition-all duration-300 group"
+            }
           >
             {pill.label}
             <X className="h-3 w-3 opacity-60 group-hover:opacity-100 transition-opacity" />
           </button>
         ))}
         <button
-          onClick={resetAll}
+          onClick={handleClearAll}
           className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-all duration-300"
         >
           Clear all
@@ -601,9 +715,8 @@ export default function Home() {
               No drills match your current filters. Try adjusting your search or filters.
             </p>
             <Button 
-              onClick={() => resetAll()}
-              className="btn-premium text-white text-sm"
-            >
+              onClick={() => handleClearAll()}
+              className="btn-premium text-white text-sm">
               Clear All Filters
             </Button>
           </div>

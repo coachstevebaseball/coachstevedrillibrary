@@ -1907,3 +1907,15 @@
 - [x] Promote Age/Level, Drill Type, Fix a Problem, Training Goal, Tag/Focus Area to always-visible
 - [x] Ensure all 5 filters display correctly on mobile (full-width stacked layout)
 - [x] Keep Level and Skill pill filters above the advanced filter row
+
+## Filter Panel Redesign (Apr 20)
+- [x] Hide AGE / LEVEL and DRILL TYPE filters (feature-flag, keep in code)
+- [x] Rename TRAINING GOAL → BUILD A SKILL with subtitle "What are you building?"
+- [x] Rename TAG / FOCUS AREA → FOCUS AREAS with subtitle "Pick a focus area"
+- [x] Add subtitle "What are you trying to fix?" to FIX A PROBLEM
+- [x] Convert all 3 visible filters from dropdowns to collapsible accordion cards
+- [x] Each card: navy bg, crimson uppercase label, gray subtitle, caret rotates on expand
+- [x] Expand to reveal 2-column checkbox grid; checkboxes fill crimson when selected
+- [x] Active selections render as crimson pill chips below the card stack with × to clear
+- [x] Keep "NARROW BY PROBLEM, GOAL & MORE" header and "Clear all" action
+- [x] Wire multi-select checkbox values into the drill filtering logic
