@@ -1901,3 +1901,9 @@
 - [x] Add dynamic OG meta tags to non-embed DrillDetail.tsx (title, description, image)
 - [x] Add dynamic OG meta tags to embed drill detail component
 - [x] Create server-side /api/og/drill/:id endpoint that generates OG image with drill name, category, difficulty
+
+## Always-Visible Advanced Filters (Apr 20)
+- [x] Remove "More Filters" collapsible toggle from Home.tsx
+- [x] Promote Age/Level, Drill Type, Fix a Problem, Training Goal, Tag/Focus Area to always-visible
+- [x] Ensure all 5 filters display correctly on mobile (full-width stacked layout)
+- [x] Keep Level and Skill pill filters above the advanced filter row

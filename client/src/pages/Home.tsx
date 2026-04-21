@@ -3,9 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription,
-} from "@/components/ui/sheet";
+// Sheet import removed — advanced filters are always visible inline
 import {
   Search, Users, ChevronRight, Sparkles,
   Clock, Target, TrendingUp, SlidersHorizontal, X, Pencil,
@@ -97,7 +95,7 @@ export default function Home() {
   const hasRestoredScroll = useRef(false);
 
   // Mobile "More Filters" sheet state
-  const [moreFiltersOpen, setMoreFiltersOpen] = useState(false);
+  // moreFiltersOpen removed — advanced filters are always visible
 
   // Edit modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -181,7 +179,7 @@ export default function Home() {
 
   /** Render the 5 advanced filter selects (used in both desktop and mobile sheet) */
   const renderAdvancedFilters = (inSheet = false) => (
-    <div className={inSheet ? "space-y-5" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"}>
+    <div className={inSheet ? "space-y-5" : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3"}>
       {/* Age / Level */}
       <div>
         <label className="text-[10px] font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Age / Level</label>
@@ -458,28 +456,12 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Mobile: "More Filters" button */}
-            <div className="lg:hidden">
-              <button
-                onClick={() => setMoreFiltersOpen(true)}
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 ${
-                  advancedFilterCount > 0
-                    ? "bg-electric/15 text-electric border border-electric/30 shadow-sm"
-                    : "bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/50"
-                }`}
-              >
-                <SlidersHorizontal className="h-3.5 w-3.5" />
-                More Filters
-                {advancedFilterCount > 0 && (
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-electric text-white text-[10px] font-bold">
-                    {advancedFilterCount}
-                  </span>
-                )}
-              </button>
-            </div>
-
-            {/* Desktop: Advanced filters inline */}
-            <div className="hidden lg:block">
+            {/* Advanced Filters — always visible on all screen sizes */}
+            <div className="pt-1">
+              <div className="flex items-center gap-2 mb-3">
+                <SlidersHorizontal className="h-3.5 w-3.5 text-electric" />
+                <span className="text-xs font-semibold text-electric uppercase tracking-wider">Narrow By Problem, Goal &amp; More</span>
+              </div>
               {renderAdvancedFilters(false)}
             </div>
           </div>
@@ -703,49 +685,7 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* ===== MOBILE BOTTOM SHEET: More Filters ===== */}
-      <Sheet open={moreFiltersOpen} onOpenChange={setMoreFiltersOpen}>
-        <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto rounded-t-2xl pb-8">
-          <SheetHeader className="pb-4 border-b border-border/30">
-            <SheetTitle className="font-heading text-lg flex items-center gap-2">
-              <SlidersHorizontal className="h-5 w-5 text-electric" />
-              Advanced Filters
-              {advancedFilterCount > 0 && (
-                <Badge className="bg-electric text-white text-[10px] h-5 px-1.5">
-                  {advancedFilterCount} active
-                </Badge>
-              )}
-            </SheetTitle>
-            <SheetDescription className="text-xs text-muted-foreground">
-              Narrow down drills by age level, type, problem, goal, or focus area.
-            </SheetDescription>
-          </SheetHeader>
-          <div className="pt-5 space-y-5">
-            {renderAdvancedFilters(true)}
-            <div className="flex gap-3 pt-4 border-t border-border/30">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => {
-                  setAgeLevelFilter("all-levels");
-                  setDrillTypeFilter("all-types");
-                  setProblemFilter("all-problems");
-                  setGoalFilter("all-goals");
-                  setTagFilter("all-tags");
-                }}
-              >
-                Reset Advanced
-              </Button>
-              <Button
-                className="flex-1 btn-premium text-white"
-                onClick={() => setMoreFiltersOpen(false)}
-              >
-                Show {filteredDrills.length} Drills
-              </Button>
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
+      {/* Advanced filters are now always visible inline — sheet removed */}
 
       {/* Drill Edit Modal */}
       {editingDrill && (
