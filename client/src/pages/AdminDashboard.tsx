@@ -170,6 +170,9 @@ export default function AdminDashboard() {
               <Link href="/manage-drill-content">
                 <Button variant="secondary">Manage Drill Content</Button>
               </Link>
+              <Link href="/admin/drills">
+                <Button variant="secondary">Drill Library Editor</Button>
+              </Link>
               <Link href="/drills">
                 <Button variant="secondary"><InlineEdit contentKey="admin.btn.viewDrills" defaultValue="View Drills" as="span" /></Button>
               </Link>

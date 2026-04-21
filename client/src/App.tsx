@@ -24,6 +24,7 @@ import ActivityFeed from "./pages/ActivityFeed";
 import DrillComparison from "./pages/DrillComparison";
 import AthleteAssessment from "./pages/AthleteAssessment";
 import ManageDrillContent from "./pages/ManageDrillContent";
+import AdminDrillEditor from "./pages/AdminDrillEditor";
 import MyProfile from "./pages/MyProfile";
 import NotificationsInbox from "./pages/NotificationsInbox";
 import NotificationPreferences from "./pages/NotificationPreferences";
@@ -88,6 +89,12 @@ function Router() {
       <Route path={"/admin"}>
         <ProtectedRoute requiredRole="admin">
           <AdminDashboard />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path={"/admin/drills"}>
+        <ProtectedRoute requiredRole="admin">
+          <AdminDrillEditor />
         </ProtectedRoute>
       </Route>
       

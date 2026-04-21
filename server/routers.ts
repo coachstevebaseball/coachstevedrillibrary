@@ -1351,6 +1351,34 @@ export const appRouter = router({
         if (!ok) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to delete drill' });
         return { success: true };
       }),
+
+    /** Bulk upsert drills from CSV/JSON import (admin only) */
+    bulkUpsert: protectedProcedure
+      .input(z.object({
+        rows: z.array(z.object({
+          drillId: z.string(),
+          name: z.string().optional(),
+          difficulty: z.string().optional(),
+          categories: z.array(z.string()).optional(),
+          duration: z.string().optional(),
+          url: z.string().nullable().optional(),
+          problems: z.array(z.string()).optional(),
+          outcomes: z.array(z.string()).optional(),
+          tags: z.array(z.string()).optional(),
+          problem: z.array(z.string()).optional(),
+          goal: z.array(z.string()).optional(),
+          drillType: z.string().nullable().optional(),
+        }))
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const result = await db.bulkUpsertDrills(
+          input.rows.map((r) => ({ ...r, createdBy: ctx.user.id }))
+        );
+        return result;
+      }),
   }),
 });
 

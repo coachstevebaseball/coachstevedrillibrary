@@ -1929,3 +1929,9 @@
 - [x] Add tRPC drillsDirectory router (list, get, listAdmin, upsert, hide, restore, deletePermanently)
 - [x] Update useAllDrills hook to load from backend DB instead of static drills.ts
 - [x] Verify frontend loads 86 drills from DB (backward-compatible, TypeScript clean)
+
+## Three Feature Additions (Apr 21)
+- [x] Admin drill editor UI at /admin/drills (list all drills including hidden, inline edit, hide/restore/delete)
+- [x] Bulk CSV/JSON import via trpc.drillsDirectory.bulkUpsert (parse & preview before import)
+- [x] Wire accordion filters to problems[]/outcomes[] arrays in Home.tsx filteredDrills logic
+- [x] Add "Drill Library Editor" button to AdminDashboard header

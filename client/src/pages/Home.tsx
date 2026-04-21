@@ -150,8 +150,13 @@ export default function Home() {
       const matchesAgeLevel = ageLevelFilter === "all-levels" || (drill.ageLevel ?? []).includes(ageLevelFilter);
       const matchesDrillType = drillTypeFilter === "all-types" || drill.drillType === drillTypeFilter;
       // Multi-select: match if no selections OR drill has at least one selected value
-      const matchesProblem = selectedProblems.length === 0 || selectedProblems.some(p => (drill.problem ?? []).includes(p));
-      const matchesGoal = selectedGoals.length === 0 || selectedGoals.some(g => (drill.goal ?? []).includes(g));
+      // Also checks the richer problems[]/outcomes[] arrays (canonical display labels) in addition to legacy problem/goal slug arrays
+      const matchesProblem = selectedProblems.length === 0 || selectedProblems.some(p =>
+        (drill.problem ?? []).includes(p) || (drill.problems ?? []).includes(p)
+      );
+      const matchesGoal = selectedGoals.length === 0 || selectedGoals.some(g =>
+        (drill.goal ?? []).includes(g) || (drill.outcomes ?? []).includes(g)
+      );
       const matchesTag = selectedTags.length === 0 || selectedTags.some(t => (drill.tags ?? []).includes(t));
       return matchesSearch && matchesDifficulty && matchesCategory && matchesAgeLevel && matchesDrillType && matchesProblem && matchesGoal && matchesTag;
     });

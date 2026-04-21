@@ -1570,3 +1570,51 @@ export async function getAllDrillsAdmin(): Promise<Drill[]> {
     return [];
   }
 }
+
+/** Bulk upsert drills — only updates fields that are explicitly provided.
+ *  Each row must have a drillId; all other fields are optional patches.
+ *  Returns { updated: number, skipped: number }.
+ */
+export async function bulkUpsertDrills(
+  rows: Array<Partial<InsertDrill> & { drillId: string }>
+): Promise<{ updated: number; skipped: number }> {
+  const db = await getDb();
+  if (!db) return { updated: 0, skipped: rows.length };
+  let updated = 0;
+  let skipped = 0;
+  for (const row of rows) {
+    try {
+      const { drillId, ...patch } = row;
+      // Remove undefined values so we only set what was provided
+      const cleanPatch: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(patch)) {
+        if (v !== undefined) cleanPatch[k] = v;
+      }
+      if (Object.keys(cleanPatch).length === 0) { skipped++; continue; }
+      // Try update first; if no rows affected, insert
+      const result = await db
+        .update(drills)
+        .set(cleanPatch as Partial<InsertDrill>)
+        .where(eq(drills.drillId, drillId));
+      const affected = (result as any)[0]?.affectedRows ?? 0;
+      if (affected === 0) {
+        // Insert new drill with defaults
+        await db.insert(drills).values({
+          drillId,
+          name: (cleanPatch.name as string) ?? drillId,
+          difficulty: (cleanPatch.difficulty as string) ?? "Medium",
+          categories: (cleanPatch.categories as string[]) ?? [],
+          duration: (cleanPatch.duration as string) ?? "",
+          source: "custom",
+          isHidden: false,
+          ...cleanPatch,
+        });
+      }
+      updated++;
+    } catch (error) {
+      console.error(`[DB] bulkUpsertDrills failed for ${row.drillId}:`, error);
+      skipped++;
+    }
+  }
+  return { updated, skipped };
+}
