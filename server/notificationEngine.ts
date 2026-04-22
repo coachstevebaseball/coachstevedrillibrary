@@ -495,3 +495,37 @@ export async function markAllNotificationsRead(userId: number): Promise<boolean>
     return false;
   }
 }
+
+// ─── 30-Day Auto-Mark-Read ──────────────────────────────────────────────────
+
+/**
+ * Automatically marks all unread portal notifications older than 30 days as read.
+ * Prevents the unread backlog from growing indefinitely.
+ * Designed to run on a daily cron schedule.
+ */
+export async function autoMarkOldNotificationsRead(): Promise<{ marked: number }> {
+  const db = await getDb();
+  if (!db) return { marked: 0 };
+
+  try {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+    const result = await db.update(notifications)
+      .set({ portalStatus: "read", readAt: new Date() })
+      .where(
+        and(
+          eq(notifications.portalStatus, "unread"),
+          lt(notifications.createdAt, thirtyDaysAgo)
+        )
+      );
+
+    const marked = (result as any)[0]?.affectedRows ?? 0;
+    if (marked > 0) {
+      console.log(`[NotificationEngine] Auto-marked ${marked} notifications older than 30 days as read`);
+    }
+    return { marked };
+  } catch (error) {
+    console.error("[NotificationEngine] Error in autoMarkOldNotificationsRead:", error);
+    return { marked: 0 };
+  }
+}

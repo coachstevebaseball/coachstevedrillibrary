@@ -21,8 +21,7 @@ import {
 } from "../drizzle/schema";
 import { sendDrillFollowUpReminder, getResend } from "./email";
 import { ENV } from "./_core/env";
-import { sendNotification, retryFailedNotifications } from "./notificationEngine";
-
+import { sendNotification, retryFailedNotifications, autoMarkOldNotificationsRead } from "./notificationEngine";
 const BASE_URL = ENV.appUrl;
 
 // ============================================================
@@ -510,12 +509,22 @@ export function startScheduledJobs(): void {
   }, 5 * 60 * 1000);
   scheduledJobIntervals.push(retryInterval);
 
-  console.log("[NotificationService] Scheduled jobs started (deadline: 1h, inactivity: 6h, retry: 5m)");
+  // 30-day auto-mark-read — every 24 hours
+  const autoMarkReadInterval = setInterval(async () => {
+    const result = await autoMarkOldNotificationsRead();
+    if (result.marked > 0) {
+      console.log(`[NotificationService] Auto-marked ${result.marked} old notifications as read`);
+    }
+  }, 24 * 60 * 60 * 1000);
+  scheduledJobIntervals.push(autoMarkReadInterval);
+
+  console.log("[NotificationService] Scheduled jobs started (deadline: 1h, inactivity: 6h, retry: 5m, auto-mark-read: 24h)");
 
   // Run immediately on startup
   runDrillDeadlineReminderJob();
   runInactivityCheckerJob();
   retryFailedNotifications();
+  autoMarkOldNotificationsRead();
 }
 
 // ============================================================

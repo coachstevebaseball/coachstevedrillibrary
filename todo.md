@@ -1991,3 +1991,11 @@
 - [x] Browser test: double-ball-toss (Infield) — loads with YouTube video playing
 - [x] Browser test: 1-2-3-drill (Hitting) — still works correctly (regression check)
 - [x] Browser test: embed/drill/43-drill — embed version also works
+
+## Close-Out Items (6 items)
+- [x] 1. Reconcile drill count math (86+37+90+15=228 vs 266), explain 38-row delta, dedupe -- vs - slug pairs
+- [x] 2. Delete test-drill-1 and test-video-url-drill, hard-categorize or quarantine Uncategorized drills
+- [x] 3. Fix skillSet column on pitching/throwing/outfield drills that still say "Hitting"
+- [x] 4. Backfill metadata on video-orphan rows (difficulty, goal, description) or hide them
+- [x] 5. Implement 30-day auto-mark-read cron, verify 401 pending email alerts
+- [x] 6. Write Section 15 (Known Remaining Issues) full text
