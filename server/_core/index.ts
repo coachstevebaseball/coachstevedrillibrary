@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import rateLimit from "express-rate-limit";
 import { createServer } from "http";
 import net from "net";
 import multer from "multer";
@@ -149,6 +150,26 @@ async function startServer() {
   });
   // Dynamic OG image generation for drill detail pages
   registerOgRoutes(app);
+
+  // Rate limiting on public API endpoints (60 req/min per IP, skip authenticated users)
+  const publicApiLimiter = rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 60,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many requests. Please try again later.' },
+    skip: (req) => {
+      // Skip rate limiting for authenticated users (they have a session cookie)
+      return !!req.headers.cookie?.includes('session=');
+    },
+  });
+  app.use('/api/trpc', publicApiLimiter);
+
+  // Health check: scheduled jobs status
+  const { getJobHealthStatus } = await import("../notificationService");
+  app.get("/api/health/jobs", (_req, res) => {
+    res.json(getJobHealthStatus());
+  });
 
   // tRPC API
   app.use(

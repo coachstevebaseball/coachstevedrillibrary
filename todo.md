@@ -1999,3 +1999,27 @@
 - [x] 4. Backfill metadata on video-orphan rows (difficulty, goal, description) or hide them
 - [x] 5. Implement 30-day auto-mark-read cron, verify 401 pending email alerts
 - [x] 6. Write Section 15 (Known Remaining Issues) full text
+
+## Sprint: Final Production Sign-Off (10 items)
+
+### P1 — MUST FIX
+- [x] 1. Expose non-hitting skill filters on homepage (Hitting, Infield, Pitching, Throwing, Outfield, Bunting with live counts)
+- [x] 2. Normalize difficulty scale: Intermediate → Medium on 48 drills, add enum constraint
+- [x] 3. Export 70 failed email deliveries to CSV (64 API key invalid, 6 rate limited — all blast_metrics_update type)
+- [x] 4. Add cascade delete logic on drills (drillVideos, drillDetails, drillAssignments, drillFavorites, drillCustomizations, drillQuestions, drillSubmissions, drillStatCards, drillPageLayouts)
+- [x] 5. Add /api/health/jobs endpoint (4 scheduled jobs with lastRunAt, lastStatus, lastError)
+- [x] 6. Add rate limiting on public drill endpoints (60 req/min per IP, 429 on exceed, skip auth users)
+
+### P2 — TECH DEBT
+- [ ] 7. Slug rename for 8 double-dash drills (-- → -) with 301 redirects
+- [ ] 8. Remove vestigial client/src/data/drills.ts after migrating all callers
+- [ ] 9. Rename source column: orphan → imported, video-orphan → video-imported
+- [ ] 10. Consolidate dual tag systems: merge problem/goal into problems/outcomes, soft-deprecate legacy
+
+### Deliverables
+- [ ] Fresh DB backup before starting
+- [ ] ROLLBACK-PLAN.md for every change
+- [ ] Staging preview URL per batch (P1 first, P2 second)
+- [ ] Post-merge CSV reflecting final state
+- [ ] One-page changelog
+- [ ] Confirm checkpoint 99e191b8 and 17 MB backup preserved

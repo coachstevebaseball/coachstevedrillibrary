@@ -37,9 +37,8 @@ const DIFFICULTY_CONFIG: Record<string, { label: string; class: string; dotClass
   Hard: { label: "Hard", class: "badge-hard", dotClass: "bg-rose-400" },
 };
 
-// Category config
-// Only Hitting drills are active for now. Other categories are archived and can be restored later.
-const CATEGORIES = ["All", "Hitting"];
+// Category config — all 6 active skill categories
+const CATEGORIES = ["All", "Hitting", "Infield", "Pitching", "Throwing", "Outfield", "Bunting"];
 
 /**
  * Save scroll position to sessionStorage keyed by the current query string.
@@ -560,19 +559,29 @@ export default function Home() {
             {/* Category */}
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-1">Skill</span>
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setCategoryFilter(cat)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${
-                    categoryFilter === cat
-                      ? "bg-electric text-white shadow-lg shadow-electric/25"
-                      : "bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/50"
-                  }`}
-                >
-                  {cat === "All" ? "All Skills" : cat}
-                </button>
-              ))}
+              {CATEGORIES.map((cat) => {
+                const count = cat === "All"
+                  ? allDrills.length
+                  : allDrills.filter(d => d.categories.includes(cat)).length;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setCategoryFilter(cat)}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${
+                      categoryFilter === cat
+                        ? "bg-electric text-white shadow-lg shadow-electric/25"
+                        : "bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/50"
+                    }`}
+                  >
+                    {cat === "All" ? "All Skills" : cat}
+                    <span className={`ml-1.5 text-[10px] ${
+                      categoryFilter === cat ? "text-white/70" : "text-muted-foreground/60"
+                    }`}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Advanced Filters — always visible on all screen sizes */}

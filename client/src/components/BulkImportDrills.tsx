@@ -115,7 +115,7 @@ export function BulkImportDrills() {
       return {
         drillId,
         name: (r.name as string) || undefined,
-        difficulty: (r.difficulty as string) || undefined,
+        difficulty: ((r.difficulty as string) || undefined) as 'Easy' | 'Medium' | 'Hard' | undefined,
         categories: r.categories ? parseJsonArr(r.categories as string) : undefined,
         duration: (r.duration as string) || undefined,
         url: (r.url as string) || undefined,

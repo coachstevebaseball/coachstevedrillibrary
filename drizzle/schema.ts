@@ -865,7 +865,8 @@ export const drills = mysqlTable("drills", {
   /** Slug-style unique identifier, e.g. "1-2-3-drill" */
   drillId: varchar("drillId", { length: 255 }).notNull().unique(),
   name: varchar("name", { length: 255 }).notNull(),
-  difficulty: varchar("difficulty", { length: 50 }),
+  /** Constrained to Easy, Medium, Hard. NULL allowed for drills awaiting classification. */
+  difficulty: mysqlEnum("difficulty", ["Easy", "Medium", "Hard"]),
   /** JSON array of category strings, e.g. ["Hitting"] */
   categories: json("categories").$type<string[]>().notNull(),
   /** Human-readable duration, e.g. "10m" */

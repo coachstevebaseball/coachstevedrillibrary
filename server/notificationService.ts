@@ -480,51 +480,92 @@ export async function checkAndSendMilestoneEmail(userId: number): Promise<boolea
 
 let scheduledJobIntervals: NodeJS.Timeout[] = [];
 
+/** Job health tracking — exposed via /api/health/jobs */
+interface JobStatus {
+  name: string;
+  interval: string;
+  lastRunAt: string | null;
+  lastStatus: 'ok' | 'error' | 'pending';
+  lastError: string | null;
+}
+
+const jobStatuses: Record<string, JobStatus> = {
+  drillDeadlineReminder: { name: 'Drill Deadline Reminder', interval: '1h', lastRunAt: null, lastStatus: 'pending', lastError: null },
+  inactivityChecker: { name: 'Inactivity Checker', interval: '6h', lastRunAt: null, lastStatus: 'pending', lastError: null },
+  retryFailedEmails: { name: 'Retry Failed Emails', interval: '5m', lastRunAt: null, lastStatus: 'pending', lastError: null },
+  autoMarkRead: { name: 'Auto Mark Read (30d)', interval: '24h', lastRunAt: null, lastStatus: 'pending', lastError: null },
+};
+
+function trackJob(key: string, fn: () => Promise<unknown>): () => Promise<void> {
+  return async () => {
+    try {
+      await fn();
+      jobStatuses[key].lastRunAt = new Date().toISOString();
+      jobStatuses[key].lastStatus = 'ok';
+      jobStatuses[key].lastError = null;
+    } catch (err) {
+      jobStatuses[key].lastRunAt = new Date().toISOString();
+      jobStatuses[key].lastStatus = 'error';
+      jobStatuses[key].lastError = err instanceof Error ? err.message : String(err);
+    }
+  };
+}
+
+export function getJobHealthStatus(): { jobs: JobStatus[]; upSince: string } {
+  return {
+    jobs: Object.values(jobStatuses),
+    upSince: serviceStartedAt ?? 'not started',
+  };
+}
+
+let serviceStartedAt: string | null = null;
+
 export function startScheduledJobs(): void {
   if (scheduledJobIntervals.length > 0) {
     console.log("[NotificationService] Scheduled jobs already running");
     return;
   }
 
+  serviceStartedAt = new Date().toISOString();
+
   // Drill deadline reminders — every hour
-  const deadlineInterval = setInterval(async () => {
-    await runDrillDeadlineReminderJob();
-  }, 60 * 60 * 1000);
+  const trackedDeadline = trackJob('drillDeadlineReminder', runDrillDeadlineReminderJob);
+  const deadlineInterval = setInterval(trackedDeadline, 60 * 60 * 1000);
   scheduledJobIntervals.push(deadlineInterval);
 
   // Inactivity checker — every 6 hours
-  const inactivityInterval = setInterval(async () => {
-    await runInactivityCheckerJob();
-  }, 6 * 60 * 60 * 1000);
+  const trackedInactivity = trackJob('inactivityChecker', runInactivityCheckerJob);
+  const inactivityInterval = setInterval(trackedInactivity, 6 * 60 * 60 * 1000);
   scheduledJobIntervals.push(inactivityInterval);
 
   // Retry failed email notifications — every 5 minutes
-  const retryInterval = setInterval(async () => {
+  const trackedRetry = trackJob('retryFailedEmails', async () => {
     const result = await retryFailedNotifications();
     if (result.retried > 0) {
       console.log(`[NotificationService] Retried ${result.retried} failed emails, ${result.succeeded} succeeded`);
-      // Notify coach if any emails permanently failed (retried 3 times)
       await notifyCoachOfFailedEmails();
     }
-  }, 5 * 60 * 1000);
+  });
+  const retryInterval = setInterval(trackedRetry, 5 * 60 * 1000);
   scheduledJobIntervals.push(retryInterval);
 
   // 30-day auto-mark-read — every 24 hours
-  const autoMarkReadInterval = setInterval(async () => {
+  const trackedAutoMark = trackJob('autoMarkRead', async () => {
     const result = await autoMarkOldNotificationsRead();
     if (result.marked > 0) {
       console.log(`[NotificationService] Auto-marked ${result.marked} old notifications as read`);
     }
-  }, 24 * 60 * 60 * 1000);
+  });
+  const autoMarkReadInterval = setInterval(trackedAutoMark, 24 * 60 * 60 * 1000);
   scheduledJobIntervals.push(autoMarkReadInterval);
 
   console.log("[NotificationService] Scheduled jobs started (deadline: 1h, inactivity: 6h, retry: 5m, auto-mark-read: 24h)");
 
   // Run immediately on startup
-  runDrillDeadlineReminderJob();
-  runInactivityCheckerJob();
-  retryFailedNotifications();
-  autoMarkOldNotificationsRead();
+  trackedDeadline();
+  trackedInactivity();
+  trackedRetry();
+  trackedAutoMark();
 }
 
 // ============================================================

@@ -70,3 +70,62 @@ Same pattern as above but for the `notifications` table.
 ## Contact
 
 If you need help with the rollback, ask Manus to execute it. The backup files contain all the data needed to restore any table to its pre-consolidation state.
+
+---
+
+# Rollback Plan — Final Production Sign-Off Sprint
+
+**Created:** 2026-04-22  
+**Preserved checkpoints:** `99e191b8` (pre-consolidation), `4eebf24e` (post close-out)  
+**Pre-sprint DB backup:** `/home/ubuntu/db-backup-sprint-final-2026-04-22.sql` (16.58 MB, 43 tables)  
+**Original 17 MB backup:** `/home/ubuntu/db-backup-pre-consolidation-2026-04-22.sql`
+
+---
+
+## P1 Changes
+
+### 1. Expose Non-Hitting Skill Filters on Homepage
+- **What changed:** Homepage filter bar updated to show all 6 skill categories with live counts.
+- **Rollback:** Revert `client/src/pages/Home.tsx` to checkpoint `4eebf24e`. No DB changes.
+
+### 2. Normalize Difficulty Scale
+- **What changed:** 48 drills updated from `difficulty='Intermediate'` to `difficulty='Medium'`.
+- **Rollback SQL:** `UPDATE drills SET difficulty = 'Intermediate' WHERE difficulty = 'Medium' AND id IN (<list of 48 IDs>);`
+- **Note:** Enum constraint added to schema. Rollback requires reverting schema and running `pnpm db:push`.
+
+### 3. Review 26 Failed Email Deliveries
+- **What changed:** CSV export only. No DB modifications.
+- **Rollback:** N/A — read-only operation.
+
+### 4. Cascade Delete Logic on Drills
+- **What changed:** `deleteDrill()` in `server/db.ts` now cascade-deletes child rows in a transaction.
+- **Rollback:** Revert `server/db.ts` to checkpoint `4eebf24e`. No DB schema changes.
+
+### 5. /api/health/jobs Endpoint
+- **What changed:** New endpoint added. Job registry tracks last-run timestamps in memory.
+- **Rollback:** Revert `server/notificationService.ts` and any new files. Remove route registration.
+
+### 6. Rate Limiting on Public Drill Endpoints
+- **What changed:** `express-rate-limit` middleware added to `/api/trpc` for unauthenticated requests.
+- **Rollback:** Remove middleware from server entry. Run `pnpm remove express-rate-limit`.
+
+---
+
+## P2 Changes
+
+### 7. Slug Rename for 8 Double-Dash Drills
+- **What changed:** 8 slugs normalized from `--` to `-`. 301 redirects added at route layer.
+- **Rollback SQL:** Reverse slug updates (original slugs documented in migration script).
+- **Rollback code:** Remove redirect map from route handler.
+
+### 8. Remove Vestigial drills.ts
+- **What changed:** `client/src/data/drills.ts` deleted. All callers migrated to `trpc.drillsDirectory.list`.
+- **Rollback:** Restore file from checkpoint `4eebf24e`.
+
+### 9. Rename Source Column Values
+- **What changed:** `source='orphan'` → `'imported'`, `source='video-orphan'` → `'video-imported'`.
+- **Rollback SQL:** `UPDATE drills SET source = 'orphan' WHERE source = 'imported'; UPDATE drills SET source = 'video-orphan' WHERE source = 'video-imported';`
+
+### 10. Consolidate Dual Tag Systems
+- **What changed:** Legacy `problem`/`goal` arrays merged into `problems`/`outcomes`. Filter logic reads only from new columns. Legacy columns soft-deprecated (NOT dropped).
+- **Rollback:** Revert filter logic in `server/db.ts` and `client/src/pages/Home.tsx`. Legacy columns remain intact — no data loss.

@@ -1289,7 +1289,7 @@ export const appRouter = router({
       .input(z.object({
         drillId: z.string(),
         name: z.string(),
-        difficulty: z.string().default('Medium'),
+        difficulty: z.enum(['Easy', 'Medium', 'Hard']).default('Medium'),
         categories: z.array(z.string()).default([]),
         duration: z.string().default(''),
         url: z.string().nullable().optional(),
@@ -1361,7 +1361,7 @@ export const appRouter = router({
           // Required for new drills; optional for updates
           name: z.string().optional(),
           // All other fields optional — omitted fields are left unchanged on update
-          difficulty: z.string().optional(),
+          difficulty: z.enum(['Easy', 'Medium', 'Hard']).optional(),
           categories: z.array(z.string()).optional(),
           duration: z.string().optional(),
           url: z.string().nullable().optional(),

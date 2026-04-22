@@ -372,6 +372,13 @@
       "when": 1776755152158,
       "tag": "0052_add_drills_table",
       "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "5",
+      "when": 1776888402096,
+      "tag": "0053_silky_masque",
+      "breakpoints": true
     }
   ]
 }

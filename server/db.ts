@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, notifications, notificationPreferences, InsertNotificationPreference, drillAssignments, drills, type Drill, type InsertDrill } from "../drizzle/schema";
+import { InsertUser, users, notifications, notificationPreferences, InsertNotificationPreference, drillAssignments, drills, drillStatCards, drillPageLayouts, drillFavorites, drillCustomizations, type Drill, type InsertDrill } from "../drizzle/schema";
 import { ENV } from './_core/env';
 import { eq, and, desc, count, asc } from "drizzle-orm";
 
@@ -1551,10 +1551,30 @@ export async function deleteDrillPermanently(drillId: string): Promise<boolean> 
   const db = await getDb();
   if (!db) return false;
   try {
+    // Look up the numeric id for tables that reference drills.id (int) instead of drills.drillId (varchar)
+    const [drill] = await db.select({ id: drills.id }).from(drills).where(eq(drills.drillId, drillId));
+    const numericId = drill?.id;
+
+    // Cascade: delete all child rows referencing this drill
+    const schema = await import("../drizzle/schema");
+    // Tables with varchar drillId column:
+    await db.delete(schema.drillVideos).where(eq(schema.drillVideos.drillId, drillId));
+    await db.delete(schema.drillDetails).where(eq(schema.drillDetails.drillId, drillId));
+    await db.delete(drillAssignments).where(eq(drillAssignments.drillId, drillId));
+    await db.delete(schema.drillQuestions).where(eq(schema.drillQuestions.drillId, drillId));
+    await db.delete(schema.drillSubmissions).where(eq(schema.drillSubmissions.drillId, drillId));
+    await db.delete(drillStatCards).where(eq(drillStatCards.drillId, drillId));
+    await db.delete(drillPageLayouts).where(eq(drillPageLayouts.drillId, drillId));
+    await db.delete(drillCustomizations).where(eq(drillCustomizations.drillId, drillId));
+    // Tables with int drillId column (references drills.id):
+    if (numericId) {
+      await db.delete(drillFavorites).where(eq(drillFavorites.drillId, numericId));
+    }
+    // Finally delete the drill itself
     await db.delete(drills).where(eq(drills.drillId, drillId));
     return true;
   } catch (error) {
-    console.error("[DB] Failed to delete drill:", error);
+    console.error("[DB] Failed to cascade-delete drill:", error);
     return false;
   }
 }
@@ -1605,7 +1625,7 @@ export async function bulkUpsertDrills(
       // Try update first; if no rows affected, insert as new drill
       const result = await db
         .update(drills)
-        .set(cleanPatch as Partial<InsertDrill>)
+        .set(cleanPatch as any)
         .where(eq(drills.drillId, drillId));
       const affected = (result as any)[0]?.affectedRows ?? 0;
       if (affected === 0) {
@@ -1620,15 +1640,14 @@ export async function bulkUpsertDrills(
         await db.insert(drills).values({
           drillId,
           name: drillName,
-          difficulty: (cleanPatch.difficulty as string) ?? 'Medium',
+          difficulty: ((cleanPatch.difficulty as string) ?? 'Medium') as 'Easy' | 'Medium' | 'Hard',
           categories: (cleanPatch.categories as string[]) ?? [],
           duration: (cleanPatch.duration as string) ?? '',
           url: (cleanPatch.url as string | null) ?? null,
           isDirectLink: (cleanPatch.isDirectLink as boolean) ?? false,
           source: 'custom',
           isHidden: false,
-          ...cleanPatch,
-        });
+        } as any);
         created++;
       } else {
         updated++;

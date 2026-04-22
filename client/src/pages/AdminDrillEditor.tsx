@@ -187,7 +187,7 @@ function EditDrillModal({
     upsert.mutate({
       drillId: form.drillId,
       name: form.name,
-      difficulty: form.difficulty,
+      difficulty: (form.difficulty || 'Medium') as 'Easy' | 'Medium' | 'Hard',
       categories: parseJsonArr(form.categories),
       duration: form.duration,
       url: form.url || null,
@@ -457,7 +457,7 @@ function BulkImportModal({ onClose, onDone }: { onClose: () => void; onDone: () 
     const rows = preview.map((r) => ({
       drillId: (r.drillId ?? "").trim(),
       name: r.name || undefined,
-      difficulty: r.difficulty || undefined,
+      difficulty: (r.difficulty || undefined) as 'Easy' | 'Medium' | 'Hard' | undefined,
       categories: r.categories ? parseJsonArr(r.categories) : undefined,
       duration: r.duration || undefined,
       url: r.url || undefined,
@@ -657,7 +657,7 @@ function NewDrillModal({ onClose, onSaved }: { onClose: () => void; onSaved: () 
     upsert.mutate({
       drillId: id,
       name: form.name,
-      difficulty: form.difficulty,
+      difficulty: (form.difficulty || 'Medium') as 'Easy' | 'Medium' | 'Hard',
       categories: parseJsonArr(form.categories),
       duration: form.duration,
       url: form.url || null,
