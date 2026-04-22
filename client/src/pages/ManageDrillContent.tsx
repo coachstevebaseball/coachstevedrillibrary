@@ -21,17 +21,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { TopNav } from "@/components/TopNav";
 import { trpc } from "@/lib/trpc";
-import drillsData from "@/data/drills.json";
-
-interface StaticDrill {
-  id: string;
-  name: string;
-  difficulty: string;
-  categories: string[];
-  duration: string;
-  url: string;
-  is_direct_link: boolean;
-}
+import { useAllDrills } from "@/hooks/useAllDrills";
 
 interface MergedDrill {
   id: string;
@@ -48,6 +38,7 @@ const PAGE_SIZE = 20;
 export default function ManageDrillContent() {
   const { user, loading: authLoading } = useAuth();
   const isAdmin = user?.role === "admin";
+  const allDrills = useAllDrills();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
@@ -75,7 +66,7 @@ export default function ManageDrillContent() {
         });
       }
     }
-    return (drillsData as StaticDrill[]).map((drill) => {
+    return allDrills.map((drill) => {
       const detail = detailsMap.get(drill.id);
       return {
         id: drill.id,

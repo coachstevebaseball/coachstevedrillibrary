@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { filterOptions } from "@/data/drills";
+import { filterOptions } from "@/data/drillConstants";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

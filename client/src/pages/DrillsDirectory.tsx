@@ -8,7 +8,7 @@ import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
 import { useAllDrills } from "@/hooks/useAllDrills";
-import { filterOptions, drillTypeOptions } from "@/data/drills";
+import { filterOptions, drillTypeOptions } from "@/data/drillConstants";
 
 // Get difficulty color pill
 const getDifficultyColor = (difficulty: string) => {

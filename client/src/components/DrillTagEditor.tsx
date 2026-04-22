@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Tag, Search, CheckCircle2, Save, RefreshCw, ChevronDown, ChevronUp, Filter } from "lucide-react";
-import drillsData from "@/data/drills";
-import { filterOptions } from "@/data/drills";
+import { filterOptions } from "@/data/drillConstants";
+import { useAllDrills } from "@/hooks/useAllDrills";
 
 const DRILL_TYPES = ["Tee","Soft Toss","Front Toss","Live BP","Machine BP","Game Situation","Shadow","Overload/Underload","Partner","Solo"];
 const PILLARS = [
@@ -207,15 +207,16 @@ function DrillTagRow({ drillId, drillName }: { drillId: string; drillName: strin
 }
 
 export function DrillTagEditor() {
+  const allDrills = useAllDrills();
   const [search, setSearch] = useState("");
   const [filterTagged, setFilterTagged] = useState<"all" | "tagged" | "untagged">("all");
 
   const drills = useMemo(() => {
-    return drillsData.filter(d => {
+    return allDrills.filter((d: any) => {
       if (!search) return true;
       return d.name.toLowerCase().includes(search.toLowerCase());
     });
-  }, [search]);
+  }, [allDrills, search]);
 
   return (
     <div className="space-y-4">
@@ -248,7 +249,7 @@ export function DrillTagEditor() {
 
       <p className="text-xs text-white/30">
         Click any drill to expand and edit its tags. Changes save per-drill.
-        Showing {drills.length} of {drillsData.length} drills.
+        Showing {drills.length} of {allDrills.length} drills.
       </p>
 
       <div className="space-y-1.5 max-h-[600px] overflow-y-auto pr-1">

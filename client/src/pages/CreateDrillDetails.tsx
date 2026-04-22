@@ -8,8 +8,8 @@ import { Link } from "wouter";
 import { ArrowLeft, Plus, X, Tag, CheckCircle2 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import drillsData from "@/data/drills";
-import { filterOptions } from "@/data/drills";
+import { filterOptions } from "@/data/drillConstants";
+import { useAllDrills } from "@/hooks/useAllDrills";
 
 function TagSelector({ label, options, selected, onChange }: {
   label: string;
@@ -139,7 +139,8 @@ export default function CreateDrillDetails() {
     });
   };
 
-  const selectedDrillData = drillsData.find(d => d.id === selectedDrill);
+  const allDrills = useAllDrills();
+  const selectedDrillData = allDrills.find(d => d.id === selectedDrill);
 
   return (
     <div className="min-h-screen bg-background pb-12">
@@ -159,7 +160,7 @@ export default function CreateDrillDetails() {
               <Select value={selectedDrill} onValueChange={setSelectedDrill}>
                 <SelectTrigger><SelectValue placeholder="Select a drill..." /></SelectTrigger>
                 <SelectContent className="max-h-96">
-                  {drillsData.map(drill => <SelectItem key={drill.id} value={drill.id}>{drill.name}</SelectItem>)}
+                  {allDrills.map(drill => <SelectItem key={drill.id} value={drill.id}>{drill.name}</SelectItem>)}
                 </SelectContent>
               </Select>
               {selectedDrillData && (

@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Search, ArrowLeftRight, X, Clock, Activity, BarChart3, Video, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
-import drillsData from "@/data/drills";
+import { useAllDrills, type UnifiedDrill } from "@/hooks/useAllDrills";
 
 interface Drill {
   id: string;
@@ -16,8 +16,8 @@ interface Drill {
   difficulty: string;
   categories: string[];
   duration: string;
-  url: string;
-  is_direct_link: boolean;
+  url?: string;
+  is_direct_link?: boolean;
 }
 
 function DrillSelector({
@@ -35,20 +35,22 @@ function DrillSelector({
   const [isOpen, setIsOpen] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("All");
 
+  const allDrills = useAllDrills();
+
   const allCategories = useMemo(() => {
     const cats = new Set<string>();
-    drillsData.forEach((d: any) => d.categories.forEach((c: string) => cats.add(c)));
+    allDrills.forEach((d) => d.categories.forEach((c: string) => cats.add(c)));
     return ["All", ...Array.from(cats).sort()];
-  }, []);
+  }, [allDrills]);
 
   const filtered = useMemo(() => {
-    return (drillsData as Drill[]).filter((d) => {
+    return allDrills.filter((d) => {
       if (d.id === excludeDrillId) return false;
       const matchesSearch = d.name.toLowerCase().includes(search.toLowerCase());
       const matchesCat = categoryFilter === "All" || d.categories.includes(categoryFilter);
       return matchesSearch && matchesCat;
     });
-  }, [search, categoryFilter, excludeDrillId]);
+  }, [allDrills, search, categoryFilter, excludeDrillId]);
 
   if (selectedDrill && !isOpen) {
     return (

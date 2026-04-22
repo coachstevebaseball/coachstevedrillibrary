@@ -73,6 +73,15 @@ async function startServer() {
     next();
   });
 
+  // 301 redirect: normalize double-dash slugs in drill URLs
+  app.use((req, res, next) => {
+    if ((req.path.startsWith('/drill/') || req.path.startsWith('/embed/drill/')) && /--/.test(req.path)) {
+      const cleaned = req.path.replace(/--+/g, '-');
+      return res.redirect(301, cleaned);
+    }
+    next();
+  });
+
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
   

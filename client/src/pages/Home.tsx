@@ -17,7 +17,7 @@ import { DrillEditModal } from "@/components/DrillEditModal";
 import { useDrillListParams } from "@/hooks/useDrillListParams";
 import { TopNav } from "@/components/TopNav";
 import { InlineEdit } from "@/components/InlineEdit";
-import { filterOptions, drillTypeOptions } from "@/data/drills";
+import { filterOptions, drillTypeOptions } from "@/data/drillConstants";
 
 interface Drill {
   id: string;

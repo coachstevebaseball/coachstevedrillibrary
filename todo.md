@@ -2011,15 +2011,14 @@
 - [x] 6. Add rate limiting on public drill endpoints (60 req/min per IP, 429 on exceed, skip auth users)
 
 ### P2 — TECH DEBT
-- [ ] 7. Slug rename for 8 double-dash drills (-- → -) with 301 redirects
-- [ ] 8. Remove vestigial client/src/data/drills.ts after migrating all callers
-- [ ] 9. Rename source column: orphan → imported, video-orphan → video-imported
-- [ ] 10. Consolidate dual tag systems: merge problem/goal into problems/outcomes, soft-deprecate legacy
+- [x] 7. Slug rename for 10 double-dash drills (-- → -) with 301 redirects (1 skipped, target exists)
+- [x] 8. Remove vestigial client/src/data/drills.ts and drills.json (migrated 8 callers to useAllDrills + drillConstants.ts)
+- [x] 9. Rename source column: orphan → imported (115 rows), video-orphan → video-imported (6 rows)
+- [x] 10. Consolidate dual tag systems: merged 49 drills' legacy slugs into canonical problems/outcomes, legacy columns preserved for backward compat
 
 ### Deliverables
-- [ ] Fresh DB backup before starting
-- [ ] ROLLBACK-PLAN.md for every change
-- [ ] Staging preview URL per batch (P1 first, P2 second)
-- [ ] Post-merge CSV reflecting final state
+- [x] Fresh DB backup before starting (16.58 MB, 43 tables)
+- [x] ROLLBACK-PLAN.md for every change
+- [x] Staging preview URL per batch (P1 first, P2 seco- [x] Post-merge CSV export (244 drills)flecting final state
 - [ ] One-page changelog
-- [ ] Confirm checkpoint 99e191b8 and 17 MB backup preserved
+- [x] Preserve checkpoint 99e191b8 and 17 MB backuppreserved

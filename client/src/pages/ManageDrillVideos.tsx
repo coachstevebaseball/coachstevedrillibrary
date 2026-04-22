@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Video, Search } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo, useEffect } from "react";
-import drillsData from "@/data/drills";
+import { useAllDrills } from "@/hooks/useAllDrills";
 import { VideoUrlManager } from "@/components/VideoUrlManager";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -30,24 +30,26 @@ export function ManageDrillVideos() {
     }
   }, [videosData]);
 
+  const allDrills = useAllDrills();
+
   // Get unique categories
   const categories = useMemo(() => {
     const cats = new Set<string>();
     cats.add("All");
-    drillsData.forEach(drill => {
+    allDrills.forEach(drill => {
       drill.categories.forEach(cat => cats.add(cat));
     });
     return Array.from(cats).sort();
-  }, []);
+  }, [allDrills]);
 
   // Filter drills
   const filteredDrills = useMemo(() => {
-    return drillsData.filter(drill => {
+    return allDrills.filter(drill => {
       const matchesSearch = drill.name.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === "All" || drill.categories.includes(selectedCategory);
       return matchesSearch && matchesCategory;
     });
-  }, [searchTerm, selectedCategory]);
+  }, [allDrills, searchTerm, selectedCategory]);
 
   const saveVideoMutation = trpc.videos.saveVideo.useMutation();
   
