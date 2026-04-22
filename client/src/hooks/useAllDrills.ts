@@ -42,9 +42,9 @@ export function useAllDrills(): UnifiedDrill[] {
     return dbDrills.map((d) => ({
       id: d.drillId,
       name: d.name,
-      difficulty: d.difficulty,
+      difficulty: d.difficulty ?? "Unknown",
       categories: (d.categories as string[]) ?? [],
-      duration: d.duration,
+      duration: d.duration ?? "",
       url: d.url ?? undefined,
       is_direct_link: d.isDirectLink,
       isCustom: d.source === "custom",
@@ -74,9 +74,9 @@ export function useAllDrillsQuery(): { drills: UnifiedDrill[]; isLoading: boolea
     return dbDrills.map((d) => ({
       id: d.drillId,
       name: d.name,
-      difficulty: d.difficulty,
+      difficulty: d.difficulty ?? "Unknown",
       categories: (d.categories as string[]) ?? [],
-      duration: d.duration,
+      duration: d.duration ?? "",
       url: d.url ?? undefined,
       is_direct_link: d.isDirectLink,
       isCustom: d.source === "custom",

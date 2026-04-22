@@ -494,9 +494,9 @@ export default function Home() {
             {/* Stats row */}
             <div className="flex justify-center gap-6 md:gap-12 animate-fade-in-up stagger-4">
               {[
-                { valueKey: "home.stat.drills.value", valueDefault: `${allDrills.length}+`, labelKey: "home.stat.drills.label", labelDefault: "Drills", icon: Target },
-                { valueKey: "home.stat.categories.value", valueDefault: "1", labelKey: "home.stat.categories.label", labelDefault: "Focus: Hitting", icon: Sparkles },
-                { valueKey: "home.stat.levels.value", valueDefault: "3", labelKey: "home.stat.levels.label", labelDefault: "Levels", icon: TrendingUp },
+                { valueKey: "home.stat.drills.value", valueDefault: `${allDrills.length}`, labelKey: "home.stat.drills.label", labelDefault: "Drills", icon: Target },
+                { valueKey: "home.stat.categories.value", valueDefault: `${new Set(allDrills.flatMap(d => d.categories)).size}`, labelKey: "home.stat.categories.label", labelDefault: "Categories", icon: Sparkles },
+                { valueKey: "home.stat.levels.value", valueDefault: `${new Set(allDrills.map(d => d.difficulty).filter(Boolean)).size}`, labelKey: "home.stat.levels.label", labelDefault: "Levels", icon: TrendingUp },
               ].map((stat, i) => (
                 <div key={i} className="text-center">
                   <div className="flex items-center justify-center gap-1 mb-0.5">

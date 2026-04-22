@@ -1,0 +1,2378 @@
+[
+  {
+    "id": 1,
+    "recipientId": 105720193,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "28c859a2-357f-4fae-bf63-7f606d051ddd",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-11T20:59:52.000Z"
+  },
+  {
+    "id": 2,
+    "recipientId": 105720195,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "4ae691b2-020b-47fe-a1c3-d5e81da346cc",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-11T20:59:52.000Z"
+  },
+  {
+    "id": 3,
+    "recipientId": 105720213,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "a353197d-dba3-4008-88ed-c1363bf5bfee",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-11T20:59:52.000Z"
+  },
+  {
+    "id": 4,
+    "recipientId": 105720214,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "ee39f436-1f6f-4838-a4dc-cee02d6c502a",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-11T20:59:52.000Z"
+  },
+  {
+    "id": 5,
+    "recipientId": 105720215,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "416483f7-f0a5-4aeb-8349-f6ebfacd1536",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-11T20:59:52.000Z"
+  },
+  {
+    "id": 6,
+    "recipientId": 105720215,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "f1910b1b-dd6c-4afa-b8b6-e9b31a82f376",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-11T20:59:52.000Z"
+  },
+  {
+    "id": 7,
+    "recipientId": 105720216,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "90571c53-7559-4660-a473-41a497ff890a",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-11T20:59:53.000Z"
+  },
+  {
+    "id": 8,
+    "recipientId": 105720216,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "cf49914a-d805-437f-ad51-f5a3afe60760",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-11T20:59:53.000Z"
+  },
+  {
+    "id": 9,
+    "recipientId": 105720217,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "03cdc350-bf74-46a2-8e12-b3e02211a4e6",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-11T20:59:53.000Z"
+  },
+  {
+    "id": 10,
+    "recipientId": 105720217,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "43de76bb-57aa-4d94-9122-af74355f883e",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-11T20:59:53.000Z"
+  },
+  {
+    "id": 11,
+    "recipientId": 105720218,
+    "recipientEmail": "my-blast@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "f0bdf818-c456-4ef3-b8ab-5e60f2a0c827",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-11T20:59:53.000Z"
+  },
+  {
+    "id": 12,
+    "recipientId": 105720219,
+    "recipientEmail": "my-blast@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "378cc1e1-b47a-45dc-a168-6b49878058b8",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-11T20:59:53.000Z"
+  },
+  {
+    "id": 30001,
+    "recipientId": 105780159,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "0bd062ce-a52e-4716-9cfc-3c057a1c5517",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:07:52.000Z"
+  },
+  {
+    "id": 30002,
+    "recipientId": 105780162,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "cc83e1f6-12a0-4d75-bbdd-6d8caca44cba",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:07:52.000Z"
+  },
+  {
+    "id": 30003,
+    "recipientId": 105780184,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "a79f9153-486c-47aa-8d6e-8ecaf491222b",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:07:53.000Z"
+  },
+  {
+    "id": 30004,
+    "recipientId": 105780179,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "a3bbb90d-37a4-4906-acbe-9f693b9d9638",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:07:53.000Z"
+  },
+  {
+    "id": 30005,
+    "recipientId": 105780185,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "24896436-2cae-4c9e-a17c-6afb9d031949",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:07:53.000Z"
+  },
+  {
+    "id": 30006,
+    "recipientId": 105780237,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "51525ba7-c091-439a-b125-a2cb4f073420",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:26:38.000Z"
+  },
+  {
+    "id": 30007,
+    "recipientId": 105780240,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "a504fdb9-e026-4c7c-9897-568977c653f2",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:26:38.000Z"
+  },
+  {
+    "id": 30008,
+    "recipientId": 105780256,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "6e96b815-e6f2-4cc6-89e5-c9d57a6c0fc5",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:26:39.000Z"
+  },
+  {
+    "id": 30009,
+    "recipientId": 105780258,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "675026e0-6826-4067-b32a-4548ffb083f1",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:26:39.000Z"
+  },
+  {
+    "id": 30010,
+    "recipientId": 105780261,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "64e9eeef-2b64-4d84-a438-c84134663379",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:26:40.000Z"
+  },
+  {
+    "id": 30011,
+    "recipientId": 105780261,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "23f67757-351d-48c3-af1f-9a14bd489ada",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:26:40.000Z"
+  },
+  {
+    "id": 30012,
+    "recipientId": 105780262,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "01879950-2951-482b-a676-70d23da12fee",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:26:40.000Z"
+  },
+  {
+    "id": 30013,
+    "recipientId": 105780262,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "f8b9ca7c-26c9-4dec-a24c-f898b9546d16",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:26:40.000Z"
+  },
+  {
+    "id": 30014,
+    "recipientId": 105780268,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "046ea104-11ea-41b4-a214-936df114b5ce",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:26:40.000Z"
+  },
+  {
+    "id": 30015,
+    "recipientId": 105780268,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "1cd81489-8c3d-4f45-8be4-2496ed513ae6",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:26:40.000Z"
+  },
+  {
+    "id": 30016,
+    "recipientId": 105780272,
+    "recipientEmail": "my-blast@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "64a86a18-6bc5-489a-8eca-785991c17834",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:26:40.000Z"
+  },
+  {
+    "id": 30017,
+    "recipientId": 105780273,
+    "recipientEmail": "my-blast@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "31ac66c0-162e-404a-982f-f3b6f739a5d0",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:26:40.000Z"
+  },
+  {
+    "id": 30018,
+    "recipientId": 105780316,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "421da010-d52e-4d12-b3de-1f6d3c4111bf",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:45:44.000Z"
+  },
+  {
+    "id": 30019,
+    "recipientId": 105780326,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "90b9afb9-4b3e-4d8c-9989-dc0dd147fcdc",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:45:44.000Z"
+  },
+  {
+    "id": 30020,
+    "recipientId": 105780337,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "0aab6c6e-0f7c-4882-beb1-807635658396",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:45:44.000Z"
+  },
+  {
+    "id": 30021,
+    "recipientId": 105780330,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "54232950-312d-45fd-af07-8fad2c459a93",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:45:45.000Z"
+  },
+  {
+    "id": 30022,
+    "recipientId": 105780339,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "102bd66d-84de-4a69-b443-3ede98f4bbdb",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:45:45.000Z"
+  },
+  {
+    "id": 30023,
+    "recipientId": 105780339,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "ab628b03-6c27-426d-aa1e-9397259aa6ab",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:45:45.000Z"
+  },
+  {
+    "id": 30024,
+    "recipientId": 105780338,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "7070182b-4f16-4b5e-a75c-64601513f266",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-12T04:45:45.000Z"
+  },
+  {
+    "id": 30025,
+    "recipientId": 105780406,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "8b6ea894-41e5-42e7-af06-730ca617e408",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T05:42:02.000Z"
+  },
+  {
+    "id": 30026,
+    "recipientId": 105780420,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "cb54e580-f4bb-4cd1-a332-dcf9a7e339b3",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T05:42:02.000Z"
+  },
+  {
+    "id": 30027,
+    "recipientId": 105780428,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "d096d1cd-f768-471d-963d-ef324caf307c",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T05:42:02.000Z"
+  },
+  {
+    "id": 30028,
+    "recipientId": 105780403,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "9703ae20-d457-49a9-be55-131b51b65c80",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T05:42:02.000Z"
+  },
+  {
+    "id": 30029,
+    "recipientId": 105780464,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "8abeba54-ebd5-4b5a-aa6d-5764bf0c674e",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T05:43:10.000Z"
+  },
+  {
+    "id": 30030,
+    "recipientId": 105780462,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "2ae01f91-cbc7-4aaa-ac2c-d5ef914bd349",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T05:43:11.000Z"
+  },
+  {
+    "id": 30031,
+    "recipientId": 105780539,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "d3f3af26-1c7c-42d2-b5f5-4b5e17219cac",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T07:33:53.000Z"
+  },
+  {
+    "id": 30032,
+    "recipientId": 105780542,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "13370799-3f19-4e27-ba9b-48648e57d4c2",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T07:33:53.000Z"
+  },
+  {
+    "id": 30033,
+    "recipientId": 105780596,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "7566ebc0-5b99-43d7-b4a8-725d7211d420",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T07:38:38.000Z"
+  },
+  {
+    "id": 30034,
+    "recipientId": 105780599,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "5d7c35bf-3fc5-4be1-9a1b-f5d41f658862",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T07:38:38.000Z"
+  },
+  {
+    "id": 30035,
+    "recipientId": 105780620,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "177289d1-33c4-4513-8b1c-e5eccf73e14a",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T07:38:38.000Z"
+  },
+  {
+    "id": 30036,
+    "recipientId": 105780621,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "1e8bef12-a3d1-4e66-8b46-584544fbce29",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T07:38:38.000Z"
+  },
+  {
+    "id": 30037,
+    "recipientId": 105780615,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "40d8e660-7fb9-48cf-bbc9-2dc6b460e752",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "Too many requests. You can only make 5 requests per second. See rate limit response headers for more information. Or contact support to increase rate limit.",
+    "resendId": null,
+    "createdAt": "2026-04-12T07:38:39.000Z"
+  },
+  {
+    "id": 60001,
+    "recipientId": 105840114,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "8498e037-8839-4bb0-a6f2-24560dcaf48d",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T18:15:55.000Z"
+  },
+  {
+    "id": 60002,
+    "recipientId": 105840116,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "b1180e0c-e959-4802-b183-4f44a3ce7156",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T18:15:56.000Z"
+  },
+  {
+    "id": 60003,
+    "recipientId": 105840129,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "f7e668c6-2a0e-4757-bb84-373cf2c67da2",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T18:15:57.000Z"
+  },
+  {
+    "id": 60004,
+    "recipientId": 105840132,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "1df9a4e1-4318-4746-876f-80bac213abaf",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T18:15:57.000Z"
+  },
+  {
+    "id": 60005,
+    "recipientId": 105840138,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "d0ce7215-463b-4dd4-b6bf-fb57ff8e1ce5",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T18:15:57.000Z"
+  },
+  {
+    "id": 60006,
+    "recipientId": 105840138,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "87d919cb-bb41-4b10-b3fe-94588be9b8b5",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T18:15:57.000Z"
+  },
+  {
+    "id": 60007,
+    "recipientId": 105840140,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "5804cb41-f9f2-4cb2-bd37-22859aef7f42",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T18:15:58.000Z"
+  },
+  {
+    "id": 60008,
+    "recipientId": 105840140,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "96699c32-3e27-465e-94c7-6991fa912e9a",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T18:15:58.000Z"
+  },
+  {
+    "id": 60009,
+    "recipientId": 105840148,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "ff7100da-dba9-40d9-b179-146688118d90",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T18:15:58.000Z"
+  },
+  {
+    "id": 60010,
+    "recipientId": 105840148,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "2148f0c3-8894-4d12-8b79-63e43a369f84",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T18:15:58.000Z"
+  },
+  {
+    "id": 60011,
+    "recipientId": 105840149,
+    "recipientEmail": "my-blast@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "96196cce-f60b-45b3-a033-a76481168af5",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-12T18:15:58.000Z"
+  },
+  {
+    "id": 60012,
+    "recipientId": 105840152,
+    "recipientEmail": "my-blast@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "5c397c0f-0b0d-4c24-9724-585868ffb401",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "Too many requests. You can only make 5 requests per second. See rate limit response headers for more information. Or contact support to increase rate limit.",
+    "resendId": null,
+    "createdAt": "2026-04-12T18:15:58.000Z"
+  },
+  {
+    "id": 90001,
+    "recipientId": 105900216,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "162a8b62-fd62-4b76-826d-f5dbb4b17a2e",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T01:22:36.000Z"
+  },
+  {
+    "id": 90002,
+    "recipientId": 105900240,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "87cac743-e4dd-4819-a17f-8f2a9749f8f1",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T01:22:36.000Z"
+  },
+  {
+    "id": 90003,
+    "recipientId": 105900233,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "870128e4-3152-4384-832e-d0a2f63c4494",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T01:22:37.000Z"
+  },
+  {
+    "id": 90004,
+    "recipientId": 105900276,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "7f1bca9d-7a41-40ed-a06e-382d1b29243f",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T01:23:33.000Z"
+  },
+  {
+    "id": 90005,
+    "recipientId": 105900273,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "fa976d9c-40b6-48c9-8a6f-65a638285e78",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T01:23:33.000Z"
+  },
+  {
+    "id": 90006,
+    "recipientId": 105900289,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "250b9fb1-5ba0-4d79-bc06-c68504e3eb1c",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T01:23:34.000Z"
+  },
+  {
+    "id": 90007,
+    "recipientId": 105900297,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "1f3fb7a3-cc0b-420d-a2fb-6a07599dd3a9",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T01:23:34.000Z"
+  },
+  {
+    "id": 90008,
+    "recipientId": 105900297,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "7796b5cb-0514-4e9d-8caf-25499b7854a3",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T01:23:34.000Z"
+  },
+  {
+    "id": 90009,
+    "recipientId": 105900292,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "fbffe7c9-620f-475e-be58-4b2fc2bf020b",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T01:23:35.000Z"
+  },
+  {
+    "id": 90010,
+    "recipientId": 105900303,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "4c3f3aa5-c17b-4f5e-92a8-afd1dbd97db9",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T01:23:35.000Z"
+  },
+  {
+    "id": 90011,
+    "recipientId": 105900303,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "55d61911-f9b7-4445-a075-7698b32a1260",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T01:23:35.000Z"
+  },
+  {
+    "id": 120001,
+    "recipientId": 105930059,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "9c1766c4-9e9b-4753-92d0-e6c6413d6c7b",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:43.000Z"
+  },
+  {
+    "id": 120002,
+    "recipientId": 105930065,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "d2c1ca01-1f38-4f24-adef-a67ebccf96cb",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:43.000Z"
+  },
+  {
+    "id": 120003,
+    "recipientId": 105930075,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "66c865aa-b9c3-4fe4-9a8d-e015af009be9",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:44.000Z"
+  },
+  {
+    "id": 120004,
+    "recipientId": 105930078,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "8e7db74f-5531-4cf1-9c8c-da7d5e6bb58a",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:44.000Z"
+  },
+  {
+    "id": 120005,
+    "recipientId": 105930081,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "5e0f2580-9c94-4981-b776-9f68a5e27dfe",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:44.000Z"
+  },
+  {
+    "id": 120006,
+    "recipientId": 105930081,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "1da4abd2-c1aa-4429-bf4d-a59c9c3642ac",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:44.000Z"
+  },
+  {
+    "id": 120007,
+    "recipientId": 105930088,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "229786a1-ea56-48e5-97e6-350d19ddfb65",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:45.000Z"
+  },
+  {
+    "id": 120008,
+    "recipientId": 105930088,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "b0710d0a-1db5-4d1f-8f01-bda92eeba83d",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:45.000Z"
+  },
+  {
+    "id": 120009,
+    "recipientId": 105930092,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "b89f0cbc-072f-4bd4-9e3a-15ad24c7984e",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:45.000Z"
+  },
+  {
+    "id": 120010,
+    "recipientId": 105930094,
+    "recipientEmail": "my-blast@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "72b8a135-2475-4f7e-a654-376f0fd5972a",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "Too many requests. You can only make 5 requests per second. See rate limit response headers for more information. Or contact support to increase rate limit.",
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:45.000Z"
+  },
+  {
+    "id": 120011,
+    "recipientId": 105930112,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "b4e2723c-4eda-4af2-b009-9c8df4090e0a",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:57.000Z"
+  },
+  {
+    "id": 120012,
+    "recipientId": 105930114,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "b88b9ef1-3321-4084-8427-2ed910c2d2c7",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:57.000Z"
+  },
+  {
+    "id": 120013,
+    "recipientId": 105930125,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "b5eaea75-c7c9-4271-b6e9-7249a0b41cc1",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:58.000Z"
+  },
+  {
+    "id": 120014,
+    "recipientId": 105930128,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "6a4288b6-d765-4cb5-8b5f-a2dd5b0053e8",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:58.000Z"
+  },
+  {
+    "id": 120015,
+    "recipientId": 105930136,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "6c38e626-f5bb-47c5-8c99-a9f1af5bdcf3",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:59.000Z"
+  },
+  {
+    "id": 120016,
+    "recipientId": 105930136,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "574c69b9-f392-48a2-92b3-40b8cf5125f4",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:59.000Z"
+  },
+  {
+    "id": 120017,
+    "recipientId": 105930137,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "41aa5556-1852-4ca0-98df-a96570438951",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:59.000Z"
+  },
+  {
+    "id": 120018,
+    "recipientId": 105930137,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "73c28fc0-98a7-4421-b473-d6d6222531f9",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:59.000Z"
+  },
+  {
+    "id": 120019,
+    "recipientId": 105930138,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "d7100868-dd40-40aa-b6a0-c14e7f5ebb3b",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:59.000Z"
+  },
+  {
+    "id": 120020,
+    "recipientId": 105930138,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "53d2fc2b-c346-4798-b525-ffa6df735f50",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "Too many requests. You can only make 5 requests per second. See rate limit response headers for more information. Or contact support to increase rate limit.",
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:59.000Z"
+  },
+  {
+    "id": 120021,
+    "recipientId": 105930139,
+    "recipientEmail": "my-blast@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "fa1237e8-ebf6-490a-bc53-a3c9717e04f1",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "Too many requests. You can only make 5 requests per second. See rate limit response headers for more information. Or contact support to increase rate limit.",
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:59.000Z"
+  },
+  {
+    "id": 120022,
+    "recipientId": 105930142,
+    "recipientEmail": "my-blast@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "25545e37-62a8-4cc9-9b11-7d1022bf86db",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "Too many requests. You can only make 5 requests per second. See rate limit response headers for more information. Or contact support to increase rate limit.",
+    "resendId": null,
+    "createdAt": "2026-04-13T05:41:59.000Z"
+  },
+  {
+    "id": 120023,
+    "recipientId": 101400188,
+    "recipientEmail": "shannoncaputo70@gmail.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Blast Motion Training Session with Coach Steve Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-22",
+      "sessionId": "d7eff3b4-95f1-4786-81b5-94e86e237249",
+      "sessionType": "Blast Motion Training Session with Coach Steve"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T06:33:31.000Z"
+  },
+  {
+    "id": 150001,
+    "recipientId": 101400188,
+    "recipientEmail": "shannoncaputo70@gmail.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Blast Motion Training Session with Coach Steve Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-03-15",
+      "sessionId": "a580ba91-b76e-411a-80c7-78de5f7b3818",
+      "sessionType": "Blast Motion Training Session with Coach Steve"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T22:56:32.000Z"
+  },
+  {
+    "id": 150002,
+    "recipientId": 101400188,
+    "recipientEmail": "shannoncaputo70@gmail.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Blast Motion Training Session with Coach Steve Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-03-22",
+      "sessionId": "f1f1aa15-8b9f-4561-8e01-34f3b1136e2a",
+      "sessionType": "Blast Motion Training Session with Coach Steve"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T23:00:12.000Z"
+  },
+  {
+    "id": 150003,
+    "recipientId": 101400188,
+    "recipientEmail": "shannoncaputo70@gmail.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Blast Motion Training Session with Coach Steve Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-04-29",
+      "sessionId": "6b799ab6-eb68-45ed-928a-160c49e46f57",
+      "sessionType": "Blast Motion Training Session with Coach Steve"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-13T23:03:31.000Z"
+  },
+  {
+    "id": 180001,
+    "recipientId": 106020068,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "5dfec949-ff0d-4982-9ce6-8824e089fab1",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-14T20:11:18.000Z"
+  },
+  {
+    "id": 180002,
+    "recipientId": 106020065,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "5adad3db-ebd4-40bd-8162-ee9decf49605",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-14T20:11:19.000Z"
+  },
+  {
+    "id": 180003,
+    "recipientId": 106020077,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "b9ed46a1-b5d1-45ed-a7ea-6fab84ba1aaf",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-14T20:11:19.000Z"
+  },
+  {
+    "id": 180004,
+    "recipientId": 106020078,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "4bc71b9e-1d29-4b5c-b08e-9e38249e1287",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-14T20:11:19.000Z"
+  },
+  {
+    "id": 180005,
+    "recipientId": 106020081,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "c9281e17-2090-4e9e-b333-86bba5f2b078",
+      "sessionType": "Tee"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-14T20:11:19.000Z"
+  },
+  {
+    "id": 210001,
+    "recipientId": 106050080,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "63d3c6e4-1cde-40e8-9ca9-8cb85c03a3ca",
+      "sessionType": "Soft Toss"
+    },
+    "success": 1,
+    "errorMessage": null,
+    "resendId": null,
+    "createdAt": "2026-04-15T16:56:13.000Z"
+  },
+  {
+    "id": 240001,
+    "recipientId": 106440166,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "8d05310e-9ca6-4893-8d67-ddbe62a94aa3",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-17T21:55:54.000Z"
+  },
+  {
+    "id": 240002,
+    "recipientId": 106440163,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "5d6cc5cb-e982-4e65-b56e-aa9386d17cdb",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-17T21:55:54.000Z"
+  },
+  {
+    "id": 240003,
+    "recipientId": 106440187,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "0d62e327-eea6-41cc-b7d9-c3909cc4122f",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-17T21:55:55.000Z"
+  },
+  {
+    "id": 240004,
+    "recipientId": 106440187,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "a57d8341-8008-4930-9574-5078cff90900",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-17T21:55:55.000Z"
+  },
+  {
+    "id": 240005,
+    "recipientId": 106440184,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "830873b3-a3a1-4968-8271-4829e1523477",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-17T21:55:55.000Z"
+  },
+  {
+    "id": 240006,
+    "recipientId": 106440183,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "870acadf-622d-4268-880a-8a86c679a475",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-17T21:55:55.000Z"
+  },
+  {
+    "id": 240007,
+    "recipientId": 106440226,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "74898257-50a0-418b-be6d-c5606bb7790b",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-17T21:57:44.000Z"
+  },
+  {
+    "id": 240008,
+    "recipientId": 106440224,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "10c6240f-75b6-4461-8335-c539907aafe7",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-17T21:57:44.000Z"
+  },
+  {
+    "id": 240009,
+    "recipientId": 106440248,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "5059b338-5876-4420-972e-2775c85a58dc",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-17T21:57:45.000Z"
+  },
+  {
+    "id": 240010,
+    "recipientId": 106440248,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "2441e115-a5de-48ea-92f2-20999989fc68",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-17T21:57:45.000Z"
+  },
+  {
+    "id": 240011,
+    "recipientId": 106440245,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "b7c84891-3ee7-4c92-a8f9-a6fde8ef3fbb",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-17T21:57:45.000Z"
+  },
+  {
+    "id": 240012,
+    "recipientId": 106440242,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "e0c75e58-609d-4159-aa25-4bcc7842cc9c",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-17T21:57:45.000Z"
+  },
+  {
+    "id": 240013,
+    "recipientId": 106440250,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "82a33b53-eae9-4b89-b158-7ebf1e677c4a",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-17T21:57:45.000Z"
+  },
+  {
+    "id": 240014,
+    "recipientId": 106440251,
+    "recipientEmail": "my-blast@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "80e66d44-cc76-42f8-bf5d-e290469ee1f6",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-17T21:57:45.000Z"
+  },
+  {
+    "id": 240015,
+    "recipientId": 106440520,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "0d043f51-93e5-4dc4-a373-ef1266d8d924",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-18T00:07:05.000Z"
+  },
+  {
+    "id": 240016,
+    "recipientId": 106440517,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "aafb6c15-49f1-40ba-a9c9-f45d7fd25505",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-18T00:07:06.000Z"
+  },
+  {
+    "id": 270001,
+    "recipientId": 106500075,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "dd90635b-4eeb-458a-94c2-817705d1d453",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-18T22:38:49.000Z"
+  },
+  {
+    "id": 270002,
+    "recipientId": 106500078,
+    "recipientEmail": "linked-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "a196b018-56c0-40b7-b605-3449e3fced89",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-18T22:38:49.000Z"
+  },
+  {
+    "id": 270003,
+    "recipientId": 106500092,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "c34c3d3e-eff0-470e-b75d-e5ca501ad0c5",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-18T22:38:49.000Z"
+  },
+  {
+    "id": 270004,
+    "recipientId": 106500095,
+    "recipientEmail": "note-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "6404d76b-4af3-4616-9668-784c5f191812",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-18T22:38:50.000Z"
+  },
+  {
+    "id": 270005,
+    "recipientId": 106500099,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "e1f7b29b-87cd-4b18-a8b2-fb975636a39f",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-18T22:38:50.000Z"
+  },
+  {
+    "id": 270006,
+    "recipientId": 106500099,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "185ab519-c5f2-45b5-b424-9d393521dc28",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-18T22:38:50.000Z"
+  },
+  {
+    "id": 270007,
+    "recipientId": 106500100,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "8ba407e1-e84d-47e8-a75e-bab8ef1a8737",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-18T22:38:50.000Z"
+  },
+  {
+    "id": 270008,
+    "recipientId": 106500100,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "de85f481-5590-480a-be90-bcbd493ee980",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-18T22:38:50.000Z"
+  },
+  {
+    "id": 270009,
+    "recipientId": 106500101,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-10",
+      "sessionId": "fb0746f0-5571-4b27-ac50-bbefeb08605b",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-18T22:38:51.000Z"
+  },
+  {
+    "id": 270010,
+    "recipientId": 106500101,
+    "recipientEmail": "retro-athlete@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Soft Toss Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-01-15",
+      "sessionId": "dd6833ba-abc9-4764-b7ad-79abe12c95c8",
+      "sessionType": "Soft Toss"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-18T22:38:51.000Z"
+  },
+  {
+    "id": 270011,
+    "recipientId": 106500102,
+    "recipientEmail": "my-blast@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "4f595164-8eab-4b65-b9de-e1994dcf152e",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-18T22:38:51.000Z"
+  },
+  {
+    "id": 270012,
+    "recipientId": 106500105,
+    "recipientEmail": "my-blast@test.com",
+    "recipientName": null,
+    "emailType": "blast_metrics_update",
+    "subject": "New Swing Metrics Posted — Tee Session",
+    "description": null,
+    "metadata": {
+      "sessionDate": "2026-02-20",
+      "sessionId": "c5b1cbe0-9506-4634-a12f-09172a64b9fc",
+      "sessionType": "Tee"
+    },
+    "success": 0,
+    "errorMessage": "API key is invalid",
+    "resendId": null,
+    "createdAt": "2026-04-18T22:38:51.000Z"
+  }
+]

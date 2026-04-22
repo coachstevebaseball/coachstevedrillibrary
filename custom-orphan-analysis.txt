@@ -1,0 +1,67 @@
+Custom skillSet orphans - category resolution:
+
+CLEARLY HITTING (flaw-- prefix = hitting mechanics fixes):
+flaw--casting-the-hands-outside-of-the-ball → Hitting
+flaw--chopping-at-the-ball → Hitting
+flaw--collapsing-the-backside → Hitting
+flaw--contact-point-too-far-out-front → Hitting
+flaw--hands-dropping-too-low → Hitting
+flaw--improper-stance → Hitting
+flaw--lack-of-separation → Hitting
+flaw--loop-in-the-barrel → Hitting
+flaw--lunging-to-the-ball → Hitting
+flaw--no-lower-half → Hitting
+flaw--soft-front-knee → Hitting
+flaw--stepping-in-the-bucket → Hitting
+
+CLEARLY HITTING (tee/toss/bat drills):
+inside/outside-tee → Hitting
+
+CLEARLY INFIELD (fielding, groundball, double play, shortstop, 1st base):
+30-second-backhand → Infield
+30-second-backhand-cross → Infield
+backhand-pick-&-stick → Infield
+backhand-rake → Infield
+ball-in-the-sun → Infield (outfield catch drill but defensive)
+box-drill--2nd-baseman-double-play-feeds → Infield
+box-drill--shortstop-double-play-feeds → Infield
+double-play-footwork--2b-drop-step → Infield
+double-play-footwork--2b-rocker-step → Infield
+double-play-footwork--2b-step-across → Infield
+double-play-footwork--ss-back-cross → Infield
+double-play-footwork--ss-front-cross → Infield
+double-play-footwork--ss-pop-feet → Infield
+drop-step-groundballs → Infield
+execute---on-the-field → Infield
+forehand-range → Infield
+four-corners → Infield
+free-play → Infield
+fungo-charge → Infield
+groundball-on-knees-progression → Infield
+high-choppers → Infield
+high-choppers-fungo → Infield
+indoor-facility-defensive-stations → Infield
+infield-hands-routine → Infield
+knee-short-hops → Infield
+on-the-run → Infield
+on-the-run-fungo → Infield
+preset-backhand-pick-&-stick → Infield
+preset-backhand-rake → Infield
+quick-hands-fielding → Infield
+rapid-fire-fungo → Infield
+right-left-shuffle → Infield
+right-left-shuffle-fungo → Infield
+short-fungo-circle-drill → Infield
+shortstop-backhand-spin → Infield
+shortstop-drop-step-throw → Infield
+shortstop-flips-to-second → Infield
+shortstop-forehand-flip → Infield
+shuffle-gather-throw-fungo → Infield
+slow-rollers → Infield
+slow-rollers-fungo → Infield
+team-situations → Infield
+
+OUTFIELD:
+ball-in-the-sun → Outfield (catching fly balls)
+
+Summary: Most "Custom" drills are either Hitting (flaw fixes) or Infield (fielding/defensive).

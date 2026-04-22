@@ -865,11 +865,11 @@ export const drills = mysqlTable("drills", {
   /** Slug-style unique identifier, e.g. "1-2-3-drill" */
   drillId: varchar("drillId", { length: 255 }).notNull().unique(),
   name: varchar("name", { length: 255 }).notNull(),
-  difficulty: varchar("difficulty", { length: 50 }).notNull().default("Medium"),
+  difficulty: varchar("difficulty", { length: 50 }),
   /** JSON array of category strings, e.g. ["Hitting"] */
   categories: json("categories").$type<string[]>().notNull(),
   /** Human-readable duration, e.g. "10m" */
-  duration: varchar("duration", { length: 50 }).notNull().default(""),
+  duration: varchar("duration", { length: 50 }),
   /** External source URL (usabdevelops.com) */
   url: text("url"),
   /** Whether the URL is a direct deep-link to the drill page */

@@ -1935,3 +1935,38 @@
 - [x] Bulk CSV/JSON import via trpc.drillsDirectory.bulkUpsert (parse & preview before import)
 - [x] Wire accordion filters to problems[]/outcomes[] arrays in Home.tsx filteredDrills logic
 - [x] Add "Drill Library Editor" button to AdminDashboard header
+
+## Consolidation + Cleanup Sprint (Apr 22)
+
+### Phase 1: DB Backup
+- [x] Full backup of drills, customDrills, drillDetails, drillVideos, notifications, pendingEmailAlerts, emailNotificationLog (17MB, 14 tables)
+
+### Phase 2: Drill Consolidation
+- [x] Idempotent merge script: customDrills → drills (37 merged)
+- [x] Idempotent merge script: orphaned drillDetails → drills (90 merged)
+- [x] Idempotent merge script: orphaned drillVideos → drills (15 merged)
+- [x] Category correction: keyword-based recategorization of 114 drills, 9 quarantined as hidden
+- [x] Name resolution: customDrills.name → slug-to-title fallback
+- [x] Difficulty: nullable, left null if missing
+- [x] FK sanity check: 0 broken FKs in drillAssignments/drillFavorites/drillCustomizations
+- [x] Generate post-merge CSV (266 drills, all fields)
+
+### Phase 3: Admin Drills Update
+- [x] /admin/drills shows all 266 drills (256 visible, 10 hidden)
+
+### Phase 4: Notification Cleanup
+- [x] Archived 1,178 stale unread notifications (>30 days)
+- [x] Cleaned 1,738 sent pending email alerts (>30 days)
+- [x] Seeded notification preferences for all 14 users
+- [ ] Add 30-day auto-expire cron job (deferred — needs scheduled task)
+- [ ] Delete test user records (deferred — need to verify which are test)
+
+### Phase 5: Hero Drill Count
+- [x] Removed hardcoded "125+" override from siteContent table
+- [x] Hero stats now show live: allDrills.length (256), categories (6), levels (5)
+
+### Phase 6: Deliverables
+- [x] Staging preview URL with all 256 visible drills
+- [x] Post-merge CSV: drills-post-merge.csv (266 rows)
+- [x] Changelog: CHANGELOG-consolidation.md
+- [x] Rollback plan: ROLLBACK-PLAN.md
