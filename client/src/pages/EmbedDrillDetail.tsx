@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Target, ExternalLink, Lightbulb } from "lucide-react";
 import { Link, useRoute } from "wouter";
 import { useState, useEffect } from "react";
-import drillsData from "@/data/drills";
+// drillsData import removed — drill lookup now uses unified DB
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { TiptapRenderer } from "@/components/TiptapEditor";
 import { CustomDrillLayout } from "@/components/CustomDrillLayout";
@@ -63,24 +63,24 @@ export default function EmbedDrillDetail() {
   const [match, params] = useRoute("/embed/drill/:id");
   const id = params?.id;
 
-  // Fetch custom drills from database
-  const { data: customDrills = [] } = trpc.drillDetails.getCustomDrills.useQuery();
+  // Load drill from unified DB table by slug
+  const { data: dbDrill, isLoading: drillLoading } = trpc.drillsDirectory.get.useQuery(
+    { drillId: id || '' },
+    { enabled: !!id }
+  );
 
-  // Look for drill in static data first, then in custom drills
-  const staticDrill = drillsData.find((d) => d.id.toString() === id);
-  const customDrill = customDrills.find((cd: any) => cd.drillId === id);
-
-  const drill = staticDrill || (customDrill
-    ? {
-        id: customDrill.drillId,
-        name: customDrill.name,
-        difficulty: customDrill.difficulty,
-        categories: [customDrill.category],
-        duration: customDrill.duration,
-        url: `/drill/${customDrill.drillId}`,
-        is_direct_link: true,
-      }
-    : null);
+  // Map DB row to the shape the component expects
+  const drill = dbDrill ? {
+    id: dbDrill.drillId,
+    name: dbDrill.name,
+    difficulty: dbDrill.difficulty ?? 'Unknown',
+    categories: (dbDrill.categories as string[]) ?? [],
+    duration: dbDrill.duration ?? '',
+    url: dbDrill.url ?? '',
+    is_direct_link: dbDrill.isDirectLink,
+    problems: (dbDrill.problems as string[] | null) ?? [],
+    outcomes: (dbDrill.outcomes as string[] | null) ?? [],
+  } : null;
 
   // Load from database
   const { data: dbDetails } = trpc.drillDetails.getDrillDetail.useQuery(
@@ -114,6 +114,18 @@ export default function EmbedDrillDetail() {
     videoData?.videoUrl ||
     (details && "videoUrl" in details ? (details as any).videoUrl : null);
 
+  // Loading
+  if (drillLoading) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-10 w-10 rounded-full border-2 border-red-500/30 border-t-red-500 animate-spin" />
+          <p className="text-slate-400 animate-pulse text-sm">Loading drill...</p>
+        </div>
+      </div>
+    );
+  }
+
   // Not found
   if (!drill) {
     return (
@@ -131,9 +143,9 @@ export default function EmbedDrillDetail() {
     );
   }
 
-  // Problems + outcomes from static drill data
-  const problems = staticDrill?.problems ?? [];
-  const outcomes = staticDrill?.outcomes ?? [];
+  // Problems + outcomes from DB drill data
+  const problems = drill?.problems ?? [];
+  const outcomes = drill?.outcomes ?? [];
 
   return (
     <div className="min-h-screen bg-slate-950 text-white flex flex-col">

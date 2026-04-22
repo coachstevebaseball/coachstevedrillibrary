@@ -7,9 +7,8 @@ import { getLoginUrl, PREVIEW_MODE } from "@/const";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Link, useRoute, useSearch } from "wouter";
 import { useState, useMemo, useEffect } from "react";
-import drillsData from "@/data/drills";
-import { filterOptions } from "@/data/drills";
-import { useSupabaseDrill } from "@/hooks/useSupabaseDrills";
+// drillsData + filterOptions imports removed — drill lookup now uses unified DB
+// useSupabaseDrill removed — all data now in unified drills DB
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { EditDrillDetailsModal } from "@/components/EditDrillDetailsModal";
 import { InstructionsEditor } from "@/components/InstructionsEditor";
@@ -1211,23 +1210,24 @@ export default function DrillDetail() {
   const searchString = useSearch();
   const backHref = searchString ? `/?${searchString}` : '/';
   
-  // Fetch custom drills from database
-  const { data: customDrills = [] } = trpc.drillDetails.getCustomDrills.useQuery();
-  
-  // Look for drill in static data first, then in custom drills
-  const staticDrill = drillsData.find(d => d.id.toString() === id);
-  const customDrill = customDrills.find((cd: any) => cd.drillId === id);
-  
-  // Create a unified drill object
-  const drill = staticDrill || (customDrill ? {
-    id: customDrill.drillId,
-    name: customDrill.name,
-    difficulty: customDrill.difficulty,
-    categories: [customDrill.category],
-    duration: customDrill.duration,
-    url: `/drill/${customDrill.drillId}`,
-    is_direct_link: true,
-  } : null);
+  // Load drill from unified DB table by slug
+  const { data: dbDrill, isLoading: drillLoading } = trpc.drillsDirectory.get.useQuery(
+    { drillId: id || '' },
+    { enabled: !!id }
+  );
+
+  // Map DB row to the shape the component expects
+  const drill = dbDrill ? {
+    id: dbDrill.drillId,
+    name: dbDrill.name,
+    difficulty: dbDrill.difficulty ?? 'Unknown',
+    categories: (dbDrill.categories as string[]) ?? [],
+    duration: dbDrill.duration ?? '',
+    url: dbDrill.url ?? '',
+    is_direct_link: dbDrill.isDirectLink,
+    problems: (dbDrill.problems as string[] | null) ?? [],
+    outcomes: (dbDrill.outcomes as string[] | null) ?? [],
+  } : null;
   
   // Try to load from database first, fallback to hardcoded details
   const { data: dbDetails } = trpc.drillDetails.getDrillDetail.useQuery(
@@ -1277,26 +1277,7 @@ export default function DrillDetail() {
     { enabled: !!id }
   );
 
-  // Supabase enrichment — fetch by matching title for instructions/equipment fallback
-  const [supabaseId, setSupabaseId] = useState<number | null>(null);
-  useEffect(() => {
-    if (!drill?.name) return;
-    let cancelled = false;
-    (async () => {
-      try {
-        const { supabase } = await import("@/supabaseClient");
-        const { data } = await supabase
-          .from("drills")
-          .select("id")
-          .ilike("title", drill.name)
-          .limit(1)
-          .single();
-        if (!cancelled && data) setSupabaseId(data.id);
-      } catch {}
-    })();
-    return () => { cancelled = true; };
-  }, [drill?.name]);
-  const { drill: supabaseDrill } = useSupabaseDrill(supabaseId);
+  // (Supabase enrichment removed — all data now in unified drills DB)
   
   // Load custom page layout
   const { data: pageLayout } = trpc.drillDetails.getPageLayout.useQuery(
@@ -1408,7 +1389,7 @@ export default function DrillDetail() {
 
   const isAnonymous = !user && !loading;
 
-  if (loading) {
+  if (loading || drillLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -1620,10 +1601,10 @@ export default function DrillDetail() {
             )}
 
             {/* Tags — Problems + Outcomes immediately below video */}
-            {staticDrill && ((staticDrill.problems?.length ?? 0) > 0 || (staticDrill.outcomes?.length ?? 0) > 0) && (
+            {drill && ((drill.problems?.length ?? 0) > 0 || (drill.outcomes?.length ?? 0) > 0) && (
               <DrillTagSection
-                problems={staticDrill.problems ?? []}
-                outcomes={staticDrill.outcomes ?? []}
+                problems={drill.problems ?? []}
+                outcomes={drill.outcomes ?? []}
               />
             )}
 

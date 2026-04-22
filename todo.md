@@ -1970,3 +1970,24 @@
 - [x] Post-merge CSV: drills-post-merge.csv (266 rows)
 - [x] Changelog: CHANGELOG-consolidation.md
 - [x] Rollback plan: ROLLBACK-PLAN.md
+
+## Bug Fix: Non-Hitting Drill Detail Pages + Videos (Apr 22)
+- [ ] Fix "Drill not found" on /drill/{slug} for non-hitting drills (e.g., 1st-base-off-bag)
+- [ ] Fix video URLs not working for non-hitting drills
+- [ ] Verify all 256 visible drills can be opened from the grid
+
+## Fix Non-Hitting Drill Video URLs & Drill Lookup
+- [x] Audit drillVideos table — confirmed 94 non-hitting drill videos with valid YouTube URLs
+- [x] Replace static file lookup in DrillDetail.tsx with DB query (trpc.drillsDirectory.get)
+- [x] Replace static file lookup in EmbedDrillDetail.tsx with DB query
+- [x] Add loading state while DB query is in flight (prevents flash of "Drill not found")
+- [x] Fix tag section to use DB drill's problems/outcomes instead of staticDrill
+- [x] Remove dead Supabase enrichment code from DrillDetail.tsx
+- [x] Remove unused drillsData and filterOptions imports
+- [x] TypeScript check passes with 0 errors
+- [x] Browser test: 1st-base-off-bag (Infield) — loads correctly with content
+- [x] Browser test: 43-drill (Infield) — loads with YouTube video playing
+- [x] Browser test: balance-drill (Pitching) — loads with YouTube video playing
+- [x] Browser test: double-ball-toss (Infield) — loads with YouTube video playing
+- [x] Browser test: 1-2-3-drill (Hitting) — still works correctly (regression check)
+- [x] Browser test: embed/drill/43-drill — embed version also works
