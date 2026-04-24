@@ -60,6 +60,12 @@ export function DrillModalRedesigned({
     { enabled: !!assignment?.drillId }
   );
 
+  // Fetch rich coaching fields from the drills table
+  const { data: richDrill } = trpc.drillsDirectory.get.useQuery(
+    { drillId: assignment?.drillId || "" },
+    { enabled: !!assignment?.drillId }
+  );
+
   const updateStatus = trpc.drillAssignments.updateStatus.useMutation({
     onSuccess: () => {
       utils.drillAssignments.getUserAssignments.invalidate();
@@ -230,6 +236,125 @@ export function DrillModalRedesigned({
                     <p className="text-xs text-foreground/70">{prog}</p>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* 5b. Rich Coaching Fields from drills table */}
+          {richDrill?.goalOfDrill && (
+            <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
+              <div className="flex items-start gap-3">
+                <Target className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Goal of This Drill</p>
+                  <p className="text-sm text-foreground/80 leading-relaxed">{richDrill.goalOfDrill}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {richDrill?.whoThisDrillIsBestFor && (
+            <div className="bg-violet-500/10 border border-violet-500/20 rounded-xl p-4">
+              <div className="flex items-start gap-3">
+                <Sparkles className="w-4 h-4 text-violet-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs font-semibold text-violet-400 uppercase tracking-wider mb-1">Best For</p>
+                  <p className="text-sm text-foreground/80 leading-relaxed">{richDrill.whoThisDrillIsBestFor}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {richDrill?.howToRunTheDrill && richDrill.howToRunTheDrill.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <ListChecks className="w-4 h-4 text-[#E8425A]" />
+                <h3 className="font-semibold text-foreground text-sm">Step-by-Step Instructions</h3>
+              </div>
+              <div className="space-y-2">
+                {richDrill.howToRunTheDrill.map((step: string, idx: number) => (
+                  <div key={idx} className="flex gap-3 items-start">
+                    <div className="w-6 h-6 bg-[#DC143C]/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-xs font-bold text-[#E8425A]">{idx + 1}</span>
+                    </div>
+                    <p className="text-sm text-foreground/80 leading-relaxed">{step}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {richDrill?.coachingNotes && richDrill.coachingNotes.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <MessageCircle className="w-4 h-4 text-cyan-400" />
+                <h3 className="font-semibold text-foreground text-sm">Coaching Notes</h3>
+              </div>
+              <div className="space-y-1.5">
+                {richDrill.coachingNotes.map((note: string, idx: number) => (
+                  <div key={idx} className="flex gap-2 items-start bg-cyan-500/5 border border-cyan-500/10 rounded-lg px-3 py-2">
+                    <span className="text-cyan-400 text-xs mt-0.5">•</span>
+                    <p className="text-xs text-foreground/70">{note}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {richDrill?.whatThisDrillHelpsFix && richDrill.whatThisDrillHelpsFix.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-400" />
+                <h3 className="font-semibold text-foreground text-sm">What This Fixes</h3>
+              </div>
+              <div className="space-y-1.5">
+                {richDrill.whatThisDrillHelpsFix.map((fix: string, idx: number) => (
+                  <div key={idx} className="flex gap-2 items-start bg-emerald-500/5 border border-emerald-500/10 rounded-lg px-3 py-2">
+                    <span className="text-emerald-400 text-xs mt-0.5">✓</span>
+                    <p className="text-xs text-foreground/70">{fix}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {richDrill?.commonMistakes && richDrill.commonMistakes.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-400" />
+                <h3 className="font-semibold text-foreground text-sm">Common Mistakes</h3>
+              </div>
+              <div className="space-y-1.5">
+                {richDrill.commonMistakes.map((mistake: string, idx: number) => (
+                  <div key={idx} className="flex gap-2 items-start bg-amber-500/5 border border-amber-500/10 rounded-lg px-3 py-2">
+                    <span className="text-amber-400 text-xs mt-0.5">!</span>
+                    <p className="text-xs text-foreground/70">{mistake}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {richDrill?.coachSteveCue && (
+            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4">
+              <div className="flex items-start gap-3">
+                <Sparkles className="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs font-semibold text-yellow-400 uppercase tracking-wider mb-1">Coach Steve's Cue</p>
+                  <p className="text-sm text-foreground/80 leading-relaxed italic">"{richDrill.coachSteveCue}"</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {richDrill?.gameTransferExplanation && (
+            <div className="bg-orange-500/10 border border-orange-500/20 rounded-xl p-4">
+              <div className="flex items-start gap-3">
+                <Play className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs font-semibold text-orange-400 uppercase tracking-wider mb-1">Game Transfer</p>
+                  <p className="text-sm text-foreground/80 leading-relaxed">{richDrill.gameTransferExplanation}</p>
+                </div>
               </div>
             </div>
           )}

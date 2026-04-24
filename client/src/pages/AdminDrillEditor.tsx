@@ -2,6 +2,7 @@ import { useState, useMemo, useRef } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
@@ -47,6 +48,15 @@ interface DrillRow {
   isHidden: boolean;
   createdAt: Date;
   updatedAt: Date;
+  // 8 rich coaching fields
+  goalOfDrill: string | null;
+  whoThisDrillIsBestFor: string | null;
+  coachingNotes: string[] | null;
+  whatThisDrillHelpsFix: string[] | null;
+  howToRunTheDrill: string[] | null;
+  commonMistakes: string[] | null;
+  coachSteveCue: string | null;
+  gameTransferExplanation: string | null;
 }
 
 interface EditState {
@@ -63,6 +73,15 @@ interface EditState {
   goal: string;
   drillType: string;
   isHidden: boolean;
+  // 8 rich coaching fields
+  goalOfDrill: string;
+  whoThisDrillIsBestFor: string;
+  coachingNotes: string;
+  whatThisDrillHelpsFix: string;
+  howToRunTheDrill: string;
+  commonMistakes: string;
+  coachSteveCue: string;
+  gameTransferExplanation: string;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -167,6 +186,14 @@ function EditDrillModal({
     goal: arrToDisplay(drill.goal),
     drillType: drill.drillType ?? "",
     isHidden: drill.isHidden,
+    goalOfDrill: drill.goalOfDrill ?? "",
+    whoThisDrillIsBestFor: drill.whoThisDrillIsBestFor ?? "",
+    coachingNotes: arrToDisplay(drill.coachingNotes),
+    whatThisDrillHelpsFix: arrToDisplay(drill.whatThisDrillHelpsFix),
+    howToRunTheDrill: arrToDisplay(drill.howToRunTheDrill),
+    commonMistakes: arrToDisplay(drill.commonMistakes),
+    coachSteveCue: drill.coachSteveCue ?? "",
+    gameTransferExplanation: drill.gameTransferExplanation ?? "",
   });
 
   const upsert = trpc.drillsDirectory.upsert.useMutation({
@@ -200,6 +227,14 @@ function EditDrillModal({
       drillType: form.drillType || null,
       source: drill.source as "static" | "custom",
       isHidden: form.isHidden,
+      goalOfDrill: form.goalOfDrill || null,
+      whoThisDrillIsBestFor: form.whoThisDrillIsBestFor || null,
+      coachingNotes: parseJsonArr(form.coachingNotes).length ? parseJsonArr(form.coachingNotes) : null,
+      whatThisDrillHelpsFix: parseJsonArr(form.whatThisDrillHelpsFix).length ? parseJsonArr(form.whatThisDrillHelpsFix) : null,
+      howToRunTheDrill: parseJsonArr(form.howToRunTheDrill).length ? parseJsonArr(form.howToRunTheDrill) : null,
+      commonMistakes: parseJsonArr(form.commonMistakes).length ? parseJsonArr(form.commonMistakes) : null,
+      coachSteveCue: form.coachSteveCue || null,
+      gameTransferExplanation: form.gameTransferExplanation || null,
     });
   }
 
@@ -360,6 +395,85 @@ function EditDrillModal({
               placeholder="Tee Work, Front Toss…"
               className="bg-[#0A1628] border-[#1e2a3a] text-white"
             />
+          </div>
+
+          {/* ── Rich Coaching Fields ──────────────────────────────── */}
+          <div className="col-span-2 border-t border-[#1e2a3a] pt-4 mt-2">
+            <h4 className="text-xs text-yellow-400 uppercase tracking-wider mb-3 font-semibold">Rich Coaching Content</h4>
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Goal of Drill</label>
+                <Input
+                  value={form.goalOfDrill}
+                  onChange={(e) => set("goalOfDrill", e.target.value)}
+                  placeholder="e.g. Develop hip rotation through the zone"
+                  className="bg-[#0A1628] border-[#1e2a3a] text-white"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Who This Drill Is Best For</label>
+                <Input
+                  value={form.whoThisDrillIsBestFor}
+                  onChange={(e) => set("whoThisDrillIsBestFor", e.target.value)}
+                  placeholder="e.g. Hitters who cast the barrel early"
+                  className="bg-[#0A1628] border-[#1e2a3a] text-white"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Coach Steve's Cue</label>
+                <Input
+                  value={form.coachSteveCue}
+                  onChange={(e) => set("coachSteveCue", e.target.value)}
+                  placeholder="e.g. 'Knob to the ball, barrel follows'"
+                  className="bg-[#0A1628] border-[#1e2a3a] text-white"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Game Transfer Explanation</label>
+                <Textarea
+                  value={form.gameTransferExplanation}
+                  onChange={(e) => set("gameTransferExplanation", e.target.value)}
+                  placeholder="How this drill translates to in-game situations..."
+                  className="bg-[#0A1628] border-[#1e2a3a] text-white min-h-[80px]"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Coaching Notes (one per line)</label>
+                <Textarea
+                  value={form.coachingNotes}
+                  onChange={(e) => set("coachingNotes", e.target.value)}
+                  placeholder="Key coaching points, one per line..."
+                  className="bg-[#0A1628] border-[#1e2a3a] text-white min-h-[80px]"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">What This Drill Helps Fix (one per line)</label>
+                <Textarea
+                  value={form.whatThisDrillHelpsFix}
+                  onChange={(e) => set("whatThisDrillHelpsFix", e.target.value)}
+                  placeholder="e.g. Casting the barrel\nDropping the back shoulder"
+                  className="bg-[#0A1628] border-[#1e2a3a] text-white min-h-[80px]"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">How to Run the Drill (one step per line)</label>
+                <Textarea
+                  value={form.howToRunTheDrill}
+                  onChange={(e) => set("howToRunTheDrill", e.target.value)}
+                  placeholder="Step 1: Set up the tee at middle-in...\nStep 2: ..."
+                  className="bg-[#0A1628] border-[#1e2a3a] text-white min-h-[100px]"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Common Mistakes (one per line)</label>
+                <Textarea
+                  value={form.commonMistakes}
+                  onChange={(e) => set("commonMistakes", e.target.value)}
+                  placeholder="e.g. Rushing the load\nNot staying back on off-speed"
+                  className="bg-[#0A1628] border-[#1e2a3a] text-white min-h-[80px]"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Hidden toggle */}

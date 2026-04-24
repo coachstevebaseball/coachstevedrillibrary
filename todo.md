@@ -2047,3 +2047,35 @@
 - [x] Fix trust proxy warning from express-rate-limit (app.set trust proxy 1)
 - [x] Run vitest: 485 tests pass (41 test files)
 - [x] TypeScript: 0 errors
+
+## Drill Admin JSON Paste System (Apr 24)
+### Step 1: Schema
+- [x] Add 8 rich coaching columns to drills table (goalOfDrill, whoThisDrillIsBestFor, coachingNotes, whatThisDrillHelpsFix, howToRunTheDrill, commonMistakes, coachSteveCue, gameTransferExplanation)
+- [x] Applied via direct SQL (db:push blocked by existing tables)
+
+### Step 2: tRPC Router
+- [x] Create server/routers/drillsAdmin.ts
+- [x] drills.adminCreate (admin only, slug auto-gen, reject duplicate)
+- [x] drills.adminUpdate (admin only, partial patch)
+- [x] drills.adminDelete (admin only, soft-delete isHidden=1)
+- [x] drills.adminList (admin only, pagination 50/page, search, source filter)
+
+### Step 3: Admin Page /admin/drills
+- [x] Create client/src/pages/admin/Drills.tsx (Film Room dark theme, gold accents, Barlow Condensed)
+- [x] Tab 1: Paste JSON — textarea, Validate/Save/Clear buttons, validation panel
+- [x] Tab 2: Bulk Paste — array textarea, per-drill result list
+- [x] Bottom panel: drill table with search, source filter, View JSON / Edit / Hide / Delete actions
+- [x] View JSON modal with copy button
+- [x] Edit opens JSON editor prefilled, saves via adminUpdate
+
+### Step 4: Public Display
+- [x] Update DrillModal coaching tab to show new rich fields (goal, bestFor, coachingNotes, howToRun, whatFixes, commonMistakes, coachCue, gameTransfer)
+- [x] Hide sections when field is null/empty
+
+### Step 5: Nav + Route
+- [x] Add "Drills Admin" link to SiteNav.tsx (admin only)
+- [x] Register /admin/drills route in App.tsx
+- [x] Write vitest tests for adminCreate/adminUpdate/adminDelete/adminList
+
+### Smoke Test
+- [x] Paste Bounce Timing Drill JSON, click Save, verify it appears in public directory

@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/sidebar";
 import { getLoginUrl } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
-import { LayoutDashboard, LogOut, PanelLeft, Users } from "lucide-react";
+import { LayoutDashboard, LogOut, PanelLeft, Users, BookOpen, Bell } from "lucide-react";
 import { NotificationBell } from "./NotificationBell";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
@@ -31,6 +31,8 @@ import { Button } from "./ui/button";
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
   { icon: Users, label: "User Management", path: "/user-management", adminOnly: true },
+  { icon: BookOpen, label: "Drill Library", path: "/admin/drills", adminOnly: true },
+  { icon: Bell, label: "Notifications", path: "/admin/notifications", adminOnly: true },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";

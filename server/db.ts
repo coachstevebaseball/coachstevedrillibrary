@@ -1505,6 +1505,14 @@ export async function upsertDrill(
           outcomes: data.outcomes,
           source: data.source,
           isHidden: data.isHidden,
+          goalOfDrill: data.goalOfDrill,
+          whoThisDrillIsBestFor: data.whoThisDrillIsBestFor,
+          coachingNotes: data.coachingNotes,
+          whatThisDrillHelpsFix: data.whatThisDrillHelpsFix,
+          howToRunTheDrill: data.howToRunTheDrill,
+          commonMistakes: data.commonMistakes,
+          coachSteveCue: data.coachSteveCue,
+          gameTransferExplanation: data.gameTransferExplanation,
         },
       });
     return await getDrillBySlug(data.drillId);

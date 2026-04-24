@@ -896,6 +896,22 @@ export const drills = mysqlTable("drills", {
   isHidden: boolean("isHidden").notNull().default(false),
   /** Admin/coach who created or last modified this drill (null for seeded static drills) */
   createdBy: int("createdBy"),
+  /** The primary goal of this drill in plain language */
+  goalOfDrill: text("goalOfDrill"),
+  /** Who benefits most from this drill */
+  whoThisDrillIsBestFor: text("whoThisDrillIsBestFor"),
+  /** JSON array of coaching notes (strings) */
+  coachingNotes: json("coachingNotes").$type<string[]>(),
+  /** JSON array of what this drill helps fix (strings) */
+  whatThisDrillHelpsFix: json("whatThisDrillHelpsFix").$type<string[]>(),
+  /** JSON array of step-by-step instructions (strings) */
+  howToRunTheDrill: json("howToRunTheDrill").$type<string[]>(),
+  /** JSON array of common mistakes and corrections (strings) */
+  commonMistakes: json("commonMistakes").$type<string[]>(),
+  /** Coach Steve's memorable cue phrase */
+  coachSteveCue: text("coachSteveCue"),
+  /** Explanation of how this drill transfers to game situations */
+  gameTransferExplanation: text("gameTransferExplanation"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

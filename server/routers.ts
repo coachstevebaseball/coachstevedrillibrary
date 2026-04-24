@@ -27,6 +27,7 @@ import { blastMetricsRouter } from "./routers-blast-metrics";
 import { badgesRouter } from "./routers-badges";
 import { siteContentRouter } from "./routers-site-content";
 import { hittingCoachRouter } from "./routers-hitting-coach";
+import { drillsAdminRouter } from "./routers/drillsAdmin";
 import * as drillCustomizationsDb from "./drillCustomizations";
 import { storagePut } from "./storage";
 import { checkAndSendMilestoneEmail } from "./notificationService";
@@ -36,6 +37,7 @@ export const appRouter = router({
   system: systemRouter,
   siteContent: siteContentRouter,
   hittingCoach: hittingCoachRouter,
+  drillsAdmin: drillsAdminRouter,
   notifications: notificationsRouter,
   imageUpload: imageUploadRouter,
   activity: activityRouter,
@@ -1303,6 +1305,15 @@ export const appRouter = router({
         outcomes: z.array(z.string()).optional(),
         source: z.enum(['static', 'custom']).default('custom'),
         isHidden: z.boolean().default(false),
+        // 8 rich coaching fields
+        goalOfDrill: z.string().nullable().optional(),
+        whoThisDrillIsBestFor: z.string().nullable().optional(),
+        coachingNotes: z.array(z.string()).nullable().optional(),
+        whatThisDrillHelpsFix: z.array(z.string()).nullable().optional(),
+        howToRunTheDrill: z.array(z.string()).nullable().optional(),
+        commonMistakes: z.array(z.string()).nullable().optional(),
+        coachSteveCue: z.string().nullable().optional(),
+        gameTransferExplanation: z.string().nullable().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         if (ctx.user.role !== 'admin') {
@@ -1375,6 +1386,15 @@ export const appRouter = router({
           goal: z.array(z.string()).optional(),
           description: z.string().nullable().optional(),
           equipment: z.array(z.string()).optional(),
+          // 8 rich coaching fields
+          goalOfDrill: z.string().nullable().optional(),
+          whoThisDrillIsBestFor: z.string().nullable().optional(),
+          coachingNotes: z.array(z.string()).nullable().optional(),
+          whatThisDrillHelpsFix: z.array(z.string()).nullable().optional(),
+          howToRunTheDrill: z.array(z.string()).nullable().optional(),
+          commonMistakes: z.array(z.string()).nullable().optional(),
+          coachSteveCue: z.string().nullable().optional(),
+          gameTransferExplanation: z.string().nullable().optional(),
         }))
       }))
       .mutation(async ({ ctx, input }) => {
