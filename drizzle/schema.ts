@@ -183,6 +183,7 @@ export const notifications = mysqlTable("notifications", {
     "practice_plan_shared",
     "welcome",
     "system",
+    "coach_message",
   ]).notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),

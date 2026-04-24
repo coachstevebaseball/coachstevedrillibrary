@@ -25,7 +25,8 @@ export type NotificationType =
   | "badge_earned"
   | "practice_plan_shared"
   | "welcome"
-  | "system";
+  | "system"
+  | "coach_message";
 
 export interface SendNotificationInput {
   userId: number;
@@ -63,6 +64,7 @@ const TYPE_TO_PREFERENCE: Record<NotificationType, string> = {
   practice_plan_shared: "practicePlanUpdates",
   welcome: "systemUpdates",
   system: "systemUpdates",
+  coach_message: "systemUpdates",
 };
 
 // ─── Email Subject Lines ─────────────────────────────────────────────────────
@@ -79,6 +81,7 @@ const TYPE_TO_SUBJECT: Record<NotificationType, (title: string) => string> = {
   practice_plan_shared: (t) => `Practice Plan Shared: ${t}`,
   welcome: () => `Welcome to Coach Steve Baseball!`,
   system: (t) => t,
+  coach_message: (t) => `Message from Coach Steve: ${t}`,
 };
 
 // ─── Email Template ──────────────────────────────────────────────────────────
@@ -104,6 +107,7 @@ function generateNotificationEmailHtml(input: {
     practice_plan_shared: "📋",
     welcome: "👋",
     system: "🔔",
+    coach_message: "📣",
   };
 
   const icon = typeIcons[type] || "🔔";
@@ -182,6 +186,7 @@ function getCTAText(type: NotificationType): string {
     case "badge_earned": return "View Badge";
     case "practice_plan_shared": return "View Practice Plan";
     case "welcome": return "Get Started";
+    case "coach_message": return "View Message";
     default: return "View Details";
   }
 }

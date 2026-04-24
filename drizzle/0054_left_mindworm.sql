@@ -1,0 +1,1 @@
+ALTER TABLE `notifications` MODIFY COLUMN `type` enum('drill_assigned','notes_added','recap_posted','swing_analysis_ready','new_feature_available','feedback_received','submission_received','badge_earned','practice_plan_shared','welcome','system','coach_message') NOT NULL;

@@ -48,6 +48,7 @@ const quickActions = [
   { label: "AI Generator", shortLabel: "AI", href: "/drill-generator", icon: Zap, color: "from-[#DC143C]/20 to-fuchsia-500/20", iconColor: "text-violet-400" },
   { label: "Manage Videos", shortLabel: "Videos", href: "/manage-drill-videos", icon: Video, color: "from-orange-500/20 to-amber-500/20", iconColor: "text-orange-400" },
   { label: "User Management", shortLabel: "Users", href: "/user-management", icon: Users, color: "from-green-500/20 to-emerald-500/20", iconColor: "text-green-400" },
+  { label: "Notifications", shortLabel: "Notify", href: "/admin/notifications", icon: Bell, color: "from-amber-500/20 to-yellow-500/20", iconColor: "text-amber-400" },
 ];
 
 export default function CoachDashboard() {

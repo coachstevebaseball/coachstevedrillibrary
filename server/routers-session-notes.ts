@@ -2,6 +2,7 @@ import { router, protectedProcedure } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import * as sessionNotesDb from "./sessionNotes";
+import { sendNotification } from "./notificationEngine";
 
 /** Skill categories available for session tracking */
 export const SKILL_CATEGORIES = [
@@ -54,7 +55,7 @@ export const sessionNotesRouter = router({
 
       const sessionNumber = await sessionNotesDb.getNextSessionNumber(input.athleteId);
 
-      return sessionNotesDb.createSessionNote({
+      const note = await sessionNotesDb.createSessionNote({
         coachId: ctx.user.id,
         athleteId: input.athleteId,
         sessionNumber,
@@ -69,6 +70,21 @@ export const sessionNotesRouter = router({
         privateNotes: input.privateNotes ?? null,
         practicePlanId: input.practicePlanId ?? null,
       });
+
+      // Fire notes_added notification to the athlete
+      try {
+        await sendNotification({
+          userId: input.athleteId,
+          type: "notes_added",
+          title: input.sessionLabel || `Session #${sessionNumber}`,
+          message: `Coach ${ctx.user.name || "Steve"} added notes from your session: ${input.skillsWorked.join(", ")}`,
+          linkUrl: `/athlete-portal`,
+        });
+      } catch (e) {
+        console.error("[SessionNotes] Failed to send notes_added notification:", e);
+      }
+
+      return note;
     }),
 
   /** Get all session notes for an athlete */

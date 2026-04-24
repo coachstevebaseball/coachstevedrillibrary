@@ -29,6 +29,7 @@ import MyProfile from "./pages/MyProfile";
 import NotificationsInbox from "./pages/NotificationsInbox";
 import NotificationPreferences from "./pages/NotificationPreferences";
 import HittingCoach from "./pages/HittingCoach";
+import AdminNotifications from "./pages/AdminNotifications";
 import ProtectedRoute from "./components/ProtectedRoute";
 import EmbedHome from "./pages/EmbedHome";
 import EmbedDrillLibrary from "./pages/EmbedDrillLibrary";
@@ -134,6 +135,12 @@ function Router() {
         </ProtectedRoute>
       </Route>
       
+      <Route path={"/admin/notifications"}>
+        <ProtectedRoute requiredRole="admin">
+          <AdminNotifications />
+        </ProtectedRoute>
+      </Route>
+
       <Route path={"/coach-messaging"}>
         <ProtectedRoute requiredRole="admin">
           <CoachMessaging />

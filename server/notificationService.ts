@@ -165,6 +165,20 @@ export async function sendBlastMetricsUpdateEmail(
     });
 
     console.log(`[NotificationService] Blast metrics email ${success ? "sent" : "failed"} to ${user.email}`);
+
+    // Also fire an in-app notification
+    try {
+      await sendNotification({
+        userId: player.userId,
+        type: "blast_metrics_update" as any,
+        title: `New Swing Metrics — ${sessionType} Session`,
+        message: metricLines.map(l => l.replace(/<[^>]*>/g, '')).join(', '),
+        linkUrl: `/athlete-portal`,
+      });
+    } catch (e) {
+      console.error("[NotificationService] Failed to send blast_metrics in-app notification:", e);
+    }
+
     return success;
   } catch (err) {
     console.error("[NotificationService] sendBlastMetricsUpdateEmail error:", err);

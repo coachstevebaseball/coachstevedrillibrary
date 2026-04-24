@@ -2022,3 +2022,28 @@
 - [x] Staging preview URL per batch (P1 first, P2 seco- [x] Post-merge CSV export (244 drills)flecting final state
 - [ ] One-page changelog
 - [x] Preserve checkpoint 99e191b8 and 17 MB backuppreserved
+
+## Custom Notification System (Apr 24)
+### Backend
+- [x] Add "coach_message" to notification type enum in schema + notificationEngine
+- [x] Add admin-only tRPC procedure: notifications.adminCompose (send to specific athlete)
+- [x] Add admin-only tRPC procedure: notifications.adminBroadcast (send to all active athletes)
+- [x] Add admin-only tRPC procedure: notifications.adminSentHistory (view sent custom notifications)
+- [x] Update email template to support coach_message type with icon/subject
+
+### Frontend
+- [x] Create /admin/notifications page with Compose tab and Sent History tab
+- [x] Build recipient picker: all athletes, or search/select specific athlete(s)
+- [x] Build message composer: title, message body, optional CTA link
+- [x] Build sent history table with status indicators
+- [x] Add Notifications quick action in CoachDashboard
+- [x] Register route /admin/notifications in App.tsx (admin-only)
+
+### Auto-Generated Notifications Audit
+- [x] Verify drill_assigned notifications fire on assignment (already wired in routers-drill-assignments.ts)
+- [x] Wire notes_added notification when coach saves session notes (added to routers-session-notes.ts)
+- [x] Wire blast_metrics_update in-app notification alongside existing email (added to notificationService.ts)
+- [x] Verify activity summary emails continue working (unchanged)
+- [x] Fix trust proxy warning from express-rate-limit (app.set trust proxy 1)
+- [x] Run vitest: 485 tests pass (41 test files)
+- [x] TypeScript: 0 errors
