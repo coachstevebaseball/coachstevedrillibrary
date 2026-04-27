@@ -272,7 +272,7 @@ Generate the progress report in your voice. Return it as structured JSON.`;
 
       try {
         const result = await getResend().emails.send({
-          from: "coach@coachstevemobilecoach.com",
+          from: ENV.resendFromEmail,
           to: input.parentEmail,
           subject: `${athleteData.athleteName} — ${report.title}`,
           html: freshHtml,

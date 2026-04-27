@@ -259,7 +259,7 @@ async function sendBatchedActivityEmail(
     `;
 
     const result = await getResend().emails.send({
-      from: "coach@coachstevemobilecoach.com",
+      from: ENV.resendFromEmail,
       to: coachEmail,
       subject: `📊 ${athleteName} - ${activityCount} new activities`,
       html: emailHtml,

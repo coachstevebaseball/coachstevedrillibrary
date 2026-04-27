@@ -12,7 +12,7 @@ export async function sendStreakReminderEmail(
   }
   try {
     await getResend().emails.send({
-      from: "USA Baseball Drills <noreply@manus.space>",
+      from: ENV.resendFromEmail,
       to: athleteEmail,
       subject: `🔥 Keep your ${streakDays}-day streak alive!`,
       html: `
