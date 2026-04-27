@@ -30,6 +30,12 @@ export const users = mysqlTable("users", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
+  /** Set to true when Resend reports a hard bounce for this address */
+  emailBounced: boolean("emailBounced").default(false).notNull(),
+  /** Set to true when Resend reports a spam complaint for this address */
+  emailComplained: boolean("emailComplained").default(false).notNull(),
+  /** Incremented on each email.failed webhook event; auto-sets emailBounced at 3 */
+  emailFailureCount: int("emailFailureCount").default(0).notNull(),
 });
 
 export type User = typeof users.$inferSelect;
@@ -810,6 +816,12 @@ export const emailNotificationLog = mysqlTable("emailNotificationLog", {
   errorMessage: text("errorMessage"),
   /** Resend email ID for tracking */
   resendId: varchar("resendId", { length: 255 }),
+  /** When Resend confirmed delivery (from webhook) */
+  deliveredAt: timestamp("deliveredAt"),
+  /** When the recipient opened the email (from webhook) */
+  openedAt: timestamp("openedAt"),
+  /** When the recipient clicked a link in the email (from webhook) */
+  clickedAt: timestamp("clickedAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 export type EmailNotificationLog = typeof emailNotificationLog.$inferSelect;
@@ -943,3 +955,24 @@ export const playerReports = mysqlTable("playerReports", {
 });
 export type PlayerReport = typeof playerReports.$inferSelect;
 export type InsertPlayerReport = typeof playerReports.$inferInsert;
+
+// ============================================================
+// Email Events — Persisted Resend webhook payloads
+// One row per webhook event received from Resend
+// ============================================================
+export const emailEvents = mysqlTable("emailEvents", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Resend's unique email ID (e.g. re_abc123) */
+  emailId: varchar("emailId", { length: 255 }).notNull(),
+  /** Svix delivery ID — used for idempotency dedup */
+  svixId: varchar("svixId", { length: 255 }).notNull().unique(),
+  /** Resend event type: email.sent, email.delivered, email.bounced, etc. */
+  eventType: varchar("eventType", { length: 100 }).notNull(),
+  /** Recipient email address */
+  recipient: varchar("recipient", { length: 320 }).notNull(),
+  /** Full Resend webhook payload for replay/debugging */
+  payloadJson: json("payloadJson").notNull(),
+  receivedAt: timestamp("receivedAt").defaultNow().notNull(),
+});
+export type EmailEvent = typeof emailEvents.$inferSelect;
+export type InsertEmailEvent = typeof emailEvents.$inferInsert;

@@ -2104,3 +2104,47 @@
 - [x] Add Player Reports section in athlete portal
 - [x] Cascade-delete playerReports when athlete is deleted
 - [x] Vitest: create, publish, unpublish, update, delete coverage
+
+## Sprint: Resend Webhook Receiver (Apr 27 2026)
+
+### Schema
+- [x] Add emailEvents table (id uuid pk, emailId, eventType, recipient, payloadJson, receivedAt)
+- [x] Add emailBounced, emailComplained, emailFailureCount columns to users table
+- [x] Add deliveredAt, openedAt, clickedAt columns to emailNotificationLog table
+- [x] Run pnpm db:push migration
+
+### Webhook Route
+- [x] Install svix npm package
+- [x] Create POST /api/webhooks/resend (public, no auth cookie)
+- [x] Implement svix signature verification (svix-id, svix-timestamp, svix-signature headers)
+- [x] Reject requests older than 5 minutes (replay protection)
+- [x] Return 401 for invalid/missing signature, 400 for malformed payload, 200 for success
+- [x] Handle email.sent — log only
+- [x] Handle email.delivered — log + update emailNotificationLog.deliveredAt
+- [x] Handle email.delivery_delayed — log only
+- [x] Handle email.bounced — log + set users.emailBounced=true
+- [x] Handle email.complained — log + set users.emailComplained=true
+- [x] Handle email.opened — log + update emailNotificationLog.openedAt
+- [x] Handle email.clicked — log + update emailNotificationLog.clickedAt
+- [x] Handle email.failed — log + increment users.emailFailureCount; if ≥3 set emailBounced=true
+- [x] Idempotency: skip duplicate svix-id events
+
+### Send-time Guard
+- [x] Update notificationEngine.ts: check emailBounced/emailComplained before send
+- [x] Log skipped_bounced / skipped_complained row in emailNotificationLog when skipped
+
+### Health Check
+- [x] Extend /api/health/jobs with lastWebhookReceivedAt and webhook.status
+
+### Tests
+- [x] Signature verification: valid → 200, invalid → 401, replay → 401
+- [x] All 8 event types update correct columns
+- [x] Bounce flag prevents subsequent sends
+- [x] Idempotency: same svix-id twice does not double-write
+
+### Secrets
+- [ ] Add RESEND_WEBHOOK_SECRET env var (whsec_... value from Resend dashboard) — pending user input
+
+### Deployment
+- [ ] Save checkpoint and deploy to coachstevemobilecoach.com
+- [ ] Verify curl with no signature returns 401

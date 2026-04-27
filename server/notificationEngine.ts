@@ -261,6 +261,38 @@ export async function sendNotification(input: SendNotificationInput): Promise<No
       return { success: true, notificationId, emailSent: false };
     }
 
+    // 5.5 Bounce / complaint guard — skip send if address is flagged
+    if (recipientEmail) {
+      const flaggedRows = await db
+        .select({ emailBounced: users.emailBounced, emailComplained: users.emailComplained })
+        .from(users)
+        .where(eq(users.id, input.userId))
+        .limit(1);
+      if (flaggedRows.length > 0) {
+        const { emailBounced, emailComplained } = flaggedRows[0];
+        if (emailBounced || emailComplained) {
+          const skipReason = emailBounced ? "skipped_bounced" : "skipped_complained";
+          console.warn(`[NotificationEngine] Skipping email to ${recipientEmail} — ${skipReason}`);
+          // Log the skip to emailNotificationLog
+          const { emailNotificationLog: emailLog } = await import("../drizzle/schema");
+          await db.insert(emailLog).values({
+            recipientId: input.userId,
+            recipientEmail,
+            recipientName,
+            emailType: skipReason,
+            subject: TYPE_TO_SUBJECT[input.type](input.title),
+            description: `Skipped: ${skipReason}`,
+            success: 0,
+            errorMessage: skipReason,
+          });
+          await db.update(notifications)
+            .set({ emailStatus: "sent" })
+            .where(eq(notifications.id, notificationId));
+          return { success: true, notificationId, emailSent: false };
+        }
+      }
+    }
+
     // 6. Send email via Resend
     const emailResult = await deliverEmail({
       to: recipientEmail,

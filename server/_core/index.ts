@@ -39,6 +39,23 @@ async function startServer() {
   const server = createServer(app);
   // Trust proxy headers from load balancers/reverse proxies (required for rate limiting)
   app.set("trust proxy", 1);
+
+  // ── Resend webhook: must capture raw body BEFORE json() middleware ──────────
+  // svix signature verification requires the exact raw bytes sent by Resend.
+  const { handleResendWebhook } = await import("../webhooks/resend");
+  app.post(
+    "/api/webhooks/resend",
+    express.raw({ type: "application/json" }),
+    (req, _res, next) => {
+      // Attach raw body buffer so the handler can access it for signature verification
+      (req as typeof req & { rawBody?: Buffer }).rawBody = req.body as Buffer;
+      // Re-parse as JSON so downstream code can use req.body normally
+      try { req.body = JSON.parse((req.body as Buffer).toString("utf8")); } catch { /* ignore */ }
+      next();
+    },
+    handleResendWebhook
+  );
+
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
@@ -176,10 +193,19 @@ async function startServer() {
   });
   app.use('/api/trpc', publicApiLimiter);
 
-  // Health check: scheduled jobs status
+  // Health check: scheduled jobs status + webhook health
   const { getJobHealthStatus } = await import("../notificationService");
+  const { getLastWebhookReceivedAt } = await import("../webhooks/resend");
   app.get("/api/health/jobs", (_req, res) => {
-    res.json(getJobHealthStatus());
+    const jobHealth = getJobHealthStatus();
+    const lastWebhook = getLastWebhookReceivedAt();
+    res.json({
+      ...jobHealth,
+      webhook: {
+        lastResendEventAt: lastWebhook,
+        status: lastWebhook ? "active" : "no_events_yet",
+      },
+    });
   });
 
   // tRPC API
