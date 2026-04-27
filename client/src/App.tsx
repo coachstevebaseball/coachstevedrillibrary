@@ -36,7 +36,6 @@ import EmbedDrillLibrary from "./pages/EmbedDrillLibrary";
 import EmbedDrillDetail from "./pages/EmbedDrillDetail";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
-import { PWAInstallBanner } from "./components/PWAInstallBanner";
 import { useEffect } from "react";
 import { useLocation, useSearch } from "wouter";
 
@@ -205,7 +204,6 @@ function App() {
             <Toaster />
             <ToastContainer />
             <Router />
-            <PWAInstallBanner />
           </TooltipProvider>
         </ThemeProvider>
       </NotificationProvider>

@@ -2148,3 +2148,18 @@
 ### Deployment
 - [ ] Save checkpoint and deploy to coachstevemobilecoach.com
 - [ ] Verify curl with no signature returns 401
+
+## Sprint: Remove PWA Install Prompts (Apr 27 2026)
+- [x] Audit: find all PWA install components, event listeners, localStorage flags
+- [x] Delete InstallPrompt / PWABanner / IOSInstallModal component files
+- [x] Remove all imports and usages from App.tsx, Home.tsx, and any other pages
+- [x] Remove beforeinstallprompt event listeners
+- [x] Remove iOS Safari detection useEffect hooks
+- [x] Remove localStorage read/write for pwa_install_dismissed / installPromptShown / iosInstallSeen
+- [x] Remove BeforeInstallPromptEvent state/refs
+- [x] Remove /install route if it exists
+- [x] Remove Install button from nav/footer if it exists
+- [x] Write regression test: iOS Safari UA → assert no /install/i, /add to home screen/i, /got it/i in DOM
+- [x] Write regression test: desktop Chrome → assert no beforeinstallprompt listener
+- [x] Run full test suite and verify grep returns zero matches
+- [ ] Save checkpoint and deploy

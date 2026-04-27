@@ -202,6 +202,7 @@ describe('Resend API Key Validation', () => {
   });
 
   it('should validate drill assignment email can be sent', async () => {
+    // Note: this test makes a real network call to Resend; allow up to 15s
     const { sendDrillAssignmentEmail } = await import('./email');
     
     const testData = {
@@ -225,5 +226,5 @@ describe('Resend API Key Validation', () => {
     if (!result.success) {
       console.log('Email API response:', result);
     }
-  });
+  }, 15000);
 });
