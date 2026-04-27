@@ -91,6 +91,7 @@ export const blastMetricsRouter = router({
           id: blastSessions.id,
           sessionDate: blastSessions.sessionDate,
           sessionType: blastSessions.sessionType,
+          isSharedWithAthlete: blastSessions.isSharedWithAthlete,
           batSpeedMph: blastMetrics.batSpeedMph,
           onPlaneEfficiencyPercent: blastMetrics.onPlaneEfficiencyPercent,
           attackAngleDeg: blastMetrics.attackAngleDeg,
@@ -582,12 +583,13 @@ export const blastMetricsRouter = router({
       return { player: null, sessions: [], trends: [] };
     }
 
-    // Get all sessions with metrics
+    // Get only sessions the coach has shared with the athlete
     const sessions = await db
       .select({
         id: blastSessions.id,
         sessionDate: blastSessions.sessionDate,
         sessionType: blastSessions.sessionType,
+        isSharedWithAthlete: blastSessions.isSharedWithAthlete,
         batSpeedMph: blastMetrics.batSpeedMph,
         onPlaneEfficiencyPercent: blastMetrics.onPlaneEfficiencyPercent,
         attackAngleDeg: blastMetrics.attackAngleDeg,
@@ -595,11 +597,46 @@ export const blastMetricsRouter = router({
       })
       .from(blastSessions)
       .leftJoin(blastMetrics, eq(blastMetrics.sessionId, blastSessions.id))
-      .where(eq(blastSessions.playerId, player.id))
+      .where(
+        and(
+          eq(blastSessions.playerId, player.id),
+          eq(blastSessions.isSharedWithAthlete, true)
+        )
+      )
       .orderBy(desc(blastSessions.sessionDate));
 
     return { player, sessions };
   }),
+
+  /** Toggle isSharedWithAthlete on a single Blast session (coach-only) */
+  toggleSessionSharing: protectedProcedure
+    .input(z.object({ sessionId: z.string(), shared: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
+      }
+      const db = await requireDb();
+      await db
+        .update(blastSessions)
+        .set({ isSharedWithAthlete: input.shared })
+        .where(eq(blastSessions.id, input.sessionId));
+      return { success: true };
+    }),
+
+  /** Bulk toggle isSharedWithAthlete for all sessions of a player (coach-only) */
+  bulkToggleSessionSharing: protectedProcedure
+    .input(z.object({ playerId: z.string(), shared: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
+      }
+      const db = await requireDb();
+      await db
+        .update(blastSessions)
+        .set({ isSharedWithAthlete: input.shared })
+        .where(eq(blastSessions.playerId, input.playerId));
+      return { success: true };
+    }),
 
   /** Create session notes retroactively for all unlinked Blast sessions of a player */
   createRetroactiveNotes: protectedProcedure

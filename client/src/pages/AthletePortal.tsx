@@ -23,6 +23,7 @@ import { DrillSubmissionForm } from "@/components/DrillSubmissionForm";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { AthleteSessionNotes } from "@/components/AthleteSessionNotes";
 import { AthleteBlastMetrics } from "@/components/AthleteBlastMetrics";
+import { AthleteReports } from "@/components/AthleteReports";
 import { DrillModalRedesigned } from "@/components/DrillModalRedesigned";
 import { AthleteBadgesRedesigned } from "@/components/AthleteBadgesRedesigned";
 import { TopNav } from "@/components/TopNav";
@@ -507,6 +508,9 @@ export default function AthletePortal() {
 
         {/* Blast Motion Metrics */}
         <AthleteBlastMetrics />
+
+        {/* Coach Reports */}
+        <AthleteReports />
 
         {/* Shared Practice Plans */}
         <SharedPracticePlans />

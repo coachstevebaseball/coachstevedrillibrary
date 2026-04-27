@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, notifications, notificationPreferences, InsertNotificationPreference, drillAssignments, drills, drillStatCards, drillPageLayouts, drillFavorites, drillCustomizations, type Drill, type InsertDrill } from "../drizzle/schema";
+import { InsertUser, users, notifications, notificationPreferences, InsertNotificationPreference, drillAssignments, drills, drillStatCards, drillPageLayouts, drillFavorites, drillCustomizations, playerReports, type Drill, type InsertDrill } from "../drizzle/schema";
 import { ENV } from './_core/env';
 import { eq, and, desc, count, asc } from "drizzle-orm";
 
@@ -1406,6 +1406,7 @@ export async function deleteUser(userId: number): Promise<boolean> {
     // Delete associated data first
     await db.delete(drillAssignments).where(eq(drillAssignments.userId, userId));
     await db.delete(notifications).where(eq(notifications.userId, userId));
+    await db.delete(playerReports).where(eq(playerReports.athleteId, userId));
     await db.delete(users).where(eq(users.id, userId));
     return true;
   } catch (error) {

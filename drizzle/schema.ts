@@ -739,6 +739,8 @@ export const blastSessions = mysqlTable("blastSessions", {
   playerId: varchar("playerId", { length: 36 }).notNull(),
   sessionDate: timestamp("sessionDate").notNull(),
   sessionType: varchar("sessionType", { length: 255 }),
+  /** Whether this session is visible to the linked athlete on their portal (default true so existing linked sessions are immediately visible) */
+  isSharedWithAthlete: boolean("isSharedWithAthlete").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 export type BlastSession = typeof blastSessions.$inferSelect;
@@ -917,3 +919,27 @@ export const drills = mysqlTable("drills", {
 });
 export type Drill = typeof drills.$inferSelect;
 export type InsertDrill = typeof drills.$inferInsert;
+
+// ============================================================
+// Player Reports — Coach-authored rich-text reports saved to DB
+// and optionally published to the athlete's portal
+// ============================================================
+export const playerReports = mysqlTable("playerReports", {
+  id: int("id").autoincrement().primaryKey(),
+  /** The athlete this report is about */
+  athleteId: int("athleteId").notNull(),
+  /** The coach who authored the report */
+  coachId: int("coachId").notNull(),
+  /** Report title, e.g. "Spring 2026 Development Report" */
+  title: varchar("title", { length: 500 }).notNull(),
+  /** Full rendered HTML from the rich-text editor */
+  bodyHtml: longtext("bodyHtml"),
+  /** Whether this report is visible to the athlete on their portal */
+  isSharedWithAthlete: boolean("isSharedWithAthlete").default(false).notNull(),
+  /** When the report was first published (set on first Save & Publish) */
+  publishedAt: timestamp("publishedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type PlayerReport = typeof playerReports.$inferSelect;
+export type InsertPlayerReport = typeof playerReports.$inferInsert;

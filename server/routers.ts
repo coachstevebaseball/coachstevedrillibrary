@@ -28,6 +28,7 @@ import { badgesRouter } from "./routers-badges";
 import { siteContentRouter } from "./routers-site-content";
 import { hittingCoachRouter } from "./routers-hitting-coach";
 import { drillsAdminRouter } from "./routers/drillsAdmin";
+import { playerReportsRouter } from "./routers-player-reports";
 import * as drillCustomizationsDb from "./drillCustomizations";
 import { storagePut } from "./storage";
 import { checkAndSendMilestoneEmail } from "./notificationService";
@@ -45,6 +46,7 @@ export const appRouter = router({
   practicePlans: practicePlansRouter,
   sessionNotes: sessionNotesRouter,
   progressReports: progressReportsRouter,
+  playerReports: playerReportsRouter,
   athleteProfiles: athleteProfilesRouter,
   badges: badgesRouter,
   auth: router({

@@ -2079,3 +2079,28 @@
 
 ### Smoke Test
 - [x] Paste Bounce Timing Drill JSON, click Save, verify it appears in public directory
+
+## Sprint: Coach Dashboard → Athlete Portal Sync Bugs (Apr 27 2026)
+
+### BUG 1 — Blast Metrics Don't Appear in Athlete Portal
+- [x] Diagnose: read blastMetrics tRPC procedures and athlete portal query
+- [x] Fix: ensure athlete portal query reads from blastSessions/blastPlayers with correct FK
+- [x] Fix: ensure Share toggle flips visibility flag read by athlete portal
+- [x] Vitest: create session → link → query portal endpoint → assert returned
+
+### BUG 2 — Session Notes Shared Toggle Does Nothing in Athlete Portal
+- [x] Diagnose: read sessionNotes tRPC procedures and isSharedWithAthlete field usage
+- [x] Fix: ensure toggle writes isSharedWithAthlete to DB correctly
+- [x] Fix: ensure athlete portal query filters on isSharedWithAthlete=true
+- [x] Fix: ensure Share All / Hide All cascade works idempotently
+- [x] Vitest: write note → set shared=true → query portal → assert appears; set false → assert disappears
+
+### BUG 3 — Player Report Tab Can't Save to Athlete Portal
+- [x] Add playerReports table to drizzle/schema.ts
+- [x] Run pnpm db:push to migrate
+- [x] Add tRPC procedures: playerReports.create, update, publish, unpublish, delete, listByCoach, listByAthlete
+- [x] Add Save Draft / Save & Publish / Update Existing buttons to Player Report tab
+- [x] Add My Reports section in Coach Dashboard
+- [x] Add Player Reports section in athlete portal
+- [x] Cascade-delete playerReports when athlete is deleted
+- [x] Vitest: create, publish, unpublish, update, delete coverage

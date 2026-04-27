@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   ArrowLeft, Users, TrendingUp, Zap, Target,
-  ChevronRight, BarChart3, Gauge, Crosshair, Plus, UserPlus, Trash2, Link2, FileText, Pencil, FileSpreadsheet
+  ChevronRight, BarChart3, Gauge, Crosshair, Plus, UserPlus, Trash2, Link2, FileText, Pencil, FileSpreadsheet, Eye
 } from "lucide-react";
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -79,6 +79,29 @@ export function BlastMetricsTab() {
   const [editSession, setEditSession] = useState<SessionData | null>(null);
   const [importCSVOpen, setImportCSVOpen] = useState(false);
   const [retroNotesOpen, setRetroNotesOpen] = useState(false);
+
+  const utils = trpc.useUtils();
+
+  const toggleSessionSharingMutation = trpc.blastMetrics.toggleSessionSharing.useMutation({
+    onMutate: async ({ sessionId, shared }) => {
+      if (!selectedPlayerId) return;
+      await utils.blastMetrics.getPlayerSessions.cancel({ playerId: selectedPlayerId });
+      const prev = utils.blastMetrics.getPlayerSessions.getData({ playerId: selectedPlayerId });
+      utils.blastMetrics.getPlayerSessions.setData(
+        { playerId: selectedPlayerId },
+        (old: any) => old?.map((s: any) => s.id === sessionId ? { ...s, isSharedWithAthlete: shared } : s)
+      );
+      return { prev };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.prev && selectedPlayerId) {
+        utils.blastMetrics.getPlayerSessions.setData({ playerId: selectedPlayerId }, context.prev);
+      }
+    },
+    onSettled: () => {
+      if (selectedPlayerId) utils.blastMetrics.getPlayerSessions.invalidate({ playerId: selectedPlayerId });
+    },
+  });
 
   const { data: players = [], isLoading: playersLoading } = trpc.blastMetrics.listPlayers.useQuery();
 
@@ -513,6 +536,7 @@ export function BlastMetricsTab() {
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Attack Angle</th>
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Exit Velo</th>
                     <th className="text-center py-3 px-2 text-white/50 font-medium">Note</th>
+                    <th className="text-center py-3 px-2 text-white/50 font-medium" title="Visible on athlete portal">Portal</th>
                     <th className="w-20 sticky right-0 bg-[#0f1419] text-white/50 text-xs font-medium py-3 px-1">Actions</th>
                   </tr>
                 </thead>
@@ -545,6 +569,20 @@ export function BlastMetricsTab() {
                         ) : (
                           <span className="text-white/15">—</span>
                         )}
+                      </td>
+                      <td className="text-center py-3 px-2">
+                        <button
+                          onClick={() => toggleSessionSharingMutation.mutate({ sessionId: s.id, shared: !s.isSharedWithAthlete })}
+                          disabled={toggleSessionSharingMutation.isPending}
+                          className={`p-1 rounded transition-colors ${
+                            s.isSharedWithAthlete
+                              ? "text-violet-400 hover:text-violet-300"
+                              : "text-white/20 hover:text-white/50"
+                          }`}
+                          title={s.isSharedWithAthlete ? "Visible on athlete portal — click to hide" : "Hidden from athlete portal — click to share"}
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                        </button>
                       </td>
                       <td className="py-3 px-1 sticky right-0 bg-[#0f1419]">
                         <div className="flex items-center gap-0.5">
