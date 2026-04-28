@@ -2231,3 +2231,11 @@
 - [x] Normal athlete → /athlete-portal
 - [x] Admin → /coach-dashboard
 - [x] Toggle/link between parent-dashboard and athlete-portal if user has both assignments AND children
+
+### Pre-Publish Verification (Required before deploy)
+- [ ] JWT_SECRET rotation — rotate secret, confirm admin login still works
+- [ ] Environment clarity — document dev/staging/prod topology
+- [ ] Anonymous URL redirect test — 8 protected routes in incognito all redirect to login
+- [ ] Real E2E walkthrough with timestamps and Resend message IDs
+- [ ] Rollback plan — document exact revert steps (commit hash, DB rollback)
+- [ ] Deliver full verification report to user

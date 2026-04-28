@@ -81,8 +81,6 @@ export default function UserManagement() {
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
       case "admin":
-        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
-      case "coach":
         return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-[#E8425A]";
       case "athlete":
         return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
