@@ -2239,3 +2239,25 @@
 - [ ] Real E2E walkthrough with timestamps and Resend message IDs
 - [ ] Rollback plan — document exact revert steps (commit hash, DB rollback)
 - [ ] Deliver full verification report to user
+
+### assignmentProgress Audit (pre-publish blocker)
+- [x] Walk Mark Complete code path: button → tRPC → DB write
+- [x] Check for silent error swallowing in the mutation
+- [x] Verify button renders for athletes (not gated behind role/route)
+- [x] Pull drillAssignments.status distribution
+- [x] Reconcile assignmentProgress vs drillAssignments.status as source of truth
+- [ ] Fix any issues found
+
+### Auth UX Constraint (locked for future work)
+- [ ] Do not deepen Manus OAuth dependency — magic link migration planned within 2 weeks
+
+### Publish Sequence
+- [x] Rotate JWT_SECRET (manual — user will rotate in Management UI after first publish)
+- [ ] Save checkpoint
+- [ ] Publish to prod
+- [ ] Confirm deployment with timestamps
+
+### Post-Canary Follow-ups (after user confirms canary passes)
+- [ ] Audit orphaned userIds in drillAssignments (10110004, 3390145, etc.) — reassign or clean up
+- [ ] Wire assignmentProgress to a real per-session rep tracking feature OR drop the table
+- [ ] Add user-visible error toast on Mark Complete failure (currently resets silently)
