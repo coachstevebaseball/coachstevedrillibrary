@@ -612,7 +612,7 @@ export const blastMetricsRouter = router({
   toggleSessionSharing: protectedProcedure
     .input(z.object({ sessionId: z.string(), shared: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       const db = await requireDb();
@@ -627,7 +627,7 @@ export const blastMetricsRouter = router({
   bulkToggleSessionSharing: protectedProcedure
     .input(z.object({ playerId: z.string(), shared: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       const db = await requireDb();

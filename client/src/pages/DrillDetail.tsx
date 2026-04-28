@@ -1524,7 +1524,7 @@ export default function DrillDetail() {
         {pageLayout?.blocks && Array.isArray(pageLayout.blocks) && pageLayout.blocks.length > 0 ? (
           <div className="grid gap-6 md:gap-8">
             {/* Admin/Coach edit buttons */}
-            {user && (user.role === 'admin' || user.role === 'coach') && (
+            {user && (user.role === 'admin') && (
               <div className="flex gap-2 justify-end">
                 <button
                   onClick={() => setShowPageBuilder(true)}
@@ -1542,7 +1542,7 @@ export default function DrillDetail() {
             {details && (
               <EditableStatBar
                 drillId={id || "unknown"}
-                isCoach={!!(user && (user.role === 'admin' || user.role === 'coach'))}
+                isCoach={!!(user && (user.role === 'admin'))}
                 defaultCards={[
                   { id: `${id}-time`, label: "Time", value: details.time, icon: "clock" },
                   { id: `${id}-athletes`, label: "Athletes", value: details.athletes.split(',')[0], icon: "users" },
@@ -1561,7 +1561,7 @@ export default function DrillDetail() {
                 <InlineEdit contentKey={`drill.detail.${id}.instructionsHeading`} defaultValue="Instructions" as="span" />
               </h2>
               <div className="glass-card rounded-xl p-4 md:p-6">
-                {user && (user.role === 'admin' || user.role === 'coach') ? (
+                {user && (user.role === 'admin') ? (
                   <TiptapEditor
                     value={customInstructions}
                     onChange={setCustomInstructions}
@@ -1618,7 +1618,7 @@ export default function DrillDetail() {
                     </div>
                     <InlineEdit contentKey={`drill.detail.${id}.goalHeading`} defaultValue="Goal of Drill" as="span" />
                   </h3>
-                  {user && (user.role === 'admin' || user.role === 'coach') && (
+                  {user && (user.role === 'admin') && (
                     <div className="flex gap-2">
                       <button
                         onClick={() => setShowPageBuilder(true)}
@@ -1674,7 +1674,7 @@ export default function DrillDetail() {
                 ) : (
                   <div className="group/goal relative">
                     <p className="text-base md:text-lg font-medium text-foreground/90 leading-relaxed pr-8">{details.goal}</p>
-                    {user && (user.role === 'admin' || user.role === 'coach') && (
+                    {user && (user.role === 'admin') && (
                       <button
                         onClick={handleStartEditGoal}
                         className="absolute top-0 right-0 p-1.5 rounded-md opacity-0 group-hover/goal:opacity-100 hover:bg-muted/60 text-muted-foreground hover:text-foreground transition-all"

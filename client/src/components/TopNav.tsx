@@ -23,7 +23,7 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
   const loginUrl = getLoginUrl();
 
   const isAdmin = user?.role === "admin";
-  const isAthlete = user?.role === "athlete" || user?.role === "user";
+  const isAthlete = user?.role === "athlete";
 
   // ── Tab definitions based on auth state ──────────────────────────────────
   const getTabs = () => {

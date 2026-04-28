@@ -43,7 +43,7 @@ export function LinkBlastPlayer({
   const { data: allUsers = [] } = trpc.admin.getAllUsers.useQuery();
   const portalUsers = useMemo(() => {
     return allUsers
-      .filter((u: any) => u.role === "athlete" || u.role === "user")
+      .filter((u: any) => u.role === "athlete")
       .map((u: any) => ({
         id: u.id,
         name: u.name || u.email || `User #${u.id}`,

@@ -32,6 +32,7 @@ import { playerReportsRouter } from "./routers-player-reports";
 import * as drillCustomizationsDb from "./drillCustomizations";
 import { storagePut } from "./storage";
 import { checkAndSendMilestoneEmail } from "./notificationService";
+import { notifyAdminDrillComplete, notifyAdminNoteLeft } from "./adminNotifications";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -54,7 +55,10 @@ export const appRouter = router({
       if (!opts.ctx.user) return null;
       // Fetch full user record from database to include role
       const fullUser = await db.getUserByOpenId(opts.ctx.user.openId);
-      return fullUser || opts.ctx.user;
+      if (!fullUser) return opts.ctx.user;
+      // Check if this user has children linked via parentId
+      const children = await db.getChildrenByParent(fullUser.id);
+      return { ...fullUser, hasChildren: children.length > 0 };
     }),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
@@ -560,6 +564,21 @@ export const appRouter = router({
         // Check milestone on drill completion (Use Case E)
         if (input.status === "completed" && assignment.userId) {
           checkAndSendMilestoneEmail(assignment.userId).catch(console.error);
+          // Notify admin of drill completion
+          notifyAdminDrillComplete(
+            ctx.user.name || 'Athlete',
+            ctx.user.email || '',
+            (assignment as any).drillName || 'Unknown Drill'
+          ).catch(console.error);
+        }
+        // Notify admin if athlete left a note
+        if (input.notes && input.notes.trim()) {
+          notifyAdminNoteLeft(
+            ctx.user.name || 'Athlete',
+            ctx.user.email || '',
+            (assignment as any).drillName || 'Unknown Drill',
+            input.notes
+          ).catch(console.error);
         }
         return { success: true };
       }),
@@ -934,8 +953,8 @@ export const appRouter = router({
         blocks: z.array(z.any()),
       }))
       .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
         }
         return await drillPageTemplateDb.createTemplate({
           ...input,
@@ -949,8 +968,8 @@ export const appRouter = router({
     deleteTemplate: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach or admin access required' });
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
         }
         return await drillPageTemplateDb.deleteTemplate(input.id, ctx.user.id);
       }),

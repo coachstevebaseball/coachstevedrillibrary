@@ -2,53 +2,51 @@ import { ReactNode, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Loader2 } from "lucide-react";
+import { getLoginUrl } from "@/const";
 
 interface ProtectedRouteProps {
   children: ReactNode;
-  requiredRole?: "admin" | "coach" | "athlete" | "user";
+  requiredRole?: "admin" | "athlete";
+  /** Where to redirect if the user lacks the required role (default: role-based landing) */
   fallbackPath?: string;
 }
 
 /**
- * ProtectedRoute component wraps pages that require authentication
- * 
- * @param children - The component to render if authorized
- * @param requiredRole - The role required to access this route (optional)
- * @param fallbackPath - Where to redirect if not authorized (default: "/")
+ * ProtectedRoute component wraps pages that require authentication.
+ *
+ * - Logged-out users → redirect to OAuth login with `?redirect=<current path>`
+ *   so they land back where they were trying to go after auth.
+ * - Logged-in users without the required role → redirect to their role-based landing.
+ * - Admin has access to everything.
  */
 export default function ProtectedRoute({
   children,
   requiredRole,
-  fallbackPath = "/",
+  fallbackPath,
 }: ProtectedRouteProps) {
   const { user, loading } = useAuth();
   const [, setLocation] = useLocation();
 
-  // Use effect to handle redirects - never call setLocation during render
   useEffect(() => {
-    // Still loading auth state
-    if (loading) {
-      return;
-    }
+    if (loading) return;
 
-    // Not authenticated
     if (!user) {
-      setLocation(fallbackPath);
+      // Redirect to login with ?redirect= so user lands back here after auth
+      const currentPath = window.location.pathname + window.location.search;
+      window.location.href = getLoginUrl(currentPath);
       return;
     }
 
-    // Check role if required
     if (requiredRole) {
       const hasAccess = checkRoleAccess(user.role, requiredRole);
-      
       if (!hasAccess) {
-        setLocation(fallbackPath);
-        return;
+        // Redirect to role-appropriate landing
+        const landing = fallbackPath || getRoleLanding(user.role);
+        setLocation(landing);
       }
     }
   }, [user, loading, requiredRole, fallbackPath, setLocation]);
 
-  // Still loading auth state
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -60,47 +58,33 @@ export default function ProtectedRoute({
     );
   }
 
-  // Not authenticated or unauthorized - don't render children
-  if (!user) {
+  if (!user) return null;
+
+  if (requiredRole && !checkRoleAccess(user.role, requiredRole)) {
     return null;
   }
 
-  // Check role if required
-  if (requiredRole) {
-    const hasAccess = checkRoleAccess(user.role, requiredRole);
-    
-    if (!hasAccess) {
-      return null;
-    }
-  }
-
-  // Authorized - render children
   return <>{children}</>;
 }
 
 /**
- * Check if a user role has access to a required role
+ * Two-role access model: admin and athlete.
+ * Admin has access to everything. Athlete can access athlete routes.
  */
 function checkRoleAccess(userRole: string, requiredRole: string): boolean {
   // Admin has access to everything
-  if (userRole === "admin") {
-    return true;
-  }
-
-  // Coach can access coach routes
-  if (requiredRole === "coach" && userRole === "coach") {
-    return true;
-  }
+  if (userRole === "admin") return true;
 
   // Athlete can access athlete routes
-  if (requiredRole === "athlete" && userRole === "athlete") {
-    return true;
-  }
-
-  // User role can access user routes
-  if (requiredRole === "user" && (userRole === "athlete" || userRole === "coach")) {
-    return true;
-  }
+  if (requiredRole === "athlete" && userRole === "athlete") return true;
 
   return false;
+}
+
+/**
+ * Get the default landing page for a role.
+ */
+function getRoleLanding(role: string): string {
+  if (role === "admin") return "/coach-dashboard";
+  return "/athlete-portal";
 }

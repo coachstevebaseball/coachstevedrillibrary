@@ -35,7 +35,7 @@ export function SessionNotesTab({ initialAthleteId }: SessionNotesTabProps) {
     return allUsers
       .filter(
         (u: any) =>
-          u.role === "athlete" || u.role === "user"
+          u.role === "athlete"
       )
       .map((u: any) => ({
         id: u.id,

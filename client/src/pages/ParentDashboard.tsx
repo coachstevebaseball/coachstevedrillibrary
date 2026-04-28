@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, CheckCircle, Clock, AlertCircle, TrendingUp } from "lucide-react";
+import { Users, CheckCircle, Clock, AlertCircle, TrendingUp, Dumbbell, Home } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { Link } from "wouter";
@@ -124,11 +124,27 @@ export default function ParentDashboard() {
   return (
     <div className="container mx-auto py-8 space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Parent Dashboard</h1>
-        <p className="text-muted-foreground">
-          Manage your child's drill assignments and track their progress
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Parent Dashboard</h1>
+          <p className="text-muted-foreground">
+            Manage your child's drill assignments and track their progress
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link href="/athlete-portal">
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <Dumbbell className="h-4 w-4" />
+              My Training
+            </Button>
+          </Link>
+          <Link href="/drills">
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <Home className="h-4 w-4" />
+              Drills
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Child Selector */}

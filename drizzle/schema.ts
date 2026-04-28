@@ -16,7 +16,7 @@ export const users = mysqlTable("users", {
   name: text("name"),
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
-  role: mysqlEnum("role", ["user", "admin", "athlete", "coach"]).default("user").notNull(),
+  role: mysqlEnum("role", ["admin", "athlete"]).default("athlete").notNull(),
   /** Whether this user is an active client with access to drills */
   isActiveClient: int("isActiveClient").default(0).notNull(), // 0 = inactive, 1 = active
   /** Email verification status */
@@ -76,7 +76,7 @@ export const invites = mysqlTable("invites", {
   id: int("id").autoincrement().primaryKey(),
   email: varchar("email", { length: 320 }).notNull(),
   inviteToken: varchar("inviteToken", { length: 255 }).notNull().unique(),
-  role: mysqlEnum("role", ["user", "admin", "athlete", "coach"]).default("user").notNull(),
+  role: mysqlEnum("role", ["admin", "athlete"]).default("athlete").notNull(),
   status: mysqlEnum("status", ["pending", "accepted", "expired"]).default("pending").notNull(),
   expiresAt: timestamp("expiresAt").notNull(),
   acceptedAt: timestamp("acceptedAt"),
@@ -976,3 +976,19 @@ export const emailEvents = mysqlTable("emailEvents", {
 });
 export type EmailEvent = typeof emailEvents.$inferSelect;
 export type InsertEmailEvent = typeof emailEvents.$inferInsert;
+
+// ============================================================
+// Hitting Coach AI Usage — Per-user daily rate limiting
+// ============================================================
+export const hittingCoachUsage = mysqlTable("hittingCoachUsage", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  /** Date string YYYY-MM-DD for grouping daily usage */
+  usageDate: varchar("usageDate", { length: 10 }).notNull(),
+  /** Number of messages sent on this date */
+  messageCount: int("messageCount").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type HittingCoachUsage = typeof hittingCoachUsage.$inferSelect;
+export type InsertHittingCoachUsage = typeof hittingCoachUsage.$inferInsert;

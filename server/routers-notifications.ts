@@ -95,7 +95,7 @@ export const notificationsRouter = router({
         .from(users)
         .where(
           and(
-            or(eq(users.role, "athlete"), eq(users.role, "user")),
+            eq(users.role, "athlete"),
             eq(users.isActiveClient, 1),
           )
         )
@@ -158,7 +158,7 @@ export const notificationsRouter = router({
         .from(users)
         .where(
           and(
-            or(eq(users.role, "athlete"), eq(users.role, "user")),
+            eq(users.role, "athlete"),
             eq(users.isActiveClient, 1),
           )
         );

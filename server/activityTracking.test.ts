@@ -26,7 +26,7 @@ describe("Activity Tracking", { timeout: 30000 }, () => {
       openId: `test-coach-activity-${Date.now()}`,
       name: "Test Coach Activity",
       email: `coach-activity-${Date.now()}@test.com`,
-      role: "coach",
+      role: "admin",
     });
     testCoachId = coachResult[0].insertId;
   });

@@ -18,7 +18,6 @@ import CoachMessaging from "./pages/CoachMessaging";
 import AthleteMessaging from "./pages/AthleteMessaging";
 import VerifyEmail from "./pages/VerifyEmail";
 import UserManagement from "./pages/UserManagement";
-// DrillsDirectory is now merged into Home; /drills redirects to /
 import ParentDashboard from "./pages/ParentDashboard";
 import ActivityFeed from "./pages/ActivityFeed";
 import DrillComparison from "./pages/DrillComparison";
@@ -31,6 +30,7 @@ import NotificationPreferences from "./pages/NotificationPreferences";
 import HittingCoach from "./pages/HittingCoach";
 import AdminNotifications from "./pages/AdminNotifications";
 import ProtectedRoute from "./components/ProtectedRoute";
+import RootRedirect from "./components/RootRedirect";
 import EmbedHome from "./pages/EmbedHome";
 import EmbedDrillLibrary from "./pages/EmbedDrillLibrary";
 import EmbedDrillDetail from "./pages/EmbedDrillDetail";
@@ -71,21 +71,84 @@ function DrillsRedirect() {
 function Router() {
   return (
     <Switch>
-      {/* Public Routes — No login required */}
-      <Route path={"/"} component={Home} />
-      <Route path={"/drills"}>{() => <DrillsRedirect />}</Route>
-      <Route path={"/drill/:id"} component={DrillDetail} />
+      {/* ===== Root: role-based redirect or login page ===== */}
+      <Route path={"/"} component={RootRedirect} />
+
+      {/* ===== Public Routes — No login required ===== */}
       <Route path={"/accept-invite/:token"} component={AcceptInvite} />
       <Route path={"/verify-email/:token"} component={VerifyEmail} />
-      <Route path={"/athlete-portal"} component={AthletePortal} />
-      <Route path={"/athlete-messaging"} component={AthleteMessaging} />
-      <Route path={"/my-profile"} component={MyProfile} />
-      <Route path={"/notifications"} component={NotificationsInbox} />
-      <Route path={"/notifications/preferences"} component={NotificationPreferences} />
-      <Route path={"/hitting-coach"} component={HittingCoach} />
-      <Route path={"/parent-dashboard"} component={ParentDashboard} />
-      
-      {/* Protected Routes — Admin Only */}
+
+      {/* ===== Drill Library (protected — any logged-in user) ===== */}
+      <Route path={"/drills"}>
+        <ProtectedRoute>
+          <Home />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/drill/:id"}>
+        {(params) => (
+          <ProtectedRoute>
+            <DrillDetail />
+          </ProtectedRoute>
+        )}
+      </Route>
+
+      {/* ===== Athlete Routes (protected — athlete or admin) ===== */}
+      <Route path={"/athlete-portal"}>
+        <ProtectedRoute requiredRole="athlete">
+          <AthletePortal />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/athlete-messaging"}>
+        <ProtectedRoute requiredRole="athlete">
+          <AthleteMessaging />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/my-profile"}>
+        <ProtectedRoute>
+          <MyProfile />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/notifications"}>
+        <ProtectedRoute>
+          <NotificationsInbox />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/notifications/preferences"}>
+        <ProtectedRoute>
+          <NotificationPreferences />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/hitting-coach"}>
+        <ProtectedRoute>
+          <HittingCoach />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/parent-dashboard"}>
+        <ProtectedRoute requiredRole="athlete">
+          <ParentDashboard />
+        </ProtectedRoute>
+      </Route>
+
+      {/* ===== Embed Routes (protected — any logged-in user) ===== */}
+      <Route path="/embed">
+        <ProtectedRoute>
+          <EmbedHome />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/embed/drills">
+        <ProtectedRoute>
+          <EmbedDrillLibrary />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/embed/drill/:id">
+        {(params) => (
+          <ProtectedRoute>
+            <EmbedDrillDetail />
+          </ProtectedRoute>
+        )}
+      </Route>
+
+      {/* ===== Protected Routes — Admin Only ===== */}
       <Route path={"/admin"}>
         <ProtectedRoute requiredRole="admin">
           <AdminDashboard />
@@ -169,11 +232,6 @@ function Router() {
           <ManageDrillContent />
         </ProtectedRoute>
       </Route>
-      
-      {/* Embed Routes — Dedicated embed-safe routes for iframe embedding */}
-      <Route path="/embed" component={EmbedHome} />
-      <Route path="/embed/drills" component={EmbedDrillLibrary} />
-      <Route path="/embed/drill/:id" component={EmbedDrillDetail} />
       
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

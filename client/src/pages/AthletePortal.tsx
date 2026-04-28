@@ -1,6 +1,7 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { useLocation } from "wouter";
+import { Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -305,12 +306,22 @@ export default function AthletePortal() {
       {/* Header with glassmorphism */}
       <header className="glass sticky top-0 z-40 border-b border-white/10">
         <div className="flex items-center justify-between max-w-lg mx-auto px-4 py-3">
-          <Link href="/">
-            <button className="flex items-center gap-1 text-muted-foreground hover:text-electric text-sm transition-colors hover-lift">
-              <Home className="w-4 h-4" />
-              <span className="hidden sm:inline">Directory</span>
-            </button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/drills">
+              <button className="flex items-center gap-1 text-muted-foreground hover:text-electric text-sm transition-colors hover-lift">
+                <Home className="w-4 h-4" />
+                <span className="hidden sm:inline">Drills</span>
+              </button>
+            </Link>
+            {(user as any)?.hasChildren && (
+              <Link href="/parent-dashboard">
+                <button className="flex items-center gap-1 text-muted-foreground hover:text-electric text-sm transition-colors hover-lift">
+                  <Users className="w-4 h-4" />
+                  <span className="hidden sm:inline">Kids</span>
+                </button>
+              </Link>
+            )}
+          </div>
           <h1 className="font-bold text-lg text-gradient">My Training</h1>
           <div className="flex items-center gap-3">
             <Link href="/my-profile">

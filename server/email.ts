@@ -369,7 +369,7 @@ export async function sendInviteEmail(data: InviteEmailData): Promise<{ success:
 }
 
 function generateInviteEmailHtml(data: InviteEmailData): string {
-  const roleText = data.inviteType === "coach" ? "Coach" : "Athlete";
+  const roleText = "Athlete";
   const expiresDate = new Date(data.expiresAt).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",

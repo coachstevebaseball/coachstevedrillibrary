@@ -15,7 +15,7 @@ export const athleteProfilesRouter = router({
     .input(z.object({ userId: z.number() }))
     .query(async ({ ctx, input }) => {
       // Coaches can view any profile; athletes can only view their own
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach" && ctx.user.id !== input.userId) {
+      if (ctx.user.role !== "admin" && ctx.user.id !== input.userId) {
         throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
       }
       return profileDb.getProfileWithUser(input.userId);
@@ -46,7 +46,7 @@ export const athleteProfilesRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       // Coaches can edit any profile; athletes can edit their own (limited fields)
-      const isCoach = ctx.user.role === "admin" || ctx.user.role === "coach";
+      const isCoach = ctx.user.role === "admin";
       const isSelf = ctx.user.id === input.userId;
 
       if (!isCoach && !isSelf) {
@@ -88,7 +88,7 @@ export const athleteProfilesRouter = router({
   getParentEmail: protectedProcedure
     .input(z.object({ userId: z.number() }))
     .query(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       return profileDb.getParentEmail(input.userId);
@@ -98,7 +98,7 @@ export const athleteProfilesRouter = router({
   getBulk: protectedProcedure
     .input(z.object({ userIds: z.array(z.number()) }))
     .query(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       return profileDb.getProfilesForAthletes(input.userIds);

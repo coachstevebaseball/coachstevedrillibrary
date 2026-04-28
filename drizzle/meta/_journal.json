@@ -407,6 +407,13 @@
       "when": 1777292605875,
       "tag": "0057_yummy_demogoblin",
       "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "5",
+      "when": 1777349759247,
+      "tag": "0058_mature_cassandra_nova",
+      "breakpoints": true
     }
   ]
 }

@@ -1,9 +1,15 @@
-import { router, publicProcedure } from "./_core/trpc";
+import { router, protectedProcedure } from "./_core/trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { ENV } from "./_core/env";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { invokeLLM } from "./_core/llm";
+import { getDb } from "./db";
+import { hittingCoachUsage } from "../drizzle/schema";
+import { eq, and } from "drizzle-orm";
+
+/** Maximum messages per user per day (configurable) */
+const DAILY_LIMIT = 20;
 
 const COACH_STEVE_SYSTEM = `You are Coach Steve, an elite baseball hitting instructor. Your background:
 - Division I All-American at Stony Brook University (Louisville Slugger Freshman All-American, 2012)
@@ -57,8 +63,62 @@ One sentence on how fixing this directly improves their Quality At-Bat percentag
 ---
 Keep total response under 550 words. Speak directly to the athlete using "you" and "your." Be a coach, not a textbook.`;
 
+/**
+ * Get today's date string in YYYY-MM-DD format (UTC).
+ */
+function todayUTC(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+/**
+ * Check and increment the daily usage counter for a user.
+ * Returns the current count BEFORE incrementing.
+ * Throws TRPCError if the limit is exceeded.
+ */
+async function enforceRateLimit(userId: number): Promise<number> {
+  const db = await getDb();
+  if (!db) {
+    // If DB is unavailable, allow the request but log a warning
+    console.warn("[HittingCoach] Rate limit check skipped — DB unavailable");
+    return 0;
+  }
+
+  const today = todayUTC();
+
+  // Get or create today's usage row
+  const existing = await db
+    .select()
+    .from(hittingCoachUsage)
+    .where(and(eq(hittingCoachUsage.userId, userId), eq(hittingCoachUsage.usageDate, today)))
+    .limit(1);
+
+  if (existing.length > 0) {
+    const currentCount = existing[0].messageCount;
+    if (currentCount >= DAILY_LIMIT) {
+      throw new TRPCError({
+        code: "TOO_MANY_REQUESTS",
+        message: `You've reached your daily limit of ${DAILY_LIMIT} messages. Try again tomorrow.`,
+      });
+    }
+    // Increment
+    await db
+      .update(hittingCoachUsage)
+      .set({ messageCount: currentCount + 1 })
+      .where(eq(hittingCoachUsage.id, existing[0].id));
+    return currentCount + 1;
+  } else {
+    // First message today
+    await db.insert(hittingCoachUsage).values({
+      userId,
+      usageDate: today,
+      messageCount: 1,
+    });
+    return 1;
+  }
+}
+
 export const hittingCoachRouter = router({
-  ask: publicProcedure
+  ask: protectedProcedure
     .input(
       z.object({
         message: z.string().min(3, "Describe your hitting issue").max(500),
@@ -73,7 +133,11 @@ export const hittingCoachRouter = router({
           .default([]),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      // Enforce per-user daily rate limit
+      const usageCount = await enforceRateLimit(ctx.user.id);
+      console.log(`[HittingCoach] User ${ctx.user.id} usage today: ${usageCount}/${DAILY_LIMIT}`);
+
       try {
         let response: string;
 
@@ -106,7 +170,7 @@ export const hittingCoachRouter = router({
           const messages: { role: "user" | "assistant" | "system"; content: string }[] = [
             { role: "system", content: COACH_STEVE_SYSTEM },
             ...input.history.map((m) => ({
-              role: m.role === "model" ? "assistant" as const : "user" as const,
+              role: m.role === "model" ? ("assistant" as const) : ("user" as const),
               content: m.content,
             })),
             { role: "user", content: input.message },
@@ -127,7 +191,7 @@ export const hittingCoachRouter = router({
           });
         }
 
-        return { success: true, response };
+        return { success: true, response, dailyUsage: usageCount, dailyLimit: DAILY_LIMIT };
       } catch (error) {
         console.error("[HittingCoach] Error:", error);
         if (error instanceof TRPCError) throw error;
@@ -140,4 +204,20 @@ export const hittingCoachRouter = router({
         });
       }
     }),
+
+  /** Get current daily usage for the logged-in user */
+  getUsage: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) return { used: 0, limit: DAILY_LIMIT, remaining: DAILY_LIMIT };
+
+    const today = todayUTC();
+    const existing = await db
+      .select()
+      .from(hittingCoachUsage)
+      .where(and(eq(hittingCoachUsage.userId, ctx.user.id), eq(hittingCoachUsage.usageDate, today)))
+      .limit(1);
+
+    const used = existing.length > 0 ? existing[0].messageCount : 0;
+    return { used, limit: DAILY_LIMIT, remaining: DAILY_LIMIT - used };
+  }),
 });

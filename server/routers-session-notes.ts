@@ -49,7 +49,7 @@ export const sessionNotesRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
 
@@ -122,7 +122,7 @@ export const sessionNotesRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
 
@@ -139,7 +139,7 @@ export const sessionNotesRouter = router({
   delete: protectedProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       return sessionNotesDb.deleteSessionNote(input.id);
@@ -147,7 +147,7 @@ export const sessionNotesRouter = router({
 
   /** Get all athletes who have session notes */
   getAthletesWithSessions: protectedProcedure.query(async ({ ctx }) => {
-    if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+    if (ctx.user.role !== "admin") {
       throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
     }
     return sessionNotesDb.getAthletesWithSessions(ctx.user.id);
@@ -164,7 +164,7 @@ export const sessionNotesRouter = router({
   toggleSharing: protectedProcedure
     .input(z.object({ id: z.number(), shared: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       return sessionNotesDb.updateSessionNote(input.id, {
@@ -176,7 +176,7 @@ export const sessionNotesRouter = router({
   bulkToggleSharing: protectedProcedure
     .input(z.object({ athleteId: z.number(), shared: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       const notes = await sessionNotesDb.getSessionNotesForAthlete(input.athleteId);

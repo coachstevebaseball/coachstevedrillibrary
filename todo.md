@@ -2163,3 +2163,71 @@
 - [x] Write regression test: desktop Chrome → assert no beforeinstallprompt listener
 - [x] Run full test suite and verify grep returns zero matches
 - [ ] Save checkpoint and deploy
+
+## Sprint: Revert to Private Portal — Single Admin, All Invites = Athletes (Apr 27 2026)
+
+### Step 1: Audit (report to user, no code changes)
+- [ ] List every route in App.tsx with current protection status
+- [ ] List every user in DB with current role
+- [ ] List every active session
+- [ ] Report findings and wait for user approval
+
+### Step 2: Role cleanup migration
+- [ ] Collapse roles to admin + athlete (remove coach, user from enum)
+- [ ] Set coach@coachstevebaseball.com to admin
+- [ ] Set every other user to athlete
+- [ ] Update all UI that branches on coach to branch on admin instead
+
+### Step 3: Route protection
+- [x] Add ProtectedRoute wrapper to every page
+- [x] Build login/request-access page for logged-out visitors at root URL
+- [x] Redirect anonymous direct URL access to login
+
+### Step 4: Default landing pages
+- [x] Athletes → /athlete-portal after login
+- [x] Admin → /coach-dashboard after login
+- [x] After invite acceptance + password set → auto-login → /athlete-portal
+
+### Step 5: Invite system tightening
+- [ ] All invites default to role athlete, remove role selection UI
+- [ ] Invite acceptance always assigns role athlete
+- [ ] Invalid/expired tokens show clear error page
+
+### Step 6: Admin email notifications
+- [x] Email admin when athlete accepts invite
+- [x] Email admin when athlete logs in first time
+- [x] Email admin when athlete marks drill complete
+- [x] Email admin when athlete leaves a note
+- [x] Confirm delivery with Resend message IDs
+
+### Step 7: Force re-login
+- [ ] Invalidate all existing sessions after role migration
+
+### Step 8: E2E verification
+- [ ] Walk through full invite→signup→drill→complete→notify scenario
+- [ ] Report timestamps and screenshots for each step
+
+### Post-mortem
+- [ ] Document what was silently broken because routes were public
+- [ ] Document what was fixed
+
+### Step 2 Execution (Role Enum Cleanup + Rate Limit)
+- [x] Update users table role enum: ["user","admin","athlete","coach"] → ["admin","athlete"]
+- [x] Update invites table role enum: ["user","admin","athlete","coach"] → ["admin","athlete"]
+- [x] Run DB migration for enum changes
+- [x] Update ProtectedRoute: remove coach/user role logic, keep only admin/athlete
+- [x] Update ProtectedRoute type: requiredRole = "admin" | "athlete"
+- [x] Grep codebase for all "coach" role references and update to "admin"
+- [x] Grep codebase for all "user" role references and update to "athlete"
+- [x] Add hittingCoachUsage table to schema (userId, date, messageCount)
+- [x] Run DB migration for hittingCoachUsage
+- [x] Change hittingCoach.ask from publicProcedure to protectedProcedure
+- [x] Add 20/day per-user rate limit with clear error message
+- [x] Add admin query to view hitting coach usage stats
+- [x] TypeScript clean (0 errors)
+
+### Step 3 Notes (for later)
+- [x] Parent landing: athlete with children linked → /parent-dashboard
+- [x] Normal athlete → /athlete-portal
+- [x] Admin → /coach-dashboard
+- [x] Toggle/link between parent-dashboard and athlete-portal if user has both assignments AND children

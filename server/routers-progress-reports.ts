@@ -70,7 +70,7 @@ export const progressReportsRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
 
@@ -205,7 +205,7 @@ Generate the progress report in your voice. Return it as structured JSON.`;
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       const { id, ...data } = input;
@@ -238,7 +238,7 @@ Generate the progress report in your voice. Return it as structured JSON.`;
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
 
@@ -304,7 +304,7 @@ Generate the progress report in your voice. Return it as structured JSON.`;
   delete: protectedProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       return sessionNotesDb.deleteProgressReport(input.id);

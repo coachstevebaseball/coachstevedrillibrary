@@ -23,7 +23,7 @@ export const playerReportsRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       const db = await requireDb();
@@ -51,7 +51,7 @@ export const playerReportsRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       const db = await requireDb();
@@ -76,7 +76,7 @@ export const playerReportsRouter = router({
   publish: protectedProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       const db = await requireDb();
@@ -102,7 +102,7 @@ export const playerReportsRouter = router({
   unpublish: protectedProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       const db = await requireDb();
@@ -124,7 +124,7 @@ export const playerReportsRouter = router({
   delete: protectedProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       const db = await requireDb();
@@ -145,7 +145,7 @@ export const playerReportsRouter = router({
   listByCoach: protectedProcedure
     .input(z.object({ athleteId: z.number().optional() }))
     .query(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin" && ctx.user.role !== "coach") {
+      if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Coach access required" });
       }
       const db = await requireDb();

@@ -99,10 +99,10 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.role = existingRole;
       // Don't update role if it already exists
     } else {
-      // New visitors get 'user' role — only invited/pre-registered athletes get 'athlete'
-      values.role = 'user';
+      // New visitors default to 'athlete' role
+      values.role = 'athlete';
       values.isActiveClient = 0;
-      updateSet.role = 'user';
+      updateSet.role = 'athlete';
       updateSet.isActiveClient = 0;
     }
 

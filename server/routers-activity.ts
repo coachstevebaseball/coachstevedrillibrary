@@ -43,16 +43,16 @@ export const activityRouter = router({
   getRecentActivities: protectedProcedure
     .input(z.object({ limit: z.number().optional() }).optional())
     .query(async ({ ctx, input }) => {
-      if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach access required' });
+      if (ctx.user.role !== 'admin') {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
       }
       return await activityTracking.getRecentActivities(input?.limit || 50);
     }),
 
   // Get activity summary stats (coach only)
   getActivitySummary: protectedProcedure.query(async ({ ctx }) => {
-    if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-      throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach access required' });
+    if (ctx.user.role !== 'admin') {
+      throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
     }
     return await activityTracking.getActivitySummary();
   }),
@@ -61,8 +61,8 @@ export const activityRouter = router({
   getAthleteActivities: protectedProcedure
     .input(z.object({ athleteId: z.number(), limit: z.number().optional() }))
     .query(async ({ ctx, input }) => {
-      if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach access required' });
+      if (ctx.user.role !== 'admin') {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
       }
       return await activityTracking.getAthleteActivities(input.athleteId, input.limit || 20);
     }),
@@ -71,16 +71,16 @@ export const activityRouter = router({
   getInactiveAthletes: protectedProcedure
     .input(z.object({ days: z.number().optional() }).optional())
     .query(async ({ ctx, input }) => {
-      if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach access required' });
+      if (ctx.user.role !== 'admin') {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
       }
       return await activityTracking.getInactiveAthletes(input?.days || 3);
     }),
 
   // Get coach alert preferences
   getAlertPreferences: protectedProcedure.query(async ({ ctx }) => {
-    if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-      throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach access required' });
+    if (ctx.user.role !== 'admin') {
+      throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
     }
     return await activityTracking.getCoachAlertPreferences(ctx.user.id);
   }),
@@ -101,8 +101,8 @@ export const activityRouter = router({
       emailDigest: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.user.role !== 'admin' && ctx.user.role !== 'coach') {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Coach access required' });
+      if (ctx.user.role !== 'admin') {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
       }
       const success = await activityTracking.updateCoachAlertPreferences(ctx.user.id, input);
       return { success };

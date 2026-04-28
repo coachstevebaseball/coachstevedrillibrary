@@ -43,8 +43,8 @@ describe("User Role Assignment", () => {
 });
 
 describe("Default Role Logic in upsertUser", () => {
-  it("upsertUser code should assign 'user' role as default for new visitors", async () => {
-    // Read the source code to verify the default role is "user"
+  it("upsertUser code should assign 'athlete' role as default for new visitors with isActiveClient=0", async () => {
+    // Read the source code to verify the default role logic
     const fs = await import("fs");
     const path = await import("path");
     const dbSource = fs.readFileSync(
@@ -52,17 +52,11 @@ describe("Default Role Logic in upsertUser", () => {
       "utf-8"
     );
 
-    // Verify the default role is "user" (not "athlete")
-    expect(dbSource).toContain("// New visitors get 'user' role");
-    expect(dbSource).toContain("values.role = 'user';");
-    expect(dbSource).toContain("updateSet.role = 'user';");
+    // New visitors default to 'athlete' role but inactive
+    expect(dbSource).toContain("values.role = 'athlete';");
     expect(dbSource).toContain("values.isActiveClient = 0;");
+    expect(dbSource).toContain("updateSet.role = 'athlete';");
     expect(dbSource).toContain("updateSet.isActiveClient = 0;");
-
-    // Verify the old "athlete" default is NOT present
-    expect(dbSource).not.toContain(
-      "Assign 'athlete' role to new OAuth users by default"
-    );
   });
 
   it("upsertUser code should preserve existing role for returning users", async () => {
@@ -170,7 +164,7 @@ describe("OAuth Callback - Coach Notification for New Users", () => {
 });
 
 describe("Role Enum Validation", () => {
-  it("schema should include user, admin, athlete, and coach roles", async () => {
+  it("schema should include admin and athlete roles", async () => {
     const fs = await import("fs");
     const path = await import("path");
     const schemaSource = fs.readFileSync(
@@ -178,11 +172,9 @@ describe("Role Enum Validation", () => {
       "utf-8"
     );
 
-    expect(schemaSource).toContain('"user"');
     expect(schemaSource).toContain('"admin"');
     expect(schemaSource).toContain('"athlete"');
-    expect(schemaSource).toContain('"coach"');
-    // Default should be "user"
-    expect(schemaSource).toContain('.default("user")');
+    // Default should be "athlete"
+    expect(schemaSource).toContain('.default("athlete")');
   });
 });

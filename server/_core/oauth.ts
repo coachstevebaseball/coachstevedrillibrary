@@ -55,6 +55,14 @@ export function registerOAuthRoutes(app: Express) {
         ).catch((err) =>
           console.error("[OAuth] Failed to notify coach of new user:", err)
         );
+
+        // Also send first-login admin notification
+        import("../adminNotifications").then(({ notifyAdminFirstLogin }) => {
+          notifyAdminFirstLogin(
+            userInfo.name || "Unknown",
+            userInfo.email || "No email provided"
+          ).catch(console.error);
+        });
       }
 
       const sessionToken = await sdk.createSessionToken(userInfo.openId, {

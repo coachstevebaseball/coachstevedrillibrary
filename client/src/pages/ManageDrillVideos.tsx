@@ -70,7 +70,7 @@ export function ManageDrillVideos() {
     );
   };
 
-  if (!user || (user.role !== "coach" && user.role !== "admin")) {
+  if (!user || (user.role !== "admin")) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="w-full max-w-md">

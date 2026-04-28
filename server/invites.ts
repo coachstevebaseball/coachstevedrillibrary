@@ -18,7 +18,7 @@ export function generateInviteToken(): string {
 export async function createInvite(
   email: string,
   createdByUserId: number,
-  role: "user" | "admin" | "athlete" | "coach" = "athlete",
+  role: "admin" | "athlete" = "athlete",
   expirationDays: number = 7,
   sendEmail: boolean = true
 ) {
@@ -42,7 +42,7 @@ export async function createInvite(
 
   // Send invite email if enabled
   if (sendEmail) {
-    const inviteType = role === "coach" ? "coach" : "athlete";
+    const inviteType = "athlete";
     await sendInviteEmail({
       toEmail: email,
       inviteLink: inviteUrl,
@@ -146,6 +146,13 @@ export async function acceptInvite(
   const { linkInviteAssignmentsToUser } = await import("./drillAssignments");
   await linkInviteAssignmentsToUser(invite.id, userId);
   console.log('[Invites] Linked drill assignments from invite', invite.id, 'to user', userId);
+
+  // Notify admin (Coach Steve) that an athlete accepted their invite
+  const { notifyAdminInviteAccepted } = await import("./adminNotifications");
+  notifyAdminInviteAccepted(
+    existingUser[0].name || invite.email,
+    existingUser[0].email || invite.email
+  ).catch(err => console.error('[Invites] Admin notification failed:', err));
 
   return invite;
 }

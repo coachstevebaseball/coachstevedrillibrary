@@ -13,7 +13,7 @@ describe("Parent Management", () => {
       openId: "test-parent-openid",
       name: "Test Parent",
       email: "parent@test.com",
-      role: "user",
+      role: "athlete",
     });
     const parent = await db.getUserByOpenId("test-parent-openid");
     if (!parent) throw new Error("Failed to create parent user");
@@ -115,7 +115,7 @@ describe("Parent Management", () => {
       openId: "test-other-user-openid",
       name: "Other User",
       email: "other@test.com",
-      role: "user",
+      role: "athlete",
     });
     const otherUser = await db.getUserByOpenId("test-other-user-openid");
     if (!otherUser) throw new Error("Failed to create other user");

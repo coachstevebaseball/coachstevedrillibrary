@@ -123,7 +123,7 @@ export default function AcceptInvite() {
               </p>
               <Button
                 onClick={() => {
-                  window.location.href = getLoginUrl();
+                  window.location.href = getLoginUrl(`/accept-invite/${token}`);
                 }}
                 className="w-full"
                 size="lg"
