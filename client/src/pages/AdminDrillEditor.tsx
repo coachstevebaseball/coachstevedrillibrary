@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from "react";
+import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
   Search, Plus, Eye, EyeOff, Trash2, Pencil, Save, X,
-  Upload, Download, ChevronDown, ChevronUp, RefreshCw,
+  Upload, Download, ChevronDown, ChevronUp, RefreshCw, ArrowLeft,
 } from "lucide-react";
 import {
   Dialog,
@@ -946,11 +947,22 @@ export default function AdminDrillEditor() {
       {/* Header */}
       <div className="border-b border-[#1e2a3a] bg-[#0A1628]">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold text-white">Drill Library Editor</h1>
-            <p className="text-xs text-gray-400 mt-0.5">
-              {visibleCount} visible · {hiddenCount} hidden · {drills.length} total
-            </p>
+          <div className="flex items-center gap-4">
+            <Link href="/drills">
+              <a
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm text-gray-400 hover:text-white hover:bg-[#1e2a3a] transition-colors"
+                title="Back to drill library"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span className="hidden sm:inline">Back to library</span>
+              </a>
+            </Link>
+            <div>
+              <h1 className="text-xl font-bold text-white">Drill Library Editor</h1>
+              <p className="text-xs text-gray-400 mt-0.5">
+                {visibleCount} visible · {hiddenCount} hidden · {drills.length} total
+              </p>
+            </div>
           </div>
           <div className="flex gap-2">
             <Button
