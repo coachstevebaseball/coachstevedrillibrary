@@ -25,6 +25,7 @@ import MyProfile from "./pages/MyProfile";
 import NotificationsInbox from "./pages/NotificationsInbox";
 import NotificationPreferences from "./pages/NotificationPreferences";
 import HittingCoach from "./pages/HittingCoach";
+import OverviewPage from "./pages/dashboard/OverviewPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RootRedirect from "./components/RootRedirect";
 import EmbedHome from "./pages/EmbedHome";
@@ -155,7 +156,7 @@ function Router() {
       {/* ===== New mobile-first dashboard shell ===== */}
       <Route path={"/coach-dashboard"}>
         <ProtectedRoute requiredRole="admin">
-          <CoachDashboard />
+          <OverviewPage />
         </ProtectedRoute>
       </Route>
       
