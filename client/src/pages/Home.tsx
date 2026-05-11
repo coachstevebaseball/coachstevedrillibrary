@@ -6,8 +6,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 // Sheet import removed — advanced filters are always visible inline
 import {
   Search, Users, ChevronRight, Sparkles,
-  Clock, Target, TrendingUp, SlidersHorizontal, X, Pencil, ChevronDown,
+  Clock, Target, TrendingUp, SlidersHorizontal, X, Pencil, ChevronDown, Trash2,
 } from "lucide-react";
+import { toast } from "sonner";
 import { HomePageSkeleton } from "@/components/Skeleton";
 import { Link } from "wouter";
 import { useState, useMemo, useEffect, useRef } from "react";
@@ -112,6 +113,16 @@ export default function Home() {
 
   // Fetch drill customizations
   const { data: drillCustomizations = [], refetch: refetchCustomizations } = trpc.drillCustomizations.getAll.useQuery();
+
+  // Admin: soft-delete (hide) a drill
+  const utils = trpc.useUtils();
+  const deleteDrill = trpc.drillsAdmin.adminDelete.useMutation({
+    onSuccess: () => {
+      toast.success("Drill hidden from library");
+      utils.drillsDirectory.list.invalidate();
+    },
+    onError: (err) => toast.error(`Delete failed: ${err.message}`),
+  });
 
   const customizationsMap = useMemo(() => {
     const map = new Map<string, typeof drillCustomizations[0]>();
@@ -646,6 +657,26 @@ export default function Home() {
                       title="Edit drill card"
                     >
                       <Pencil className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+
+                  {/* Admin Delete Button */}
+                  {user?.role === 'admin' && (
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (deleteDrill.isPending) return;
+                        const ok = window.confirm(
+                          `Delete "${drill.name}"?\n\nThis hides it from the library. You can restore it later from the admin panel.`
+                        );
+                        if (ok) deleteDrill.mutate({ drillId: drill.id });
+                      }}
+                      disabled={deleteDrill.isPending}
+                      className="absolute top-3 left-14 z-20 p-2 rounded-lg bg-black/60 hover:bg-red-600/80 text-white opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:scale-105 shadow-lg backdrop-blur-sm disabled:opacity-50"
+                      title="Delete drill"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   )}
 
