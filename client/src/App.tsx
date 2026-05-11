@@ -26,6 +26,23 @@ import NotificationsInbox from "./pages/NotificationsInbox";
 import NotificationPreferences from "./pages/NotificationPreferences";
 import HittingCoach from "./pages/HittingCoach";
 import OverviewPage from "./pages/dashboard/OverviewPage";
+import AssignDrillsPage from "./pages/dashboard/AssignDrillsPage";
+import AthletesPage from "./pages/dashboard/AthletesPage";
+import UsersPage from "./pages/dashboard/UsersPage";
+import PlannerPage from "./pages/dashboard/PlannerPage";
+import LibraryPage from "./pages/dashboard/LibraryPage";
+import VideosPage from "./pages/dashboard/VideosPage";
+import ReportsPage from "./pages/dashboard/ReportsPage";
+import NotesPage from "./pages/dashboard/NotesPage";
+import SubmissionsPage from "./pages/dashboard/SubmissionsPage";
+import BlastPage from "./pages/dashboard/BlastPage";
+import AnalysisPage from "./pages/dashboard/AnalysisPage";
+import ActivityPage from "./pages/dashboard/ActivityPage";
+import NotificationsPage from "./pages/dashboard/NotificationsPage";
+import EmailPage from "./pages/dashboard/EmailPage";
+import TagsPage from "./pages/dashboard/TagsPage";
+import DedupPage from "./pages/dashboard/DedupPage";
+import AccountPage from "./pages/dashboard/AccountPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RootRedirect from "./components/RootRedirect";
 import EmbedHome from "./pages/EmbedHome";
@@ -159,7 +176,92 @@ function Router() {
           <OverviewPage />
         </ProtectedRoute>
       </Route>
-      
+      <Route path={"/coach-dashboard/athletes"}>
+        <ProtectedRoute requiredRole="admin">
+          <AthletesPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/users"}>
+        <ProtectedRoute requiredRole="admin">
+          <UsersPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/assign"}>
+        <ProtectedRoute requiredRole="admin">
+          <AssignDrillsPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/planner"}>
+        <ProtectedRoute requiredRole="admin">
+          <PlannerPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/library"}>
+        <ProtectedRoute requiredRole="admin">
+          <LibraryPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/videos"}>
+        <ProtectedRoute requiredRole="admin">
+          <VideosPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/reports"}>
+        <ProtectedRoute requiredRole="admin">
+          <ReportsPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/notes"}>
+        <ProtectedRoute requiredRole="admin">
+          <NotesPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/submissions"}>
+        <ProtectedRoute requiredRole="admin">
+          <SubmissionsPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/blast"}>
+        <ProtectedRoute requiredRole="admin">
+          <BlastPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/analysis"}>
+        <ProtectedRoute requiredRole="admin">
+          <AnalysisPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/activity"}>
+        <ProtectedRoute requiredRole="admin">
+          <ActivityPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/notifications"}>
+        <ProtectedRoute requiredRole="admin">
+          <NotificationsPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/email"}>
+        <ProtectedRoute requiredRole="admin">
+          <EmailPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/tags"}>
+        <ProtectedRoute requiredRole="admin">
+          <TagsPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/dedup"}>
+        <ProtectedRoute requiredRole="admin">
+          <DedupPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path={"/coach-dashboard/account"}>
+        <ProtectedRoute requiredRole="admin">
+          <AccountPage />
+        </ProtectedRoute>
+      </Route>
+
       <Route path={"/drill-generator"}>
         <ProtectedRoute requiredRole="admin">
           <DrillGeneratorPage />
