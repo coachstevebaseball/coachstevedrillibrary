@@ -73,7 +73,7 @@ export function buildDrillQuery(p: DrillListParams): string {
  */
 export function useDrillListParams() {
   const searchString = useSearch();
-  const [, navigate] = useLocation();
+  const [location, navigate] = useLocation();
   const isInitialized = useRef(false);
 
   // Parse initial state from URL
@@ -97,10 +97,10 @@ export function useDrillListParams() {
       return;
     }
     const query = buildDrillQuery({ page, category, difficulty, search, sort, ageLevel, drillType, problem, goal, tag });
-    const newUrl = `/${query}`;
+    const newUrl = `${location}${query}`;
     // Use navigate with replace:false to push history entries
     navigate(newUrl, { replace: false });
-  }, [page, category, difficulty, search, sort, ageLevel, drillType, problem, goal, tag]);
+  }, [page, category, difficulty, search, sort, ageLevel, drillType, problem, goal, tag, location]);
 
   // When user navigates back/forward, re-read URL params
   useEffect(() => {
