@@ -1,10 +1,13 @@
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
 
+const here = dirname(fileURLToPath(import.meta.url));
 const envCandidates = [
   "/home/ubuntu/usab-drills-directory/.env",
-  new URL("../.env", import.meta.url).pathname,
+  resolve(here, "..", ".env"),
 ];
 for (const p of envCandidates) {
   if (existsSync(p)) {
