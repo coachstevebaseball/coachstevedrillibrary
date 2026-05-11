@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
+import { toast } from "sonner";
 import { DrillSubmissionForm } from "@/components/DrillSubmissionForm";
 
 interface DrillModalRedesignedProps {
@@ -72,8 +73,9 @@ export function DrillModalRedesigned({
       utils.badges.getMyProgress.invalidate();
       onComplete();
     },
-    onError: () => {
+    onError: (err) => {
       setIsCompleting(false);
+      toast.error(`Couldn't mark drill complete: ${err.message}`);
     },
   });
 

@@ -1,6 +1,7 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { useLocation } from "wouter";
+import { toast } from "sonner";
 import { Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -152,6 +153,11 @@ export default function AthletePortal() {
   // Update status mutation
   const updateStatusMutation = trpc.drillAssignments.updateStatus.useMutation({
     onSuccess: () => {
+      utils.drillAssignments.getUserAssignments.invalidate();
+    },
+    onError: (err) => {
+      toast.error(`Couldn't update drill status: ${err.message}`);
+      // Resync server state so UI reflects the actual saved status
       utils.drillAssignments.getUserAssignments.invalidate();
     },
   });

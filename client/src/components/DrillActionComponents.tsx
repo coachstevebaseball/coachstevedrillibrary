@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
 import { Target, ChevronDown, ChevronUp, CheckCircle, Loader2, MessageCircle } from "lucide-react";
+import { toast } from "sonner";
 
 /**
  * DrillCoachFocus — Shows the coach's goal/focus for this drill.
@@ -61,8 +62,9 @@ export function DrillQuickNotes({
       utils.drillAssignments.getUserAssignments.invalidate();
       onComplete();
     },
-    onError: () => {
+    onError: (err) => {
       setIsCompleting(false);
+      toast.error(`Couldn't mark drill complete: ${err.message}`);
     },
   });
 
