@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { HomePageSkeleton } from "@/components/Skeleton";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { trpc } from "@/lib/trpc";
 import { useAllDrills } from "@/hooks/useAllDrills";
@@ -116,9 +116,15 @@ export default function Home() {
 
   // Admin: soft-delete (hide) a drill
   const utils = trpc.useUtils();
+  const [, navigate] = useLocation();
   const deleteDrill = trpc.drillsAdmin.adminDelete.useMutation({
     onSuccess: () => {
-      toast.success("Drill hidden from library");
+      toast.success("Drill hidden from library", {
+        action: {
+          label: "Manage",
+          onClick: () => navigate("/admin/drills"),
+        },
+      });
       utils.drillsDirectory.list.invalidate();
     },
     onError: (err) => toast.error(`Delete failed: ${err.message}`),

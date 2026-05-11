@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   LogOut,
   Zap,
+  Library,
 } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
 
@@ -30,6 +31,7 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
     if (user && isAdmin) {
       return [
         { href: "/coach-dashboard", label: "Dashboard", icon: LayoutDashboard, active: isActive("/coach-dashboard"), accent: false, external: false },
+        { href: "/admin/drills", label: "Manage Library", icon: Library, active: isActive("/admin/drills"), accent: false, external: false },
         { href: "/admin", label: "Admin", icon: Shield, active: isActive("/admin"), accent: true, external: false },
       ];
     }
