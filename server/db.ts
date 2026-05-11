@@ -52,13 +52,6 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.lastSignedIn = user.lastSignedIn;
       updateSet.lastSignedIn = user.lastSignedIn;
     }
-
-    // Manus OAuth pre-verifies emails before returning them, so trust that
-    // signal and mark the user verified whenever we have an email on file.
-    if (user.email) {
-      values.emailVerified = 1;
-      updateSet.emailVerified = 1;
-    }
     // Debug logging
     console.log(`[Database] upsertUser called - openId: ${user.openId}, ENV.ownerOpenId: ${ENV.ownerOpenId}, match: ${user.openId === ENV.ownerOpenId}`);
     

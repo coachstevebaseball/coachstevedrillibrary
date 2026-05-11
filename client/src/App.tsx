@@ -6,6 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import AdminDashboard from "./pages/AdminDashboard";
+import CoachDashboard from "./pages/CoachDashboard";
 import AthletePortal from "./pages/AthletePortal";
 import DrillDetail from "./pages/DrillDetail";
 import AcceptInvite from "./pages/AcceptInvite";
@@ -33,25 +34,6 @@ import RootRedirect from "./components/RootRedirect";
 import EmbedHome from "./pages/EmbedHome";
 import EmbedDrillLibrary from "./pages/EmbedDrillLibrary";
 import EmbedDrillDetail from "./pages/EmbedDrillDetail";
-// New mobile-first sidebar shell pages
-import OverviewPage from "./pages/dashboard/OverviewPage";
-import AssignDrillsPage from "./pages/dashboard/AssignDrillsPage";
-import AthletesPage from "./pages/dashboard/AthletesPage";
-import UsersPage from "./pages/dashboard/UsersPage";
-import PlannerPage from "./pages/dashboard/PlannerPage";
-import LibraryPage from "./pages/dashboard/LibraryPage";
-import VideosPage from "./pages/dashboard/VideosPage";
-import ReportsPage from "./pages/dashboard/ReportsPage";
-import NotesPage from "./pages/dashboard/NotesPage";
-import SubmissionsPage from "./pages/dashboard/SubmissionsPage";
-import BlastPage from "./pages/dashboard/BlastPage";
-import AnalysisPage from "./pages/dashboard/AnalysisPage";
-import ActivityPage from "./pages/dashboard/ActivityPage";
-import NotificationsPage from "./pages/dashboard/NotificationsPage";
-import EmailPage from "./pages/dashboard/EmailPage";
-import TagsPage from "./pages/dashboard/TagsPage";
-import DedupPage from "./pages/dashboard/DedupPage";
-import AccountPage from "./pages/dashboard/AccountPage";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ToastContainer } from "./components/ToastContainer";
 import { useEffect } from "react";
@@ -179,95 +161,9 @@ function Router() {
         </ProtectedRoute>
       </Route>
       
-      {/* ===== New mobile-first dashboard shell ===== */}
       <Route path={"/coach-dashboard"}>
         <ProtectedRoute requiredRole="admin">
-          <OverviewPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/athletes"}>
-        <ProtectedRoute requiredRole="admin">
-          <AthletesPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/users"}>
-        <ProtectedRoute requiredRole="admin">
-          <UsersPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/assign"}>
-        <ProtectedRoute requiredRole="admin">
-          <AssignDrillsPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/planner"}>
-        <ProtectedRoute requiredRole="admin">
-          <PlannerPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/library"}>
-        <ProtectedRoute requiredRole="admin">
-          <LibraryPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/videos"}>
-        <ProtectedRoute requiredRole="admin">
-          <VideosPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/reports"}>
-        <ProtectedRoute requiredRole="admin">
-          <ReportsPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/notes"}>
-        <ProtectedRoute requiredRole="admin">
-          <NotesPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/submissions"}>
-        <ProtectedRoute requiredRole="admin">
-          <SubmissionsPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/blast"}>
-        <ProtectedRoute requiredRole="admin">
-          <BlastPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/analysis"}>
-        <ProtectedRoute requiredRole="admin">
-          <AnalysisPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/activity"}>
-        <ProtectedRoute requiredRole="admin">
-          <ActivityPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/notifications"}>
-        <ProtectedRoute requiredRole="admin">
-          <NotificationsPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/email"}>
-        <ProtectedRoute requiredRole="admin">
-          <EmailPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/tags"}>
-        <ProtectedRoute requiredRole="admin">
-          <TagsPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/dedup"}>
-        <ProtectedRoute requiredRole="admin">
-          <DedupPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path={"/coach-dashboard/account"}>
-        <ProtectedRoute requiredRole="admin">
-          <AccountPage />
+          <CoachDashboard />
         </ProtectedRoute>
       </Route>
       
