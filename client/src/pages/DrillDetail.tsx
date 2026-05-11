@@ -1208,7 +1208,7 @@ export default function DrillDetail() {
   // Preserve query params for back navigation to drill list
   // wouter's useSearch() strips the '?' prefix, returning e.g. 'page=2&category=Hitting'
   const searchString = useSearch();
-  const backHref = searchString ? `/?${searchString}` : '/';
+  const backHref = searchString ? `/drills?${searchString}` : '/drills';
   
   // Load drill from unified DB table by slug
   const { data: dbDrill, isLoading: drillLoading } = trpc.drillsDirectory.get.useQuery(
