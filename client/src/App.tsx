@@ -1,11 +1,10 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, Redirect } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
-import AdminDashboard from "./pages/AdminDashboard";
 import AthletePortal from "./pages/AthletePortal";
 import DrillDetail from "./pages/DrillDetail";
 import AcceptInvite from "./pages/AcceptInvite";
@@ -22,12 +21,10 @@ import ActivityFeed from "./pages/ActivityFeed";
 import DrillComparison from "./pages/DrillComparison";
 import AthleteAssessment from "./pages/AthleteAssessment";
 import ManageDrillContent from "./pages/ManageDrillContent";
-import AdminDrillEditor from "./pages/AdminDrillEditor";
 import MyProfile from "./pages/MyProfile";
 import NotificationsInbox from "./pages/NotificationsInbox";
 import NotificationPreferences from "./pages/NotificationPreferences";
 import HittingCoach from "./pages/HittingCoach";
-import AdminNotifications from "./pages/AdminNotifications";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RootRedirect from "./components/RootRedirect";
 import EmbedHome from "./pages/EmbedHome";
@@ -166,19 +163,14 @@ function Router() {
         )}
       </Route>
 
-      {/* ===== Protected Routes — Admin Only ===== */}
+      {/* ===== Legacy /admin redirects (folded into /coach-dashboard) ===== */}
       <Route path={"/admin"}>
-        <ProtectedRoute requiredRole="admin">
-          <AdminDashboard />
-        </ProtectedRoute>
+        <Redirect to="/coach-dashboard" />
+      </Route>
+      <Route path={"/admin/drills"}>
+        <Redirect to="/coach-dashboard/library" />
       </Route>
 
-      <Route path={"/admin/drills"}>
-        <ProtectedRoute requiredRole="admin">
-          <AdminDrillEditor />
-        </ProtectedRoute>
-      </Route>
-      
       {/* ===== New mobile-first dashboard shell ===== */}
       <Route path={"/coach-dashboard"}>
         <ProtectedRoute requiredRole="admin">
@@ -302,9 +294,7 @@ function Router() {
       </Route>
       
       <Route path={"/admin/notifications"}>
-        <ProtectedRoute requiredRole="admin">
-          <AdminNotifications />
-        </ProtectedRoute>
+        <Redirect to="/coach-dashboard/notifications" />
       </Route>
 
       <Route path={"/coach-messaging"}>
