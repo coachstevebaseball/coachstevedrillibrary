@@ -130,12 +130,15 @@ function DrillTagRow({ drillId, drillName }: { drillId: string; drillName: strin
           {/* Drill Type */}
           <div>
             <label className="text-xs text-white/40 uppercase tracking-wider mb-1.5 block">Drill Type</label>
-            <Select value={currentMeta.drillType || ""} onValueChange={v => updateMeta({ drillType: v })}>
+            <Select
+              value={currentMeta.drillType || "__none__"}
+              onValueChange={v => updateMeta({ drillType: v === "__none__" ? "" : v })}
+            >
               <SelectTrigger className="w-44 h-8 bg-white/[0.04] border-white/10 text-white text-xs">
                 <SelectValue placeholder="Select type..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">— None —</SelectItem>
+                <SelectItem value="__none__">— None —</SelectItem>
                 {DRILL_TYPES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
               </SelectContent>
             </Select>
