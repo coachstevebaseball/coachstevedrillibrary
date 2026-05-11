@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { Sidebar, type SidebarAction } from "./Sidebar";
 import { TopBar } from "./TopBar";
+import { MobileNav } from "./MobileNav";
 
 type DashboardLayoutProps = {
   title: string;
@@ -17,13 +18,11 @@ export function DashboardLayout({
   onAddDrill,
   children,
 }: DashboardLayoutProps) {
-  // Mobile drawer state — drawer component lands in commit 2.
-  const [, setMobileNavOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   // Sidebar action handler stub — Bulk Goals / Bulk Import modals
   // get wired into real components in a later commit.
   const handleSidebarAction = (action: SidebarAction) => {
-    // intentional no-op until modal wiring lands
     void action;
   };
 
@@ -33,6 +32,13 @@ export function DashboardLayout({
       <div className="hidden md:block sticky top-0 self-start h-screen">
         <Sidebar onAction={handleSidebarAction} />
       </div>
+
+      {/* Mobile drawer (< md) */}
+      <MobileNav
+        open={mobileNavOpen}
+        onOpenChange={setMobileNavOpen}
+        onAction={handleSidebarAction}
+      />
 
       <div className="flex-1 min-w-0 flex flex-col">
         <TopBar
