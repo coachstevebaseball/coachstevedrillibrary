@@ -191,7 +191,7 @@ export default function CoachDashboard() {
           </div>
           <h2 className="text-2xl font-heading font-bold">Access Denied</h2>
           <p className="text-muted-foreground">Only coaches (admins) can access the drill assignment dashboard.</p>
-          <Link href="/">
+          <Link href="/drills">
             <Button variant="outline" className="gap-2">
               <ArrowLeft className="h-4 w-4" />
               Back to Directory
@@ -220,7 +220,7 @@ export default function CoachDashboard() {
         <div className="container relative z-10 py-6 md:py-10">
           {/* Top nav */}
           <div className="flex items-center justify-between mb-6">
-            <Link href="/">
+            <Link href="/drills">
               <Button variant="ghost" className="text-white/70 hover:text-white hover:bg-white/10 gap-2 text-sm">
                 <ArrowLeft className="h-4 w-4" />
                 <span className="hidden sm:inline">Back to Directory</span>
