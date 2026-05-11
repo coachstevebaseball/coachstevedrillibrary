@@ -2261,3 +2261,10 @@
 - [ ] Audit orphaned userIds in drillAssignments (10110004, 3390145, etc.) — reassign or clean up
 - [ ] Wire assignmentProgress to a real per-session rep tracking feature OR drop the table
 - [ ] Add user-visible error toast on Mark Complete failure (currently resets silently)
+
+### Canary Test Artifact Cleanup
+- [x] Delete user 107520474 (steveng1364@gmail.com)
+- [x] Delete user 107520536 (stevenlewisrept@gmail.com)
+- [x] Delete invites tied to either user (0 found)
+- [x] Delete drillAssignments tied to either user (3 deleted)
+- [x] Verify Coach Dashboard no longer shows test athletes
