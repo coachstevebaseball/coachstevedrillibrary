@@ -486,32 +486,42 @@ export default function Home() {
           style={{ animationDelay: '3.5s' }}
         />
         
-        <div className="container relative z-10 pt-4 pb-6 md:pt-5 md:pb-8">
+        <div className="container relative z-10 pt-4 pb-3 md:pt-5 md:pb-8">
           {/* Top Navigation Bar */}
           <TopNav variant="hero" />
 
           {/* Hero Content */}
           <div className="max-w-4xl mx-auto text-center">
-            {/* Badge */}
-            <div className="flex justify-center mb-3 animate-fade-in-down stagger-1">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-electric/20 bg-electric/5 backdrop-blur-sm">
-                <div className="w-1.5 h-1.5 rounded-full bg-electric animate-pulse-glow" />
-                <InlineEdit contentKey="home.hero.badge" defaultValue="Player Development Platform" as="span" className="text-electric text-[10px] font-semibold tracking-wider uppercase" />
-              </div>
-            </div>
-            
-            {/* Main heading */}
-            <div className="animate-fade-in-up stagger-2">
-              <h1 className="font-heading font-black tracking-tight leading-none">
-                <InlineEdit contentKey="home.hero.headline1" defaultValue="UNLEASH YOUR" as="span" className="block text-foreground text-3xl sm:text-4xl md:text-5xl" />
-                <InlineEdit contentKey="home.hero.headline2" defaultValue="POTENTIAL" as="span" className="block text-4xl sm:text-5xl md:text-6xl mt-0.5 text-gradient" />
+            {/* Compact mobile title — replaces the giant headline on phones */}
+            <div className="md:hidden mt-3 mb-3">
+              <h1 className="text-xl font-heading font-black tracking-tight text-foreground">
+                <InlineEdit contentKey="home.hero.title.mobile" defaultValue="Drill Library" as="span" />
               </h1>
             </div>
-            
-            <InlineEdit contentKey="home.hero.tagline" defaultValue="Professional training drills designed to build elite mechanics, explosive power, and game-ready confidence." as="h2" className="text-xs md:text-sm text-muted-foreground mt-3 mb-4 max-w-xl mx-auto leading-relaxed animate-fade-in-up stagger-3 font-normal" />
-            
-            {/* Stats row */}
-            <div className="flex justify-center gap-6 md:gap-12 animate-fade-in-up stagger-4">
+
+            {/* Full hero — desktop / tablet only */}
+            <div className="hidden md:block">
+              {/* Badge */}
+              <div className="flex justify-center mb-3 animate-fade-in-down stagger-1">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-electric/20 bg-electric/5 backdrop-blur-sm">
+                  <div className="w-1.5 h-1.5 rounded-full bg-electric animate-pulse-glow" />
+                  <InlineEdit contentKey="home.hero.badge" defaultValue="Player Development Platform" as="span" className="text-electric text-[10px] font-semibold tracking-wider uppercase" />
+                </div>
+              </div>
+
+              {/* Main heading */}
+              <div className="animate-fade-in-up stagger-2">
+                <h1 className="font-heading font-black tracking-tight leading-none">
+                  <InlineEdit contentKey="home.hero.headline1" defaultValue="UNLEASH YOUR" as="span" className="block text-foreground text-3xl sm:text-4xl md:text-5xl" />
+                  <InlineEdit contentKey="home.hero.headline2" defaultValue="POTENTIAL" as="span" className="block text-4xl sm:text-5xl md:text-6xl mt-0.5 text-gradient" />
+                </h1>
+              </div>
+
+              <InlineEdit contentKey="home.hero.tagline" defaultValue="Professional training drills designed to build elite mechanics, explosive power, and game-ready confidence." as="h2" className="text-xs md:text-sm text-muted-foreground mt-3 mb-4 max-w-xl mx-auto leading-relaxed animate-fade-in-up stagger-3 font-normal" />
+            </div>
+
+            {/* Stats row — visible everywhere but more compact on mobile */}
+            <div className="flex justify-center gap-4 md:gap-12 animate-fade-in-up stagger-4">
               {[
                 { valueKey: "home.stat.drills.value", valueDefault: `${allDrills.length}`, labelKey: "home.stat.drills.label", labelDefault: "Drills", icon: Target },
                 { valueKey: "home.stat.categories.value", valueDefault: `${new Set(allDrills.flatMap(d => d.categories)).size}`, labelKey: "home.stat.categories.label", labelDefault: "Categories", icon: Sparkles },
