@@ -151,11 +151,24 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* Global mobile-overflow lock — nothing in the app may cause the document
+     to scroll horizontally. Each container must fit inside the viewport. */
+  html,
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
   body {
     @apply bg-background text-foreground font-sans antialiased;
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  /* Images and iframes should never push past their container width. */
+  img, iframe, video {
+    max-width: 100%;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading font-bold tracking-tight;

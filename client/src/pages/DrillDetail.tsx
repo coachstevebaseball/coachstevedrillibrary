@@ -1496,7 +1496,7 @@ export default function DrillDetail() {
 
 
   return (
-    <div className="min-h-screen bg-background pb-24 md:pb-12">
+    <div className="min-h-screen bg-background pb-24 md:pb-12 w-full max-w-full overflow-x-hidden">
       <Helmet>
         <title>{drill.name} — Coach Steve's Hitters Lab</title>
         <meta name="description" content={`${drill.difficulty} ${drill.categories.join(', ')} drill. Train your swing with Coach Steve's Hitters Lab.`} />

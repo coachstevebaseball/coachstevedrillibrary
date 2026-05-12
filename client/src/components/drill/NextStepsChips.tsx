@@ -16,14 +16,14 @@ export function NextStepsChips({ drills }: Props) {
   if (!drills || drills.length === 0) return null;
 
   return (
-    <div>
+    <div className="w-full max-w-full">
       <h3
         className="text-xs font-bold tracking-widest mb-3"
         style={{ color: TEAL }}
       >
         NEXT STEPS — BUILD ON THIS DRILL
       </h3>
-      <div className="flex gap-2 overflow-x-auto md:flex-wrap pb-1 -mx-1 px-1">
+      <div className="w-full max-w-full flex gap-2 overflow-x-auto md:flex-wrap pb-1">
         {drills.map((d) => (
           <Link key={d.drillId} href={`/drill/${d.drillId}`}>
             <a

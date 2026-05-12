@@ -462,7 +462,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col w-full max-w-full overflow-x-hidden">
       {/* ===== HERO SECTION ===== */}
       <header ref={heroRef} className="relative overflow-hidden">
         {/* Layered background */}

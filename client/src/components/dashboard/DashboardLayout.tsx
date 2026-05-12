@@ -28,7 +28,7 @@ export function DashboardLayout({
   };
 
   return (
-    <div className="min-h-screen bg-[rgb(11,11,12)] text-white flex">
+    <div className="min-h-screen bg-[rgb(11,11,12)] text-white flex w-full max-w-full overflow-x-hidden">
       {/* Desktop sidebar (md and up) */}
       <div className="hidden md:block sticky top-0 self-start h-screen">
         <Sidebar onAction={handleSidebarAction} />

@@ -296,7 +296,7 @@ export default function AthletePortal() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       {/* Admin "View as Athlete" banner */}
       {isViewingAs && (
         <div className="bg-amber-500 text-black text-xs font-bold text-center py-2 px-4 flex items-center justify-center gap-2 sticky top-0 z-50">
