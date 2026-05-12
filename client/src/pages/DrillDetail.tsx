@@ -23,6 +23,14 @@ import { Layout } from "lucide-react";
 import { usePreviewLimit, MAX_FREE_PREVIEWS } from "@/hooks/usePreviewLimit";
 import { InlineEdit } from "@/components/InlineEdit";
 import { Helmet } from "react-helmet-async";
+import { toast } from "sonner";
+import { QuickInfoGrid } from "@/components/drill/QuickInfoGrid";
+import { CoachingLayer } from "@/components/drill/CoachingLayer";
+import { NextStepsChips } from "@/components/drill/NextStepsChips";
+import { MetadataFooter } from "@/components/drill/MetadataFooter";
+import { RelatedDrillsCarousel, type RelatedDrill } from "@/components/drill/RelatedDrillsCarousel";
+import { StickyMobileCTA } from "@/components/drill/StickyMobileCTA";
+import { useAllDrills } from "@/hooks/useAllDrills";
 
 // DrillTagSection component — shows Problems (red) and Outcomes (green) with Show More
 const MAX_VISIBLE_TAGS = 4;
@@ -1324,6 +1332,71 @@ export default function DrillDetail() {
   // Activity logging mutation
   const logActivityMutation = trpc.activity.logActivity.useMutation();
 
+  // ── Drill-detail redesign: data for new sections ───────────────────────
+  const allDrills = useAllDrills();
+
+  // Look up the athlete's active assignment for this drill so the sticky
+  // Mark Complete button knows what to update.
+  const { data: userAssignments = [] } = trpc.drillAssignments.getUserAssignments.useQuery(
+    undefined,
+    { enabled: !!user && user.role === "athlete" }
+  );
+  const myAssignment = useMemo(() => {
+    if (!id) return null;
+    return (userAssignments as any[]).find(
+      (a) => a.drillId === id && a.status !== "completed"
+    ) ?? null;
+  }, [userAssignments, id]);
+
+  const markCompleteMutation = trpc.drillAssignments.updateStatus.useMutation({
+    onSuccess: () => {
+      trpcUtils.drillAssignments.getUserAssignments.invalidate();
+      toast.success("Marked complete!");
+    },
+    onError: (err) => {
+      toast.error(`Couldn't mark complete: ${err.message}`);
+    },
+  });
+  const handleMarkComplete = () => {
+    if (!myAssignment) return;
+    markCompleteMutation.mutate({ assignmentId: myAssignment.id, status: "completed" });
+  };
+
+  // Related drills: prefer curator-set nextStepDrillIds; fall back to drills
+  // that share >= 2 tag/outcome/problem entries with this one.
+  const relatedDrills = useMemo(() => {
+    if (!dbDrill || allDrills.length === 0) return [];
+    const curated = (dbDrill.nextStepDrillIds as string[] | null) ?? [];
+    if (curated.length > 0) {
+      return curated
+        .map((slug) => allDrills.find((d) => d.id === slug))
+        .filter((d): d is NonNullable<typeof d> => !!d)
+        .slice(0, 6);
+    }
+    const myTags = new Set<string>([
+      ...(((dbDrill.tags as string[] | null) ?? [])),
+      ...(((dbDrill.outcomes as string[] | null) ?? [])),
+      ...(((dbDrill.problems as string[] | null) ?? [])),
+    ]);
+    if (myTags.size === 0) return [];
+    return allDrills
+      .filter((d) => d.id !== dbDrill.drillId)
+      .map((d) => {
+        const theirTags = new Set<string>([
+          ...(d.tags ?? []),
+          ...(d.outcomes ?? []),
+          ...(d.problems ?? []),
+        ]);
+        let overlap = 0;
+        myTags.forEach((t) => { if (theirTags.has(t)) overlap++; });
+        return { drill: d, overlap };
+      })
+      .filter((x) => x.overlap >= 2)
+      .sort((a, b) => b.overlap - a.overlap)
+      .slice(0, 6)
+      .map((x) => x.drill);
+  }, [dbDrill, allDrills]);
+
   // Log drill view when athlete views the page
   useEffect(() => {
     if (user?.id && user?.role === 'athlete' && drill && id) {
@@ -1423,7 +1496,7 @@ export default function DrillDetail() {
 
 
   return (
-    <div className="min-h-screen bg-background pb-8 md:pb-12">
+    <div className="min-h-screen bg-background pb-24 md:pb-12">
       <Helmet>
         <title>{drill.name} — Coach Steve's Hitters Lab</title>
         <meta name="description" content={`${drill.difficulty} ${drill.categories.join(', ')} drill. Train your swing with Coach Steve's Hitters Lab.`} />
@@ -1608,88 +1681,91 @@ export default function DrillDetail() {
               />
             )}
 
-            {/* Goal of Drill */}
-            <div className="glass-card rounded-xl border-l-4 border-l-primary overflow-hidden">
-              <div className="p-4 md:p-6">
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <h3 className="flex items-center gap-2 text-xl md:text-2xl font-heading font-black">
-                    <div className="h-8 w-8 rounded-lg bg-primary/15 flex items-center justify-center border border-primary/25">
-                      <Lightbulb className="h-4 w-4 text-primary" />
-                    </div>
-                    <InlineEdit contentKey={`drill.detail.${id}.goalHeading`} defaultValue="Goal of Drill" as="span" />
-                  </h3>
-                  {user && (user.role === 'admin') && (
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => setShowPageBuilder(true)}
-                        className="flex items-center gap-1 px-3 py-2 rounded-md bg-electric/10 hover:bg-electric/20 text-electric transition-colors text-sm font-medium"
-                      >
-                        <Layout className="h-4 w-4" />
-                        Page Builder
-                      </button>
-                      <button
-                        onClick={() => setEditModalOpen(true)}
-                        className="flex items-center gap-1 px-3 py-2 rounded-md bg-primary/10 hover:bg-primary/20 text-primary transition-colors text-sm font-medium"
-                      >
-                        <Edit className="h-4 w-4" />
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => setShowDeleteConfirm(true)}
-                        className="flex items-center gap-1 px-3 py-2 rounded-md bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors text-sm font-medium"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                        Delete
-                      </button>
-                    </div>
-                  )}
-                </div>
-                {isEditingGoal ? (
-                  <div className="space-y-3">
-                    <textarea
-                      value={editGoalText}
-                      onChange={(e) => setEditGoalText(e.target.value)}
-                      className="w-full min-h-[80px] p-3 rounded-lg bg-background/80 border border-border text-base md:text-lg font-medium text-foreground/90 leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
-                      placeholder="Enter the goal of this drill..."
-                      autoFocus
-                    />
-                    <div className="flex items-center gap-2 justify-end">
-                      <button
-                        onClick={handleCancelEditGoal}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-muted hover:bg-muted/80 text-muted-foreground transition-colors text-sm font-medium"
-                      >
-                        <X className="h-3.5 w-3.5" />
-                        Cancel
-                      </button>
-                      <button
-                        onClick={handleSaveGoal}
-                        disabled={saveGoalMutation.isPending}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground transition-colors text-sm font-medium disabled:opacity-50"
-                      >
-                        <Check className="h-3.5 w-3.5" />
-                        {saveGoalMutation.isPending ? 'Saving...' : 'Save'}
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="group/goal relative">
-                    <p className="text-base md:text-lg font-medium text-foreground/90 leading-relaxed pr-8">{details.goal}</p>
-                    {user && (user.role === 'admin') && (
-                      <button
-                        onClick={handleStartEditGoal}
-                        className="absolute top-0 right-0 p-1.5 rounded-md opacity-0 group-hover/goal:opacity-100 hover:bg-muted/60 text-muted-foreground hover:text-foreground transition-all"
-                        title="Edit goal"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </button>
-                    )}
-                  </div>
-                )}
+            {/* Admin toolbar — preserved from the old Goal panel, role-gated */}
+            {user && user.role === "admin" && (
+              <div className="flex gap-2 flex-wrap justify-end">
+                <button
+                  onClick={() => setShowPageBuilder(true)}
+                  className="flex items-center gap-1 px-3 py-2 rounded-md bg-electric/10 hover:bg-electric/20 text-electric transition-colors text-sm font-medium"
+                >
+                  <Layout className="h-4 w-4" />
+                  Page Builder
+                </button>
+                <button
+                  onClick={() => setEditModalOpen(true)}
+                  className="flex items-center gap-1 px-3 py-2 rounded-md bg-primary/10 hover:bg-primary/20 text-primary transition-colors text-sm font-medium"
+                >
+                  <Edit className="h-4 w-4" />
+                  Edit
+                </button>
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="flex items-center gap-1 px-3 py-2 rounded-md bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors text-sm font-medium"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Delete
+                </button>
               </div>
-            </div>
+            )}
 
+            {/* 2×2 Quick Info grid: Goal, Problem It Solves, Equipment, How To Do It */}
+            <QuickInfoGrid
+              goal={(dbDrill?.goalOfDrill ?? details?.goal) || null}
+              problemsSolved={(dbDrill?.whatThisDrillHelpsFix as string[] | null) ?? null}
+              equipment={
+                (dbDrill?.equipment as string[] | null) ??
+                (typeof details?.equipment === "string"
+                  ? details.equipment.split(",").map((s) => s.trim()).filter(Boolean)
+                  : null)
+              }
+              howToSteps={
+                (dbDrill?.howToRunTheDrill as string[] | null) ??
+                (descriptionSteps.length > 0 ? descriptionSteps : null)
+              }
+            />
 
+            {/* Coaching layer: What To Feel / Coach Cue / Common Mistakes / Watch For */}
+            <CoachingLayer
+              whatToFeel={(dbDrill?.coachingNotes as string[] | null) ?? null}
+              coachCue={dbDrill?.coachSteveCue ?? null}
+              commonMistakes={(dbDrill?.commonMistakes as string[] | null) ?? null}
+              watchFor={
+                dbDrill?.gameTransferExplanation ?? dbDrill?.whoThisDrillIsBestFor ?? null
+              }
+            />
 
+            {/* Next Steps chips — curated nextStepDrillIds, fall back to tag overlap */}
+            <NextStepsChips
+              drills={relatedDrills.slice(0, 4).map((d) => ({ drillId: d.id, name: d.name }))}
+            />
+
+            {/* Metadata footer: Drill Type / Age / Focus Areas */}
+            <MetadataFooter
+              drillType={dbDrill?.drillType ?? null}
+              ageLevels={(dbDrill?.ageLevel as string[] | null) ?? null}
+              focusAreas={
+                (dbDrill?.tags as string[] | null) ??
+                (dbDrill?.outcomes as string[] | null) ??
+                null
+              }
+            />
+
+            {/* Related Drills carousel */}
+            <RelatedDrillsCarousel
+              drills={relatedDrills.slice(0, 3).map<RelatedDrill>((d) => ({
+                drillId: d.id,
+                name: d.name,
+                difficulty: d.difficulty,
+                category: d.categories?.[0] ?? null,
+                duration: d.duration,
+                featured: false,
+              }))}
+            />
+
+            {/* Q&A for athletes — kept from previous layout */}
+            {user?.role === "athlete" && (
+              <DrillQAForm drillId={id || ""} drillName={drill?.name || ""} />
+            )}
           </div>
         ) : (
           <div className="text-center py-12 bg-muted/30 rounded-xl border border-dashed">
@@ -1764,6 +1840,16 @@ export default function DrillDetail() {
           drillId={id || ''}
           drillName={drill?.name || ''}
           onClose={() => setShowPageBuilder(false)}
+        />
+      )}
+
+      {/* Sticky mobile CTA: athletes only, mobile only */}
+      {user?.role === "athlete" && id && (
+        <StickyMobileCTA
+          drillId={id}
+          assignmentId={myAssignment?.id ?? null}
+          onMarkComplete={handleMarkComplete}
+          isCompleting={markCompleteMutation.isPending}
         />
       )}
     </div>
