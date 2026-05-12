@@ -4,7 +4,7 @@ import { ManageDrillVideos } from "@/pages/ManageDrillVideos";
 export default function VideosPage() {
   return (
     <DashboardLayout title="Manage Videos">
-      <ManageDrillVideos />
+      <ManageDrillVideos embedded />
     </DashboardLayout>
   );
 }

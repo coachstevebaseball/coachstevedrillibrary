@@ -9,7 +9,7 @@ import { VideoUrlManager } from "@/components/VideoUrlManager";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 
-export function ManageDrillVideos() {
+export function ManageDrillVideos({ embedded = false }: { embedded?: boolean } = {}) {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -89,23 +89,24 @@ export function ManageDrillVideos() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-brand-header text-brand-header-foreground py-6 mb-8">
-        <div className="container">
-          <Link href="/coach-dashboard">
-            <Button variant="ghost" className="text-brand-header-foreground/80 hover:text-brand-header-foreground hover:bg-brand-header-foreground/10 mb-4 pl-0">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Coach Dashboard
-            </Button>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Video className="h-8 w-8" />
-            <h1 className="text-4xl font-heading font-black">Manage Drill Videos</h1>
+    <div className={embedded ? "" : "min-h-screen bg-background"}>
+      {!embedded && (
+        <header className="bg-brand-header text-brand-header-foreground py-6 mb-8">
+          <div className="container">
+            <Link href="/coach-dashboard">
+              <Button variant="ghost" className="text-brand-header-foreground/80 hover:text-brand-header-foreground hover:bg-brand-header-foreground/10 mb-4 pl-0">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Coach Dashboard
+              </Button>
+            </Link>
+            <div className="flex items-center gap-3">
+              <Video className="h-8 w-8" />
+              <h1 className="text-4xl font-heading font-black">Manage Drill Videos</h1>
+            </div>
+            <p className="text-brand-header-foreground/80 mt-2">Add instructional videos to your drills</p>
           </div>
-          <p className="text-brand-header-foreground/80 mt-2">Add instructional videos to your drills</p>
-        </div>
-      </header>
+        </header>
+      )}
 
       <div className="container max-w-6xl">
         {/* Search and Filter */}

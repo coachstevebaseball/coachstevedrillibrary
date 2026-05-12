@@ -4,7 +4,7 @@ import AdminDrillEditor from "@/pages/AdminDrillEditor";
 export default function LibraryPage() {
   return (
     <DashboardLayout title="Drill Library">
-      <AdminDrillEditor />
+      <AdminDrillEditor embedded />
     </DashboardLayout>
   );
 }

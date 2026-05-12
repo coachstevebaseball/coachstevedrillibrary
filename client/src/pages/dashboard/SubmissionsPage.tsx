@@ -4,7 +4,7 @@ import SubmissionsDashboard from "@/pages/SubmissionsDashboard";
 export default function SubmissionsPage() {
   return (
     <DashboardLayout title="Submissions">
-      <SubmissionsDashboard />
+      <SubmissionsDashboard embedded />
     </DashboardLayout>
   );
 }

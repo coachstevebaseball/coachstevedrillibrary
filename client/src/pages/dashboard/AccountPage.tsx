@@ -4,7 +4,7 @@ import MyProfile from "@/pages/MyProfile";
 export default function AccountPage() {
   return (
     <DashboardLayout title="My Account">
-      <MyProfile />
+      <MyProfile embedded />
     </DashboardLayout>
   );
 }

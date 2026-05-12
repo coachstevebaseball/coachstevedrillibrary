@@ -34,7 +34,7 @@ const POSITIONS = [
   "RHP", "LHP", "DH", "IF", "OF", "UTL",
 ];
 
-export default function MyProfile() {
+export default function MyProfile({ embedded = false }: { embedded?: boolean } = {}) {
   const { user, loading } = useAuth();
   const utils = trpc.useUtils();
   const { data: profile, isLoading: profileLoading } = trpc.athleteProfiles.getMyProfile.useQuery(
@@ -118,20 +118,21 @@ export default function MyProfile() {
   const isProfileEmpty = !position && !parentEmail && !birthDate;
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="glass sticky top-0 z-40 border-b border-white/10">
-        <div className="flex items-center justify-between max-w-lg mx-auto px-4 py-3">
-          <Link href="/athlete-portal">
-            <button className="flex items-center gap-1 text-muted-foreground hover:text-electric text-sm transition-colors">
-              <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Back</span>
-            </button>
-          </Link>
-          <h1 className="font-bold text-lg text-gradient">My Profile</h1>
-          <div className="w-16" /> {/* Spacer */}
-        </div>
-      </header>
+    <div className={embedded ? "" : "min-h-screen bg-background"}>
+      {!embedded && (
+        <header className="glass sticky top-0 z-40 border-b border-white/10">
+          <div className="flex items-center justify-between max-w-lg mx-auto px-4 py-3">
+            <Link href="/athlete-portal">
+              <button className="flex items-center gap-1 text-muted-foreground hover:text-electric text-sm transition-colors">
+                <ArrowLeft className="w-4 h-4" />
+                <span className="hidden sm:inline">Back</span>
+              </button>
+            </Link>
+            <h1 className="font-bold text-lg text-gradient">My Profile</h1>
+            <div className="w-16" /> {/* Spacer */}
+          </div>
+        </header>
+      )}
 
       <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
         {/* Player Card */}

@@ -21,7 +21,7 @@ interface Submission {
   athleteName?: string;
 }
 
-export default function SubmissionsDashboard() {
+export default function SubmissionsDashboard({ embedded = false }: { embedded?: boolean } = {}) {
   const { user, loading, logout } = useAuth();
   const { addToast } = useNotification();
   const [, navigate] = useLocation();
@@ -161,28 +161,29 @@ export default function SubmissionsDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-brand-header to-brand-header/85 text-brand-header-foreground py-8 mb-8">
-        <div className="container">
-          <div className="flex items-center justify-between mb-4">
-            <Link href="/coach-dashboard">
-              <Button variant="ghost" className="text-brand-header-foreground/80 hover:text-brand-header-foreground hover:bg-brand-header-foreground/10 pl-0">
-                <Home className="mr-2 h-4 w-4" />
-                Coach Dashboard
+    <div className={embedded ? "" : "min-h-screen bg-background"}>
+      {!embedded && (
+        <header className="bg-gradient-to-r from-brand-header to-brand-header/85 text-brand-header-foreground py-8 mb-8">
+          <div className="container">
+            <div className="flex items-center justify-between mb-4">
+              <Link href="/coach-dashboard">
+                <Button variant="ghost" className="text-brand-header-foreground/80 hover:text-brand-header-foreground hover:bg-brand-header-foreground/10 pl-0">
+                  <Home className="mr-2 h-4 w-4" />
+                  Coach Dashboard
+                </Button>
+              </Link>
+              <Button onClick={() => logout()} variant="ghost" className="text-brand-header-foreground/80 hover:text-brand-header-foreground hover:bg-brand-header-foreground/10">
+                <LogOut className="mr-2 h-4 w-4" />
+                Log Out
               </Button>
-            </Link>
-            <Button onClick={() => logout()} variant="ghost" className="text-brand-header-foreground/80 hover:text-brand-header-foreground hover:bg-brand-header-foreground/10">
-              <LogOut className="mr-2 h-4 w-4" />
-              Log Out
-            </Button>
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-4xl md:text-5xl font-heading font-black">Athlete Submissions</h1>
+              <p className="text-brand-header-foreground/90">Review and provide feedback on athlete drill submissions</p>
+            </div>
           </div>
-          <div className="space-y-2">
-            <h1 className="text-4xl md:text-5xl font-heading font-black">Athlete Submissions</h1>
-            <p className="text-brand-header-foreground/90">Review and provide feedback on athlete drill submissions</p>
-          </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       <main className="container max-w-7xl pb-12">
         {/* Stats */}

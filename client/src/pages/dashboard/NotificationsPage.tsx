@@ -4,7 +4,7 @@ import NotificationsInbox from "@/pages/NotificationsInbox";
 export default function NotificationsPage() {
   return (
     <DashboardLayout title="Notifications">
-      <NotificationsInbox />
+      <NotificationsInbox embedded />
     </DashboardLayout>
   );
 }

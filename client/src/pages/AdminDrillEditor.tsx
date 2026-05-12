@@ -848,7 +848,7 @@ function NewDrillModal({ onClose, onSaved }: { onClose: () => void; onSaved: () 
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
-export default function AdminDrillEditor() {
+export default function AdminDrillEditor({ embedded = false }: { embedded?: boolean } = {}) {
   const utils = trpc.useUtils();
 
   const { data: drillsRaw = [], isLoading, refetch } = trpc.drillsDirectory.listAdmin.useQuery();
@@ -943,22 +943,24 @@ export default function AdminDrillEditor() {
   const hiddenCount = drills.filter((d) => d.isHidden).length;
 
   return (
-    <div className="min-h-screen bg-[#060d16] text-gray-100">
+    <div className={embedded ? "text-gray-100" : "min-h-screen bg-[#060d16] text-gray-100"}>
       {/* Header */}
-      <div className="border-b border-[#1e2a3a] bg-[#0A1628]">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className={embedded ? "" : "border-b border-[#1e2a3a] bg-[#0A1628]"}>
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-4">
-            <Link href="/drills">
-              <a
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm text-gray-400 hover:text-white hover:bg-[#1e2a3a] transition-colors"
-                title="Back to drill library"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <span className="hidden sm:inline">Back to library</span>
-              </a>
-            </Link>
+            {!embedded && (
+              <Link href="/drills">
+                <a
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm text-gray-400 hover:text-white hover:bg-[#1e2a3a] transition-colors"
+                  title="Back to drill library"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  <span className="hidden sm:inline">Back to library</span>
+                </a>
+              </Link>
+            )}
             <div>
-              <h1 className="text-xl font-bold text-white">Drill Library Editor</h1>
+              <h1 className="text-xl font-bold text-white">{embedded ? "Library Editor" : "Drill Library Editor"}</h1>
               <p className="text-xs text-gray-400 mt-0.5">
                 {visibleCount} visible · {hiddenCount} hidden · {drills.length} total
               </p>

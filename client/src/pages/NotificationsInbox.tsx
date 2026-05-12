@@ -110,7 +110,7 @@ function formatDate(date: Date | string): string {
   });
 }
 
-export default function NotificationsInbox() {
+export default function NotificationsInbox({ embedded = false }: { embedded?: boolean } = {}) {
   const { user, loading: authLoading } = useAuth();
   const [filter, setFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -190,8 +190,8 @@ export default function NotificationsInbox() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <TopNav />
+    <div className={embedded ? "" : "min-h-screen bg-background"}>
+      {!embedded && <TopNav />}
 
       <main className="max-w-3xl mx-auto px-4 py-8">
         {/* Header */}

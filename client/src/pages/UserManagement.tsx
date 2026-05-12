@@ -33,7 +33,7 @@ interface User {
   lastSignedIn: Date;
 }
 
-export default function UserManagement() {
+export default function UserManagement({ embedded = false }: { embedded?: boolean } = {}) {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
@@ -121,15 +121,16 @@ export default function UserManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
+    <div className={`${embedded ? "" : "min-h-screen bg-background"} p-4 md:p-8`}>
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">User Management</h1>
-          <p className="text-muted-foreground">
-            Manage user roles and access permissions
-          </p>
-        </div>
+        {!embedded && (
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-2">User Management</h1>
+            <p className="text-muted-foreground">
+              Manage user roles and access permissions
+            </p>
+          </div>
+        )}
 
         {/* Search Bar */}
         <Card className="mb-6">
