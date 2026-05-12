@@ -49,6 +49,13 @@ export function AthleteSessionNotes() {
 
   if (notes.length === 0) return null;
 
+  // Show the most recent session first regardless of how the API returns them.
+  const sortedNotes = [...notes].sort((a: any, b: any) => {
+    const aT = a.sessionDate ? new Date(a.sessionDate).getTime() : 0;
+    const bT = b.sessionDate ? new Date(b.sessionDate).getTime() : 0;
+    return bT - aT;
+  });
+
   return (
     <div className="animate-fade-in-up" style={{ animationDelay: "0.25s" }}>
       <div className="flex items-center justify-between mb-3">
@@ -62,7 +69,7 @@ export function AthleteSessionNotes() {
       </div>
 
       <div className="space-y-2">
-        {notes.map((note: any) => {
+        {sortedNotes.map((note: any) => {
           const isExpanded = expandedId === note.id;
           const skills = (note.skillsWorked as string[]) || [];
           const homework = (note.homeworkDrills as Array<{ drillId: string; drillName: string }>) || [];

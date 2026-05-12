@@ -347,6 +347,26 @@ export default function AthletePortal() {
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
+        {/* Personalized greeting */}
+        {(() => {
+          const hour = new Date().getHours();
+          const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+          const firstName = (user?.name || "").trim().split(/\s+/)[0] || "Athlete";
+          const today = new Date().toLocaleDateString(undefined, {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+          });
+          return (
+            <div className="animate-fade-in-up">
+              <h1 className="text-2xl font-bold text-foreground">
+                {greeting}, {firstName}
+              </h1>
+              <p className="text-sm text-muted-foreground mt-0.5">{today}</p>
+            </div>
+          );
+        })()}
+
         {/* Up Next Hero Card */}
         {upNextDrill ? (
           <div className="glass-card rounded-2xl overflow-hidden border-glow animate-fade-in-up">
@@ -398,7 +418,23 @@ export default function AthletePortal() {
               <Trophy className="w-8 h-8 text-emerald-400" />
             </div>
             <h2 className="text-2xl font-bold mb-2 text-foreground">All Caught Up!</h2>
-            <p className="text-muted-foreground">No pending drills. Check back soon for new assignments!</p>
+            <p className="text-muted-foreground mb-5">
+              No pending drills right now. Pick your next move:
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Link href="/drills">
+                <a className="flex items-center justify-center gap-2 h-12 rounded-xl bg-electric/15 hover:bg-electric/25 text-electric font-semibold text-sm transition-colors">
+                  <Play className="w-4 h-4" />
+                  Browse Drills
+                </a>
+              </Link>
+              <Link href="/athlete-messaging">
+                <a className="flex items-center justify-center gap-2 h-12 rounded-xl bg-white/5 hover:bg-white/10 text-foreground font-semibold text-sm transition-colors">
+                  <MessageCircle className="w-4 h-4" />
+                  Ask Coach Steve
+                </a>
+              </Link>
+            </div>
           </div>
         )}
 
@@ -413,12 +449,24 @@ export default function AthletePortal() {
             </div>
             
             {/* Streak with glow */}
-            <div className="flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-lg px-3 py-2">
-              <Flame className="w-5 h-5 text-orange-400" />
-              <span className="font-bold text-orange-400">{progressStats.streak}</span>
-              <span className="text-sm text-orange-400">Day Streak</span>
-              {progressStats.streak > 0 && <span className="text-lg">🔥</span>}
-            </div>
+            {progressStats.streak > 0 ? (
+              <div className="flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-lg px-3 py-2">
+                <Flame className="w-5 h-5 text-orange-400" />
+                <span className="font-bold text-orange-400">{progressStats.streak}</span>
+                <span className="text-sm text-orange-400">Day Streak</span>
+                <span className="text-lg">🔥</span>
+              </div>
+            ) : (
+              <Link href="/drills">
+                <a className="flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-lg px-3 py-2 hover:bg-orange-500/15 transition-colors group">
+                  <Flame className="w-5 h-5 text-orange-400/70 group-hover:text-orange-400 transition-colors" />
+                  <span className="text-sm text-orange-400/90 font-medium flex-1">
+                    Start your streak today — complete one drill
+                  </span>
+                  <ChevronUp className="w-4 h-4 text-orange-400/60 rotate-90 group-hover:text-orange-400 group-hover:translate-x-0.5 transition-all" />
+                </a>
+              </Link>
+            )}
           </div>
         </div>
 
