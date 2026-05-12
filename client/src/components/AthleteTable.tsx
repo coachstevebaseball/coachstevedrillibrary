@@ -338,8 +338,79 @@ export function AthleteTable() {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="glass-card rounded-xl overflow-hidden">
+      {/* Mobile card list (< md) — replaces the horizontal-scroll table on phones */}
+      <div className="md:hidden space-y-2">
+        {paginatedAthletes.length === 0 ? (
+          <div className="glass-card rounded-xl p-8 text-center text-muted-foreground">
+            <Users className="h-10 w-10 mx-auto mb-3 opacity-20" />
+            <p className="font-medium">No athletes found</p>
+            <p className="text-xs mt-1">Try adjusting your search or filters</p>
+          </div>
+        ) : (
+          paginatedAthletes.map((athlete) => {
+            const displayName =
+              athlete.name && !athlete.name.includes("@")
+                ? athlete.name
+                : athlete.email
+                  ? athlete.email.split("@")[0].replace(/[._-]/g, " ").replace(/\w/g, (c) => c.toUpperCase())
+                  : `Athlete #${athlete.numericId}`;
+            const pct =
+              athlete.totalDrills > 0
+                ? Math.round((athlete.completedDrills / athlete.totalDrills) * 100)
+                : 0;
+            return (
+              <button
+                key={athlete.id}
+                type="button"
+                onClick={() => setExpandedRow(expandedRow === athlete.id ? null : athlete.id)}
+                className="w-full text-left glass-card rounded-xl p-3 flex items-center gap-3 hover:bg-white/[0.05] transition-colors"
+              >
+                <div
+                  className={`h-10 w-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+                    athlete.isActiveClient
+                      ? "bg-gradient-to-br from-[#DC143C]/30 to-[#DC143C]/30 text-[#DC143C]"
+                      : athlete.type === "invite"
+                        ? "bg-gradient-to-br from-amber-500/30 to-orange-500/30 text-amber-400"
+                        : "bg-white/[0.08] text-muted-foreground"
+                  }`}
+                >
+                  {displayName.charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2 mb-0.5">
+                    <p className="font-medium text-sm truncate">{displayName}</p>
+                    {athlete.type === "invite" ? (
+                      <span className="text-[9px] font-semibold text-amber-400 uppercase tracking-wide flex-shrink-0">Pending</span>
+                    ) : athlete.isActiveClient ? (
+                      <span className="text-[9px] font-semibold text-green-400 uppercase tracking-wide flex-shrink-0">Active</span>
+                    ) : (
+                      <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wide flex-shrink-0">Inactive</span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-muted-foreground truncate mb-1.5">{athlete.email || "no email on file"}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] text-muted-foreground tabular-nums">
+                      {athlete.completedDrills}/{athlete.totalDrills} drills
+                    </span>
+                    <div className="flex-1 h-1 rounded-full bg-white/[0.08] overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-[#DC143C] to-[#E8425A]"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                    <span className="text-[10px] text-muted-foreground/70 flex-shrink-0">
+                      {getTimeSince(athlete.lastActivity)}
+                    </span>
+                  </div>
+                </div>
+              </button>
+            );
+          })
+        )}
+      </div>
+
+      {/* Desktop table (md+) */}
+      <div className="hidden md:block glass-card rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
