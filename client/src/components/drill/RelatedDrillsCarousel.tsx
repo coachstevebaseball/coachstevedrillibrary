@@ -26,19 +26,20 @@ export function RelatedDrillsCarousel({ drills, title = "RELATED DRILLS" }: Prop
   if (!drills || drills.length === 0) return null;
 
   return (
-    <div>
+    <div className="w-full max-w-full min-w-0 overflow-hidden">
       <h3 className="text-xs font-bold tracking-widest mb-3 text-white/80">{title}</h3>
 
-      {/* Mobile: horizontal scroll-snap, contained inside its own overflow box.
-          Desktop: 3-up grid. */}
-      <div className="w-full max-w-full overflow-x-auto md:overflow-visible">
-        <div className="flex gap-3 snap-x snap-mandatory md:grid md:grid-cols-3 md:gap-4 pb-2">
+      {/* Scrollable container is inside the overflow-hidden parent.
+          On mobile: horizontal scroll-snap.
+          On desktop: 3-up grid. */}
+      <div className="w-full overflow-x-auto overflow-y-hidden md:overflow-visible -mx-1 px-1">
+        <div className="flex gap-3 snap-x snap-mandatory md:grid md:grid-cols-3 md:gap-4 pb-2 w-max md:w-auto">
           {drills.map((d) => {
             const diffColor = d.difficulty ? DIFF_TONE[d.difficulty] : undefined;
             const fallbackImg = `/images/drills/${d.drillId.toLowerCase().replace(/[^a-z0-9]/g, "-")}.jpg`;
             return (
               <Link key={d.drillId} href={`/drill/${d.drillId}`}>
-                <a className="snap-start flex-shrink-0 w-[75vw] max-w-[280px] md:w-auto md:max-w-none rounded-xl overflow-hidden border border-white/10 bg-white/[0.02] hover:border-white/25 transition-colors group relative">
+                <a className="snap-start w-[70vw] max-w-[260px] md:w-auto md:max-w-none rounded-xl overflow-hidden border border-white/10 bg-white/[0.02] hover:border-white/25 transition-colors group relative flex-shrink-0">
                 {d.featured && (
                   <span
                     className="absolute top-2 left-2 z-10 flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"

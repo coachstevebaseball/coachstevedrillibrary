@@ -2293,3 +2293,7 @@
 ## Mobile Overflow Bug Fixes (May 2026)
 - [x] Fix Drill Detail page horizontal overflow — tags row and Goal/Equipment cards bleed off right edge on mobile
 - [x] Fix Assign Drills page horizontal overflow — assignment cards and action buttons cut off on right edge
+
+## Drill Detail Overflow Fix - NextSteps/RelatedDrills (May 2026)
+- [x] Fix NextStepsChips horizontal overflow — added overflow-hidden outer wrapper with scrollable inner container
+- [x] Fix RelatedDrillsCarousel horizontal overflow — added overflow-hidden outer wrapper, reduced card width to 70vw/260px max
