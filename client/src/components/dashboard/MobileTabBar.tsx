@@ -45,8 +45,8 @@ export function MobileTabBar() {
                 className="flex-1 flex flex-col items-center justify-center gap-0.5 py-2 min-h-[56px] text-[10px] font-semibold tracking-wide"
                 aria-current={isActive ? "page" : undefined}
               >
-                <Icon className={`h-5 w-5 ${isActive ? "text-white" : "text-white/45"}`} style={isActive ? { color: "oklch(60% 0.2 25)" } : undefined} />
-                <span className={isActive ? "text-white" : "text-white/55"} style={isActive ? { color: "oklch(60% 0.2 25)" } : undefined}>{t.label}</span>
+                <Icon className={`h-5 w-5 ${isActive ? "text-white" : "text-white/75"}`} style={isActive ? { color: "oklch(65% 0.26 25)" } : undefined} />
+                <span className={isActive ? "text-white font-bold" : "text-white/80"} style={isActive ? { color: "oklch(65% 0.26 25)" } : undefined}>{t.label}</span>
               </a>
             </Link>
           );

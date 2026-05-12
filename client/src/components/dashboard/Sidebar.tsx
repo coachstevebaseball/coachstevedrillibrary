@@ -83,7 +83,7 @@ export function Sidebar({ onAction, onNavigate }: SidebarProps) {
 
   const baseItem =
     "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm min-h-[44px] transition-colors";
-  const inactive = "text-white/45 hover:text-white hover:bg-white/5";
+  const inactive = "text-white/70 hover:text-white hover:bg-white/8";
 
   return (
     <aside
@@ -105,7 +105,10 @@ export function Sidebar({ onAction, onNavigate }: SidebarProps) {
       <nav className="px-2 py-4 space-y-5">
         {NAV_GROUPS.map((group) => (
           <div key={group.heading}>
-            <h3 className="px-3 mb-2 text-[10px] font-semibold tracking-widest text-white/40">
+            <h3
+              className="px-3 mb-2 text-[10px] font-bold tracking-widest"
+              style={{ color: "oklch(72% 0.22 25)" }}
+            >
               {group.heading}
             </h3>
             <ul className="space-y-0.5">

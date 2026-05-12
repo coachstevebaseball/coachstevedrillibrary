@@ -7,9 +7,9 @@ type Props = {
   watchFor?: string | null;          // gray — coaching observation
 };
 
-const TEAL = "oklch(70% 0.15 200)";
-const YELLOW = "oklch(75% 0.15 80)";
-const RED = "oklch(60% 0.2 25)";
+const TEAL = "oklch(76% 0.20 200)";
+const YELLOW = "oklch(82% 0.19 80)";
+const RED = "oklch(68% 0.26 25)";
 
 function nonEmpty(s?: string | null): boolean {
   return typeof s === "string" && s.trim().length > 0;
@@ -33,12 +33,12 @@ export function CoachingLayer({ whatToFeel, coachCue, commonMistakes, watchFor }
     <div className="space-y-4">
       {feels.length > 0 && (
         <div className="rounded-xl border border-white/10 bg-white/[0.02] p-5">
-          <h3 className="text-xs font-semibold tracking-widest mb-3" style={{ color: TEAL }}>
+          <h3 className="text-xs font-bold tracking-widest mb-3" style={{ color: TEAL }}>
             WHAT TO FEEL
           </h3>
           <ul className="space-y-1.5">
             {feels.map((f, i) => (
-              <li key={i} className="flex gap-2 text-sm text-white/85 leading-snug">
+              <li key={i} className="flex gap-2 text-sm text-white leading-snug">
                 <span
                   className="flex-shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full"
                   style={{ backgroundColor: TEAL }}
@@ -55,21 +55,21 @@ export function CoachingLayer({ whatToFeel, coachCue, commonMistakes, watchFor }
           className="rounded-xl border-l-4 border-white/10 bg-white/[0.02] p-5"
           style={{ borderLeftColor: YELLOW }}
         >
-          <h3 className="text-xs font-semibold tracking-widest mb-2" style={{ color: YELLOW }}>
+          <h3 className="text-xs font-bold tracking-widest mb-2" style={{ color: YELLOW }}>
             COACH CUE
           </h3>
-          <p className="text-base italic leading-relaxed text-white/90">“{cue}”</p>
+          <p className="text-base italic leading-relaxed text-white">“{cue}”</p>
         </div>
       )}
 
       {mistakes.length > 0 && (
         <div className="rounded-xl border border-white/10 bg-white/[0.02] p-5">
-          <h3 className="text-xs font-semibold tracking-widest mb-3" style={{ color: RED }}>
+          <h3 className="text-xs font-bold tracking-widest mb-3" style={{ color: RED }}>
             COMMON MISTAKES
           </h3>
           <ul className="space-y-2">
             {mistakes.map((m, i) => (
-              <li key={i} className="flex gap-2 text-sm text-white/85 leading-snug">
+              <li key={i} className="flex gap-2 text-sm text-white leading-snug">
                 <AlertTriangle className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: RED }} />
                 <span>{m}</span>
               </li>
@@ -80,11 +80,11 @@ export function CoachingLayer({ whatToFeel, coachCue, commonMistakes, watchFor }
 
       {watch && (
         <div className="rounded-xl border border-white/10 bg-white/[0.02] p-5">
-          <h3 className="text-xs font-semibold tracking-widest mb-2 text-white/55 flex items-center gap-2">
+          <h3 className="text-xs font-bold tracking-widest mb-2 text-white/80 flex items-center gap-2">
             <Eye className="h-3.5 w-3.5" />
             WATCH FOR
           </h3>
-          <p className="text-sm leading-relaxed text-white/85">{watch}</p>
+          <p className="text-sm leading-relaxed text-white">{watch}</p>
         </div>
       )}
     </div>

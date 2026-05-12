@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
 
-const TEAL = "oklch(70% 0.15 200)";
+const TEAL = "oklch(76% 0.20 200)";
 
 type NextDrill = {
   drillId: string;
@@ -18,7 +18,7 @@ export function NextStepsChips({ drills }: Props) {
   return (
     <div>
       <h3
-        className="text-xs font-semibold tracking-widest mb-3"
+        className="text-xs font-bold tracking-widest mb-3"
         style={{ color: TEAL }}
       >
         NEXT STEPS — BUILD ON THIS DRILL
@@ -27,9 +27,10 @@ export function NextStepsChips({ drills }: Props) {
         {drills.map((d) => (
           <Link key={d.drillId} href={`/drill/${d.drillId}`}>
             <a
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium border border-white/15 bg-white/[0.04] text-white/85 hover:text-white hover:bg-white/[0.08] hover:border-white/25 transition-colors whitespace-nowrap min-h-[44px] md:min-h-0"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold border bg-white/[0.04] text-white hover:bg-white/[0.10] transition-colors whitespace-nowrap min-h-[44px] md:min-h-0"
+              style={{ borderColor: "oklch(76% 0.20 200 / 0.4)" }}
             >
-              <ArrowRight className="h-3.5 w-3.5 flex-shrink-0" />
+              <ArrowRight className="h-3.5 w-3.5 flex-shrink-0" style={{ color: TEAL }} />
               <span>{d.name}</span>
             </a>
           </Link>

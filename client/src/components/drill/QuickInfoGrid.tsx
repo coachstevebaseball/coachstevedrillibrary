@@ -16,10 +16,13 @@ type Props = {
   howToSteps?: string[] | null;
 };
 
-const TONE_GOAL = "oklch(60% 0.2 25)";        // red
-const TONE_PROBLEM = "oklch(70% 0.18 60)";    // amber
-const TONE_EQUIPMENT = "oklch(70% 0.15 200)"; // teal
-const TONE_HOWTO = "oklch(60% 0.15 150)";     // green
+// Brighter, more saturated accent tones. Each card's icon + numbered
+// badge use the full-strength tone; the card-border ring uses the same
+// tone at lower alpha (set per-card via the helper below).
+const TONE_GOAL = "oklch(68% 0.26 25)";        // red — primary brand
+const TONE_PROBLEM = "oklch(76% 0.22 60)";     // amber
+const TONE_EQUIPMENT = "oklch(76% 0.19 200)";  // teal
+const TONE_HOWTO = "oklch(68% 0.20 150)";      // green
 
 function nonEmpty(s?: string | null): boolean {
   return typeof s === "string" && s.trim().length > 0;
@@ -32,28 +35,30 @@ function arr(values?: string[] | null): string[] {
 function CardBox({ card }: { card: Card }) {
   const Icon = card.icon;
   // Replace the closing paren of the OKLCH triple so we can splice in a / alpha.
-  const baseBg = card.tone.slice(0, -1) + " / 0.14)";
-  const baseBorder = card.tone.slice(0, -1) + " / 0.28)";
-  const iconBg = card.tone.slice(0, -1) + " / 0.18)";
+  const baseBg = card.tone.slice(0, -1) + " / 0.18)";
+  const baseBorder = card.tone.slice(0, -1) + " / 0.45)";
+  const iconBg = card.tone.slice(0, -1) + " / 0.25)";
 
   return (
     <div
-      className="rounded-xl p-5 bg-[oklch(14%_0.005_0)] border"
-      style={{ borderColor: baseBorder, boxShadow: `0 0 0 1px ${baseBg}` }}
+      className="rounded-xl p-5 bg-[oklch(14%_0.005_0)] border-2"
+      style={{ borderColor: baseBorder, boxShadow: `0 0 0 1px ${baseBg}, 0 0 24px -8px ${baseBg}` }}
     >
       <div className="flex items-center gap-3 mb-3">
         <div
-          className="h-8 w-8 rounded-md flex items-center justify-center flex-shrink-0"
+          className="h-9 w-9 rounded-md flex items-center justify-center flex-shrink-0"
           style={{ backgroundColor: iconBg }}
         >
-          <Icon className="h-4 w-4" style={{ color: card.tone }} />
+          <Icon className="h-5 w-5" style={{ color: card.tone }} />
         </div>
-        <span className="text-xs font-semibold tracking-widest text-white/80">{card.label}</span>
+        <span className="text-xs font-bold tracking-widest" style={{ color: card.tone }}>
+          {card.label}
+        </span>
       </div>
       {card.numbered ? (
         <ol className="space-y-2">
           {card.items.map((it, i) => (
-            <li key={i} className="flex gap-2 text-sm text-white/85 leading-snug">
+            <li key={i} className="flex gap-2 text-sm text-white leading-snug">
               <span
                 className="flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-bold"
                 style={{ backgroundColor: iconBg, color: card.tone }}
@@ -67,7 +72,7 @@ function CardBox({ card }: { card: Card }) {
       ) : (
         <ul className="space-y-1.5">
           {card.items.map((it, i) => (
-            <li key={i} className="flex gap-2 text-sm text-white/85 leading-snug">
+            <li key={i} className="flex gap-2 text-sm text-white leading-snug">
               <Check className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: card.tone }} />
               <span>{it}</span>
             </li>

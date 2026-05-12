@@ -1561,7 +1561,7 @@ export default function DrillDetail() {
                 const subtitle = dbDrill?.whoThisDrillIsBestFor ?? dbDrill?.goalOfDrill ?? null;
                 if (!subtitle || typeof subtitle !== "string" || subtitle.trim().length === 0) return null;
                 return (
-                  <p className="mt-3 text-base md:text-lg text-brand-header-foreground/65 leading-relaxed max-w-3xl line-clamp-3">
+                  <p className="mt-3 text-base md:text-lg text-brand-header-foreground/85 leading-relaxed max-w-3xl line-clamp-3 font-medium">
                     {subtitle}
                   </p>
                 );

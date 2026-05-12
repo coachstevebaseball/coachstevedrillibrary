@@ -81,17 +81,19 @@
   --popover-foreground: oklch(0.97 0 0);
 
   --muted: oklch(0.24 0.02 260);
-  --muted-foreground: oklch(0.65 0.015 260);
+  /* Bumped from 0.65 → 0.78 for readability without going full white */
+  --muted-foreground: oklch(0.78 0.02 260);
 
   --accent: oklch(0.22 0.025 260);
   --accent-foreground: oklch(0.97 0 0);
 
-  --destructive: oklch(0.50 0.22 25);
+  --destructive: oklch(0.55 0.24 25);
   --destructive-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.26 0.02 260);
+  /* Bumped from 0.26 → 0.34 so card edges and dividers are visible */
+  --border: oklch(0.34 0.025 260);
   --input: oklch(0.22 0.025 260);
-  --ring: oklch(0.56 0.24 25);
+  --ring: oklch(0.62 0.26 25);
 
   --radius: 0.75rem;
 

@@ -56,7 +56,7 @@ export function MetadataFooter({ drillType, ageLevels, focusAreas }: Props) {
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
       {hasType && (
         <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
-          <h4 className="text-[10px] font-semibold tracking-widest text-white/45 mb-2">DRILL TYPE</h4>
+          <h4 className="text-[10px] font-bold tracking-widest text-white/75 mb-2">DRILL TYPE</h4>
           <span
             className={`${CATEGORY_PILL} text-white`}
             style={{ backgroundColor: "oklch(50% 0.2 25 / 0.25)" }}
@@ -67,7 +67,7 @@ export function MetadataFooter({ drillType, ageLevels, focusAreas }: Props) {
       )}
       {ages.length > 0 && (
         <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
-          <h4 className="text-[10px] font-semibold tracking-widest text-white/45 mb-2">AGE / LEVEL</h4>
+          <h4 className="text-[10px] font-bold tracking-widest text-white/75 mb-2">AGE / LEVEL</h4>
           <div className="flex flex-wrap gap-1.5">
             {ages.map((a) => (
               <span
@@ -83,7 +83,7 @@ export function MetadataFooter({ drillType, ageLevels, focusAreas }: Props) {
       )}
       {focus.length > 0 && (
         <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
-          <h4 className="text-[10px] font-semibold tracking-widest text-white/45 mb-2">FOCUS AREAS</h4>
+          <h4 className="text-[10px] font-bold tracking-widest text-white/75 mb-2">FOCUS AREAS</h4>
           <div className="flex flex-wrap gap-1.5">
             {focus.map((f) => (
               <span

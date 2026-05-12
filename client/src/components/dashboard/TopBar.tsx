@@ -35,7 +35,7 @@ export function TopBar({ title, subtitle, onMenuClick, onInvite, onAddDrill }: T
           <h1 className="font-heading text-base sm:text-lg font-bold text-white truncate">
             {title}
           </h1>
-          <p className="text-xs text-white/45 truncate">{sub}</p>
+          <p className="text-xs text-white/70 truncate">{sub}</p>
         </div>
 
         <div className="flex items-center gap-2 ml-auto order-2 sm:order-3">
@@ -43,7 +43,7 @@ export function TopBar({ title, subtitle, onMenuClick, onInvite, onAddDrill }: T
             <button
               type="button"
               onClick={onInvite}
-              className="flex items-center gap-1.5 h-11 px-3 sm:px-4 rounded-full border border-white/15 text-white/80 hover:text-white hover:bg-white/5 text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+              className="flex items-center gap-1.5 h-11 px-3 sm:px-4 rounded-full border border-white/25 text-white font-medium hover:bg-white/10 text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
               aria-label="Invite user"
             >
               <UserPlus className="h-4 w-4 flex-shrink-0" />
@@ -54,7 +54,7 @@ export function TopBar({ title, subtitle, onMenuClick, onInvite, onAddDrill }: T
             <button
               type="button"
               onClick={onAddDrill}
-              className="flex items-center gap-1.5 h-11 px-3 sm:px-4 rounded-full border border-white/15 text-white/80 hover:text-white hover:bg-white/5 text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+              className="flex items-center gap-1.5 h-11 px-3 sm:px-4 rounded-full border border-white/25 text-white font-medium hover:bg-white/10 text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
               aria-label="Add new drill"
             >
               <Plus className="h-4 w-4 flex-shrink-0" />

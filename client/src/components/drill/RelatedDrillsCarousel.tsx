@@ -27,7 +27,7 @@ export function RelatedDrillsCarousel({ drills, title = "RELATED DRILLS" }: Prop
 
   return (
     <div>
-      <h3 className="text-xs font-semibold tracking-widest mb-3 text-white/55">{title}</h3>
+      <h3 className="text-xs font-bold tracking-widest mb-3 text-white/80">{title}</h3>
 
       {/* Mobile: horizontal scroll-snap. Desktop: 3-up grid. */}
       <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-3 md:gap-4 md:overflow-visible pb-2 -mx-1 px-1">
