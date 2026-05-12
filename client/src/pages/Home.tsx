@@ -13,7 +13,7 @@ import { HomePageSkeleton } from "@/components/Skeleton";
 import { Link, useLocation } from "wouter";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { trpc } from "@/lib/trpc";
-import { useAllDrills } from "@/hooks/useAllDrills";
+import { useAllDrills, useAllDrillsQuery } from "@/hooks/useAllDrills";
 import { DrillEditModal } from "@/components/DrillEditModal";
 import { useDrillListParams } from "@/hooks/useDrillListParams";
 import { TopNav } from "@/components/TopNav";
@@ -150,6 +150,9 @@ export default function Home() {
 
   // Merge static + custom drills, sorted alphabetically
   const allDrills = useAllDrills();
+  // Loading flag (used for hero stat skeletons). Shares the same trpc query
+  // under the hood as useAllDrills, so this is a free read.
+  const { isLoading: drillsLoading } = useAllDrillsQuery();
 
   const allCategories = useMemo(() => {
     const categories = new Set<string>();
@@ -517,7 +520,15 @@ export default function Home() {
                 <div key={i} className="text-center">
                   <div className="flex items-center justify-center gap-1 mb-0.5">
                     <stat.icon className="h-3 w-3 text-electric" />
-                    <InlineEdit contentKey={stat.valueKey} defaultValue={stat.valueDefault} as="span" className="text-lg md:text-xl font-heading font-bold text-foreground" />
+                    {drillsLoading ? (
+                      <span
+                        aria-busy="true"
+                        aria-label="Loading"
+                        className="inline-block h-5 md:h-6 w-8 rounded bg-muted/40 animate-pulse"
+                      />
+                    ) : (
+                      <InlineEdit contentKey={stat.valueKey} defaultValue={stat.valueDefault} as="span" className="text-lg md:text-xl font-heading font-bold text-foreground" />
+                    )}
                   </div>
                   <InlineEdit contentKey={stat.labelKey} defaultValue={stat.labelDefault} as="span" className="text-[10px] text-muted-foreground uppercase tracking-wider" />
                 </div>
@@ -580,19 +591,29 @@ export default function Home() {
                 const count = cat === "All"
                   ? allDrills.length
                   : allDrills.filter(d => d.categories.includes(cat)).length;
+                const isEmpty = cat !== "All" && count === 0 && !drillsLoading;
                 return (
                   <button
                     key={cat}
-                    onClick={() => setCategoryFilter(cat)}
+                    onClick={() => { if (!isEmpty) setCategoryFilter(cat); }}
+                    disabled={isEmpty}
+                    aria-disabled={isEmpty}
+                    title={isEmpty ? `No ${cat} drills in the library yet` : undefined}
                     className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${
                       categoryFilter === cat
                         ? "bg-electric text-white shadow-lg shadow-electric/25"
-                        : "bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/50"
+                        : isEmpty
+                          ? "bg-card/40 text-muted-foreground/40 border border-border/30 cursor-not-allowed"
+                          : "bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/50"
                     }`}
                   >
                     {cat === "All" ? "All Skills" : cat}
                     <span className={`ml-1.5 text-[10px] ${
-                      categoryFilter === cat ? "text-white/70" : "text-muted-foreground/60"
+                      categoryFilter === cat
+                        ? "text-white/70"
+                        : isEmpty
+                          ? "text-muted-foreground/30"
+                          : "text-muted-foreground/60"
                     }`}>
                       {count}
                     </span>
@@ -645,9 +666,9 @@ export default function Home() {
               const drillDetailHref = `/drill/${drill.id}${currentQuery}`;
 
               return (
-                <div 
+                <div
                   key={drill.id}
-                  className="group animate-fade-in-up relative"
+                  className="group animate-fade-in-up relative md:transition-transform md:duration-300 md:hover:-translate-y-1"
                   style={{ animationDelay: `${Math.min(index * 0.04, 0.4)}s` }}
                 >
                   {/* Admin Edit Button */}
@@ -746,7 +767,7 @@ export default function Home() {
                         
                         {/* Footer */}
                         <div className="flex items-center text-muted-foreground group-hover:text-electric transition-all duration-300 pt-2 border-t border-border/30">
-                          <InlineEdit contentKey="home.card.viewDetails" defaultValue="View Details" as="span" className="text-xs font-semibold" />
+                          <InlineEdit contentKey="home.card.viewDetails" defaultValue="Start This Drill" as="span" className="text-xs font-semibold" />
                           <ChevronRight className="h-3.5 w-3.5 ml-auto group-hover:translate-x-1 transition-transform duration-300" />  
                         </div>
                       </div>
