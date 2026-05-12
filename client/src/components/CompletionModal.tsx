@@ -2,6 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
+import { hapticCelebration } from "@/lib/haptics";
 
 interface CompletionModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ export function CompletionModal({ isOpen, drillName, onClose, onConfirm }: Compl
   useEffect(() => {
     if (isOpen) {
       setShowConfetti(true);
+      hapticCelebration();
       // Trigger confetti animation
       const timer = setTimeout(() => setShowConfetti(false), 2000);
       return () => clearTimeout(timer);

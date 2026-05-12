@@ -1,4 +1,5 @@
 import { Menu, Plus, UserPlus } from "lucide-react";
+import { hapticLight } from "@/lib/haptics";
 
 type TopBarProps = {
   title: string;
@@ -20,12 +21,12 @@ function defaultSubtitle(): string {
 export function TopBar({ title, subtitle, onMenuClick, onInvite, onAddDrill }: TopBarProps) {
   const sub = subtitle ?? defaultSubtitle();
   return (
-    <header className="sticky top-0 z-30 border-b border-white/10 bg-[rgb(11,11,12)]">
+    <header className="sticky top-0 z-30 border-b border-white/10 bg-[rgb(11,11,12)]/95 backdrop-blur-md">
       <div className="flex flex-wrap items-center gap-2 px-3 sm:px-6 py-3">
         <button
           type="button"
-          onClick={onMenuClick}
-          className="md:hidden flex h-11 w-11 items-center justify-center rounded-lg text-white/70 hover:bg-white/5 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+          onClick={() => { hapticLight(); onMenuClick?.(); }}
+          className="md:hidden flex h-11 w-11 items-center justify-center rounded-lg text-white/70 hover:bg-white/5 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 active:scale-90 transition-transform"
           aria-label="Open navigation"
         >
           <Menu className="h-5 w-5" />
@@ -35,15 +36,15 @@ export function TopBar({ title, subtitle, onMenuClick, onInvite, onAddDrill }: T
           <h1 className="font-heading text-base sm:text-lg font-bold text-white truncate">
             {title}
           </h1>
-          <p className="text-xs text-white/70 truncate">{sub}</p>
+          <p className="text-xs text-white/50 truncate">{sub}</p>
         </div>
 
         <div className="flex items-center gap-2 ml-auto order-2 sm:order-3">
           {onInvite && (
             <button
               type="button"
-              onClick={onInvite}
-              className="flex items-center gap-1.5 h-11 px-3 sm:px-4 rounded-full border border-white/25 text-white font-medium hover:bg-white/10 text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+              onClick={() => { hapticLight(); onInvite(); }}
+              className="flex items-center gap-1.5 h-11 px-3 sm:px-4 rounded-full border border-white/25 text-white font-medium hover:bg-white/10 text-sm transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
               aria-label="Invite user"
             >
               <UserPlus className="h-4 w-4 flex-shrink-0" />
@@ -53,8 +54,8 @@ export function TopBar({ title, subtitle, onMenuClick, onInvite, onAddDrill }: T
           {onAddDrill && (
             <button
               type="button"
-              onClick={onAddDrill}
-              className="flex items-center gap-1.5 h-11 px-3 sm:px-4 rounded-full border border-white/25 text-white font-medium hover:bg-white/10 text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+              onClick={() => { hapticLight(); onAddDrill(); }}
+              className="flex items-center gap-1.5 h-11 px-3 sm:px-4 rounded-full border border-white/25 text-white font-medium hover:bg-white/10 text-sm transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
               aria-label="Add new drill"
             >
               <Plus className="h-4 w-4 flex-shrink-0" />

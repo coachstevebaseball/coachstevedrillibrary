@@ -114,7 +114,7 @@ export function DrillModalRedesigned({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-lg mx-auto max-h-[90vh] flex flex-col p-0 gap-0 glass-card border-white/10">
+      <DialogContent className="max-w-lg mx-auto max-h-[90vh] sm:max-h-[90vh] h-[100dvh] sm:h-auto flex flex-col p-0 gap-0 glass-card border-white/10 sm:rounded-xl rounded-none sm:my-4 my-0 sm:mx-auto">
         {/* Header */}
         <DialogHeader className="p-5 pb-4 border-b border-white/10 bg-gradient-to-r from-navy to-charcoal flex-shrink-0">
           <div className="flex items-center justify-between">

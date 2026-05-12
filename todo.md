@@ -2261,3 +2261,31 @@
 - [ ] Audit orphaned userIds in drillAssignments (10110004, 3390145, etc.) — reassign or clean up
 - [ ] Wire assignmentProgress to a real per-session rep tracking feature OR drop the table
 - [ ] Add user-visible error toast on Mark Complete failure (currently resets silently)
+
+
+## Mobile Experience Enhancements (May 2026)
+
+### Athlete-Facing Mobile Improvements
+- [x] Pull-to-refresh on athlete portal for assignment updates
+- [x] Swipe-to-complete gesture on drill playlist cards
+- [x] Haptic-style visual feedback on touch interactions (active states)
+- [x] Improved mobile drill modal with full-screen bottom sheet on small screens
+- [ ] Sticky "Up Next" mini-player bar when scrolling past hero card
+- [x] Better touch targets (min 48px) on all interactive elements
+
+### Coach/Admin Dashboard Mobile Improvements
+- [ ] Swipeable athlete cards in overview for quick actions
+- [x] Floating action button (FAB) for quick assign/invite on mobile
+- [ ] Collapsible stat cards that expand on tap (save vertical space)
+- [ ] Mobile-optimized assign drills flow with bottom sheet drill picker
+- [ ] Improved mobile table → card transitions with smooth animations
+
+### Shared Mobile UX Patterns
+- [x] Add touch-active states with scale-down feedback on all buttons/cards
+- [ ] Implement smooth page transitions between routes
+- [x] Improve iOS-style safe area handling for notch/home indicator
+- [x] Improve scroll performance with will-change hints on animated elements
+- [ ] Add skeleton loading states optimized for mobile viewport
+- [x] Bottom sheet component for mobile modals/dialogs
+- [x] Scroll-to-top button on long pages
+- [x] Vibration API integration for completion celebrations

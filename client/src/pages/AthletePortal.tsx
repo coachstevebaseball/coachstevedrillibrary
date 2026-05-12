@@ -29,6 +29,11 @@ import { AthleteReports } from "@/components/AthleteReports";
 import { DrillModalRedesigned } from "@/components/DrillModalRedesigned";
 import { AthleteBadgesRedesigned } from "@/components/AthleteBadgesRedesigned";
 import { TopNav } from "@/components/TopNav";
+import { PullToRefresh } from "@/components/mobile/PullToRefresh";
+import { SwipeableCard } from "@/components/mobile/SwipeableCard";
+import { ScrollToTop } from "@/components/mobile/ScrollToTop";
+import { hapticSuccess, hapticMedium } from "@/lib/haptics";
+import { useIsMobile } from "@/hooks/useMobile";
 
 interface Drill {
   id: string;
@@ -107,6 +112,7 @@ function SkillIcon({ category }: { category: string }) {
 export default function AthletePortal() {
   useScrollRestoration();
   const { user, loading, logout } = useAuth();
+  const isMobile = useIsMobile();
   // Admin "view as athlete" — reads ?viewAs=<userId> from URL
   const viewAsId = (() => {
     const params = new URLSearchParams(window.location.search);
@@ -171,6 +177,26 @@ export default function AthletePortal() {
       logActivityMutation.mutate({ activityType: "portal_login" });
     }
   }, [user?.id]);
+
+  // Pull-to-refresh handler
+  const handleRefresh = async () => {
+    await Promise.all([
+      utils.drillAssignments.getUserAssignments.invalidate(),
+      utils.drillAssignments.getStreak.invalidate(),
+      utils.favorites.getAll.invalidate(),
+    ]);
+  };
+
+  // Swipe-to-complete handler
+  const handleSwipeComplete = async (assignmentId: number) => {
+    hapticSuccess();
+    try {
+      await updateStatusMutation.mutateAsync({ assignmentId, status: "completed" });
+      toast.success("Drill completed! Great work!");
+    } catch (error) {
+      // Error handled by mutation onError
+    }
+  };
 
   // Calculate progress stats
   const progressStats = useMemo(() => {
@@ -346,6 +372,7 @@ export default function AthletePortal() {
         </div>
       </header>
 
+      <PullToRefresh onRefresh={handleRefresh} enabled={isMobile}>
       <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
         {/* Personalized greeting */}
         {(() => {
@@ -481,37 +508,45 @@ export default function AthletePortal() {
             </div>
             
             <div className="space-y-2">
+              {isMobile && (
+                <p className="text-[10px] text-muted-foreground/60 text-center mb-1">Swipe right to complete</p>
+              )}
               {pendingAssignments.map((assignment: any, index: number) => {
                 const drill = getDrill(assignment.drillId);
                 const isInProgress = assignment.status === "in-progress";
                 
                 return (
-                  <button
+                  <SwipeableCard
                     key={assignment.id}
-                    onClick={() => openDrillModal(assignment)}
-                    className="w-full glass-card rounded-xl p-4 card-hover flex items-center gap-4 text-left transition-all duration-300"
-                    style={{ animationDelay: `${0.3 + index * 0.05}s` }}
+                    onSwipeRight={() => handleSwipeComplete(assignment.id)}
+                    enabled={isMobile}
                   >
-                    <SkillIcon category={drill?.categories[0] || "General"} />
-                    
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-foreground truncate">{assignment.drillName}</h4>
-                      <div className="flex items-center gap-2 mt-1">
-                        {isInProgress && (
-                          <Badge className="bg-electric/20 text-electric border border-electric/30 text-xs">
-                            In Progress
-                          </Badge>
-                        )}
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(assignment.assignedAt).toLocaleDateString()}
-                        </span>
+                    <button
+                      onClick={() => { hapticMedium(); openDrillModal(assignment); }}
+                      className="w-full glass-card rounded-xl p-4 flex items-center gap-4 text-left transition-all duration-300 active:scale-[0.98]"
+                      style={{ animationDelay: `${0.3 + index * 0.05}s` }}
+                    >
+                      <SkillIcon category={drill?.categories[0] || "General"} />
+                      
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-foreground truncate">{assignment.drillName}</h4>
+                        <div className="flex items-center gap-2 mt-1">
+                          {isInProgress && (
+                            <Badge className="bg-electric/20 text-electric border border-electric/30 text-xs">
+                              In Progress
+                            </Badge>
+                          )}
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(assignment.assignedAt).toLocaleDateString()}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="w-10 h-10 bg-electric/20 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-electric/30 transition-colors">
-                      <Play className="w-5 h-5 text-electric ml-0.5" />
-                    </div>
-                  </button>
+                      
+                      <div className="w-10 h-10 bg-electric/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Play className="w-5 h-5 text-electric ml-0.5" />
+                      </div>
+                    </button>
+                  </SwipeableCard>
                 );
               })}
             </div>
@@ -645,6 +680,10 @@ export default function AthletePortal() {
         {/* Badges & Gamification */}
         <AthleteBadgesRedesigned />
       </main>
+      </PullToRefresh>
+
+      {/* Scroll to top button */}
+      <ScrollToTop bottomOffset={20} />
 
       {/* Redesigned Drill Modal */}
       <DrillModalRedesigned

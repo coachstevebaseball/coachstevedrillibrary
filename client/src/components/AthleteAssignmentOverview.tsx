@@ -21,6 +21,7 @@ import {
 import { Link } from "wouter";
 import { AthleteProfilePanel } from "./AthleteProfilePanel";
 import { InlineEdit } from "./InlineEdit";
+import { hapticLight } from "@/lib/haptics";
 
 interface AthleteAssignmentOverviewProps {
   onSelectAthlete?: (athleteId: string) => void;
@@ -246,11 +247,12 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
                 return (
                   <div
                     key={athlete.id}
-                    className={`flex items-center justify-between p-3 rounded-lg border transition-all hover:shadow-sm ${
+                    className={`flex items-center justify-between p-3 rounded-lg border transition-all hover:shadow-sm active:scale-[0.98] ${
                       !athlete.hasDrills 
                         ? 'bg-amber-500/5 border-amber-500/20 hover:border-amber-500/40' 
                         : 'bg-card hover:bg-muted/50'
                     }`}
+                    onClick={() => hapticLight()}
                   >
                     <div
                       className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer"

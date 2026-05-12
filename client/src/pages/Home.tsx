@@ -19,6 +19,7 @@ import { useDrillListParams } from "@/hooks/useDrillListParams";
 import { TopNav } from "@/components/TopNav";
 import { InlineEdit } from "@/components/InlineEdit";
 import { filterOptions, drillTypeOptions } from "@/data/drillConstants";
+import { ScrollToTop } from "@/components/mobile/ScrollToTop";
 
 interface Drill {
   id: string;
@@ -670,7 +671,7 @@ export default function Home() {
               return (
                 <div
                   key={drill.id}
-                  className="group animate-fade-in-up relative md:transition-transform md:duration-300 md:hover:-translate-y-1"
+                  className="group animate-fade-in-up relative md:transition-transform md:duration-300 md:hover:-translate-y-1 active:scale-[0.98] transition-transform"
                   style={{ animationDelay: `${Math.min(index * 0.04, 0.4)}s` }}
                 >
                   {/* Admin Edit Button */}
@@ -884,6 +885,9 @@ export default function Home() {
       </footer>
 
       {/* Advanced filters are now always visible inline — sheet removed */}
+
+      {/* Scroll to top on mobile */}
+      <ScrollToTop />
 
       {/* Drill Edit Modal */}
       {editingDrill && (

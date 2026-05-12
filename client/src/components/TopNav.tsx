@@ -52,8 +52,8 @@ export function TopNav({ variant = "compact" }: TopNavProps) {
   // ── Shared tab pill renderer ──────────────────────────────────────────────
   const renderTab = (tab: typeof tabs[0], size: "sm" | "xs" = "sm") => {
     const base = size === "xs"
-      ? "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-electric/60 whitespace-nowrap"
-      : "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-electric/60 whitespace-nowrap";
+      ? "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-electric/60 whitespace-nowrap"
+      : "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-electric/60 whitespace-nowrap";
 
     const activeClass = tab.accent
       ? "bg-electric text-white shadow-md shadow-electric/30"
