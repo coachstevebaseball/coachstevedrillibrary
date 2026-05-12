@@ -102,6 +102,17 @@ export function Sidebar({ onAction, onNavigate }: SidebarProps) {
         </a>
       </Link>
 
+      {/* Quick link to the public-facing drill library */}
+      <Link href="/drills">
+        <a
+          onClick={onNavigate}
+          className="flex items-center gap-2 px-4 h-10 border-b border-white/10 text-xs font-semibold text-white/75 hover:text-white hover:bg-white/5 transition-colors"
+        >
+          <span aria-hidden>←</span>
+          <span>Back to Drill Library</span>
+        </a>
+      </Link>
+
       <nav className="px-2 py-4 space-y-5">
         {NAV_GROUPS.map((group) => (
           <div key={group.heading}>

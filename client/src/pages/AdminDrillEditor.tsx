@@ -1027,8 +1027,88 @@ export default function AdminDrillEditor({ embedded = false }: { embedded?: bool
         <p className="text-xs text-gray-500 sm:ml-auto">{filtered.length} drills shown</p>
       </div>
 
-      {/* Table */}
-      <div className="max-w-7xl mx-auto px-6 pb-12">
+      {/* Mobile card list (< md) — table is too wide for phones */}
+      <div className="md:hidden max-w-7xl mx-auto px-3 pb-12 space-y-2">
+        {isLoading ? (
+          Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-16 rounded-lg bg-[#0A1628] border border-[#1e2a3a] animate-pulse" />
+          ))
+        ) : filtered.length === 0 ? (
+          <div className="rounded-lg border border-[#1e2a3a] p-8 text-center text-gray-500">
+            No drills found
+          </div>
+        ) : (
+          filtered.map((drill) => (
+            <div
+              key={drill.drillId}
+              className={`rounded-lg border border-[#1e2a3a] bg-[#0A1628]/40 p-3 flex items-center gap-3 ${
+                drill.isHidden ? "opacity-50" : ""
+              }`}
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  {drill.isHidden && <EyeOff className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" />}
+                  <h3 className="text-sm font-semibold text-white truncate">{drill.name}</h3>
+                </div>
+                <p className="text-[11px] text-gray-500 font-mono truncate">{drill.drillId}</p>
+                <div className="flex items-center gap-2 mt-1.5">
+                  <span
+                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                      drill.difficulty === "Easy"
+                        ? "bg-green-500/15 text-green-400"
+                        : drill.difficulty === "Medium"
+                          ? "bg-amber-500/15 text-amber-400"
+                          : drill.difficulty === "Hard"
+                            ? "bg-red-500/15 text-red-400"
+                            : "bg-white/10 text-white/60"
+                    }`}
+                  >
+                    {drill.difficulty || "—"}
+                  </span>
+                  {(drill.problems ?? []).length > 0 && (
+                    <span className="text-[10px] text-gray-500 truncate">
+                      {(drill.problems ?? []).slice(0, 2).join(", ")}
+                      {(drill.problems ?? []).length > 2 ? "…" : ""}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="flex flex-col gap-1 flex-shrink-0">
+                <button
+                  onClick={() => setEditingDrill(drill)}
+                  className="p-2 rounded hover:bg-[#1e2a3a] text-gray-400 hover:text-white"
+                  title="Edit"
+                  aria-label={`Edit ${drill.name}`}
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </button>
+                {drill.isHidden ? (
+                  <button
+                    onClick={() => restore.mutate({ drillId: drill.drillId })}
+                    className="p-2 rounded hover:bg-green-900/30 text-gray-400 hover:text-green-400"
+                    title="Restore"
+                    aria-label={`Restore ${drill.name}`}
+                  >
+                    <Eye className="h-3.5 w-3.5" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => hide.mutate({ drillId: drill.drillId })}
+                    className="p-2 rounded hover:bg-yellow-900/30 text-gray-400 hover:text-yellow-400"
+                    title="Hide"
+                    aria-label={`Hide ${drill.name}`}
+                  >
+                    <EyeOff className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop table (md+) */}
+      <div className="hidden md:block max-w-7xl mx-auto px-6 pb-12">
         <div className="rounded-lg border border-[#1e2a3a] overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">

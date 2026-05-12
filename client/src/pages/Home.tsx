@@ -601,29 +601,21 @@ export default function Home() {
                 const count = cat === "All"
                   ? allDrills.length
                   : allDrills.filter(d => d.categories.includes(cat)).length;
-                const isEmpty = cat !== "All" && count === 0 && !drillsLoading;
+                // Skip empty categories entirely — no dimmed/disabled chrome.
+                if (cat !== "All" && count === 0 && !drillsLoading) return null;
                 return (
                   <button
                     key={cat}
-                    onClick={() => { if (!isEmpty) setCategoryFilter(cat); }}
-                    disabled={isEmpty}
-                    aria-disabled={isEmpty}
-                    title={isEmpty ? `No ${cat} drills in the library yet` : undefined}
+                    onClick={() => setCategoryFilter(cat)}
                     className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${
                       categoryFilter === cat
                         ? "bg-electric text-white shadow-lg shadow-electric/25"
-                        : isEmpty
-                          ? "bg-card/40 text-muted-foreground/40 border border-border/30 cursor-not-allowed"
-                          : "bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/50"
+                        : "bg-card text-muted-foreground hover:bg-accent hover:text-foreground border border-border/50"
                     }`}
                   >
                     {cat === "All" ? "All Skills" : cat}
                     <span className={`ml-1.5 text-[10px] ${
-                      categoryFilter === cat
-                        ? "text-white/70"
-                        : isEmpty
-                          ? "text-muted-foreground/30"
-                          : "text-muted-foreground/60"
+                      categoryFilter === cat ? "text-white/70" : "text-muted-foreground/60"
                     }`}>
                       {count}
                     </span>
