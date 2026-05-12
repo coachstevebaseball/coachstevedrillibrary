@@ -1557,6 +1557,15 @@ export default function DrillDetail() {
                 as="h1"
                 className="text-3xl md:text-5xl font-heading font-black text-brand-header-foreground leading-tight tracking-tight"
               />
+              {(() => {
+                const subtitle = dbDrill?.whoThisDrillIsBestFor ?? dbDrill?.goalOfDrill ?? null;
+                if (!subtitle || typeof subtitle !== "string" || subtitle.trim().length === 0) return null;
+                return (
+                  <p className="mt-3 text-base md:text-lg text-brand-header-foreground/65 leading-relaxed max-w-3xl line-clamp-3">
+                    {subtitle}
+                  </p>
+                );
+              })()}
             </div>
 
             <div className="flex gap-2 w-full lg:w-auto shrink-0">
@@ -1660,7 +1669,7 @@ export default function DrillDetail() {
             )}
           </div>
         ) : details ? (
-          <div className="grid gap-4 md:gap-6">
+          <div className="grid gap-8 md:gap-12">
             {/* Video */}
             {(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) ? (
               <VideoPlayer videoUrl={(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) as string} title={`${drill.name} Video`} />

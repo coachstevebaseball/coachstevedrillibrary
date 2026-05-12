@@ -46,14 +46,27 @@ export function RelatedDrillsCarousel({ drills, title = "RELATED DRILLS" }: Prop
                     Featured
                   </span>
                 )}
-                <div className="relative aspect-video bg-black/40 overflow-hidden">
+                <div
+                  className="relative aspect-video overflow-hidden"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, oklch(22% 0.06 25) 0%, oklch(18% 0.05 300) 100%)",
+                  }}
+                >
+                  {/* Drill-name placeholder lives behind the img. If the img loads it
+                      covers this; if onError hides the img, this stays visible. */}
+                  <div className="absolute inset-0 flex items-center justify-center px-3">
+                    <span className="text-white/40 text-xs font-bold tracking-widest uppercase text-center leading-tight">
+                      {d.name}
+                    </span>
+                  </div>
                   <img
                     src={d.thumbnailUrl || fallbackImg}
                     alt={d.name}
-                    className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500"
+                    className="relative w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
                   {d.duration && d.duration !== "Unknown" && (
                     <span className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium bg-black/60 text-white/90 backdrop-blur-sm">
                       <Clock className="h-2.5 w-2.5" />
