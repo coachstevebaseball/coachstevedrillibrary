@@ -31,6 +31,11 @@ const richFieldsSchema = z.object({
   commonMistakes: z.array(z.string()).optional().nullable(),
   coachSteveCue: z.string().optional().nullable(),
   gameTransferExplanation: z.string().optional().nullable(),
+  // Detail-page redesign fields (added 2026-05-12)
+  equipment: z.array(z.string()).optional().nullable(),
+  repsSets: z.string().max(100).optional().nullable(),
+  nextStepDrillIds: z.array(z.string()).optional().nullable(),
+  featured: z.boolean().optional(),
 });
 
 // ─── Slug generator ───────────────────────────────────────────────────────────
@@ -104,6 +109,10 @@ export const drillsAdminRouter = router({
         commonMistakes: input.commonMistakes ?? null,
         coachSteveCue: input.coachSteveCue ?? null,
         gameTransferExplanation: input.gameTransferExplanation ?? null,
+        equipment: input.equipment ?? null,
+        repsSets: input.repsSets ?? null,
+        nextStepDrillIds: input.nextStepDrillIds ?? null,
+        featured: input.featured ?? false,
       });
 
       return { success: true, drillId };
@@ -228,6 +237,10 @@ export const drillsAdminRouter = router({
             goal: drills.goal,
             problems: drills.problems,
             outcomes: drills.outcomes,
+            equipment: drills.equipment,
+            repsSets: drills.repsSets,
+            nextStepDrillIds: drills.nextStepDrillIds,
+            featured: drills.featured,
           })
           .from(drills)
           .where(whereClause)
@@ -327,6 +340,10 @@ export const drillsAdminRouter = router({
             commonMistakes: item.commonMistakes ?? null,
             coachSteveCue: item.coachSteveCue ?? null,
             gameTransferExplanation: item.gameTransferExplanation ?? null,
+            equipment: item.equipment ?? null,
+            repsSets: item.repsSets ?? null,
+            nextStepDrillIds: item.nextStepDrillIds ?? null,
+            featured: item.featured ?? false,
           });
 
           results.push({ drillId, success: true });
