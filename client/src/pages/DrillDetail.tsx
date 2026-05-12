@@ -1767,7 +1767,7 @@ export default function DrillDetail() {
                 difficulty: d.difficulty,
                 category: d.categories?.[0] ?? null,
                 duration: d.duration,
-                featured: false,
+                featured: Boolean(d.featured),
               }))}
             />
 

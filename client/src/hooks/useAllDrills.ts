@@ -20,6 +20,8 @@ export interface UnifiedDrill {
   /** Enriched from drillDetails table */
   instructions?: string | null;
   equipment?: string | null;
+  /** Coach's Pick / Drill of the Week. Drives the ★ ribbon on cards. */
+  featured?: boolean;
 }
 
 /**
@@ -57,6 +59,7 @@ export function useAllDrills(): UnifiedDrill[] {
       outcomes: (d.outcomes as string[] | null) ?? [],
       instructions: null,
       equipment: null,
+      featured: Boolean((d as { featured?: boolean }).featured),
     }));
   }, [dbDrills]);
 }
@@ -89,6 +92,7 @@ export function useAllDrillsQuery(): { drills: UnifiedDrill[]; isLoading: boolea
       outcomes: (d.outcomes as string[] | null) ?? [],
       instructions: null,
       equipment: null,
+      featured: Boolean((d as { featured?: boolean }).featured),
     }));
   }, [dbDrills]);
 

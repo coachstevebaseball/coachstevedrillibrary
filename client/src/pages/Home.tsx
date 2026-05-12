@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 // Sheet import removed — advanced filters are always visible inline
 import {
   Search, Users, ChevronRight, Sparkles,
-  Clock, Target, TrendingUp, SlidersHorizontal, X, Pencil, ChevronDown, Trash2,
+  Clock, Target, TrendingUp, SlidersHorizontal, X, Pencil, ChevronDown, Trash2, Star,
 } from "lucide-react";
 import { toast } from "sonner";
 import { HomePageSkeleton } from "@/components/Skeleton";
@@ -713,6 +713,17 @@ export default function Home() {
                     onClick={() => handleDrillClick(drill.id)}
                   >
                     <div className="glass-card rounded-xl overflow-hidden drill-card-hover cursor-pointer h-full flex flex-col">
+                      {/* Featured ribbon — Coach's Pick / Drill of the Week.
+                          Hidden for admins so it doesn't fight with the Edit/Delete buttons. */}
+                      {drill.featured && user?.role !== 'admin' && (
+                        <span
+                          className="absolute top-3 left-3 z-10 flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm"
+                          style={{ backgroundColor: 'oklch(75% 0.15 80)', color: 'oklch(15% 0.02 80)' }}
+                        >
+                          <Star className="h-3 w-3 fill-current" />
+                          Featured
+                        </span>
+                      )}
                       {/* Card Image */}
                       <div className="relative h-44 bg-gradient-to-br from-card to-accent overflow-hidden">
                         {imageSource ? (
