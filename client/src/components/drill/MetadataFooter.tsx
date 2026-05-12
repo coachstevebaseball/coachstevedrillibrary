@@ -53,9 +53,9 @@ export function MetadataFooter({ drillType, ageLevels, focusAreas }: Props) {
   if (!hasType && ages.length === 0 && focus.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-full min-w-0">
       {hasType && (
-        <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+        <div className="w-full max-w-full min-w-0 rounded-xl border border-white/10 bg-white/[0.02] p-4 overflow-hidden">
           <h4 className="text-[10px] font-bold tracking-widest text-white/75 mb-2">DRILL TYPE</h4>
           <span
             className={`${CATEGORY_PILL} text-white`}
@@ -66,7 +66,7 @@ export function MetadataFooter({ drillType, ageLevels, focusAreas }: Props) {
         </div>
       )}
       {ages.length > 0 && (
-        <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+        <div className="w-full max-w-full min-w-0 rounded-xl border border-white/10 bg-white/[0.02] p-4 overflow-hidden">
           <h4 className="text-[10px] font-bold tracking-widest text-white/75 mb-2">AGE / LEVEL</h4>
           <div className="flex flex-wrap gap-1.5">
             {ages.map((a) => (
@@ -82,7 +82,7 @@ export function MetadataFooter({ drillType, ageLevels, focusAreas }: Props) {
         </div>
       )}
       {focus.length > 0 && (
-        <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+        <div className="w-full max-w-full min-w-0 rounded-xl border border-white/10 bg-white/[0.02] p-4 overflow-hidden">
           <h4 className="text-[10px] font-bold tracking-widest text-white/75 mb-2">FOCUS AREAS</h4>
           <div className="flex flex-wrap gap-1.5">
             {focus.map((f) => (

@@ -41,7 +41,7 @@ function CardBox({ card }: { card: Card }) {
 
   return (
     <div
-      className="rounded-xl p-5 bg-[oklch(14%_0.005_0)] border-2"
+      className="w-full max-w-full min-w-0 rounded-xl p-4 sm:p-5 bg-[oklch(14%_0.005_0)] border-2 overflow-hidden"
       style={{ borderColor: baseBorder, boxShadow: `0 0 0 1px ${baseBg}, 0 0 24px -8px ${baseBg}` }}
     >
       <div className="flex items-center gap-3 mb-3">
@@ -65,7 +65,7 @@ function CardBox({ card }: { card: Card }) {
               >
                 {i + 1}
               </span>
-              <span>{it}</span>
+              <span className="flex-1 min-w-0 break-words">{it}</span>
             </li>
           ))}
         </ol>
@@ -74,7 +74,7 @@ function CardBox({ card }: { card: Card }) {
           {card.items.map((it, i) => (
             <li key={i} className="flex gap-2 text-sm text-white leading-snug">
               <Check className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: card.tone }} />
-              <span>{it}</span>
+              <span className="flex-1 min-w-0 break-words">{it}</span>
             </li>
           ))}
         </ul>
@@ -108,9 +108,9 @@ export function QuickInfoGrid({ goal, problemsSolved, equipment, howToSteps }: P
   if (topCards.length === 0 && !howToCard) return null;
 
   return (
-    <div className="space-y-3 md:space-y-4">
+    <div className="w-full max-w-full min-w-0 space-y-3 md:space-y-4">
       {topCards.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 w-full max-w-full min-w-0">
           {topCards.map((card) => (
             <CardBox key={card.label} card={card} />
           ))}

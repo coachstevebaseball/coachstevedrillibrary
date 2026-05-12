@@ -30,9 +30,9 @@ export function CoachingLayer({ whatToFeel, coachCue, commonMistakes, watchFor }
   if (feels.length === 0 && !cue && mistakes.length === 0 && !watch) return null;
 
   return (
-    <div className="space-y-4">
+    <div className="w-full max-w-full min-w-0 space-y-4">
       {feels.length > 0 && (
-        <div className="rounded-xl border border-white/10 bg-white/[0.02] p-5">
+        <div className="w-full max-w-full min-w-0 rounded-xl border border-white/10 bg-white/[0.02] p-4 sm:p-5 overflow-hidden">
           <h3 className="text-xs font-bold tracking-widest mb-3" style={{ color: TEAL }}>
             WHAT TO FEEL
           </h3>
@@ -43,7 +43,7 @@ export function CoachingLayer({ whatToFeel, coachCue, commonMistakes, watchFor }
                   className="flex-shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full"
                   style={{ backgroundColor: TEAL }}
                 />
-                <span>{f}</span>
+                <span className="flex-1 min-w-0 break-words">{f}</span>
               </li>
             ))}
           </ul>
@@ -52,18 +52,18 @@ export function CoachingLayer({ whatToFeel, coachCue, commonMistakes, watchFor }
 
       {cue && (
         <div
-          className="rounded-xl border-l-4 border-white/10 bg-white/[0.02] p-5"
+          className="w-full max-w-full min-w-0 rounded-xl border-l-4 border-white/10 bg-white/[0.02] p-4 sm:p-5 overflow-hidden"
           style={{ borderLeftColor: YELLOW }}
         >
           <h3 className="text-xs font-bold tracking-widest mb-2" style={{ color: YELLOW }}>
             COACH CUE
           </h3>
-          <p className="text-base italic leading-relaxed text-white">“{cue}”</p>
+          <p className="text-base italic leading-relaxed text-white break-words">“{cue}”</p>
         </div>
       )}
 
       {mistakes.length > 0 && (
-        <div className="rounded-xl border border-white/10 bg-white/[0.02] p-5">
+        <div className="w-full max-w-full min-w-0 rounded-xl border border-white/10 bg-white/[0.02] p-4 sm:p-5 overflow-hidden">
           <h3 className="text-xs font-bold tracking-widest mb-3" style={{ color: RED }}>
             COMMON MISTAKES
           </h3>
@@ -71,7 +71,7 @@ export function CoachingLayer({ whatToFeel, coachCue, commonMistakes, watchFor }
             {mistakes.map((m, i) => (
               <li key={i} className="flex gap-2 text-sm text-white leading-snug">
                 <AlertTriangle className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: RED }} />
-                <span>{m}</span>
+                <span className="flex-1 min-w-0 break-words">{m}</span>
               </li>
             ))}
           </ul>
@@ -79,12 +79,12 @@ export function CoachingLayer({ whatToFeel, coachCue, commonMistakes, watchFor }
       )}
 
       {watch && (
-        <div className="rounded-xl border border-white/10 bg-white/[0.02] p-5">
+        <div className="w-full max-w-full min-w-0 rounded-xl border border-white/10 bg-white/[0.02] p-4 sm:p-5 overflow-hidden">
           <h3 className="text-xs font-bold tracking-widest mb-2 text-white/80 flex items-center gap-2">
             <Eye className="h-3.5 w-3.5" />
             WATCH FOR
           </h3>
-          <p className="text-sm leading-relaxed text-white">{watch}</p>
+          <p className="text-sm leading-relaxed text-white break-words">{watch}</p>
         </div>
       )}
     </div>

@@ -43,13 +43,13 @@ function DrillTagSection({ problems, outcomes }: { problems: string[]; outcomes:
   const visibleTags = showAll ? allTags : allTags.slice(0, MAX_VISIBLE_TAGS);
   const hasMore = allTags.length > MAX_VISIBLE_TAGS;
   return (
-    <div className="px-1">
-      <p className="text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">What this drill fixes &amp; improves</p>
-      <div className="flex flex-wrap gap-2">
+    <div className="w-full max-w-full min-w-0">
+      <p className="text-xs font-semibold text-white/70 uppercase tracking-widest mb-2">What this drill fixes &amp; improves</p>
+      <div className="flex flex-wrap gap-2 w-full max-w-full">
         {visibleTags.map((tag, i) => (
           <span
             key={i}
-            className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold tracking-wide border ${
+            className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold tracking-wide border max-w-full break-words ${
               tag.type === 'problem'
                 ? 'bg-red-500/15 text-red-300 border-red-500/30'
                 : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
@@ -1601,7 +1601,7 @@ export default function DrillDetail() {
         </div>
       </header>
 
-      <div className="container max-w-6xl px-3 md:px-4">
+      <div className="container max-w-6xl px-3 md:px-4 w-full max-w-full overflow-x-hidden">
         {/* Check if custom page layout exists - if so, render ONLY that */}
         {pageLayout?.blocks && Array.isArray(pageLayout.blocks) && pageLayout.blocks.length > 0 ? (
           <div className="grid gap-6 md:gap-8">
