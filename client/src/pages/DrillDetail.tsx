@@ -43,9 +43,9 @@ function DrillTagSection({ problems, outcomes }: { problems: string[]; outcomes:
   const visibleTags = showAll ? allTags : allTags.slice(0, MAX_VISIBLE_TAGS);
   const hasMore = allTags.length > MAX_VISIBLE_TAGS;
   return (
-    <div className="w-full max-w-full min-w-0">
+    <div className="w-full max-w-full min-w-0 overflow-hidden">
       <p className="text-xs font-semibold text-white/70 uppercase tracking-widest mb-2">What this drill fixes &amp; improves</p>
-      <div className="flex flex-wrap gap-2 w-full max-w-full">
+      <div className="flex flex-wrap gap-2 w-full max-w-full min-w-0">
         {visibleTags.map((tag, i) => (
           <span
             key={i}
@@ -1518,7 +1518,7 @@ export default function DrillDetail() {
       {/* Header — matches directory / brand chrome */}
       <header className="relative bg-brand-header text-brand-header-foreground border-b border-brand-header-foreground/10 mb-6 md:mb-8">
         <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/60 via-primary to-primary/60 opacity-90" />
-        <div className="container relative py-6 md:py-10">
+        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 relative py-6 md:py-10">
           <Link href={backHref}>
             <Button variant="ghost" className="text-brand-header-foreground/80 hover:text-brand-header-foreground hover:bg-brand-header-foreground/10 mb-4 pl-0 gap-2 text-sm">
               <ArrowLeft className="h-4 w-4" />
@@ -1601,7 +1601,7 @@ export default function DrillDetail() {
         </div>
       </header>
 
-      <div className="container max-w-6xl px-3 md:px-4 w-full max-w-full overflow-x-hidden">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 overflow-x-hidden">
         {/* Check if custom page layout exists - if so, render ONLY that */}
         {pageLayout?.blocks && Array.isArray(pageLayout.blocks) && pageLayout.blocks.length > 0 ? (
           <div className="grid gap-6 md:gap-8">
@@ -1669,7 +1669,7 @@ export default function DrillDetail() {
             )}
           </div>
         ) : details ? (
-          <div className="grid gap-8 md:gap-12">
+          <div className="grid gap-8 md:gap-12 w-full min-w-0 overflow-hidden">
             {/* Video */}
             {(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) ? (
               <VideoPlayer videoUrl={(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) as string} title={`${drill.name} Video`} />

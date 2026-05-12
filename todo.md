@@ -2289,3 +2289,7 @@
 - [x] Bottom sheet component for mobile modals/dialogs
 - [x] Scroll-to-top button on long pages
 - [x] Vibration API integration for completion celebrations
+
+## Mobile Overflow Bug Fixes (May 2026)
+- [x] Fix Drill Detail page horizontal overflow — tags row and Goal/Equipment cards bleed off right edge on mobile
+- [x] Fix Assign Drills page horizontal overflow — assignment cards and action buttons cut off on right edge

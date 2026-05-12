@@ -140,7 +140,7 @@ export function AssignDrillsPanel({ initialAthleteId = null }: Props) {
     athleteOptions.find((a) => a.id === selectedUser)?.name || "Athlete";
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 w-full min-w-0 overflow-hidden">
       {/* Left: athlete & drill selection */}
       <div className="lg:col-span-1 space-y-4">
         <div className="glass-card rounded-xl overflow-hidden">
@@ -253,8 +253,8 @@ export function AssignDrillsPanel({ initialAthleteId = null }: Props) {
       {/* Right: assignments or progress */}
       <div className="lg:col-span-2">
         <div className="glass-card rounded-xl overflow-hidden">
-          <div className="p-4 md:p-5 border-b border-white/[0.06] flex items-center justify-between">
-            <h3 className="font-heading font-bold text-lg">
+          <div className="p-4 md:p-5 border-b border-white/[0.06] flex items-center justify-between gap-2 min-w-0">
+            <h3 className="font-heading font-bold text-base sm:text-lg truncate min-w-0 flex-1">
               {selectedUser
                 ? showProgressReport
                   ? `${selectedAthleteName}'s Progress`
@@ -266,10 +266,11 @@ export function AssignDrillsPanel({ initialAthleteId = null }: Props) {
                 variant={showProgressReport ? "default" : "outline"}
                 size="sm"
                 onClick={() => setShowProgressReport(!showProgressReport)}
-                className="gap-2 text-xs"
+                className="gap-1.5 text-xs flex-shrink-0"
               >
                 <BarChart3 className="h-3.5 w-3.5" />
-                {showProgressReport ? "Assignments" : "Progress"}
+                <span className="hidden sm:inline">{showProgressReport ? "Assignments" : "Progress"}</span>
+                <span className="sm:hidden">{showProgressReport ? "List" : "Stats"}</span>
               </Button>
             )}
           </div>
@@ -287,9 +288,9 @@ export function AssignDrillsPanel({ initialAthleteId = null }: Props) {
                     key={assignment.id}
                     className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 hover:bg-white/[0.06] hover:border-white/[0.1] transition-all duration-200 group"
                   >
-                    <div className="flex items-start justify-between gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 min-w-0">
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-base mb-2 truncate group-hover:text-[#DC143C] transition-colors">
+                        <h4 className="font-semibold text-sm sm:text-base mb-2 truncate group-hover:text-[#DC143C] transition-colors">
                           {assignment.drillName}
                         </h4>
                         <div className="flex items-center gap-2 flex-wrap">
@@ -319,12 +320,12 @@ export function AssignDrillsPanel({ initialAthleteId = null }: Props) {
                         )}
                       </div>
 
-                      <div className="flex flex-col gap-2 flex-shrink-0">
+                      <div className="flex flex-row sm:flex-col gap-2 flex-shrink-0">
                         <Select
                           value={assignment.status}
                           onValueChange={(status: any) => handleStatusUpdate(assignment.id, status)}
                         >
-                          <SelectTrigger className="w-28 text-xs h-8 bg-white/[0.04] border-white/[0.08]">
+                          <SelectTrigger className="w-24 sm:w-28 text-xs h-8 bg-white/[0.04] border-white/[0.08]">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>

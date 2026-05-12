@@ -373,7 +373,7 @@ export default function AthletePortal() {
       </header>
 
       <PullToRefresh onRefresh={handleRefresh} enabled={isMobile}>
-      <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
+        <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
         {/* Personalized greeting */}
         {(() => {
           const hour = new Date().getHours();
@@ -679,7 +679,7 @@ export default function AthletePortal() {
 
         {/* Badges & Gamification */}
         <AthleteBadgesRedesigned />
-      </main>
+        </main>
       </PullToRefresh>
 
       {/* Scroll to top button */}
