@@ -66,6 +66,8 @@ export function RelatedDrillsCarousel({ drills, title = "RELATED DRILLS" }: Prop
                   <img
                     src={d.thumbnailUrl || fallbackImg}
                     alt={d.name}
+                    loading="lazy"
+                    decoding="async"
                     className="relative w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                   />

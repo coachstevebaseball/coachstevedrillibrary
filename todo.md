@@ -2297,3 +2297,4 @@
 ## Drill Detail Overflow Fix - NextSteps/RelatedDrills (May 2026)
 - [x] Fix NextStepsChips horizontal overflow — added overflow-hidden outer wrapper with scrollable inner container
 - [x] Fix RelatedDrillsCarousel horizontal overflow — added overflow-hidden outer wrapper, reduced card width to 70vw/260px max
+- [x] Add loading="lazy" and decoding="async" to Related Drills carousel thumbnail images for better mobile performance
