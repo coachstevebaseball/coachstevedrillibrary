@@ -414,6 +414,13 @@
       "when": 1777349759247,
       "tag": "0058_mature_cassandra_nova",
       "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "5",
+      "when": 1778612791662,
+      "tag": "0059_nappy_nova",
+      "breakpoints": true
     }
   ]
 }
