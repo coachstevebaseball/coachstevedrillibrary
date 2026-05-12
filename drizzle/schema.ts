@@ -926,6 +926,14 @@ export const drills = mysqlTable("drills", {
   coachSteveCue: text("coachSteveCue"),
   /** Explanation of how this drill transfers to game situations */
   gameTransferExplanation: text("gameTransferExplanation"),
+  /** Required equipment, e.g. ["tee","bat","balls"]. Null = not authored yet. */
+  equipment: json("equipment").$type<string[]>(),
+  /** Reps / sets prescription, free text, e.g. "3 sets of 10" or "5 minutes". Null = not authored yet. */
+  repsSets: varchar("repsSets", { length: 100 }),
+  /** Curated 'try these next' drillIds for the bottom-of-page chip row. Null = derive from tag overlap. */
+  nextStepDrillIds: json("nextStepDrillIds").$type<string[]>(),
+  /** Drill-of-the-week / Coach's Pick badge for the ★ ribbon. */
+  featured: boolean("featured").notNull().default(false),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
