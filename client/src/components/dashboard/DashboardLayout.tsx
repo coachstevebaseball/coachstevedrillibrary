@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import { Sidebar, type SidebarAction } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import { MobileNav } from "./MobileNav";
+import { MobileTabBar } from "./MobileTabBar";
 
 type DashboardLayoutProps = {
   title: string;
@@ -48,8 +49,11 @@ export function DashboardLayout({
           onInvite={onInvite}
           onAddDrill={onAddDrill}
         />
-        <main className="flex-1 px-3 sm:px-6 py-4 sm:py-6">{children}</main>
+        <main className="flex-1 px-3 sm:px-6 py-4 sm:py-6 pb-24 md:pb-6">{children}</main>
       </div>
+
+      {/* Mobile bottom tab bar — hidden on md and up since the desktop sidebar is always visible. */}
+      <MobileTabBar />
     </div>
   );
 }
