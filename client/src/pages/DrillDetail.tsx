@@ -29,6 +29,7 @@ import { CoachingLayer } from "@/components/drill/CoachingLayer";
 import { NextStepsChips } from "@/components/drill/NextStepsChips";
 import { MetadataFooter } from "@/components/drill/MetadataFooter";
 import { RelatedDrillsCarousel, type RelatedDrill } from "@/components/drill/RelatedDrillsCarousel";
+import { DrillDetailBody } from "@/components/drill/DrillDetailBody";
 
 import { useAllDrills } from "@/hooks/useAllDrills";
 
@@ -1565,196 +1566,29 @@ export default function DrillDetail() {
       </header>
 
       <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 overflow-x-hidden">
-        {/* Check if custom page layout exists - if so, render ONLY that */}
-        {pageLayout?.blocks && Array.isArray(pageLayout.blocks) && pageLayout.blocks.length > 0 ? (
-          <div className="grid gap-6 md:gap-8">
-            {/* Admin/Coach edit buttons */}
-            {user && (user.role === 'admin') && (
-              <div className="flex gap-2 justify-end">
-                <button
-                  onClick={() => setShowPageBuilder(true)}
-                  className="flex items-center gap-1 px-3 py-2 rounded-md bg-electric/10 hover:bg-electric/20 text-electric transition-colors text-sm font-medium"
-                >
-                  <Layout className="h-4 w-4" />
-                  Edit Page
-                </button>
-              </div>
-            )}
-            {/* Render the custom page layout */}
-            <CustomDrillLayout blocks={pageLayout.blocks as any[]} />
-
-            {/* Editable Stat Cards Bar - shown on custom layouts too */}
-            {details && (
-              <EditableStatBar
-                drillId={id || "unknown"}
-                isCoach={!!(user && (user.role === 'admin'))}
-                defaultCards={[
-                  { id: `${id}-time`, label: "Time", value: details.time, icon: "clock" },
-                  { id: `${id}-athletes`, label: "Athletes", value: details.athletes.split(',')[0], icon: "users" },
-                  { id: `${id}-equipment`, label: "Equipment", value: details.equipment.split(',')[0], icon: "dumbbell" },
-                  { id: `${id}-skill`, label: "Skill Set", value: details.skillSet, icon: "target" },
-                ]}
-              />
-            )}
-
-            {/* Instructions Editor - shown on custom layouts too */}
-            <section>
-              <h2 className="text-2xl md:text-3xl font-heading font-black mb-3 md:mb-4 flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center">
-                  <Target className="h-4 w-4 text-green-400" />
-                </div>
-                <InlineEdit contentKey={`drill.detail.${id}.instructionsHeading`} defaultValue="Instructions" as="span" />
-              </h2>
-              <div className="glass-card rounded-xl p-4 md:p-6">
-                {user && (user.role === 'admin') ? (
-                  <TiptapEditor
-                    value={customInstructions}
-                    onChange={setCustomInstructions}
-                    onSave={saveCustomInstructions}
-                    isSaving={saveInstructionsMutation.isPending}
-                    placeholder="Write drill instructions here..."
-                  />
-                ) : (
-                  <div className="min-h-[60px]">
-                    {customInstructions ? (
-                      <TiptapRenderer content={customInstructions} />
-                    ) : (
-                      <p className="text-muted-foreground italic">No instructions provided for this drill yet.</p>
-                    )}
-                  </div>
-                )}
-              </div>
-            </section>
-
-            {/* Q&A Section for Athletes - also show on custom layouts */}
-            {user?.role === 'athlete' && (
-              <DrillQAForm drillId={id || ''} drillName={drill?.name || ''} />
-            )}
-          </div>
-        ) : details ? (
-          <div className="grid gap-8 md:gap-12 w-full min-w-0 overflow-hidden">
-            {/* Video */}
-            {(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) ? (
-              <VideoPlayer videoUrl={(savedVideos[drill.id] || (details && 'videoUrl' in details && details.videoUrl)) as string} title={`${drill.name} Video`} />
-            ) : (
-              <div className="bg-muted rounded-lg md:rounded-xl aspect-video flex items-center justify-center border-2 border-dashed border-muted-foreground/20 w-full">
-                <div className="text-center p-3 md:p-4">
-                  <p className="text-muted-foreground font-medium text-sm md:text-base">Video / Diagram Placeholder</p>
-                  <p className="text-xs text-muted-foreground/60 mt-1">Media content would appear here</p>
-                </div>
-              </div>
-            )}
-
-            {/* Tags — Problems + Outcomes immediately below video */}
-            {drill && ((drill.problems?.length ?? 0) > 0 || (drill.outcomes?.length ?? 0) > 0) && (
-              <DrillTagSection
-                problems={drill.problems ?? []}
-                outcomes={drill.outcomes ?? []}
-              />
-            )}
-
-            {/* Admin toolbar — preserved from the old Goal panel, role-gated */}
-            {user && user.role === "admin" && (
-              <div className="flex gap-2 flex-wrap justify-end">
-                <button
-                  onClick={() => setShowPageBuilder(true)}
-                  className="flex items-center gap-1 px-3 py-2 rounded-md bg-electric/10 hover:bg-electric/20 text-electric transition-colors text-sm font-medium"
-                >
-                  <Layout className="h-4 w-4" />
-                  Page Builder
-                </button>
-                <button
-                  onClick={() => setEditModalOpen(true)}
-                  className="flex items-center gap-1 px-3 py-2 rounded-md bg-primary/10 hover:bg-primary/20 text-primary transition-colors text-sm font-medium"
-                >
-                  <Edit className="h-4 w-4" />
-                  Edit
-                </button>
-                <button
-                  onClick={() => setShowDeleteConfirm(true)}
-                  className="flex items-center gap-1 px-3 py-2 rounded-md bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors text-sm font-medium"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Delete
-                </button>
-              </div>
-            )}
-
-            {/* 2×2 Quick Info grid: Goal, Problem It Solves, Equipment, How To Do It */}
-            <QuickInfoGrid
-              goal={(dbDrill?.goalOfDrill ?? details?.goal) || null}
-              problemsSolved={(dbDrill?.whatThisDrillHelpsFix as string[] | null) ?? null}
-              equipment={
-                (dbDrill?.equipment as string[] | null) ??
-                (typeof details?.equipment === "string"
-                  ? details.equipment.split(",").map((s) => s.trim()).filter(Boolean)
-                  : null)
-              }
-              howToSteps={
-                (dbDrill?.howToRunTheDrill as string[] | null) ??
-                (descriptionSteps.length > 0 ? descriptionSteps : null)
-              }
-            />
-
-            {/* Coaching layer: What To Feel / Coach Cue / Common Mistakes / Watch For */}
-            <CoachingLayer
-              whatToFeel={(dbDrill?.coachingNotes as string[] | null) ?? null}
-              coachCue={dbDrill?.coachSteveCue ?? null}
-              commonMistakes={(dbDrill?.commonMistakes as string[] | null) ?? null}
-              watchFor={
-                dbDrill?.gameTransferExplanation ?? dbDrill?.whoThisDrillIsBestFor ?? null
-              }
-            />
-
-            {/* Next Steps chips — curated nextStepDrillIds, fall back to tag overlap */}
-            <NextStepsChips
-              drills={relatedDrills.slice(0, 4).map((d) => ({ drillId: d.id, name: d.name }))}
-            />
-
-            {/* Metadata footer: Drill Type / Age / Focus Areas */}
-            <MetadataFooter
-              drillType={dbDrill?.drillType ?? null}
-              ageLevels={(dbDrill?.ageLevel as string[] | null) ?? null}
-              focusAreas={
-                (dbDrill?.tags as string[] | null) ??
-                (dbDrill?.outcomes as string[] | null) ??
-                null
-              }
-            />
-
-            {/* Related Drills carousel */}
-            <RelatedDrillsCarousel
-              drills={relatedDrills.slice(0, 3).map<RelatedDrill>((d) => ({
-                drillId: d.id,
-                name: d.name,
-                difficulty: d.difficulty,
-                category: d.categories?.[0] ?? null,
-                duration: d.duration,
-                featured: Boolean(d.featured),
-              }))}
-            />
-
-            {/* Q&A for athletes — kept from previous layout */}
-            {user?.role === "athlete" && (
-              <DrillQAForm drillId={id || ""} drillName={drill?.name || ""} />
-            )}
-          </div>
-        ) : (
-          <div className="text-center py-12 bg-muted/30 rounded-xl border border-dashed">
-            <h3 className="text-xl font-bold mb-2">Content Not Available</h3>
-            <p className="text-muted-foreground max-w-md mx-auto mb-6">
-              We haven't extracted the detailed content for this drill yet. You can view it on the official website.
-            </p>
-            <a href={drill.url} target="_blank" rel="noopener noreferrer">
-              <Button>
-                View on USA Baseball <ExternalLink className="ml-2 h-4 w-4" />
-              </Button>
-            </a>
-          </div>
-        )}
-
-
-
+        <DrillDetailBody
+          drill={drill}
+          dbDrill={dbDrill as Record<string, unknown> | null}
+          details={details as Record<string, unknown> | null}
+          videoUrl={savedVideos[drill.id] || (details && 'videoUrl' in details ? (details as any).videoUrl : null) || null}
+          pageLayoutBlocks={
+            pageLayout?.blocks && Array.isArray(pageLayout.blocks) && pageLayout.blocks.length > 0
+              ? (pageLayout.blocks as unknown[])
+              : null
+          }
+          customInstructions={customInstructions}
+          user={user}
+          embed={false}
+          backHref={backHref}
+          descriptionSteps={descriptionSteps}
+          drillId={id || ''}
+          onShowPageBuilder={() => setShowPageBuilder(true)}
+          onEditModalOpen={() => setEditModalOpen(true)}
+          onShowDeleteConfirm={() => setShowDeleteConfirm(true)}
+          onInstructionsChange={setCustomInstructions}
+          onInstructionsSave={saveCustomInstructions}
+          isInstructionsSaving={saveInstructionsMutation.isPending}
+        />
       </div>
 
       

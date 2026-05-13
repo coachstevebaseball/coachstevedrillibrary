@@ -14,6 +14,8 @@ export type RelatedDrill = {
 type Props = {
   drills: RelatedDrill[];
   title?: string;
+  /** Link prefix — defaults to "/drill/". Embed passes "/embed/drill/". */
+  basePath?: string;
 };
 
 const DIFF_TONE: Record<string, string> = {
@@ -22,7 +24,7 @@ const DIFF_TONE: Record<string, string> = {
   Hard: "oklch(60% 0.2 25)",
 };
 
-export function RelatedDrillsCarousel({ drills, title = "RELATED DRILLS" }: Props) {
+export function RelatedDrillsCarousel({ drills, title = "RELATED DRILLS", basePath = "/drill/" }: Props) {
   if (!drills || drills.length === 0) return null;
 
   return (
@@ -38,7 +40,7 @@ export function RelatedDrillsCarousel({ drills, title = "RELATED DRILLS" }: Prop
             const diffColor = d.difficulty ? DIFF_TONE[d.difficulty] : undefined;
             const fallbackImg = `/images/drills/${d.drillId.toLowerCase().replace(/[^a-z0-9]/g, "-")}.jpg`;
             return (
-              <Link key={d.drillId} href={`/drill/${d.drillId}`}>
+              <Link key={d.drillId} href={`${basePath}${d.drillId}`}>
                 <a className="snap-start w-[70vw] max-w-[260px] md:w-auto md:max-w-none rounded-xl overflow-hidden border border-white/10 bg-white/[0.02] hover:border-white/25 transition-colors group relative flex-shrink-0">
                 {d.featured && (
                   <span

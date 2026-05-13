@@ -2362,3 +2362,23 @@
 - [x] Remove ProtectedRoute from embed routes (make public)
 - [x] Iframe auto-resizes — no scrollbar inside iframe
 - [x] CSP allows coachstevebaseball.com, coachstevenbaseball.com, *.squarespace.com, *.wixsite.com
+
+## Embed Drill Detail Parity + SectionLabel Polish
+- [x] Extract DrillDetailBody from DrillDetail.tsx into client/src/components/drill/DrillDetailBody.tsx
+- [x] DrillDetailBody renders: video, fixes/improves pills, 4-card Quick Info grid, Coaching Layer, Next Steps chips, metadata row, Related Drills
+- [x] DrillDetailBody accepts embed boolean prop to hide admin buttons, floating chat/AI widgets, sidebar chrome
+- [x] Update DrillDetail.tsx to use DrillDetailBody (admin modals/state preserved)
+- [x] Update EmbedDrillDetail.tsx to use DrillDetailBody in slim embed layout
+- [x] Remove legacy "Instructions" paragraph block from embed
+- [x] Create SectionLabel component at client/src/components/ui/SectionLabel.tsx
+- [x] SectionLabel variant="strong": 14px uppercase, font-weight 700, letter-spacing 0.08em, icon + color prop, 24x2px underline accent
+- [x] SectionLabel variant="quiet": 11px uppercase, font-weight 600, opacity 0.55, no icon, no underline
+- [ ] Color-to-meaning map: Goal→red+Target, Problem→orange+AlertTriangle, Equipment→teal+Wrench, How To Do It→green+Play, What to Feel→cyan+Sparkles, Coach Cue→yellow+Quote, Common Mistakes→red+AlertCircle, Watch For→purple+Eye, Next Steps→teal+ArrowRight
+- [ ] Quiet labels for: Drill Type, Age Level, Focus Areas, What This Drill Fixes & Improves
+- [ ] Replace all hand-rolled section labels in DrillDetailBody with SectionLabel
+- [x] 0 TypeScript errors, no console errors
+- [x] Mobile (375px) renders cleanly with cards stacking 1-up
+- [x] Embed page hides global sidebar, admin buttons, floating chat/AI widgets
+- [x] All drill links in embed point to /embed/drill/ (7 links verified, 0 escapes)
+- [x] basePath prop added to NextStepsChips and RelatedDrillsCarousel
+- [x] All 385 tests pass
