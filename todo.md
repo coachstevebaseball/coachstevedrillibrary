@@ -2298,3 +2298,9 @@
 - [x] Fix NextStepsChips horizontal overflow — added overflow-hidden outer wrapper with scrollable inner container
 - [x] Fix RelatedDrillsCarousel horizontal overflow — added overflow-hidden outer wrapper, reduced card width to 70vw/260px max
 - [x] Add loading="lazy" and decoding="async" to Related Drills carousel thumbnail images for better mobile performance
+
+## Remove Favorite & Upload My Swing Buttons (May 2026)
+- [x] Remove "Favorite" button from drill detail page
+- [x] Remove "Upload My Swing" button from drill detail page
+- [x] Clean up spacing/layout after removal — no awkward gaps
+- [x] Ensure no placeholder containers or hidden inactive components remain

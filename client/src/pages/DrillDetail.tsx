@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink, Lock, LogIn, ChevronDown, AlertCircle, TrendingUp, Lightbulb, Star } from "lucide-react";
+import { ArrowLeft, Clock, Users, Dumbbell, Target, ExternalLink, Lock, LogIn, ChevronDown, AlertCircle, TrendingUp, Lightbulb } from "lucide-react";
 import { getCategoryConfig } from "@/lib/categoryColors";
 import { getLoginUrl, PREVIEW_MODE } from "@/const";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -29,7 +29,7 @@ import { CoachingLayer } from "@/components/drill/CoachingLayer";
 import { NextStepsChips } from "@/components/drill/NextStepsChips";
 import { MetadataFooter } from "@/components/drill/MetadataFooter";
 import { RelatedDrillsCarousel, type RelatedDrill } from "@/components/drill/RelatedDrillsCarousel";
-import { StickyMobileCTA } from "@/components/drill/StickyMobileCTA";
+
 import { useAllDrills } from "@/hooks/useAllDrills";
 
 // DrillTagSection component — shows Problems (red) and Outcomes (green) with Show More
@@ -1305,29 +1305,7 @@ export default function DrillDetail() {
     }
   }, [drillDetailData]);
 
-  // Favorites functionality
-  const { data: favoritesData } = trpc.favorites.getAll.useQuery(undefined, {
-    enabled: !!user?.id
-  });
-  const toggleFavoriteMutation = trpc.favorites.toggle.useMutation({
-    onSuccess: () => {
-      trpcUtils.favorites.getAll.invalidate();
-    }
-  });
   const trpcUtils = trpc.useUtils();
-  
-  // Check if current drill is favorited
-  const isFavorited = useMemo(() => {
-    if (!favoritesData?.drillIds || !id) return false;
-    const numericId = parseInt(id);
-    return favoritesData.drillIds.includes(numericId) || favoritesData.drillIds.includes(id as any);
-  }, [favoritesData?.drillIds, id]);
-  
-  const handleToggleFavorite = () => {
-    if (!id) return;
-    const numericId = parseInt(id) || 0;
-    toggleFavoriteMutation.mutate({ drillId: numericId });
-  };
 
   // Activity logging mutation
   const logActivityMutation = trpc.activity.logActivity.useMutation();
@@ -1568,23 +1546,8 @@ export default function DrillDetail() {
               })()}
             </div>
 
-            <div className="flex gap-2 w-full lg:w-auto shrink-0">
-              {user && (
-                <Button
-                  onClick={handleToggleFavorite}
-                  disabled={toggleFavoriteMutation.isPending}
-                  variant="outline"
-                  className={`flex-1 lg:flex-none gap-2 ${
-                    isFavorited
-                      ? "bg-electric/25 hover:bg-electric/35 text-electric border-electric/40"
-                      : "bg-brand-header-foreground/8 hover:bg-brand-header-foreground/14 text-brand-header-foreground border-brand-header-foreground/15"
-                  }`}
-                >
-                  <Star className={`h-4 w-4 ${isFavorited ? "fill-current" : ""}`} />
-                  {isFavorited ? "Favorited" : "Favorite"}
-                </Button>
-              )}
-              {!details && (
+            {!details && (
+              <div className="flex gap-2 w-full lg:w-auto shrink-0">
                 <a href={drill.url} target="_blank" rel="noopener noreferrer" className="flex-1 lg:flex-none">
                   <Button
                     variant="outline"
@@ -1595,8 +1558,8 @@ export default function DrillDetail() {
                     <ExternalLink className="h-4 w-4" />
                   </Button>
                 </a>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -1849,16 +1812,6 @@ export default function DrillDetail() {
           drillId={id || ''}
           drillName={drill?.name || ''}
           onClose={() => setShowPageBuilder(false)}
-        />
-      )}
-
-      {/* Sticky mobile CTA: athletes only, mobile only */}
-      {user?.role === "athlete" && id && (
-        <StickyMobileCTA
-          drillId={id}
-          assignmentId={myAssignment?.id ?? null}
-          onMarkComplete={handleMarkComplete}
-          isCompleting={markCompleteMutation.isPending}
         />
       )}
     </div>
