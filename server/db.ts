@@ -7,6 +7,14 @@ let _db: ReturnType<typeof drizzle> | null = null;
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
+  // Guard: prevent tests from accidentally hitting the production database.
+  if (process.env.VITEST_RUNNING === '1' && process.env.DATABASE_URL) {
+    throw new Error(
+      '[getDb] DATABASE_URL is set while VITEST_RUNNING=1. ' +
+      'Tests must NOT touch the production database. ' +
+      'Mock getDb() in your test or remove DATABASE_URL from the test environment.'
+    );
+  }
   if (!_db && process.env.DATABASE_URL) {
     try {
       _db = drizzle(process.env.DATABASE_URL);

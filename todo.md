@@ -2328,3 +2328,19 @@
 - [x] TypeScript compiles with zero errors
 - [ ] Confirmation test: import drill with all fields, verify on public page
 - [x] Write vitest tests for bulk import rich fields (8 tests passing)
+
+## Fix Test Isolation (Tests Writing to Production DB)
+- [x] Analyze current test DB configuration (vitest.config.ts, env setup)
+- [x] Add guard that throws if test code detects production DATABASE_URL (vitest-setup.ts + getDb guard)
+- [x] Configure tests to use isolated test database or mock DB calls (16 integration tests renamed to *.integration.test.ts, excluded by default)
+- [x] Verify all 385 unit tests still pass with isolation (33 files, 0 failures)
+- [x] Verify no new junk rows appear in production after test run
+
+## Delete Junk Drills from Production
+- [x] Audit junk drills for references in practice plans, assignments, favorites, etc. (3 drillDetails, 1 drillVideo, 0 assignments/favorites/plans)
+- [x] Delete drills matching drillId LIKE 'test-drill-admin-%' (104 rows)
+- [x] Delete drills matching drillId LIKE 'auto-slug-drill-%' (26 rows)
+- [x] Delete drills with drillId IN (test-alias-fields, drill-without-rich, drill-with-rich, test-visible-false)
+- [x] Delete drills with drillId IN (90/45/even-progression-tee, inside/outside-tee, angled-force-plate-tee---back-foot)
+- [x] Clean up 6 additional orphaned drillDetails rows (test-drill-1, test-drill-2, test-goal-edit-drill, etc.)
+- [x] Verify production is clean (231 drills remaining, 0 orphans)
