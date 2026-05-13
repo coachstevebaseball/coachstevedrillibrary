@@ -3,6 +3,22 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Target, ExternalLink, Lightbulb } from "lucide-react";
 import { Link, useRoute } from "wouter";
 import { useState, useEffect } from "react";
+
+// ─── Iframe Height Broadcaster ──────────────────────────────────────────────
+function useEmbedHeightBroadcast() {
+  useEffect(() => {
+    function postHeight() {
+      const h = document.documentElement.scrollHeight;
+      window.parent.postMessage({ type: "csmc:embed-height", height: h }, "*");
+    }
+    postHeight();
+    const ro = new ResizeObserver(() => postHeight());
+    ro.observe(document.documentElement);
+    const mo = new MutationObserver(() => requestAnimationFrame(postHeight));
+    mo.observe(document.body, { childList: true, subtree: true });
+    return () => { ro.disconnect(); mo.disconnect(); };
+  }, []);
+}
 // drillsData import removed — drill lookup now uses unified DB
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { TiptapRenderer } from "@/components/TiptapEditor";
@@ -60,6 +76,7 @@ function DrillTagSection({ problems, outcomes }: { problems: string[]; outcomes:
 }
 
 export default function EmbedDrillDetail() {
+  useEmbedHeightBroadcast();
   const [match, params] = useRoute("/embed/drill/:id");
   const id = params?.id;
 
@@ -330,20 +347,7 @@ export default function EmbedDrillDetail() {
         )}
       </div>
 
-      {/* Minimal Footer */}
-      <div className="text-center py-2 px-3 mt-auto">
-        <p className="text-[10px] text-slate-700">
-          Powered by{" "}
-          <a
-            href="https://coachstevemobilecoach.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-slate-600 hover:text-red-400 transition-colors"
-          >
-            Coach Steve's Hitters Lab
-          </a>
-        </p>
-      </div>
+
     </div>
   );
 }

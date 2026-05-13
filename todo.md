@@ -2344,3 +2344,21 @@
 - [x] Delete drills with drillId IN (90/45/even-progression-tee, inside/outside-tee, angled-force-plate-tee---back-foot)
 - [x] Clean up 6 additional orphaned drillDetails rows (test-drill-1, test-drill-2, test-goal-edit-drill, etc.)
 - [x] Verify production is clean (231 drills remaining, 0 orphans)
+
+## Embed Drill Directory — Rich Photo Cards + Filter Accordion
+- [x] Rewrite /embed/drills to render DrillCard photo-thumbnail grid (same as /drills)
+- [x] Include "Narrow by Problem, Goal & More" filter accordion (Fix a Problem, Build a Skill, Focus Areas)
+- [x] Include Level pills and Skill pills
+- [x] Remove SiteNav, hero section, site footer, "Back to Directory" arrow, "Powered by" text
+- [x] All drill links point to /embed/drill/<slug> (stay inside iframe)
+- [x] Add postMessage height auto-resize (csmc:embed-height) via ResizeObserver
+- [x] Add html,body{margin:0;padding:0;overflow-x:hidden;background:#07111F} in client/index.html
+- [x] Use grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr))
+- [x] All images/videos use max-width:100%
+- [x] Touch targets >= 44px
+- [x] 360px viewport: no horizontal scroll, 1 column, full-width search
+- [x] 768px viewport: 2 columns
+- [x] 1024px+ viewport: 3 columns
+- [x] Remove ProtectedRoute from embed routes (make public)
+- [x] Iframe auto-resizes — no scrollbar inside iframe
+- [x] CSP allows coachstevebaseball.com, coachstevenbaseball.com, *.squarespace.com, *.wixsite.com

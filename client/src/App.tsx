@@ -143,24 +143,10 @@ function Router() {
         </ProtectedRoute>
       </Route>
 
-      {/* ===== Embed Routes (protected — any logged-in user) ===== */}
-      <Route path="/embed">
-        <ProtectedRoute>
-          <EmbedHome />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/embed/drills">
-        <ProtectedRoute>
-          <EmbedDrillLibrary />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/embed/drill/:id">
-        {(params) => (
-          <ProtectedRoute>
-            <EmbedDrillDetail />
-          </ProtectedRoute>
-        )}
-      </Route>
+      {/* ===== Embed Routes (public — no login required for iframe embedding) ===== */}
+      <Route path="/embed" component={EmbedHome} />
+      <Route path="/embed/drills" component={EmbedDrillLibrary} />
+      <Route path="/embed/drill/:id" component={EmbedDrillDetail} />
 
       {/* ===== Legacy /admin redirects (folded into /coach-dashboard) ===== */}
       <Route path={"/admin"}>
