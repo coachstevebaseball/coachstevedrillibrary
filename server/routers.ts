@@ -1407,7 +1407,7 @@ export const appRouter = router({
           goal: z.array(z.string()).optional(),
           description: z.string().nullable().optional(),
           equipment: z.array(z.string()).optional(),
-          // 8 rich coaching fields
+          // 8 rich coaching fields (DB column names)
           goalOfDrill: z.string().nullable().optional(),
           whoThisDrillIsBestFor: z.string().nullable().optional(),
           coachingNotes: z.array(z.string()).nullable().optional(),
@@ -1416,15 +1416,63 @@ export const appRouter = router({
           commonMistakes: z.array(z.string()).nullable().optional(),
           coachSteveCue: z.string().nullable().optional(),
           gameTransferExplanation: z.string().nullable().optional(),
+          // visible/isHidden — visible is the user-facing alias (inverted)
+          isHidden: z.boolean().optional(),
+          visible: z.boolean().optional(),
+          // User-facing alias fields (mapped to DB columns in handler)
+          shortDescription: z.string().nullable().optional(),
+          watchFor: z.string().nullable().optional(),
+          whatToFeel: z.array(z.string()).nullable().optional(),
+          problemItSolves: z.array(z.string()).nullable().optional(),
+          howToDoIt: z.array(z.string()).nullable().optional(),
+          coachStevesCue: z.string().nullable().optional(),
         }))
       }))
       .mutation(async ({ ctx, input }) => {
         if (ctx.user.role !== 'admin') {
           throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
         }
-        const result = await db.bulkUpsertDrills(
-          input.rows.map((r) => ({ ...r, createdBy: ctx.user.id }))
-        );
+        // Normalize user-facing aliases → DB column names
+        const normalizedRows = input.rows.map((r) => {
+          const row: Record<string, unknown> = { ...r, createdBy: ctx.user.id };
+
+          // Map user-facing aliases to DB columns (alias takes priority if both provided)
+          if (r.shortDescription !== undefined && row.whoThisDrillIsBestFor === undefined) {
+            row.whoThisDrillIsBestFor = r.shortDescription;
+          }
+          if (r.watchFor !== undefined && row.gameTransferExplanation === undefined) {
+            row.gameTransferExplanation = r.watchFor;
+          }
+          if (r.whatToFeel !== undefined && row.coachingNotes === undefined) {
+            row.coachingNotes = r.whatToFeel;
+          }
+          if (r.problemItSolves !== undefined && row.whatThisDrillHelpsFix === undefined) {
+            row.whatThisDrillHelpsFix = r.problemItSolves;
+          }
+          if (r.howToDoIt !== undefined && row.howToRunTheDrill === undefined) {
+            row.howToRunTheDrill = r.howToDoIt;
+          }
+          if (r.coachStevesCue !== undefined && row.coachSteveCue === undefined) {
+            row.coachSteveCue = r.coachStevesCue;
+          }
+
+          // visible → isHidden inversion
+          if (r.visible !== undefined && r.isHidden === undefined) {
+            row.isHidden = !r.visible;
+          }
+
+          // Remove alias fields so they don't pass to DB layer
+          delete row.shortDescription;
+          delete row.watchFor;
+          delete row.whatToFeel;
+          delete row.problemItSolves;
+          delete row.howToDoIt;
+          delete row.coachStevesCue;
+          delete row.visible;
+
+          return row;
+        });
+        const result = await db.bulkUpsertDrills(normalizedRows as any);
         return result;
       }),
   }),

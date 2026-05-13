@@ -99,6 +99,31 @@ function parseJsonArr(raw: string): string[] {
   return trimmed.split(",").map((s) => s.trim()).filter(Boolean);
 }
 
+/** Multi-format array parser: JSON array, pipe-separated, newline-separated, or comma-separated */
+function parseFlexArr(val: string | string[] | undefined | null): string[] {
+  if (val === undefined || val === null) return [];
+  if (Array.isArray(val)) return val.map(s => String(s).trim()).filter(Boolean);
+  const trimmed = String(val).trim();
+  if (!trimmed) return [];
+  // JSON array
+  if (trimmed.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) return parsed.map((s: unknown) => String(s).trim()).filter(Boolean);
+    } catch { /* fall through */ }
+  }
+  // Pipe-separated
+  if (trimmed.includes("|")) {
+    return trimmed.split("|").map(s => s.trim()).filter(Boolean);
+  }
+  // Newline-separated
+  if (trimmed.includes("\n")) {
+    return trimmed.split("\n").map(s => s.trim()).filter(Boolean);
+  }
+  // Comma-separated (fallback)
+  return trimmed.split(",").map(s => s.trim()).filter(Boolean);
+}
+
 function arrToDisplay(arr: string[] | null | undefined): string {
   if (!arr || arr.length === 0) return "";
   return arr.join(", ");
@@ -126,6 +151,24 @@ interface BulkRow {
   tags?: string;
   problem?: string;
   goal?: string;
+  // Rich coaching fields (user-facing aliases)
+  goalOfDrill?: string;
+  shortDescription?: string;
+  whoThisDrillIsBestFor?: string;
+  coachStevesCue?: string;
+  coachSteveCue?: string;
+  watchFor?: string;
+  gameTransferExplanation?: string;
+  whatToFeel?: string;
+  coachingNotes?: string;
+  problemItSolves?: string;
+  whatThisDrillHelpsFix?: string;
+  howToDoIt?: string;
+  howToRunTheDrill?: string;
+  commonMistakes?: string;
+  visible?: string;
+  isHidden?: string;
+  [key: string]: string | undefined;
 }
 
 function parseBulkCSV(raw: string): BulkRow[] {
@@ -515,27 +558,31 @@ function EditDrillModal({
 // ─── Bulk Import Modal ────────────────────────────────────────────────────────
 
 // Full field template for new drill creation
-const FULL_CSV_TEMPLATE = `drillId,name,difficulty,categories,duration,url,ageLevel,drillType,problems,outcomes,tags
-new-drill-example,My New Drill,Medium,"Hitting",10m,https://example.com/drill,"Youth,High School",Constraint,"Timing Issues, Poor Load","Improve Timing, Improve Barrel Path","timing, rhythm"
-existing-drill-id,,,,,,,,"Bat Path Issues",,`;
+const FULL_CSV_TEMPLATE = `drillId,name,difficulty,categories,duration,url,ageLevel,drillType,problems,outcomes,tags,goalOfDrill,shortDescription,coachStevesCue,watchFor,whatToFeel,problemItSolves,howToDoIt,commonMistakes,visible
+example-drill,Example Drill,Medium,Hitting,10m,,All Levels,Tee Work,"Timing Issues|Bat Path Issues","Improve Timing|Better Contact Quality","timing|bat path",Train hitters to stay on time.,Helps hitters find a repeatable tempo.,Own the load own the move,Stay centered avoid drifting.,"smooth weight transfer|barrel staying through zone","Improper load|Poor sequencing","Start with bat on shoulder|Shift weight back|Stride|Plant and swing","Rushing each phase|Drifting forward",true`;
 
 const FULL_JSON_TEMPLATE = JSON.stringify([
   {
-    drillId: "new-drill-example",
-    name: "My New Drill",
+    drillId: "example-drill",
+    name: "Example Drill",
     difficulty: "Medium",
-    categories: ["Hitting"],
     duration: "10m",
-    url: "https://example.com/drill",
-    ageLevel: ["Youth", "High School"],
-    drillType: "Constraint",
-    problems: ["Timing Issues", "Poor Load"],
-    outcomes: ["Improve Timing", "Improve Barrel Path"],
-    tags: ["timing", "rhythm"]
-  },
-  {
-    drillId: "existing-drill-id",
-    problems: ["Bat Path Issues"]
+    categories: ["Hitting"],
+    url: "",
+    ageLevel: "All Levels",
+    drillType: "Tee Work",
+    problems: ["Timing Issues", "Bat Path Issues"],
+    outcomes: ["Improve Timing", "Better Contact Quality"],
+    tags: ["timing", "bat path"],
+    goalOfDrill: "Train hitters to stay on time with a deliberate load sequence.",
+    shortDescription: "Helps hitters find a repeatable tempo at the plate.",
+    coachStevesCue: "Own the load, own the move, then let the swing go",
+    watchFor: "The hitter should stay centered and avoid drifting forward before launch.",
+    whatToFeel: ["smooth weight transfer", "barrel staying through zone"],
+    problemItSolves: ["Improper load", "Poor sequencing"],
+    howToDoIt: ["Start with bat on shoulder", "Shift weight back on one", "Stride on two", "Plant and swing on three"],
+    commonMistakes: ["Rushing each phase", "Drifting forward too early"],
+    visible: true
   }
 ], null, 2);
 
@@ -569,21 +616,65 @@ function BulkImportModal({ onClose, onDone }: { onClose: () => void; onDone: () 
   }
 
   function handleImport() {
-    const rows = preview.map((r) => ({
-      drillId: (r.drillId ?? "").trim(),
-      name: r.name || undefined,
-      difficulty: (r.difficulty || undefined) as 'Easy' | 'Medium' | 'Hard' | undefined,
-      categories: r.categories ? parseJsonArr(r.categories) : undefined,
-      duration: r.duration || undefined,
-      url: r.url || undefined,
-      ageLevel: r.ageLevel ? parseJsonArr(r.ageLevel) : undefined,
-      drillType: r.drillType || undefined,
-      problems: r.problems ? parseJsonArr(r.problems) : undefined,
-      outcomes: r.outcomes ? parseJsonArr(r.outcomes) : undefined,
-      tags: r.tags ? parseJsonArr(r.tags) : undefined,
-      problem: r.problem ? parseJsonArr(r.problem) : undefined,
-      goal: r.goal ? parseJsonArr(r.goal) : undefined,
-    }));
+    const rows = preview.map((r) => {
+      const payload: Record<string, unknown> = {
+        drillId: (r.drillId ?? "").trim(),
+        name: r.name || undefined,
+        difficulty: (r.difficulty || undefined) as 'Easy' | 'Medium' | 'Hard' | undefined,
+        categories: r.categories ? parseFlexArr(r.categories) : undefined,
+        duration: r.duration || undefined,
+        url: r.url || undefined,
+        ageLevel: r.ageLevel ? parseFlexArr(r.ageLevel) : undefined,
+        drillType: r.drillType || undefined,
+        problems: r.problems ? parseFlexArr(r.problems) : undefined,
+        outcomes: r.outcomes ? parseFlexArr(r.outcomes) : undefined,
+        tags: r.tags ? parseFlexArr(r.tags) : undefined,
+        problem: r.problem ? parseFlexArr(r.problem) : undefined,
+        goal: r.goal ? parseFlexArr(r.goal) : undefined,
+      };
+
+      // Rich coaching string fields (accept both alias and DB column name)
+      const goalVal = r.goalOfDrill;
+      if (goalVal) payload.goalOfDrill = goalVal;
+
+      // shortDescription → whoThisDrillIsBestFor
+      const sdVal = r.shortDescription || r.whoThisDrillIsBestFor;
+      if (sdVal) payload.whoThisDrillIsBestFor = sdVal;
+
+      // coachStevesCue → coachSteveCue
+      const cueVal = r.coachStevesCue || r.coachSteveCue;
+      if (cueVal) payload.coachSteveCue = cueVal;
+
+      // watchFor → gameTransferExplanation
+      const wfVal = r.watchFor || r.gameTransferExplanation;
+      if (wfVal) payload.gameTransferExplanation = wfVal;
+
+      // whatToFeel → coachingNotes (array)
+      const wtfVal = r.whatToFeel || r.coachingNotes;
+      if (wtfVal) payload.coachingNotes = parseFlexArr(wtfVal);
+
+      // problemItSolves → whatThisDrillHelpsFix (array)
+      const pisVal = r.problemItSolves || r.whatThisDrillHelpsFix;
+      if (pisVal) payload.whatThisDrillHelpsFix = parseFlexArr(pisVal);
+
+      // howToDoIt → howToRunTheDrill (array)
+      const htdVal = r.howToDoIt || r.howToRunTheDrill;
+      if (htdVal) payload.howToRunTheDrill = parseFlexArr(htdVal);
+
+      // commonMistakes (array)
+      const cmVal = r.commonMistakes;
+      if (cmVal) payload.commonMistakes = parseFlexArr(cmVal);
+
+      // visible → isHidden inversion
+      if (r.visible !== undefined && r.visible !== '') {
+        const boolVal = ['true', '1', 'yes'].includes(String(r.visible).trim().toLowerCase());
+        payload.isHidden = !boolVal;
+      } else if (r.isHidden !== undefined && r.isHidden !== '') {
+        payload.isHidden = ['true', '1', 'yes'].includes(String(r.isHidden).trim().toLowerCase());
+      }
+
+      return payload as any;
+    });
     bulkUpsert.mutate({ rows });
   }
 
@@ -641,10 +732,11 @@ function BulkImportModal({ onClose, onDone }: { onClose: () => void; onDone: () 
         </div>
 
         {/* Field reference */}
-        <div className="bg-[#0A1628] border border-[#1e2a3a] rounded p-3 text-xs text-gray-400">
-          <p className="font-semibold text-gray-300 mb-1">Accepted fields:</p>
-          <p><span className="text-[#e4002b] font-mono">drillId</span> (required) · <span className="text-yellow-400 font-mono">name</span> (required for new drills) · difficulty · categories · duration · url · ageLevel · drillType · problems · outcomes · tags</p>
-          <p className="mt-1 text-gray-500">Arrays: use JSON array syntax <code>["A","B"]</code> or comma-separated string <code>"A, B"</code> in CSV.</p>
+        <div className="bg-[#0A1628] border border-[#1e2a3a] rounded p-3 text-xs text-gray-400 space-y-1.5">
+          <p className="font-semibold text-gray-300">Accepted fields:</p>
+          <p><span className="text-[#e4002b] font-mono">drillId</span> (required) · <span className="text-yellow-400 font-mono">name</span> (required for new) · difficulty · duration · categories · url · ageLevel · drillType · problems · outcomes · tags · <span className="text-emerald-400">goalOfDrill · shortDescription · coachStevesCue · watchFor · whatToFeel · problemItSolves · howToDoIt · commonMistakes · visible</span></p>
+          <p className="text-gray-500"><strong className="text-gray-400">Arrays:</strong> JSON <code>["A","B"]</code>, pipe <code>A|B</code>, newline (in quoted CSV cell), or comma <code>A, B</code> in CSV.</p>
+          <p className="text-gray-500"><strong className="text-gray-400">Updates:</strong> existing fields are preserved if omitted from the payload.</p>
         </div>
 
         <textarea
@@ -663,21 +755,35 @@ function BulkImportModal({ onClose, onDone }: { onClose: () => void; onDone: () 
               <table className="text-xs w-full">
                 <thead className="bg-[#0A1628]">
                   <tr>
-                    {["drillId", "name", "difficulty", "problems", "outcomes"].map((h) => (
-                      <th key={h} className="px-3 py-2 text-left text-gray-400 font-medium">{h}</th>
+                    {["drillId", "name", "difficulty", "Goal of Drill", "Coach's Cue", "Rich Fields"].map((h) => (
+                      <th key={h} className="px-3 py-2 text-left text-gray-400 font-medium whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {preview.slice(0, 5).map((r, i) => (
-                    <tr key={i} className="border-t border-[#1e2a3a]">
-                      <td className="px-3 py-1.5 font-mono text-gray-300">{r.drillId}</td>
-                      <td className="px-3 py-1.5 text-gray-200">{r.name || <span className="text-gray-600 italic">update only</span>}</td>
-                      <td className="px-3 py-1.5 text-gray-400">{r.difficulty || "—"}</td>
-                      <td className="px-3 py-1.5 text-gray-400 max-w-[160px] truncate">{r.problems || "—"}</td>
-                      <td className="px-3 py-1.5 text-gray-400 max-w-[160px] truncate">{r.outcomes || "—"}</td>
-                    </tr>
-                  ))}
+                  {preview.slice(0, 5).map((r, i) => {
+                    const richKeys = ["goalOfDrill", "whoThisDrillIsBestFor", "shortDescription", "coachSteveCue", "coachStevesCue", "gameTransferExplanation", "watchFor", "coachingNotes", "whatToFeel", "whatThisDrillHelpsFix", "problemItSolves", "howToRunTheDrill", "howToDoIt", "commonMistakes"];
+                    const richCount = richKeys.filter(k => r[k] !== undefined && r[k] !== '' && r[k] !== null).length;
+                    return (
+                      <tr key={i} className="border-t border-[#1e2a3a]">
+                        <td className="px-3 py-1.5 font-mono text-gray-300">{r.drillId}</td>
+                        <td className="px-3 py-1.5 text-gray-200">{r.name || <span className="text-gray-600 italic">update only</span>}</td>
+                        <td className="px-3 py-1.5 text-gray-400">{r.difficulty || "—"}</td>
+                        <td className="px-3 py-1.5 text-gray-400 max-w-[160px] truncate">{r.goalOfDrill || "—"}</td>
+                        <td className="px-3 py-1.5 text-gray-400 max-w-[140px] truncate">{r.coachStevesCue || r.coachSteveCue || "—"}</td>
+                        <td className="px-3 py-1.5">
+                          <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${
+                            richCount >= 6 ? "bg-green-900/30 text-green-400" :
+                            richCount >= 3 ? "bg-yellow-900/30 text-yellow-400" :
+                            richCount > 0 ? "bg-blue-900/30 text-blue-400" :
+                            "bg-gray-800 text-gray-500"
+                          }`}>
+                            {richCount}/8
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

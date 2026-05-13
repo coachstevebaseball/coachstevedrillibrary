@@ -2313,3 +2313,18 @@
 - [x] Rename "How to Run the Drill (one step per line)" → "How to Do It (one step per line)"
 - [x] Verify no backend/API/DB changes made
 - [x] Verify TypeScript compiles with zero errors
+
+## Expand Bulk Import to Accept All Drill Fields
+- [x] Add 9 new fields to bulk import: goalOfDrill, shortDescription, coachStevesCue, watchFor, whatToFeel, problemItSolves, howToDoIt, commonMistakes, visible
+- [x] Update JSON template with all new fields and example values
+- [x] Update CSV template with all new column headers and example values
+- [x] Update "Accepted fields" help text in the modal
+- [x] Handle array fields (whatToFeel, problemItSolves, howToDoIt, commonMistakes) from JSON array, newline-separated, or pipe-separated
+- [x] Handle boolean visible field (true/false/1/0/yes/no)
+- [x] Update server-side upsert logic to persist new fields
+- [x] Ensure partial updates don't clear omitted fields
+- [x] Maintain backwards compatibility with existing 11-field imports
+- [x] Add per-row validation summary in Parse & Preview (Rich Fields N/8 badge)
+- [x] TypeScript compiles with zero errors
+- [ ] Confirmation test: import drill with all fields, verify on public page
+- [x] Write vitest tests for bulk import rich fields (8 tests passing)

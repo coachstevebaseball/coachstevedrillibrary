@@ -1654,6 +1654,7 @@ export async function bulkUpsertDrills(
         }
         // Insert new drill with sensible defaults for omitted fields
         await db.insert(drills).values({
+          ...cleanPatch,
           drillId,
           name: drillName,
           difficulty: ((cleanPatch.difficulty as string) ?? 'Medium') as 'Easy' | 'Medium' | 'Hard',
@@ -1662,7 +1663,7 @@ export async function bulkUpsertDrills(
           url: (cleanPatch.url as string | null) ?? null,
           isDirectLink: (cleanPatch.isDirectLink as boolean) ?? false,
           source: 'custom',
-          isHidden: false,
+          isHidden: (cleanPatch.isHidden as boolean) ?? false,
         } as any);
         created++;
       } else {

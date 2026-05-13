@@ -6,23 +6,91 @@ import { Upload, CheckCircle, AlertCircle, RefreshCw } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Alias Mapping ───────────────────────────────────────────────────────────
+// Accept both user-facing aliases AND DB column names; normalize to DB column.
+const ALIAS_TO_DB: Record<string, string> = {
+  shortdescription: "whoThisDrillIsBestFor",
+  watchfor: "gameTransferExplanation",
+  whattofeel: "coachingNotes",
+  problemitsolves: "whatThisDrillHelpsFix",
+  howtodoit: "howToRunTheDrill",
+  coachstevescue: "coachSteveCue",
+  // DB column names (lowercase) → themselves
+  whothisdrillisbestfor: "whoThisDrillIsBestFor",
+  gametransferexplanation: "gameTransferExplanation",
+  coachingnotes: "coachingNotes",
+  whatthisdrillhelpsfix: "whatThisDrillHelpsFix",
+  howtorunthedrill: "howToRunTheDrill",
+  coachstevecue: "coachSteveCue",
+  goalofdrill: "goalOfDrill",
+  commonmistakes: "commonMistakes",
+  drillid: "drillId",
+  drilltype: "drillType",
+  agelevel: "ageLevel",
+  isdirectlink: "isDirectLink",
+  ishidden: "isHidden",
+};
 
-function parseJsonArr(val: string | string[] | undefined): string[] | undefined {
-  if (!val) return undefined;
-  if (Array.isArray(val)) return val;
-  const trimmed = val.trim();
-  if (trimmed.startsWith("[")) {
-    try { return JSON.parse(trimmed); } catch { /* fall through */ }
-  }
-  return trimmed.split(",").map((s) => s.trim()).filter(Boolean);
+/** Normalize a key: check alias map (case-insensitive), else return as-is */
+function normalizeKey(key: string): string {
+  const lower = key.trim().toLowerCase().replace(/[_\- ]/g, "");
+  return ALIAS_TO_DB[lower] ?? key.trim();
 }
 
-function parseBulkCSV(raw: string): Record<string, string>[] {
+/** Normalize all keys in a row object */
+function normalizeRow(row: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(row)) {
+    out[normalizeKey(k)] = v;
+  }
+  return out;
+}
+
+// ─── Array Parsing ───────────────────────────────────────────────────────────
+// Accept: JSON array, pipe-separated, newline-separated, or comma-separated.
+
+function parseFlexibleArray(val: string | string[] | undefined | null): string[] | undefined {
+  if (val === undefined || val === null) return undefined;
+  if (Array.isArray(val)) return val.map(s => String(s).trim()).filter(Boolean);
+  const trimmed = String(val).trim();
+  if (!trimmed) return undefined;
+  // JSON array
+  if (trimmed.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) return parsed.map((s: unknown) => String(s).trim()).filter(Boolean);
+    } catch { /* fall through */ }
+  }
+  // Pipe-separated
+  if (trimmed.includes("|")) {
+    return trimmed.split("|").map(s => s.trim()).filter(Boolean);
+  }
+  // Newline-separated
+  if (trimmed.includes("\n")) {
+    return trimmed.split("\n").map(s => s.trim()).filter(Boolean);
+  }
+  // Comma-separated (fallback)
+  return trimmed.split(",").map(s => s.trim()).filter(Boolean);
+}
+
+// ─── Boolean Parsing ─────────────────────────────────────────────────────────
+
+function parseBooleanish(val: unknown): boolean | undefined {
+  if (val === undefined || val === null || val === "") return undefined;
+  if (typeof val === "boolean") return val;
+  const s = String(val).trim().toLowerCase();
+  if (["true", "1", "yes"].includes(s)) return true;
+  if (["false", "0", "no"].includes(s)) return false;
+  return undefined;
+}
+
+// ─── CSV Parser ──────────────────────────────────────────────────────────────
+
+function parseBulkCSV(raw: string): Record<string, unknown>[] {
   const lines = raw.trim().split("\n").filter(Boolean);
   if (lines.length < 2) return [];
-  const headers = lines[0].split(",").map((h) => h.trim().toLowerCase().replace(/"/g, ""));
-  return lines.slice(1).map((line) => {
+  const headers = lines[0].split(",").map(h => h.trim().replace(/"/g, ""));
+  return lines.slice(1).map(line => {
     const cols: string[] = [];
     let cur = "", inQ = false;
     for (const ch of line) {
@@ -31,44 +99,60 @@ function parseBulkCSV(raw: string): Record<string, string>[] {
       cur += ch;
     }
     cols.push(cur);
-    const row: Record<string, string> = {};
+    const row: Record<string, unknown> = {};
     headers.forEach((h, i) => { row[h] = (cols[i] ?? "").trim(); });
-    if (row["drillid"] && !row["drillid"]) row["drillid"] = row["drillid"];
-    return row;
-  }).filter((r) => !!(r["drillid"] || r["drillId"]));
+    return normalizeRow(row);
+  }).filter(r => !!(r.drillId));
 }
 
 function parseBulkJSON(raw: string): Record<string, unknown>[] {
   try {
     const arr = JSON.parse(raw.trim());
     if (!Array.isArray(arr)) return [];
-    return arr.filter((r) => r && typeof r === "object" && (r.drillId || r.drillid));
+    return arr
+      .filter(r => r && typeof r === "object")
+      .map(r => normalizeRow(r as Record<string, unknown>))
+      .filter(r => !!(r.drillId));
   } catch { return []; }
 }
 
+// ─── Templates ───────────────────────────────────────────────────────────────
+
 const JSON_TEMPLATE = JSON.stringify([
   {
-    drillId: "new-drill-example",
-    name: "My New Drill",
+    drillId: "example-drill",
+    name: "Example Drill",
     difficulty: "Medium",
-    categories: ["Hitting"],
     duration: "10m",
-    url: "https://example.com/drill",
-    ageLevel: ["Youth", "High School"],
-    drillType: "Constraint",
-    problems: ["Timing Issues", "Poor Load"],
-    outcomes: ["Improve Timing", "Improve Barrel Path"],
-    tags: ["timing", "rhythm"]
-  },
-  {
-    drillId: "existing-drill-id",
-    problems: ["Bat Path Issues"]
+    categories: ["Hitting"],
+    url: "",
+    ageLevel: "All Levels",
+    drillType: "Tee Work",
+    problems: ["Timing Issues", "Bat Path Issues"],
+    outcomes: ["Improve Timing", "Better Contact Quality"],
+    tags: ["timing", "bat path"],
+    goalOfDrill: "Train hitters to stay on time with a deliberate load sequence.",
+    shortDescription: "Helps hitters find a repeatable tempo at the plate.",
+    coachStevesCue: "Own the load, own the move, then let the swing go",
+    watchFor: "The hitter should stay centered and avoid drifting forward before launch.",
+    whatToFeel: ["smooth weight transfer", "barrel staying through zone"],
+    problemItSolves: ["Improper load", "Poor sequencing"],
+    howToDoIt: ["Start with bat on shoulder", "Shift weight back on one", "Stride on two", "Plant and swing on three"],
+    commonMistakes: ["Rushing each phase", "Drifting forward too early"],
+    visible: true
   }
 ], null, 2);
 
-const CSV_TEMPLATE = `drillId,name,difficulty,categories,duration,url,ageLevel,drillType,problems,outcomes,tags
-new-drill-example,My New Drill,Medium,"Hitting",10m,https://example.com/drill,"Youth,High School",Constraint,"Timing Issues, Poor Load","Improve Timing, Improve Barrel Path","timing, rhythm"
-existing-drill-id,,,,,,,,"Bat Path Issues",,`;
+const CSV_TEMPLATE = `drillId,name,difficulty,categories,duration,url,ageLevel,drillType,problems,outcomes,tags,goalOfDrill,shortDescription,coachStevesCue,watchFor,whatToFeel,problemItSolves,howToDoIt,commonMistakes,visible
+example-drill,Example Drill,Medium,Hitting,10m,,All Levels,Tee Work,"Timing Issues|Bat Path Issues","Improve Timing|Better Contact Quality","timing|bat path",Train hitters to stay on time.,Helps hitters find a repeatable tempo.,Own the load own the move,Stay centered avoid drifting.,"smooth weight transfer|barrel staying through zone","Improper load|Poor sequencing","Start with bat on shoulder|Shift weight back|Stride|Plant and swing","Rushing each phase|Drifting forward",true`;
+
+// ─── Field sets for mapping ──────────────────────────────────────────────────
+
+const ARRAY_FIELDS = new Set([
+  "categories", "ageLevel", "problems", "outcomes", "tags",
+  "problem", "goal", "equipment",
+  "coachingNotes", "whatThisDrillHelpsFix", "howToRunTheDrill", "commonMistakes",
+]);
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -111,22 +195,43 @@ export function BulkImportDrills() {
 
   function handleImport() {
     const rows = preview.map((r) => {
-      const drillId = ((r.drillId ?? r.drillid ?? "") as string).trim();
-      return {
-        drillId,
-        name: (r.name as string) || undefined,
-        difficulty: ((r.difficulty as string) || undefined) as 'Easy' | 'Medium' | 'Hard' | undefined,
-        categories: r.categories ? parseJsonArr(r.categories as string) : undefined,
-        duration: (r.duration as string) || undefined,
-        url: (r.url as string) || undefined,
-        ageLevel: r.ageLevel ? parseJsonArr(r.ageLevel as string) : undefined,
-        drillType: (r.drillType as string) || undefined,
-        problems: r.problems ? parseJsonArr(r.problems as string) : undefined,
-        outcomes: r.outcomes ? parseJsonArr(r.outcomes as string) : undefined,
-        tags: r.tags ? parseJsonArr(r.tags as string) : undefined,
-        problem: r.problem ? parseJsonArr(r.problem as string) : undefined,
-        goal: r.goal ? parseJsonArr(r.goal as string) : undefined,
-      };
+      const drillId = String(r.drillId ?? "").trim();
+
+      // Build the mutation payload
+      const payload: Record<string, unknown> = { drillId };
+
+      // Simple string fields
+      if (r.name) payload.name = String(r.name);
+      if (r.difficulty) payload.difficulty = String(r.difficulty) as 'Easy' | 'Medium' | 'Hard';
+      if (r.duration) payload.duration = String(r.duration);
+      if (r.url !== undefined && r.url !== "") payload.url = String(r.url);
+      if (r.drillType) payload.drillType = String(r.drillType);
+      if (r.description) payload.description = String(r.description);
+
+      // Rich coaching string fields
+      if (r.goalOfDrill) payload.goalOfDrill = String(r.goalOfDrill);
+      if (r.whoThisDrillIsBestFor) payload.whoThisDrillIsBestFor = String(r.whoThisDrillIsBestFor);
+      if (r.coachSteveCue) payload.coachSteveCue = String(r.coachSteveCue);
+      if (r.gameTransferExplanation) payload.gameTransferExplanation = String(r.gameTransferExplanation);
+
+      // Array fields — parse flexibly
+      for (const field of ARRAY_FIELDS) {
+        if (r[field] !== undefined && r[field] !== "" && r[field] !== null) {
+          payload[field] = parseFlexibleArray(r[field] as string | string[]);
+        }
+      }
+
+      // Visible → isHidden inversion
+      const visibleVal = parseBooleanish(r.visible);
+      const isHiddenVal = parseBooleanish(r.isHidden);
+      if (visibleVal !== undefined) {
+        payload.isHidden = !visibleVal;
+      } else if (isHiddenVal !== undefined) {
+        payload.isHidden = isHiddenVal;
+      }
+      // If neither provided, omit — server preserves existing value on update
+
+      return payload as any;
     });
     bulkUpsert.mutate({ rows });
   }
@@ -148,6 +253,13 @@ export function BulkImportDrills() {
     setParsed(false);
     setPreview([]);
     setImportResult(null);
+  }
+
+  // Count how many rich coaching fields are populated per row
+  function countRichFields(r: Record<string, unknown>): number {
+    const richKeys = ["goalOfDrill", "whoThisDrillIsBestFor", "coachSteveCue", "gameTransferExplanation",
+      "coachingNotes", "whatThisDrillHelpsFix", "howToRunTheDrill", "commonMistakes"];
+    return richKeys.filter(k => r[k] !== undefined && r[k] !== "" && r[k] !== null).length;
   }
 
   return (
@@ -203,12 +315,20 @@ export function BulkImportDrills() {
             {/* Field reference */}
             <Alert>
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription className="text-xs">
-                <span className="font-semibold">Required:</span> <code className="text-destructive">drillId</code> (always) · <code className="text-yellow-600 dark:text-yellow-400">name</code> (for new drills only)
-                <br />
-                <span className="font-semibold">Optional:</span> difficulty · categories · duration · url · ageLevel · drillType · problems · outcomes · tags
-                <br />
-                <span className="text-muted-foreground">Existing drills will be updated and new drills will be added. Arrays: <code>["A","B"]</code> or <code>"A, B"</code> in CSV.</span>
+              <AlertDescription className="text-xs space-y-1.5">
+                <div>
+                  <span className="font-semibold">Accepted fields:</span>{" "}
+                  <code className="text-destructive">drillId</code> (required) ·{" "}
+                  <code className="text-yellow-600 dark:text-yellow-400">name</code> (required for new) ·{" "}
+                  difficulty · duration · categories · url · ageLevel · drillType · problems · outcomes · tags ·{" "}
+                  <span className="text-emerald-500">goalOfDrill · shortDescription · coachStevesCue · watchFor · whatToFeel · problemItSolves · howToDoIt · commonMistakes · visible</span>
+                </div>
+                <div className="text-muted-foreground">
+                  <strong>Arrays:</strong> JSON <code>["A","B"]</code>, pipe <code>A|B</code>, newline (in quoted CSV cell), or comma <code>A, B</code> in CSV.
+                </div>
+                <div className="text-muted-foreground">
+                  <strong>Updates:</strong> existing fields are preserved if omitted from the payload.
+                </div>
               </AlertDescription>
             </Alert>
 
@@ -228,19 +348,31 @@ export function BulkImportDrills() {
                   <table className="text-xs w-full">
                     <thead className="bg-muted">
                       <tr>
-                        {["drillId", "name", "difficulty", "problems", "outcomes"].map((h) => (
-                          <th key={h} className="px-3 py-2 text-left text-muted-foreground font-medium">{h}</th>
+                        {["drillId", "name", "difficulty", "goal", "coaching", "fields"].map((h) => (
+                          <th key={h} className="px-3 py-2 text-left text-muted-foreground font-medium whitespace-nowrap">
+                            {h === "goal" ? "Goal of Drill" : h === "coaching" ? "Coach's Cue" : h === "fields" ? "Rich Fields" : h}
+                          </th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
                       {preview.slice(0, 5).map((r, i) => (
                         <tr key={i} className="border-t border-border">
-                          <td className="px-3 py-1.5 font-mono text-foreground">{String(r.drillId ?? r.drillid ?? "")}</td>
+                          <td className="px-3 py-1.5 font-mono text-foreground">{String(r.drillId ?? "")}</td>
                           <td className="px-3 py-1.5">{String(r.name || "") || <span className="text-muted-foreground italic">update only</span>}</td>
                           <td className="px-3 py-1.5 text-muted-foreground">{String(r.difficulty || "—")}</td>
-                          <td className="px-3 py-1.5 text-muted-foreground max-w-[140px] truncate">{String(r.problems || "—")}</td>
-                          <td className="px-3 py-1.5 text-muted-foreground max-w-[140px] truncate">{String(r.outcomes || "—")}</td>
+                          <td className="px-3 py-1.5 text-muted-foreground max-w-[160px] truncate">{String(r.goalOfDrill || "—")}</td>
+                          <td className="px-3 py-1.5 text-muted-foreground max-w-[140px] truncate">{String(r.coachSteveCue || "—")}</td>
+                          <td className="px-3 py-1.5">
+                            <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${
+                              countRichFields(r) >= 6 ? "bg-green-900/30 text-green-400" :
+                              countRichFields(r) >= 3 ? "bg-yellow-900/30 text-yellow-400" :
+                              countRichFields(r) > 0 ? "bg-blue-900/30 text-blue-400" :
+                              "bg-muted text-muted-foreground"
+                            }`}>
+                              {countRichFields(r)}/8
+                            </span>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -263,7 +395,8 @@ export function BulkImportDrills() {
                 >
                   {bulkUpsert.isPending
                     ? <><RefreshCw className="h-4 w-4 animate-spin mr-2" />Importing…</>
-                    : <><Upload className="h-4 w-4 mr-2" />Import {preview.length} rows</>}
+                    : `Import ${preview.length} Drill${preview.length > 1 ? "s" : ""}`
+                  }
                 </Button>
               )}
             </div>
