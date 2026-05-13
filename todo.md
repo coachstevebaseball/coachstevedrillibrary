@@ -2304,3 +2304,12 @@
 - [x] Remove "Upload My Swing" button from drill detail page
 - [x] Clean up spacing/layout after removal — no awkward gaps
 - [x] Ensure no placeholder containers or hidden inactive components remain
+
+## Admin Edit Drill Form Label Renames
+- [x] Rename "Who This Drill Is Best For" → "Short Description"
+- [x] Rename "Game Transfer Explanation" → "Watch For"
+- [x] Rename "Coaching Notes (one per line)" → "What to Feel (one per line)"
+- [x] Rename "What This Drill Helps Fix (one per line)" → "Problem It Solves (one per line)"
+- [x] Rename "How to Run the Drill (one step per line)" → "How to Do It (one step per line)"
+- [x] Verify no backend/API/DB changes made
+- [x] Verify TypeScript compiles with zero errors

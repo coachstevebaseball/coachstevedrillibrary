@@ -412,7 +412,7 @@ function EditDrillModal({
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Who This Drill Is Best For</label>
+                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Short Description</label>
                 <Input
                   value={form.whoThisDrillIsBestFor}
                   onChange={(e) => set("whoThisDrillIsBestFor", e.target.value)}
@@ -430,7 +430,7 @@ function EditDrillModal({
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Game Transfer Explanation</label>
+                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Watch For</label>
                 <Textarea
                   value={form.gameTransferExplanation}
                   onChange={(e) => set("gameTransferExplanation", e.target.value)}
@@ -439,7 +439,7 @@ function EditDrillModal({
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Coaching Notes (one per line)</label>
+                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">What to Feel (one per line)</label>
                 <Textarea
                   value={form.coachingNotes}
                   onChange={(e) => set("coachingNotes", e.target.value)}
@@ -448,7 +448,7 @@ function EditDrillModal({
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">What This Drill Helps Fix (one per line)</label>
+                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Problem It Solves (one per line)</label>
                 <Textarea
                   value={form.whatThisDrillHelpsFix}
                   onChange={(e) => set("whatThisDrillHelpsFix", e.target.value)}
@@ -457,7 +457,7 @@ function EditDrillModal({
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">How to Run the Drill (one step per line)</label>
+                <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">How to Do It (one step per line)</label>
                 <Textarea
                   value={form.howToRunTheDrill}
                   onChange={(e) => set("howToRunTheDrill", e.target.value)}
