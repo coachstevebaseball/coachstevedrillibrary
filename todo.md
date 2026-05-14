@@ -2382,3 +2382,19 @@
 - [x] All drill links in embed point to /embed/drill/ (7 links verified, 0 escapes)
 - [x] basePath prop added to NextStepsChips and RelatedDrillsCarousel
 - [x] All 385 tests pass
+
+## Fix Drill Portal Photo Loading & Persistence
+- [x] Fix 1: Create getAllDrillCustomizationsLite() excluding imageBase64, returning hasImage boolean
+- [x] Fix 2: Add Express route GET /api/drill-image/:drillId with Cache-Control headers (max-age=86400, immutable)
+- [x] Fix 2b: Update getAll router to call lite function
+- [x] Fix 2c: Handle legacy thumbnailUrl data: URIs in /api/drill-image endpoint (parse data URI, serve as binary)
+- [x] Fix 2d: Update hasImage SQL to check both imageBase64 IS NOT NULL OR thumbnailUrl LIKE 'data:%'
+- [x] Fix 3: Update card image source in Home.tsx to use /api/drill-image/:drillId
+- [x] Fix 3b: Update EmbedDrillLibrary.tsx card image source similarly
+- [x] Fix 3c: Ignore data: thumbnailUrls in card image logic, always use /api/drill-image/ endpoint
+- [x] Fix 4: Configure QueryClient defaults (staleTime 5min, gcTime 10min, no refetchOnMount/Focus)
+- [x] Fix 5: Add staleTime: Infinity to drillCustomizations.getAll.useQuery in Home.tsx and EmbedDrillLibrary.tsx
+- [x] Verify: 0 base64 data URIs in DOM, all 20 visible images use /api/drill-image/ endpoint
+- [x] Verify: Photos appear on first load on both /drills and /embed/drills
+- [x] Verify: Drills without customization show ⚾ branded placeholder
+- [x] All 385 tests pass

@@ -11,7 +11,17 @@ import "./styles/mobile-optimizations.css";
 import { SiteContentProvider } from "@/contexts/SiteContentContext";
 import { HelmetProvider } from "react-helmet-async";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,      // 5 min — data stays fresh
+      gcTime: 10 * 60 * 1000,         // 10 min in cache
+      refetchOnMount: false,           // don't refetch if data is fresh
+      refetchOnWindowFocus: false,     // don't refetch on tab focus
+      retry: 1,
+    },
+  },
+});
 
 const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!(error instanceof TRPCClientError)) return;

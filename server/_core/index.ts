@@ -176,6 +176,38 @@ async function startServer() {
       res.status(500).json({ error: "Failed to proxy image" });
     }
   });
+  // Serve drill customization images with HTTP caching
+  app.get("/api/drill-image/:drillId", async (req, res) => {
+    try {
+      const { getDrillCustomization } = await import("../drillCustomizations");
+      const c = await getDrillCustomization(req.params.drillId);
+      if (!c) return res.status(404).end();
+
+      // Prefer imageBase64 column; fall back to thumbnailUrl if it's a data: URI
+      let base64Data = c.imageBase64;
+      let mimeType = c.imageMimeType || "image/jpeg";
+
+      if (!base64Data && c.thumbnailUrl?.startsWith("data:")) {
+        // Parse data URI: data:<mime>;base64,<data>
+        const match = c.thumbnailUrl.match(/^data:([^;]+);base64,(.+)$/);
+        if (match) {
+          mimeType = match[1];
+          base64Data = match[2];
+        }
+      }
+
+      if (!base64Data) return res.status(404).end();
+
+      const buf = Buffer.from(base64Data, "base64");
+      res.set("Content-Type", mimeType);
+      res.set("Cache-Control", "public, max-age=86400, immutable");
+      res.send(buf);
+    } catch (error) {
+      console.error("Drill image serve error:", error);
+      res.status(500).end();
+    }
+  });
+
   // Dynamic OG image generation for drill detail pages
   registerOgRoutes(app);
 

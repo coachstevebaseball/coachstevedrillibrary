@@ -113,7 +113,9 @@ export default function Home() {
   const [editingDrill, setEditingDrill] = useState<Drill | null>(null);
 
   // Fetch drill customizations
-  const { data: drillCustomizations = [], refetch: refetchCustomizations } = trpc.drillCustomizations.getAll.useQuery();
+  const { data: drillCustomizations = [], refetch: refetchCustomizations } = trpc.drillCustomizations.getAll.useQuery(undefined, {
+    staleTime: Infinity, // customizations rarely change; manual refetch after admin edits
+  });
 
   // Admin: soft-delete (hide) a drill
   const utils = trpc.useUtils();
@@ -659,10 +661,11 @@ export default function Home() {
               const displayDifficulty = customization?.difficulty || drill.difficulty;
               const displayCategory = customization?.category || drill.categories[0] || "General";
               const displayDescription = customization?.briefDescription || `Master this drill to improve your ${drill.categories[0]?.toLowerCase() || "baseball"} skills.`;
-              const imageSource = customization?.thumbnailUrl 
-                || (customization?.imageBase64 && customization?.imageMimeType
-                  ? `data:${customization.imageMimeType};base64,${customization.imageBase64}`
-                  : null);
+              // Use thumbnailUrl only if it's a real URL (not legacy data: URI)
+              const thumbUrl = customization?.thumbnailUrl;
+              const imageSource = (thumbUrl && !thumbUrl.startsWith('data:')) ? thumbUrl
+                : (customization?.hasImage || (thumbUrl && thumbUrl.startsWith('data:'))) ? `/api/drill-image/${drill.id}`
+                : null;
               const diffConfig = DIFFICULTY_CONFIG[displayDifficulty] || DIFFICULTY_CONFIG.Easy;
 
               // Build drill detail URL preserving current query params
@@ -733,16 +736,15 @@ export default function Home() {
                           <img 
                             src={imageSource}
                             alt={drill.name}
+                            loading={index < 6 ? "eager" : "lazy"}
+                            decoding="async"
                             className="w-full h-full object-cover opacity-90 group-hover:scale-108 transition-transform duration-700 ease-out"
                             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                           />
                         ) : (
-                          <img 
-                            src={`/images/drills/${drill.id.toLowerCase().replace(/[^a-z0-9]/g, '-')}.jpg`}
-                            alt={drill.name}
-                            className="w-full h-full object-cover opacity-75 group-hover:scale-108 transition-transform duration-700 ease-out"
-                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                          />
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-card to-accent">
+                            <div className="text-electric/40 text-4xl font-heading font-black">⚾</div>
+                          </div>
                         )}
                         
                         {/* Gradient overlays */}

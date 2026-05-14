@@ -1118,9 +1118,9 @@ export const appRouter = router({
         return await drillCustomizationsDb.getDrillCustomization(input.drillId);
       }),
 
-    // Get all customizations (for bulk loading on homepage)
+    // Get all customizations (lite — no base64, for bulk loading on homepage)
     getAll: publicProcedure.query(async () => {
-      return await drillCustomizationsDb.getAllDrillCustomizations();
+      return await drillCustomizationsDb.getAllDrillCustomizationsLite();
     }),
 
     // Save/update drill customization

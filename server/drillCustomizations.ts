@@ -1,5 +1,5 @@
 import { drillCustomizations, DrillCustomization, InsertDrillCustomization } from "../drizzle/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { getDb } from "./db";
 
 // Get customization for a specific drill
@@ -16,12 +16,33 @@ export async function getDrillCustomization(drillId: string): Promise<DrillCusto
   return result[0] || null;
 }
 
-// Get all drill customizations
+// Get all drill customizations (full, including base64 — for admin/edit flows)
 export async function getAllDrillCustomizations(): Promise<DrillCustomization[]> {
   const db = await getDb();
   if (!db) return [];
 
   return await db.select().from(drillCustomizations);
+}
+
+// Lightweight version for list views — excludes imageBase64 to avoid multi-MB payloads
+export async function getAllDrillCustomizationsLite() {
+  const db = await getDb();
+  if (!db) return [];
+  return await db
+    .select({
+      id: drillCustomizations.id,
+      drillId: drillCustomizations.drillId,
+      thumbnailUrl: drillCustomizations.thumbnailUrl,
+      imageMimeType: drillCustomizations.imageMimeType,
+      hasImage: sql<boolean>`(${drillCustomizations.imageBase64} IS NOT NULL OR ${drillCustomizations.thumbnailUrl} LIKE 'data:%')`,
+      briefDescription: drillCustomizations.briefDescription,
+      difficulty: drillCustomizations.difficulty,
+      category: drillCustomizations.category,
+      updatedBy: drillCustomizations.updatedBy,
+      createdAt: drillCustomizations.createdAt,
+      updatedAt: drillCustomizations.updatedAt,
+    })
+    .from(drillCustomizations);
 }
 
 // Create or update drill customization

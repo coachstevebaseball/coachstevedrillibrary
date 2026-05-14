@@ -130,7 +130,9 @@ export default function EmbedDrillLibrary() {
   const { isLoading: drillsLoading } = useAllDrillsQuery();
 
   // Fetch drill customizations for photo thumbnails
-  const { data: drillCustomizations = [] } = trpc.drillCustomizations.getAll.useQuery();
+  const { data: drillCustomizations = [] } = trpc.drillCustomizations.getAll.useQuery(undefined, {
+    staleTime: Infinity, // customizations rarely change; cached for embed performance
+  });
   const customizationsMap = useMemo(() => {
     const map = new Map<string, typeof drillCustomizations[0]>();
     drillCustomizations.forEach((c) => map.set(c.drillId, c));
@@ -397,10 +399,11 @@ export default function EmbedDrillLibrary() {
                 const displayDifficulty = customization?.difficulty || drill.difficulty;
                 const displayCategory = customization?.category || drill.categories[0] || "General";
                 const displayDescription = customization?.briefDescription || `Master this drill to improve your ${drill.categories[0]?.toLowerCase() || "baseball"} skills.`;
-                const imageSource = customization?.thumbnailUrl
-                  || (customization?.imageBase64 && customization?.imageMimeType
-                    ? `data:${customization.imageMimeType};base64,${customization.imageBase64}`
-                    : null);
+                // Use thumbnailUrl only if it's a real URL (not legacy data: URI)
+                const thumbUrl = customization?.thumbnailUrl;
+                const imageSource = (thumbUrl && !thumbUrl.startsWith('data:')) ? thumbUrl
+                  : (customization?.hasImage || (thumbUrl && thumbUrl.startsWith('data:'))) ? `/api/drill-image/${drill.id}`
+                  : null;
                 const diffConfig = DIFFICULTY_CONFIG[displayDifficulty] || DIFFICULTY_CONFIG.Easy;
 
                 return (
@@ -430,18 +433,16 @@ export default function EmbedDrillLibrary() {
                             <img
                               src={imageSource}
                               alt={drill.name}
-                              className="w-full h-full object-cover object-contain opacity-90 group-hover:scale-108 transition-transform duration-700 ease-out"
+                              loading="lazy"
+                              decoding="async"
+                              className="w-full h-full object-cover opacity-90 group-hover:scale-108 transition-transform duration-700 ease-out"
                               style={{ maxWidth: "100%" }}
                               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                             />
                           ) : (
-                            <img
-                              src={`/images/drills/${drill.id.toLowerCase().replace(/[^a-z0-9]/g, "-")}.jpg`}
-                              alt={drill.name}
-                              className="w-full h-full object-cover opacity-75 group-hover:scale-108 transition-transform duration-700 ease-out"
-                              style={{ maxWidth: "100%" }}
-                              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                            />
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-card to-accent">
+                              <div className="text-electric/40 text-4xl font-heading font-black">⚾</div>
+                            </div>
                           )}
                           {/* Gradient overlays */}
                           <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
