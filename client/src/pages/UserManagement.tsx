@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -20,7 +21,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Search,
+  Loader2,
+  CheckCircle2,
+  AlertCircle,
+  UserPlus,
+  Mail,
+  Clock,
+  RefreshCw,
+  XCircle,
+  Copy,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 import { toast } from "sonner";
 
 interface User {
@@ -33,14 +55,83 @@ interface User {
   lastSignedIn: Date;
 }
 
+interface Invite {
+  id: number;
+  email: string;
+  role: string;
+  status: string;
+  inviteToken: string;
+  expiresAt: Date;
+  createdAt: Date;
+  acceptedAt: Date | null;
+}
+
 export default function UserManagement({ embedded = false }: { embedded?: boolean } = {}) {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [selectedRole, setSelectedRole] = useState<string>("");
 
+  // Invite dialog state
+  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteSuccess, setInviteSuccess] = useState<{ email: string; inviteUrl: string } | null>(null);
+  const [showOldInvites, setShowOldInvites] = useState(false);
+
   // Fetch all users
   const { data: users = [], isLoading, refetch } = trpc.admin.getAllUsers.useQuery();
+
+  // Fetch all invites
+  const { data: allInvites = [], refetch: refetchInvites } = trpc.invites.getAllInvites.useQuery();
+
+  // Split invites into pending vs. historical
+  const pendingInvites = useMemo(
+    () => (allInvites as Invite[]).filter((i) => i.status === "pending"),
+    [allInvites]
+  );
+  const oldInvites = useMemo(
+    () => (allInvites as Invite[]).filter((i) => i.status !== "pending"),
+    [allInvites]
+  );
+
+  // Create invite mutation
+  const createInviteMutation = trpc.invites.createInvite.useMutation({
+    onSuccess: (data) => {
+      const appUrl = window.location.origin;
+      setInviteSuccess({
+        email: inviteEmail,
+        inviteUrl: `${appUrl}/accept-invite/${data.inviteToken}`,
+      });
+      setInviteEmail("");
+      refetchInvites();
+      toast.success(`Invite sent to ${data.email}`);
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to send invite");
+    },
+  });
+
+  // Resend invite mutation
+  const resendInviteMutation = trpc.invites.resendInvite.useMutation({
+    onSuccess: (data) => {
+      refetchInvites();
+      toast.success(`Invite resent to ${data.email}`);
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to resend invite");
+    },
+  });
+
+  // Revoke invite mutation
+  const revokeInviteMutation = trpc.invites.revokeInvite.useMutation({
+    onSuccess: () => {
+      refetchInvites();
+      toast.success("Invite revoked");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to revoke invite");
+    },
+  });
 
   // Update user role mutation
   const updateRoleMutation = trpc.admin.updateUserRole.useMutation({
@@ -103,6 +194,41 @@ export default function UserManagement({ embedded = false }: { embedded?: boolea
     );
   };
 
+  const getInviteStatusBadge = (status: string) => {
+    switch (status) {
+      case "pending":
+        return <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">Pending</Badge>;
+      case "accepted":
+        return <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">Accepted</Badge>;
+      case "expired":
+        return <Badge className="bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400">Expired</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
+  const formatExpiry = (expiresAt: Date) => {
+    const now = new Date();
+    const exp = new Date(expiresAt);
+    const diffMs = exp.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+    if (diffDays < 0) return "Expired";
+    if (diffDays === 0) return "Expires today";
+    if (diffDays === 1) return "Expires tomorrow";
+    return `Expires in ${diffDays} days`;
+  };
+
+  const handleSendInvite = () => {
+    if (!inviteEmail.trim()) return;
+    createInviteMutation.mutate({ email: inviteEmail.trim() });
+  };
+
+  const handleCloseInviteDialog = () => {
+    setInviteDialogOpen(false);
+    setInviteEmail("");
+    setInviteSuccess(null);
+  };
+
   if (!user || user.role !== "admin") {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -124,12 +250,110 @@ export default function UserManagement({ embedded = false }: { embedded?: boolea
     <div className={`${embedded ? "" : "min-h-screen bg-background"} p-4 md:p-8`}>
       <div className="max-w-6xl mx-auto">
         {!embedded && (
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">User Management</h1>
-            <p className="text-muted-foreground">
-              Manage user roles and access permissions
-            </p>
+          <div className="mb-8 flex items-start justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">User Management</h1>
+              <p className="text-muted-foreground">
+                Manage user roles, access permissions, and athlete invitations
+              </p>
+            </div>
+            <Button
+              onClick={() => setInviteDialogOpen(true)}
+              className="flex items-center gap-2 shrink-0"
+            >
+              <UserPlus className="h-4 w-4" />
+              Invite Athlete
+            </Button>
           </div>
+        )}
+
+        {embedded && (
+          <div className="mb-4 flex justify-end">
+            <Button
+              onClick={() => setInviteDialogOpen(true)}
+              className="flex items-center gap-2"
+            >
+              <UserPlus className="h-4 w-4" />
+              Invite Athlete
+            </Button>
+          </div>
+        )}
+
+        {/* Pending Invites Section */}
+        {pendingInvites.length > 0 && (
+          <Card className="mb-6 border-yellow-500/30">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <Clock className="h-5 w-5 text-yellow-500" />
+                <CardTitle className="text-base">Pending Invitations</CardTitle>
+                <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 ml-auto">
+                  {pendingInvites.length}
+                </Badge>
+              </div>
+              <CardDescription>
+                These athletes have been invited but haven't signed up yet.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Expiry</TableHead>
+                      <TableHead>Sent</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {pendingInvites.map((invite) => (
+                      <TableRow key={invite.id}>
+                        <TableCell className="font-medium">
+                          <div className="flex items-center gap-2">
+                            <Mail className="h-4 w-4 text-muted-foreground" />
+                            {invite.email}
+                          </div>
+                        </TableCell>
+                        <TableCell>{getInviteStatusBadge(invite.status)}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {formatExpiry(invite.expiresAt)}
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {new Date(invite.createdAt).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => resendInviteMutation.mutate({ inviteId: invite.id })}
+                              disabled={resendInviteMutation.isPending}
+                              title="Resend invite email"
+                            >
+                              <RefreshCw className="h-3.5 w-3.5 mr-1" />
+                              Resend
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-destructive hover:text-destructive"
+                              onClick={() => revokeInviteMutation.mutate({ inviteId: invite.id })}
+                              disabled={revokeInviteMutation.isPending}
+                              title="Revoke this invite"
+                            >
+                              <XCircle className="h-3.5 w-3.5 mr-1" />
+                              Revoke
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
         )}
 
         {/* Search Bar */}
@@ -268,7 +492,148 @@ export default function UserManagement({ embedded = false }: { embedded?: boolea
             )}
           </CardContent>
         </Card>
+
+        {/* Historical Invites (collapsed) */}
+        {oldInvites.length > 0 && (
+          <div className="mt-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground flex items-center gap-1"
+              onClick={() => setShowOldInvites((v) => !v)}
+            >
+              {showOldInvites ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              {showOldInvites ? "Hide" : "Show"} past invitations ({oldInvites.length})
+            </Button>
+            {showOldInvites && (
+              <Card className="mt-2">
+                <CardContent className="pt-4">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Email</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Sent</TableHead>
+                          <TableHead>Accepted</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {oldInvites.map((invite) => (
+                          <TableRow key={invite.id} className="opacity-60">
+                            <TableCell className="font-medium">{invite.email}</TableCell>
+                            <TableCell>{getInviteStatusBadge(invite.status)}</TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {new Date(invite.createdAt).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {invite.acceptedAt
+                                ? new Date(invite.acceptedAt).toLocaleDateString()
+                                : "—"}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Invite Athlete Dialog */}
+      <Dialog open={inviteDialogOpen} onOpenChange={(open) => { if (!open) handleCloseInviteDialog(); }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <UserPlus className="h-5 w-5" />
+              Invite Athlete
+            </DialogTitle>
+            <DialogDescription>
+              Send an invitation email with a secure sign-up link. The invite expires in 7 days.
+            </DialogDescription>
+          </DialogHeader>
+
+          {inviteSuccess ? (
+            /* Success state */
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
+                <CheckCircle2 className="h-5 w-5" />
+                <span className="font-medium">Invite sent to {inviteSuccess.email}</span>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">Invite link (backup copy)</Label>
+                <div className="flex gap-2">
+                  <Input
+                    readOnly
+                    value={inviteSuccess.inviteUrl}
+                    className="text-xs font-mono"
+                  />
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      navigator.clipboard.writeText(inviteSuccess.inviteUrl);
+                      toast.success("Link copied to clipboard");
+                    }}
+                  >
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                You can share this link directly if the email doesn't arrive. It expires in 7 days.
+              </p>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setInviteSuccess(null)}>
+                  Invite Another
+                </Button>
+                <Button onClick={handleCloseInviteDialog}>Done</Button>
+              </DialogFooter>
+            </div>
+          ) : (
+            /* Input state */
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="invite-email">Athlete's email address</Label>
+                <Input
+                  id="invite-email"
+                  type="email"
+                  placeholder="athlete@example.com"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && inviteEmail.trim()) handleSendInvite();
+                  }}
+                  autoFocus
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                The athlete will receive an email with a link to create their account. Once they sign up, they'll automatically be assigned the <strong>Athlete</strong> role and granted access to their drills.
+              </p>
+              <DialogFooter>
+                <Button variant="outline" onClick={handleCloseInviteDialog}>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSendInvite}
+                  disabled={!inviteEmail.trim() || createInviteMutation.isPending}
+                  className="flex items-center gap-2"
+                >
+                  {createInviteMutation.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Mail className="h-4 w-4" />
+                  )}
+                  Send Invite
+                </Button>
+              </DialogFooter>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

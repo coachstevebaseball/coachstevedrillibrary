@@ -2398,3 +2398,14 @@
 - [x] Verify: Photos appear on first load on both /drills and /embed/drills
 - [x] Verify: Drills without customization show ⚾ branded placeholder
 - [x] All 385 tests pass
+
+## Add Invite Athlete UI to User Management
+- [x] Add "Invite Athlete" button to UserManagement page header
+- [x] Add invite dialog with email input field and Send Invite button
+- [x] Show success confirmation with the invite link after sending
+- [x] Add "Pending Invites" section showing all outstanding invites (email, expiry, status)
+- [x] Add Resend and Revoke actions to each pending invite row
+- [x] Show accepted/expired invites in a collapsed section
+- [x] TypeScript compiles with 0 errors
+- [x] Browser test: dialog opens, email field works, Send Invite button present
+- [x] All 385 tests pass
