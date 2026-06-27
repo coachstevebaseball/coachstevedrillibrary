@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 const TEAL = "oklch(76% 0.20 200)";
 
@@ -19,12 +20,13 @@ export function NextStepsChips({ drills, basePath = "/drill/" }: Props) {
 
   return (
     <div className="w-full max-w-full min-w-0 overflow-hidden">
-      <h3
-        className="text-xs font-bold tracking-widest mb-3"
-        style={{ color: TEAL }}
-      >
-        NEXT STEPS — BUILD ON THIS DRILL
-      </h3>
+      <div className="mb-3">
+        <SectionLabel
+          variant="strong"
+          label="NEXT STEPS — BUILD ON THIS DRILL"
+          color={TEAL}
+        />
+      </div>
       {/* Scrollable row is inside the overflow-hidden parent so it cannot push the page wider */}
       <div className="w-full overflow-x-auto overflow-y-hidden md:overflow-visible -mx-1 px-1">
         <div className="flex gap-2 md:flex-wrap pb-2 w-max md:w-auto">

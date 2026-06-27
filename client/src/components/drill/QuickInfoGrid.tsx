@@ -1,4 +1,5 @@
 import { Target, AlertTriangle, Wrench, Play, Check, type LucideIcon } from "lucide-react";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 type Card = {
   label: string;
@@ -44,16 +45,13 @@ function CardBox({ card }: { card: Card }) {
       className="w-full max-w-full min-w-0 rounded-xl p-4 sm:p-5 bg-[oklch(14%_0.005_0)] border-2 overflow-hidden"
       style={{ borderColor: baseBorder, boxShadow: `0 0 0 1px ${baseBg}, 0 0 24px -8px ${baseBg}` }}
     >
-      <div className="flex items-center gap-3 mb-3">
-        <div
-          className="h-9 w-9 rounded-md flex items-center justify-center flex-shrink-0"
-          style={{ backgroundColor: iconBg }}
-        >
-          <Icon className="h-5 w-5" style={{ color: card.tone }} />
-        </div>
-        <span className="text-xs font-bold tracking-widest" style={{ color: card.tone }}>
-          {card.label}
-        </span>
+      <div className="mb-3">
+        <SectionLabel
+          variant="strong"
+          label={card.label}
+          icon={Icon}
+          color={card.tone}
+        />
       </div>
       {card.numbered ? (
         <ol className="space-y-2">

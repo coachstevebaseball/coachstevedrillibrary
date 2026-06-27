@@ -1,4 +1,5 @@
 import { AlertTriangle, Eye } from "lucide-react";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 type Props = {
   whatToFeel?: string[] | null;     // teal — sensory cues
@@ -33,9 +34,13 @@ export function CoachingLayer({ whatToFeel, coachCue, commonMistakes, watchFor }
     <div className="w-full max-w-full min-w-0 space-y-4">
       {feels.length > 0 && (
         <div className="w-full max-w-full min-w-0 rounded-xl border border-white/10 bg-white/[0.02] p-4 sm:p-5 overflow-hidden">
-          <h3 className="text-xs font-bold tracking-widest mb-3" style={{ color: TEAL }}>
-            WHAT TO FEEL
-          </h3>
+          <div className="mb-3">
+            <SectionLabel
+              variant="strong"
+              label="WHAT TO FEEL"
+              color={TEAL}
+            />
+          </div>
           <ul className="space-y-1.5">
             {feels.map((f, i) => (
               <li key={i} className="flex gap-2 text-sm text-white leading-snug">
@@ -55,18 +60,27 @@ export function CoachingLayer({ whatToFeel, coachCue, commonMistakes, watchFor }
           className="w-full max-w-full min-w-0 rounded-xl border-l-4 border-white/10 bg-white/[0.02] p-4 sm:p-5 overflow-hidden"
           style={{ borderLeftColor: YELLOW }}
         >
-          <h3 className="text-xs font-bold tracking-widest mb-2" style={{ color: YELLOW }}>
-            COACH CUE
-          </h3>
+          <div className="mb-2">
+            <SectionLabel
+              variant="strong"
+              label="COACH CUE"
+              color={YELLOW}
+            />
+          </div>
           <p className="text-base italic leading-relaxed text-white break-words">“{cue}”</p>
         </div>
       )}
 
       {mistakes.length > 0 && (
         <div className="w-full max-w-full min-w-0 rounded-xl border border-white/10 bg-white/[0.02] p-4 sm:p-5 overflow-hidden">
-          <h3 className="text-xs font-bold tracking-widest mb-3" style={{ color: RED }}>
-            COMMON MISTAKES
-          </h3>
+          <div className="mb-3">
+            <SectionLabel
+              variant="strong"
+              label="COMMON MISTAKES"
+              icon={AlertTriangle}
+              color={RED}
+            />
+          </div>
           <ul className="space-y-2">
             {mistakes.map((m, i) => (
               <li key={i} className="flex gap-2 text-sm text-white leading-snug">
@@ -80,10 +94,14 @@ export function CoachingLayer({ whatToFeel, coachCue, commonMistakes, watchFor }
 
       {watch && (
         <div className="w-full max-w-full min-w-0 rounded-xl border border-white/10 bg-white/[0.02] p-4 sm:p-5 overflow-hidden">
-          <h3 className="text-xs font-bold tracking-widest mb-2 text-white/80 flex items-center gap-2">
-            <Eye className="h-3.5 w-3.5" />
-            WATCH FOR
-          </h3>
+          <div className="mb-2">
+            <SectionLabel
+              variant="strong"
+              label="WATCH FOR"
+              icon={Eye}
+              color="oklch(72% 0.08 0)"
+            />
+          </div>
           <p className="text-sm leading-relaxed text-white break-words">{watch}</p>
         </div>
       )}

@@ -2409,3 +2409,12 @@
 - [x] TypeScript compiles with 0 errors
 - [x] Browser test: dialog opens, email field works, Send Invite button present
 - [x] All 385 tests pass
+
+## Wire SectionLabel component into DrillDetailBody
+- [x] Replace hand-rolled headers in QuickInfoGrid with SectionLabel strong variant (Goal, Problem It Solves, Equipment, How to Do It)
+- [x] Replace hand-rolled headers in CoachingLayer with SectionLabel strong variant (What to Feel, Coach Cue, Common Mistakes, Watch For)
+- [x] Replace hand-rolled headers in MetadataFooter with SectionLabel quiet variant (Drill Type, Age/Level, Focus Areas)
+- [x] Replace hand-rolled header in NextStepsChips with SectionLabel strong variant
+- [x] Create color-to-meaning map (red=Goal/Mistakes, amber=Problem, teal=Feel/NextSteps, green=HowTo, yellow=CoachCue)
+- [x] TypeScript compiles with 0 errors
+- [x] All 382 unit tests pass (3 CSP tests failing are unrelated to this feature)
