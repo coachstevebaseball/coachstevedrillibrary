@@ -275,8 +275,8 @@ export function DrillDetailBody({
           </div>
         </section>
 
-        {/* Q&A for athletes */}
-        {isAthlete && !embed && (
+        {/* Q&A for athletes — available in both standard and embed views */}
+        {isAthlete && (
           <DrillQAForm drillId={drillId} drillName={drill.name} />
         )}
       </div>
@@ -409,8 +409,8 @@ export function DrillDetailBody({
           basePath={linkPrefix}
         />
 
-        {/* Q&A for athletes */}
-        {isAthlete && !embed && (
+        {/* Q&A for athletes — available in both standard and embed views */}
+        {isAthlete && (
           <DrillQAForm drillId={drillId} drillName={drill.name} />
         )}
       </div>

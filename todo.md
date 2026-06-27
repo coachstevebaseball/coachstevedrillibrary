@@ -2418,3 +2418,8 @@
 - [x] Create color-to-meaning map (red=Goal/Mistakes, amber=Problem, teal=Feel/NextSteps, green=HowTo, yellow=CoachCue)
 - [x] TypeScript compiles with 0 errors
 - [x] All 382 unit tests pass (3 CSP tests failing are unrelated to this feature)
+
+## Enable Ask Coach Steve Q&A in Embed View
+- [x] Remove !embed condition from DrillQAForm render in DrillDetailBody
+- [x] Q&A form now appears for athletes in both /drill/ and /embed/drill/ views
+- [x] All 382 unit tests pass (3 CSP tests failing are unrelated)
