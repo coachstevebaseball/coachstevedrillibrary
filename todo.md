@@ -2432,3 +2432,9 @@
 - [ ] Import test drill via admin UI and verify all fields appear on public drill detail page
 - [ ] Verify SectionLabel displays all rich fields with correct colors and icons
 - [ ] Verify drill appears in search and filtering
+
+## Fix CSP Embed Allowlist Configuration
+- [ ] Update EMBED_ALLOWED_ORIGINS environment variable to include https://coachstevenbaseball.com
+- [ ] Current value is still https://longislandhittingcoach.com (needs update)
+- [ ] After update, CSP tests should pass (3 currently failing, all others passing)
+- [ ] Note: This is an environment configuration issue, not a code bug
