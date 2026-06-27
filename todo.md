@@ -2423,3 +2423,12 @@
 - [x] Remove !embed condition from DrillQAForm render in DrillDetailBody
 - [x] Q&A form now appears for athletes in both /drill/ and /embed/drill/ views
 - [x] All 382 unit tests pass (3 CSP tests failing are unrelated)
+
+## Verify Bulk Import with All Rich Fields
+- [x] Create test drill JSON with all 9 rich coaching fields (goalOfDrill, shortDescription, coachStevesCue, watchFor, whatToFeel, problemItSolves, howToDoIt, commonMistakes, visible)
+- [x] Verify bulkUpsert endpoint accepts all fields and maps user-facing aliases to DB columns
+- [x] Confirm field normalization: shortDescription→whoThisDrillIsBestFor, watchFor→gameTransferExplanation, whatToFeel→coachingNotes, problemItSolves→whatThisDrillHelpsFix, howToDoIt→howToRunTheDrill, coachStevesCue→coachSteveCue
+- [x] Verify visible boolean inverts to isHidden in database
+- [ ] Import test drill via admin UI and verify all fields appear on public drill detail page
+- [ ] Verify SectionLabel displays all rich fields with correct colors and icons
+- [ ] Verify drill appears in search and filtering
