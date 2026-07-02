@@ -1,0 +1,40 @@
+# Coach Steve Baseball Drill Library
+# https://coachsteve.manus.space
+
+# Allow all reputable crawlers and AI bots
+User-agent: *
+Allow: /
+
+# Allow specific AI crawlers explicitly
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# Disallow private/admin routes
+Disallow: /coach-dashboard
+Disallow: /admin
+Disallow: /athlete-portal
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://coachsteve.manus.space/sitemap.xml

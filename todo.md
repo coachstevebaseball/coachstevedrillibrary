@@ -2438,3 +2438,20 @@
 - [ ] Current value is still https://longislandhittingcoach.com (needs update)
 - [ ] After update, CSP tests should pass (3 currently failing, all others passing)
 - [ ] Note: This is an environment configuration issue, not a code bug
+
+## SEO Discoverability Fixes
+- [x] Investigate App.tsx routes, vite.config, public folder, SW, drill data loading
+- [x] Add real static /public/robots.txt (allow all crawlers + AI bots, Sitemap: line)
+- [x] Ensure robots.txt is served as plain text, not intercepted by SPA router or SW
+- [x] Verify sw.js does not cache/return app shell for /robots.txt or /sitemap.xml
+- [x] Generate /public/sitemap.xml with all indexable routes (/, /embed/drills, drill detail URLs)
+- [x] Sitemap uses correct <loc>, <lastmod>, proper XML content-type
+- [x] Add server-side prerendering middleware for crawlers (/, /embed, /embed/drills, /embed/drill/:id)
+- [x] Prerendered HTML includes drill content in initial markup (not empty shell)
+- [x] Each prerendered page has <title>, <meta name="description">, <meta name="robots" content="index,follow">, Open Graph tags
+- [x] Confirm no page has a noindex meta tag (only 404 drill pages get noindex)
+- [x] Verify /robots.txt returns plain text at root — CONFIRMED (200 text/plain)
+- [x] Verify /sitemap.xml returns valid XML — CONFIRMED (200 text/xml, 112 URLs)
+- [x] Verify raw HTML of / and /embed/drills contains drill content and meta tags — CONFIRMED
+- [x] Regular browser requests still get SPA shell — CONFIRMED
+- [x] Report all changes to user before publishing

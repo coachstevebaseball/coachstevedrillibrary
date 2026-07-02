@@ -9,6 +9,7 @@ import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { seoPrerender } from "../seoPrerender";
 import { startBatchProcessor } from "../emailBatching";
 import { startScheduledJobs } from "../notificationService";
 import { registerOgRoutes } from "../ogImage";
@@ -251,6 +252,9 @@ async function startServer() {
       },
     })
   );
+  // SEO prerender: serve real HTML to crawlers before SPA fallback
+  app.use(seoPrerender);
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
