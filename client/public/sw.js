@@ -1,7 +1,7 @@
 // Service Worker for USAB Drills Directory PWA
-const CACHE_NAME = 'usab-drills-v1';
-const STATIC_CACHE = 'usab-static-v1';
-const DYNAMIC_CACHE = 'usab-dynamic-v1';
+const CACHE_NAME = 'usab-drills-v2';
+const STATIC_CACHE = 'usab-static-v2';
+const DYNAMIC_CACHE = 'usab-dynamic-v2';
 
 // Assets to cache immediately on install
 const STATIC_ASSETS = [
@@ -54,6 +54,12 @@ self.addEventListener('fetch', (event) => {
 
   // Skip API calls and auth endpoints - always go to network
   if (url.pathname.startsWith('/api/')) {
+    return;
+  }
+
+  // Always fetch SEO/crawl files directly from network — never serve from cache
+  // This prevents stale 404 HTML responses from being returned for these files
+  if (url.pathname === '/robots.txt' || url.pathname === '/sitemap.xml') {
     return;
   }
 
