@@ -153,7 +153,7 @@ export default function EmbedDrillDetail() {
         <meta property="og:type" content="website" />
         <meta
           property="og:url"
-          content={`https://coachstevemobilecoach.com/embed/drill/${drill.id}`}
+          content={`https://coachsteve.manus.space/embed/drill/${drill.id}`}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta

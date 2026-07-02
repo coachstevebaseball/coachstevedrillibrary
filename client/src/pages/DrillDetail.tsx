@@ -1486,7 +1486,7 @@ export default function DrillDetail() {
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://coachstevemobilecoach.com/drill/${drill.id}`} />
+        <meta property="og:url" content={`https://coachsteve.manus.space/embed/drill/${drill.id}`} />
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`${drill.name} — Coach Steve's Hitters Lab`} />

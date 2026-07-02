@@ -2455,3 +2455,13 @@
 - [x] Verify raw HTML of / and /embed/drills contains drill content and meta tags — CONFIRMED
 - [x] Regular browser requests still get SPA shell — CONFIRMED
 - [x] Report all changes to user before publishing
+
+## Social Sharing Buttons on Drill Detail Pages
+- [x] Create ShareButtons component (Twitter/X, Facebook, LinkedIn, copy-link)
+- [x] Use canonical /embed/drill/:id URL as the share target
+- [x] Include drill name in pre-filled share text
+- [x] Add ShareButtons to DrillDetailBody (all 3 render branches: custom layout, rich layout, no-details fallback)
+- [x] Copy-link button copies URL to clipboard with toast confirmation
+- [x] Fix og:url in EmbedDrillDetail to use coachsteve.manus.space
+- [x] Fix og:url in DrillDetail to use coachsteve.manus.space canonical embed URL
+- [x] 383/385 unit tests passing (2 pre-existing CSP env config failures)

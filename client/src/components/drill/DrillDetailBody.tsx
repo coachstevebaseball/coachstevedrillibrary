@@ -27,6 +27,7 @@ import {
   type RelatedDrill,
 } from "@/components/drill/RelatedDrillsCarousel";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { ShareButtons } from "@/components/drill/ShareButtons";
 import { trpc } from "@/lib/trpc";
 import { useAllDrills } from "@/hooks/useAllDrills";
 import { toast } from "sonner";
@@ -275,6 +276,9 @@ export function DrillDetailBody({
           </div>
         </section>
 
+        {/* Share buttons — always visible */}
+        <ShareButtons drillId={drillId} drillName={drill.name} className="pt-2" />
+
         {/* Q&A for athletes — available in both standard and embed views */}
         {isAthlete && (
           <DrillQAForm drillId={drillId} drillName={drill.name} />
@@ -409,6 +413,9 @@ export function DrillDetailBody({
           basePath={linkPrefix}
         />
 
+        {/* Share buttons — always visible */}
+        <ShareButtons drillId={drillId} drillName={drill.name} className="pt-2" />
+
         {/* Q&A for athletes — available in both standard and embed views */}
         {isAthlete && (
           <DrillQAForm drillId={drillId} drillName={drill.name} />
@@ -451,6 +458,9 @@ export function DrillDetailBody({
           )}
         </div>
       )}
+
+      {/* Share buttons — always visible */}
+      <ShareButtons drillId={drillId} drillName={drill.name} className="pt-2" />
     </div>
   );
 }
