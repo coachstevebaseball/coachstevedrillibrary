@@ -1,13 +1,14 @@
-import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { Link } from "wouter";
 import {
-  Search, ChevronRight, ChevronDown, Clock, X, SlidersHorizontal, Star,
+  Search, ChevronRight, ChevronDown, Clock, X, SlidersHorizontal, Star, Copy, Check,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAllDrills, useAllDrillsQuery } from "@/hooks/useAllDrills";
 import { trpc } from "@/lib/trpc";
 import { filterOptions } from "@/data/drillConstants";
+import { toast } from "sonner";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 const DRILLS_PER_PAGE = 21;
@@ -17,6 +18,55 @@ const DIFFICULTY_CONFIG: Record<string, { label: string; class: string; dotClass
   Medium: { label: "Medium", class: "badge-medium", dotClass: "bg-amber-400" },
   Hard: { label: "Hard", class: "badge-hard", dotClass: "bg-rose-400" },
 };
+
+// Valid values for URL param validation
+const VALID_SKILLS = ["hitting", "infield", "outfield", "bunting", "pitching", "throwing"];
+const VALID_LEVELS = ["easy", "medium", "hard"];
+const VALID_TAGS = filterOptions.tags.map(t => t.toLowerCase());
+const VALID_PROBLEMS = filterOptions.problem.map(o => o.value);
+const VALID_GOALS = filterOptions.goal.map(o => o.value);
+
+// ─── URL Param Helpers ────────────────────────────────────────────────────────
+function readUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  const skill = params.get("skill") ?? "";
+  const level = params.get("level") ?? "";
+  const focus = params.get("focus") ?? "";
+  const q = params.get("q") ?? "";
+  const page = parseInt(params.get("page") ?? "1", 10);
+
+  return {
+    skill: VALID_SKILLS.includes(skill.toLowerCase())
+      ? skill.charAt(0).toUpperCase() + skill.slice(1).toLowerCase()
+      : "All",
+    level: VALID_LEVELS.includes(level.toLowerCase())
+      ? level.charAt(0).toUpperCase() + level.slice(1).toLowerCase()
+      : "All",
+    focus: VALID_TAGS.includes(focus.toLowerCase()) ? focus.toLowerCase() : "",
+    q: q,
+    page: isNaN(page) || page < 1 ? 1 : page,
+  };
+}
+
+function buildUrlParams(opts: {
+  skill: string;
+  level: string;
+  focus: string;
+  q: string;
+  page: number;
+  problems: string[];
+  goals: string[];
+}) {
+  const params = new URLSearchParams();
+  if (opts.skill !== "All") params.set("skill", opts.skill.toLowerCase());
+  if (opts.level !== "All") params.set("level", opts.level.toLowerCase());
+  if (opts.focus) params.set("focus", opts.focus.toLowerCase());
+  if (opts.q) params.set("q", opts.q);
+  if (opts.page > 1) params.set("page", String(opts.page));
+  opts.problems.forEach(p => params.append("problem", p));
+  opts.goals.forEach(g => params.append("goal", g));
+  return params.toString();
+}
 
 // ─── Accordion Filter Card ──────────────────────────────────────────────────
 function AccordionFilterCard({
@@ -101,25 +151,104 @@ function useEmbedHeightBroadcast() {
       const h = document.documentElement.scrollHeight;
       window.parent.postMessage({ type: "csmc:embed-height", height: h }, "*");
     }
-
-    // Post on mount
     postHeight();
-
-    // ResizeObserver for dynamic content changes
     const ro = new ResizeObserver(() => postHeight());
     ro.observe(document.documentElement);
-
-    // Also post on images loading (they change height)
     const observer = new MutationObserver(() => {
       requestAnimationFrame(postHeight);
     });
     observer.observe(document.body, { childList: true, subtree: true });
-
     return () => {
       ro.disconnect();
       observer.disconnect();
     };
   }, []);
+}
+
+// ─── Nav Pill Bar ─────────────────────────────────────────────────────────────
+function NavPillBar({
+  activeSkill,
+  onSkillChange,
+}: {
+  activeSkill: string;
+  onSkillChange: (skill: string) => void;
+}) {
+  const pills = [
+    { label: "All Drills", value: "All" },
+    { label: "Hitting", value: "Hitting" },
+    { label: "Bunting", value: "Bunting" },
+    { label: "Infield", value: "Infield" },
+    { label: "Outfield", value: "Outfield" },
+  ];
+
+  return (
+    <div className="flex flex-wrap items-center gap-2 pb-3 border-b border-white/8 mb-4">
+      {pills.map(pill => {
+        const isActive = activeSkill === pill.value;
+        return (
+          <button
+            key={pill.value}
+            type="button"
+            onClick={() => onSkillChange(pill.value)}
+            className={`
+              px-4 py-2 rounded-full text-xs font-bold tracking-wide transition-all duration-200 min-h-[40px]
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C]/60 focus-visible:ring-offset-1 focus-visible:ring-offset-background
+              ${isActive
+                ? "text-[#0D1B2E] shadow-[0_0_0_1px_oklch(0.74_0.13_85/0.45),0_4px_20px_-6px_oklch(0.74_0.13_85/0.45)]"
+                : "bg-card/60 text-muted-foreground border border-white/10 hover:border-[#C9A84C]/40 hover:text-[#C9A84C]"
+              }
+            `}
+            style={isActive ? {
+              background: "linear-gradient(135deg, var(--primary) 0%, var(--primary-glow) 100%)",
+              boxShadow: "var(--shadow-gold-glow)",
+            } : undefined}
+          >
+            {pill.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── Copy Link Button ─────────────────────────────────────────────────────────
+function CopyLinkButton({ getUrl }: { getUrl: () => string }) {
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleCopy = useCallback(async () => {
+    const url = getUrl();
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      toast.success("Link copied!", { description: "Share this URL to reproduce the exact filtered view." });
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Could not copy link");
+    }
+  }, [getUrl]);
+
+  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current); }, []);
+
+  return (
+    <button
+      type="button"
+      onClick={handleCopy}
+      title="Copy link to this filtered view"
+      className={`
+        inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 min-h-[36px]
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C]/60 focus-visible:ring-offset-1 focus-visible:ring-offset-background
+        ${copied
+          ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+          : "bg-card/60 text-muted-foreground border border-white/10 hover:border-[#C9A84C]/40 hover:text-[#C9A84C]"
+        }
+      `}
+    >
+      {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+      {copied ? "Copied!" : "Copy Link"}
+    </button>
+  );
 }
 
 // ─── Main Component ─────────────────────────────────────────────────────────
@@ -131,7 +260,7 @@ export default function EmbedDrillLibrary() {
 
   // Fetch drill customizations for photo thumbnails
   const { data: drillCustomizations = [] } = trpc.drillCustomizations.getAll.useQuery(undefined, {
-    staleTime: Infinity, // customizations rarely change; cached for embed performance
+    staleTime: Infinity,
   });
   const customizationsMap = useMemo(() => {
     const map = new Map<string, typeof drillCustomizations[0]>();
@@ -139,7 +268,8 @@ export default function EmbedDrillLibrary() {
     return map;
   }, [drillCustomizations]);
 
-  // ── Filter State ──
+  // ── Initialize state from URL params ──
+  const [initialized, setInitialized] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState("All");
   const [categoryFilter, setCategoryFilter] = useState("All");
@@ -154,6 +284,41 @@ export default function EmbedDrillLibrary() {
   const [selectedProblems, setSelectedProblems] = useState<string[]>([]);
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  // Read URL params on first mount
+  useEffect(() => {
+    const p = readUrlParams();
+    setSearchQuery(p.q);
+    setDifficultyFilter(p.level);
+    setCategoryFilter(p.skill);
+    setCurrentPage(p.page);
+    if (p.focus) setSelectedTags([p.focus]);
+
+    // Also read multi-value problem/goal params
+    const urlParams = new URLSearchParams(window.location.search);
+    const problems = urlParams.getAll("problem").filter(v => VALID_PROBLEMS.includes(v));
+    const goals = urlParams.getAll("goal").filter(v => VALID_GOALS.includes(v));
+    if (problems.length > 0) setSelectedProblems(problems);
+    if (goals.length > 0) setSelectedGoals(goals);
+
+    setInitialized(true);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Sync state → URL (history.replaceState) ──
+  useEffect(() => {
+    if (!initialized) return;
+    const qs = buildUrlParams({
+      skill: categoryFilter,
+      level: difficultyFilter,
+      focus: selectedTags.length === 1 ? selectedTags[0] : "",
+      q: searchQuery,
+      page: currentPage,
+      problems: selectedProblems,
+      goals: selectedGoals,
+    });
+    const newUrl = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
+    window.history.replaceState(null, "", newUrl);
+  }, [initialized, searchQuery, difficultyFilter, categoryFilter, currentPage, selectedProblems, selectedGoals, selectedTags]);
 
   const toggleMultiSelect = (arr: string[], val: string, setArr: (v: string[]) => void) => {
     setArr(arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val]);
@@ -195,8 +360,26 @@ export default function EmbedDrillLibrary() {
     setCurrentPage(1);
   }, []);
 
-  // Reset page when filters change
-  useEffect(() => { setCurrentPage(1); }, [searchQuery, difficultyFilter, categoryFilter, selectedProblems, selectedGoals, selectedTags]);
+  // Reset page when filters change (but not on page-only changes)
+  useEffect(() => {
+    if (!initialized) return;
+    setCurrentPage(1);
+  }, [searchQuery, difficultyFilter, categoryFilter, selectedProblems, selectedGoals, selectedTags]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Build shareable URL ──
+  const buildShareUrl = useCallback(() => {
+    const qs = buildUrlParams({
+      skill: categoryFilter,
+      level: difficultyFilter,
+      focus: selectedTags.length === 1 ? selectedTags[0] : "",
+      q: searchQuery,
+      page: currentPage,
+      problems: selectedProblems,
+      goals: selectedGoals,
+    });
+    const base = `${window.location.protocol}//${window.location.host}/embed/drills`;
+    return qs ? `${base}?${qs}` : base;
+  }, [categoryFilter, difficultyFilter, selectedTags, searchQuery, currentPage, selectedProblems, selectedGoals]);
 
   // ── Active Filter Pills ──
   const renderFilterPills = () => {
@@ -247,7 +430,7 @@ export default function EmbedDrillLibrary() {
     return (
       <div className="min-h-screen bg-[#07111F] text-white flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-10 w-10 rounded-full border-2 border-red-500/30 border-t-red-500 animate-spin" />
+          <div className="h-10 w-10 rounded-full border-2 border-[#C9A84C]/30 border-t-[#C9A84C] animate-spin" />
           <p className="text-slate-400 animate-pulse text-sm">Loading drills...</p>
         </div>
       </div>
@@ -256,8 +439,21 @@ export default function EmbedDrillLibrary() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col w-full max-w-full overflow-x-hidden">
+      {/* ===== NAV PILL BAR ===== */}
+      <div className="px-4 pt-4 pb-0">
+        <div className="max-w-5xl mx-auto">
+          <NavPillBar
+            activeSkill={categoryFilter}
+            onSkillChange={(skill) => {
+              setCategoryFilter(skill);
+              setCurrentPage(1);
+            }}
+          />
+        </div>
+      </div>
+
       {/* ===== SEARCH + FILTERS ===== */}
-      <div className="px-4 pt-4 pb-2">
+      <div className="px-4 pt-2 pb-2">
         <div className="max-w-5xl mx-auto">
           {/* Search Bar */}
           <div className="mb-4">
@@ -380,6 +576,8 @@ export default function EmbedDrillLibrary() {
               {filteredDrills.length} drills
             </span>
           </div>
+          {/* Copy Link button */}
+          <CopyLinkButton getUrl={buildShareUrl} />
         </div>
       </div>
 
@@ -394,12 +592,11 @@ export default function EmbedDrillLibrary() {
                 gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 18rem), 1fr))",
               }}
             >
-              {paginatedDrills.map((drill, index) => {
+              {paginatedDrills.map((drill) => {
                 const customization = customizationsMap.get(drill.id);
                 const displayDifficulty = customization?.difficulty || drill.difficulty;
                 const displayCategory = customization?.category || drill.categories[0] || "General";
                 const displayDescription = customization?.briefDescription || `Master this drill to improve your ${drill.categories[0]?.toLowerCase() || "baseball"} skills.`;
-                // Use thumbnailUrl only if it's a real URL (not legacy data: URI)
                 const thumbUrl = customization?.thumbnailUrl;
                 const imageSource = (thumbUrl && !thumbUrl.startsWith('data:')) ? thumbUrl
                   : (customization?.hasImage || (thumbUrl && thumbUrl.startsWith('data:'))) ? `/api/drill-image/${drill.id}`
@@ -444,16 +641,13 @@ export default function EmbedDrillLibrary() {
                               <div className="text-electric/40 text-4xl font-heading font-black">⚾</div>
                             </div>
                           )}
-                          {/* Gradient overlays */}
                           <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
                           <div className="absolute inset-0 bg-gradient-to-br from-electric/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                          {/* Difficulty Badge */}
                           <div className="absolute top-3 right-3">
                             <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${diffConfig.class}`}>
                               {displayDifficulty}
                             </span>
                           </div>
-                          {/* Duration badge */}
                           {drill.duration && drill.duration !== "Unknown" && (
                             <div className="absolute bottom-3 right-3">
                               <span className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium bg-black/50 text-white/80 backdrop-blur-sm">
@@ -466,22 +660,18 @@ export default function EmbedDrillLibrary() {
 
                         {/* Card Body */}
                         <div className="p-4 flex-1 flex flex-col">
-                          {/* Category */}
                           <div className="flex items-center gap-1.5 mb-2">
                             <div className={`w-1.5 h-1.5 rounded-full ${diffConfig.dotClass}`} />
                             <span className="text-electric text-[10px] font-bold uppercase tracking-wider">
                               {displayCategory}
                             </span>
                           </div>
-                          {/* Title */}
                           <h3 className="text-base font-heading font-bold text-foreground mb-2 group-hover:text-electric transition-colors duration-300 leading-tight">
                             {drill.name}
                           </h3>
-                          {/* Description */}
                           <p className="text-xs text-muted-foreground mb-3 flex-1 line-clamp-2 leading-relaxed">
                             {displayDescription}
                           </p>
-                          {/* Footer */}
                           <div className="flex items-center text-muted-foreground group-hover:text-electric transition-all duration-300 pt-2 border-t border-border/30">
                             <span className="text-xs font-semibold">Start This Drill</span>
                             <ChevronRight className="h-3.5 w-3.5 ml-auto group-hover:translate-x-1 transition-transform duration-300" />
@@ -517,7 +707,7 @@ export default function EmbedDrillLibrary() {
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-              className="px-4 py-2 rounded-lg text-sm font-medium bg-card text-muted-foreground hover:text-foreground hover:bg-accent border border-border/50 disabled:opacity-40 disabled:cursor-not-allowed transition-all min-h-[44px]"
+              className="px-4 py-2 rounded-full text-sm font-medium bg-card text-muted-foreground hover:text-[#C9A84C] hover:border-[#C9A84C]/40 border border-border/50 disabled:opacity-40 disabled:cursor-not-allowed transition-all min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C]/60"
             >
               Previous
             </button>
@@ -533,15 +723,19 @@ export default function EmbedDrillLibrary() {
                 } else {
                   page = currentPage - 2 + i;
                 }
+                const isActive = currentPage === page;
                 return (
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    className={`w-11 h-11 rounded-lg text-sm font-medium transition-colors ${
-                      currentPage === page
-                        ? "bg-electric text-white shadow-lg shadow-electric/25"
-                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                    className={`w-11 h-11 rounded-full text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C]/60 ${
+                      isActive
+                        ? "text-[#0D1B2E] shadow-[0_0_0_1px_oklch(0.74_0.13_85/0.45),0_4px_20px_-6px_oklch(0.74_0.13_85/0.45)]"
+                        : "text-muted-foreground hover:text-[#C9A84C] hover:bg-card"
                     }`}
+                    style={isActive ? {
+                      background: "linear-gradient(135deg, var(--primary) 0%, var(--primary-glow) 100%)",
+                    } : undefined}
                   >
                     {page}
                   </button>
@@ -551,7 +745,7 @@ export default function EmbedDrillLibrary() {
             <button
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-              className="px-4 py-2 rounded-lg text-sm font-medium bg-card text-muted-foreground hover:text-foreground hover:bg-accent border border-border/50 disabled:opacity-40 disabled:cursor-not-allowed transition-all min-h-[44px]"
+              className="px-4 py-2 rounded-full text-sm font-medium bg-card text-muted-foreground hover:text-[#C9A84C] hover:border-[#C9A84C]/40 border border-border/50 disabled:opacity-40 disabled:cursor-not-allowed transition-all min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C]/60"
             >
               Next
             </button>

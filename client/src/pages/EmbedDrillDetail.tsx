@@ -172,13 +172,14 @@ export default function EmbedDrillDetail() {
         <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3">
           <div className="flex items-center gap-3">
             <Link href="/embed/drills">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-white/70 hover:text-white px-2 shrink-0 min-h-[44px] min-w-[44px]"
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shrink-0 min-h-[40px] transition-all duration-200 bg-card/60 text-muted-foreground border border-white/10 hover:border-[#C9A84C]/40 hover:text-[#C9A84C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C]/60 focus-visible:ring-offset-1 focus-visible:ring-offset-background"
               >
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Back to Drill Library</span>
+                <span className="sm:hidden">Back</span>
+              </button>
             </Link>
             <div className="flex-1 min-w-0">
               <h1 className="text-sm sm:text-base font-bold truncate text-white">
