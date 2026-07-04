@@ -9,6 +9,8 @@ import {
   DrillDetailBody,
   type DrillRow,
 } from "@/components/drill/DrillDetailBody";
+import { useAllDrills } from "@/hooks/useAllDrills";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // ─── Iframe Height Broadcaster ──────────────────────────────────────────────
 function useEmbedHeightBroadcast() {
@@ -38,6 +40,15 @@ export default function EmbedDrillDetail() {
   useEmbedHeightBroadcast();
   const [match, params] = useRoute("/embed/drill/:id");
   const id = params?.id;
+
+  // ── Prev / Next navigation ──
+  const allDrills = useAllDrills();
+  const currentIndex = useMemo(
+    () => allDrills.findIndex((d) => d.id === id),
+    [allDrills, id]
+  );
+  const prevDrill = currentIndex > 0 ? allDrills[currentIndex - 1] : null;
+  const nextDrill = currentIndex >= 0 && currentIndex < allDrills.length - 1 ? allDrills[currentIndex + 1] : null;
 
   // ── Data fetching (same pattern as DrillDetail.tsx) ──
   const { data: dbDrill, isLoading: drillLoading } =
@@ -228,6 +239,53 @@ export default function EmbedDrillDetail() {
           descriptionSteps={descriptionSteps}
           drillId={id || ""}
         />
+
+        {/* ── Prev / Next Drill Navigation ── */}
+        {allDrills.length > 0 && (prevDrill || nextDrill) && (
+          <nav
+            aria-label="Drill navigation"
+            className="mt-8 pt-6 border-t border-border/30 flex items-center justify-between gap-4"
+          >
+            {/* Previous */}
+            {prevDrill ? (
+              <Link
+                href={`/embed/drill/${prevDrill.id}`}
+                className="group flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 min-h-[44px] max-w-[45%] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C]/60 focus-visible:ring-offset-1 focus-visible:ring-offset-background bg-card/60 border border-white/10 text-muted-foreground hover:border-[#C9A84C]/50 hover:text-[#C9A84C]"
+              >
+                <ChevronLeft className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:-translate-x-0.5" />
+                <span className="truncate">
+                  <span className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 group-hover:text-[#C9A84C]/70 mb-0.5">Previous</span>
+                  <span className="block leading-tight">{prevDrill.name}</span>
+                </span>
+              </Link>
+            ) : (
+              <div className="min-w-[44px]" />
+            )}
+
+            {/* Drill counter */}
+            {currentIndex >= 0 && (
+              <span className="text-xs text-muted-foreground/50 font-medium shrink-0 tabular-nums">
+                {currentIndex + 1} / {allDrills.length}
+              </span>
+            )}
+
+            {/* Next */}
+            {nextDrill ? (
+              <Link
+                href={`/embed/drill/${nextDrill.id}`}
+                className="group flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 min-h-[44px] max-w-[45%] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C]/60 focus-visible:ring-offset-1 focus-visible:ring-offset-background bg-card/60 border border-white/10 text-muted-foreground hover:border-[#C9A84C]/50 hover:text-[#C9A84C] flex-row-reverse"
+              >
+                <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5" />
+                <span className="truncate text-right">
+                  <span className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 group-hover:text-[#C9A84C]/70 mb-0.5">Next</span>
+                  <span className="block leading-tight">{nextDrill.name}</span>
+                </span>
+              </Link>
+            ) : (
+              <div className="min-w-[44px]" />
+            )}
+          </nav>
+        )}
       </div>
     </div>
   );

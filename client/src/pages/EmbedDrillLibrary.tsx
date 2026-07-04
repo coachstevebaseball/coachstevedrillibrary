@@ -270,6 +270,9 @@ export default function EmbedDrillLibrary() {
 
   // ── Initialize state from URL params ──
   const [initialized, setInitialized] = useState(false);
+  // inputValue is the raw controlled input value (updates on every keystroke)
+  // searchQuery is the debounced value (drives filtering + URL sync, updates 300ms after typing stops)
+  const [inputValue, setInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState("All");
   const [categoryFilter, setCategoryFilter] = useState("All");
@@ -285,9 +288,16 @@ export default function EmbedDrillLibrary() {
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
+  // ── 300ms debounce: sync inputValue → searchQuery ──
+  useEffect(() => {
+    const timer = setTimeout(() => setSearchQuery(inputValue), 300);
+    return () => clearTimeout(timer);
+  }, [inputValue]);
+
   // Read URL params on first mount
   useEffect(() => {
     const p = readUrlParams();
+    setInputValue(p.q);
     setSearchQuery(p.q);
     setDifficultyFilter(p.level);
     setCategoryFilter(p.skill);
@@ -351,6 +361,7 @@ export default function EmbedDrillLibrary() {
     || selectedProblems.length > 0 || selectedGoals.length > 0 || selectedTags.length > 0;
 
   const handleClearAll = useCallback(() => {
+    setInputValue("");
     setSearchQuery("");
     setDifficultyFilter("All");
     setCategoryFilter("All");
@@ -365,6 +376,9 @@ export default function EmbedDrillLibrary() {
     if (!initialized) return;
     setCurrentPage(1);
   }, [searchQuery, difficultyFilter, categoryFilter, selectedProblems, selectedGoals, selectedTags]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Also clear inputValue when handleClearAll resets searchQuery externally
+  // (already handled in handleClearAll above)
 
   // ── Build shareable URL ──
   const buildShareUrl = useCallback(() => {
@@ -385,7 +399,7 @@ export default function EmbedDrillLibrary() {
   const renderFilterPills = () => {
     if (!hasAnyActiveFilters) return null;
     const pills: { label: string; onRemove: () => void; variant?: "crimson" | "default" }[] = [];
-    if (searchQuery) pills.push({ label: `Search: "${searchQuery}"`, onRemove: () => setSearchQuery("") });
+    if (searchQuery) pills.push({ label: `Search: "${searchQuery}"`, onRemove: () => { setInputValue(""); setSearchQuery(""); } });
     if (difficultyFilter !== "All") pills.push({ label: difficultyFilter, onRemove: () => setDifficultyFilter("All") });
     if (categoryFilter !== "All") pills.push({ label: categoryFilter, onRemove: () => setCategoryFilter("All") });
     selectedProblems.forEach(val => {
@@ -465,8 +479,8 @@ export default function EmbedDrillLibrary() {
                 type="text"
                 placeholder="Search drills..."
                 className="pl-12 py-6 text-base bg-card/80 text-foreground border-border/50 rounded-xl focus-visible:ring-2 focus-visible:ring-electric/50 focus-visible:border-electric/30 font-medium transition-all duration-300 hover:border-electric/20 placeholder:text-muted-foreground/60 w-full"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
               />
             </div>
           </div>
@@ -684,17 +698,69 @@ export default function EmbedDrillLibrary() {
               })}
             </div>
           ) : (
-            <div className="text-center py-16 glass-card rounded-2xl border-dashed border border-border/30 max-w-md mx-auto">
-              <div className="bg-muted/30 h-14 w-14 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Search className="h-6 w-6 text-muted-foreground" />
+            <div className="flex flex-col items-center justify-center py-20 px-6 max-w-md mx-auto">
+              {/* Icon ring */}
+              <div
+                className="relative mb-6 flex items-center justify-center"
+                style={{ width: 72, height: 72 }}
+              >
+                <div
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background: "oklch(0.74 0.13 85 / 0.08)",
+                    boxShadow: "0 0 0 1px oklch(0.74 0.13 85 / 0.2), 0 0 24px -4px oklch(0.74 0.13 85 / 0.25)",
+                  }}
+                />
+                <Search className="h-7 w-7 relative z-10" style={{ color: "oklch(0.74 0.13 85)" }} />
               </div>
-              <h3 className="text-lg font-heading font-bold mb-2">No drills found</h3>
-              <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6">
-                No drills match your current filters. Try adjusting your search or filters.
+
+              {/* Heading */}
+              <h3 className="text-xl font-heading font-bold text-foreground mb-2 text-center">
+                No drills found
+              </h3>
+
+              {/* Sub-message */}
+              <p className="text-sm text-muted-foreground text-center mb-2 leading-relaxed max-w-xs">
+                {inputValue
+                  ? <>No results for <span className="font-semibold text-foreground">&ldquo;{inputValue}&rdquo;</span>. Try a different search term or clear your filters.</>  
+                  : "No drills match the current filters. Try removing one or more filters to see results."}
               </p>
-              <Button onClick={handleClearAll} className="btn-premium text-white text-sm min-h-[44px]">
+
+              {/* Active filter summary */}
+              {hasAnyActiveFilters && (
+                <div className="flex flex-wrap justify-center gap-1.5 mb-6 mt-1">
+                  {categoryFilter !== "All" && (
+                    <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-card border border-white/10 text-muted-foreground">
+                      Skill: {categoryFilter}
+                    </span>
+                  )}
+                  {difficultyFilter !== "All" && (
+                    <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-card border border-white/10 text-muted-foreground">
+                      Level: {difficultyFilter}
+                    </span>
+                  )}
+                  {selectedTags.map(t => (
+                    <span key={t} className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-card border border-white/10 text-muted-foreground">
+                      Focus: {t}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Clear All Filters button */}
+              <button
+                type="button"
+                onClick={handleClearAll}
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C]/60 focus-visible:ring-offset-1 focus-visible:ring-offset-background"
+                style={{
+                  background: "linear-gradient(135deg, var(--primary) 0%, var(--primary-glow) 100%)",
+                  boxShadow: "var(--shadow-gold-glow)",
+                  color: "oklch(0.18 0.04 260)",
+                }}
+              >
+                <X className="h-3.5 w-3.5" />
                 Clear All Filters
-              </Button>
+              </button>
             </div>
           )}
         </div>
