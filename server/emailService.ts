@@ -13,6 +13,7 @@ export async function sendStreakReminderEmail(
   try {
     await getResend().emails.send({
       from: ENV.resendFromEmail,
+      ...(ENV.resendReplyTo ? { replyTo: ENV.resendReplyTo } : {}),
       to: athleteEmail,
       subject: `🔥 Keep your ${streakDays}-day streak alive!`,
       html: `

@@ -197,6 +197,7 @@ export const appRouter = router({
           const resend = getResend();
           const result = await resend.emails.send({
             from: fromEmail,
+            ...(ENV.resendReplyTo ? { replyTo: ENV.resendReplyTo } : {}),
             to: input.toEmail,
             subject: '✅ Coach Steve App — Email Test',
             html: `<h2>Email delivery is working!</h2>

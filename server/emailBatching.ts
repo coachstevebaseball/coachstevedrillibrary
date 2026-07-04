@@ -260,6 +260,7 @@ async function sendBatchedActivityEmail(
 
     const result = await getResend().emails.send({
       from: ENV.resendFromEmail,
+      ...(ENV.resendReplyTo ? { replyTo: ENV.resendReplyTo } : {}),
       to: coachEmail,
       subject: `📊 ${athleteName} - ${activityCount} new activities`,
       html: emailHtml,
