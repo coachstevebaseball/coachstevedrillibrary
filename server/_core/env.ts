@@ -8,7 +8,11 @@ export const ENV = {
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
   resendApiKey: process.env.RESEND_API_KEY ?? "",
-  resendFromEmail: process.env.RESEND_FROM_EMAIL ?? "onboarding@resend.dev",
+  // Unescape unicode angle brackets that the platform secret storage may inject
+  // e.g. "Name\u003cemail@domain.com\u003e" → "Name <email@domain.com>"
+  resendFromEmail: (process.env.RESEND_FROM_EMAIL ?? "onboarding@resend.dev")
+    .replace(/\\u003c/gi, "<")
+    .replace(/\\u003e/gi, ">"),
   resendReplyTo: process.env.RESEND_REPLY_TO ?? "",
   appUrl: process.env.VITE_APP_URL ?? process.env.APP_URL ?? "https://coachstevemobilecoach.manus.space",
   geminiApiKey: process.env.GEMINI_API_KEY ?? "",
