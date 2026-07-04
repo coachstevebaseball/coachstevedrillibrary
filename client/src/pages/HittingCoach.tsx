@@ -106,7 +106,7 @@ export default function HittingCoach() {
               </button>
             </Link>
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-[#e4002b] flex items-center justify-center text-white text-xs font-bold">
+              <div className="w-7 h-7 rounded-full bg-[#C9A84C] flex items-center justify-center text-white text-xs font-bold">
                 CS
               </div>
               <div>
@@ -120,7 +120,7 @@ export default function HittingCoach() {
           <div className="flex items-center gap-2">
             <Badge
               variant="outline"
-              className="border-[#e4002b]/40 text-[#e4002b] text-xs hidden sm:flex"
+              className="border-[#C9A84C]/40 text-[#C9A84C] text-xs hidden sm:flex"
             >
               <Zap className="h-3 w-3 mr-1" />
               Process Over Outcome
@@ -145,7 +145,7 @@ export default function HittingCoach() {
             /* Welcome screen */
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center gap-8">
               <div>
-                <div className="w-16 h-16 rounded-full bg-[#e4002b] flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4 shadow-lg shadow-[#e4002b]/30">
+                <div className="w-16 h-16 rounded-full bg-[#C9A84C] flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4 shadow-lg shadow-[#C9A84C]/30">
                   CS
                 </div>
                 <h1 className="text-white text-2xl font-bold mb-2">
@@ -173,7 +173,7 @@ export default function HittingCoach() {
                       <span className="text-white/70 text-sm group-hover:text-white transition-colors">
                         {prompt}
                       </span>
-                      <ChevronRight className="h-3 w-3 text-white/30 group-hover:text-[#e4002b] transition-colors flex-shrink-0 ml-2" />
+                      <ChevronRight className="h-3 w-3 text-white/30 group-hover:text-[#C9A84C] transition-colors flex-shrink-0 ml-2" />
                     </button>
                   ))}
                 </div>
@@ -190,21 +190,21 @@ export default function HittingCoach() {
                   }`}
                 >
                   {msg.role === "model" && (
-                    <div className="w-8 h-8 rounded-full bg-[#e4002b] flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1 shadow-md shadow-[#e4002b]/20">
+                    <div className="w-8 h-8 rounded-full bg-[#C9A84C] flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1 shadow-md shadow-[#C9A84C]/20">
                       CS
                     </div>
                   )}
                   <div
                     className={`max-w-[85%] rounded-2xl px-4 py-3 ${
                       msg.role === "user"
-                        ? "bg-[#e4002b] text-white rounded-tr-sm"
+                        ? "bg-[#C9A84C] text-white rounded-tr-sm"
                         : "bg-white/8 border border-white/10 text-white/90 rounded-tl-sm"
                     }`}
                   >
                     {msg.role === "user" ? (
                       <p className="text-sm leading-relaxed">{msg.content}</p>
                     ) : (
-                      <div className="text-sm leading-relaxed text-white/85 [&_h2]:text-[#e4002b] [&_h2]:font-bold [&_h2]:text-sm [&_h2]:mt-4 [&_h2]:mb-1 [&_h2]:border-b [&_h2]:border-white/10 [&_h2]:pb-1 [&_h3]:text-white [&_h3]:font-semibold [&_h3]:text-sm [&_h3]:mt-3 [&_strong]:text-white [&_li]:my-0.5 [&_ul]:my-1 [&_ol]:my-1 [&_p]:my-1 max-w-none">
+                      <div className="text-sm leading-relaxed text-white/85 [&_h2]:text-[#C9A84C] [&_h2]:font-bold [&_h2]:text-sm [&_h2]:mt-4 [&_h2]:mb-1 [&_h2]:border-b [&_h2]:border-white/10 [&_h2]:pb-1 [&_h3]:text-white [&_h3]:font-semibold [&_h3]:text-sm [&_h3]:mt-3 [&_strong]:text-white [&_li]:my-0.5 [&_ul]:my-1 [&_ol]:my-1 [&_p]:my-1 max-w-none">
                         <Streamdown>{msg.content}</Streamdown>
                       </div>
                     )}
@@ -219,12 +219,12 @@ export default function HittingCoach() {
 
               {isLoading && (
                 <div className="flex gap-3 justify-start">
-                  <div className="w-8 h-8 rounded-full bg-[#e4002b] flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1 shadow-md shadow-[#e4002b]/20">
+                  <div className="w-8 h-8 rounded-full bg-[#C9A84C] flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1 shadow-md shadow-[#C9A84C]/20">
                     CS
                   </div>
                   <div className="bg-white/8 border border-white/10 rounded-2xl rounded-tl-sm px-4 py-3">
                     <div className="flex items-center gap-2 text-white/50 text-sm">
-                      <Loader2 className="h-4 w-4 animate-spin text-[#e4002b]" />
+                      <Loader2 className="h-4 w-4 animate-spin text-[#C9A84C]" />
                       Breaking down your swing...
                     </div>
                   </div>
@@ -248,7 +248,7 @@ export default function HittingCoach() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Describe your hitting issue... (e.g. I keep rolling over to the pull side)"
-                className="bg-white/8 border-white/15 text-white placeholder:text-white/30 resize-none min-h-[48px] max-h-32 rounded-xl focus:border-[#e4002b]/50 focus:ring-[#e4002b]/20 pr-4"
+                className="bg-white/8 border-white/15 text-white placeholder:text-white/30 resize-none min-h-[48px] max-h-32 rounded-xl focus:border-[#C9A84C]/50 focus:ring-[#C9A84C]/20 pr-4"
                 rows={1}
                 disabled={isLoading}
               />
@@ -256,7 +256,7 @@ export default function HittingCoach() {
             <Button
               onClick={() => sendMessage(input)}
               disabled={!input.trim() || isLoading}
-              className="bg-[#e4002b] hover:bg-[#c0001f] text-white h-12 w-12 p-0 rounded-xl flex-shrink-0 shadow-lg shadow-[#e4002b]/20 disabled:opacity-40 disabled:shadow-none transition-all"
+              className="bg-[#C9A84C] hover:bg-[#A8893A] text-white h-12 w-12 p-0 rounded-xl flex-shrink-0 shadow-lg shadow-[#C9A84C]/20 disabled:opacity-40 disabled:shadow-none transition-all"
             >
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

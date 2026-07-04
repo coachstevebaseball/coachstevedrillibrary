@@ -47,7 +47,7 @@ const ICON_COLORS: Record<string, string> = {
   target: "text-green-400",
   zap: "text-yellow-400",
   star: "text-blue-400",
-  hash: "text-teal-400",
+  hash: "text-amber-400",
 };
 
 const DEFAULT_ICONS = ["clock", "users", "dumbbell", "target", "zap", "star", "hash"];

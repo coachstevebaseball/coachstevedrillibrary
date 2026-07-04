@@ -98,7 +98,7 @@ export function AddBlastPlayer({ open, onOpenChange }: AddBlastPlayerProps) {
 
           <div className="space-y-2">
             <Label className="text-white/70 text-sm flex items-center gap-1.5">
-              <Link2 className="h-3.5 w-3.5 text-[#DC143C]" />
+              <Link2 className="h-3.5 w-3.5 text-[#C9A84C]" />
               Link to Portal Account
               <span className="text-white/30 font-normal">(optional)</span>
             </Label>

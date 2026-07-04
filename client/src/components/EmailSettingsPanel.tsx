@@ -68,7 +68,7 @@ export function EmailSettingsPanel() {
       <Card className="bg-white/[0.04] border-white/[0.08]">
         <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center gap-2">
-            <Mail className="h-5 w-5 text-teal-400" />
+            <Mail className="h-5 w-5 text-amber-400" />
             Email Configuration
             <button onClick={() => refetch()} className="ml-auto">
               <RefreshCw className="h-3.5 w-3.5 text-white/30 hover:text-white/60" />
@@ -138,7 +138,7 @@ export function EmailSettingsPanel() {
       <Card className="bg-white/[0.04] border-white/[0.08]">
         <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center gap-2">
-            <Send className="h-5 w-5 text-[#e4002b]" />
+            <Send className="h-5 w-5 text-[#C9A84C]" />
             Send Test Email
           </CardTitle>
         </CardHeader>
@@ -157,7 +157,7 @@ export function EmailSettingsPanel() {
             <Button
               onClick={() => testMutation.mutate({ toEmail: testEmail })}
               disabled={!testEmail || testMutation.isPending || !status?.hasResendKey}
-              className="bg-[#e4002b] hover:bg-[#c0001f] text-white gap-1.5 flex-shrink-0"
+              className="bg-[#C9A84C] hover:bg-[#A8893A] text-white gap-1.5 flex-shrink-0"
             >
               <Send className="h-4 w-4" />
               {testMutation.isPending ? "Sending..." : "Send Test"}
@@ -194,23 +194,23 @@ export function EmailSettingsPanel() {
         <CardContent>
           <ol className="space-y-2 text-sm text-white/60">
             <li className="flex gap-2">
-              <span className="text-[#e4002b] font-bold flex-shrink-0">1.</span>
+              <span className="text-[#C9A84C] font-bold flex-shrink-0">1.</span>
               Log into <strong>resend.com</strong> → API Keys → copy your key
             </li>
             <li className="flex gap-2">
-              <span className="text-[#e4002b] font-bold flex-shrink-0">2.</span>
+              <span className="text-[#C9A84C] font-bold flex-shrink-0">2.</span>
               In Manus: App Settings → Environment Variables → add <code>RESEND_API_KEY=re_xxxx</code>
             </li>
             <li className="flex gap-2">
-              <span className="text-[#e4002b] font-bold flex-shrink-0">3.</span>
+              <span className="text-[#C9A84C] font-bold flex-shrink-0">3.</span>
               In Resend: Domains → Add Domain → verify <strong>coachstevemobilecoach.com</strong> (add DNS records)
             </li>
             <li className="flex gap-2">
-              <span className="text-[#e4002b] font-bold flex-shrink-0">4.</span>
+              <span className="text-[#C9A84C] font-bold flex-shrink-0">4.</span>
               Add <code>RESEND_FROM_EMAIL=coach@coachstevemobilecoach.com</code> to Manus env vars
             </li>
             <li className="flex gap-2">
-              <span className="text-[#e4002b] font-bold flex-shrink-0">5.</span>
+              <span className="text-[#C9A84C] font-bold flex-shrink-0">5.</span>
               Redeploy the app, then click "Send Test" above to confirm
             </li>
           </ol>

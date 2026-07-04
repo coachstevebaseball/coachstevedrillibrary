@@ -46,14 +46,14 @@ export function ProgressDashboard({ stats }: ProgressDashboardProps) {
       </Card>
 
       {/* In Progress Card */}
-      <Card className="border-l-4 border-l-[#DC143C]">
+      <Card className="border-l-4 border-l-[#C9A84C]">
         <CardHeader className="pb-3">
           <CardTitle className="text-sm font-medium text-muted-foreground">In Progress</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
-            <div className="text-3xl font-bold text-[#DC143C]">{stats.inProgress}</div>
-            <Clock className="h-8 w-8 text-[#DC143C]/30" />
+            <div className="text-3xl font-bold text-[#C9A84C]">{stats.inProgress}</div>
+            <Clock className="h-8 w-8 text-[#C9A84C]/30" />
           </div>
         </CardContent>
       </Card>

@@ -421,7 +421,7 @@ export default function AthletePortal() {
                         {drill.difficulty}
                       </Badge>
                       {drill.categories[0] && (
-                        <Badge className="bg-[#DC143C]/20 text-[#E8425A] border border-[#DC143C]/30">
+                        <Badge className="bg-[#C9A84C]/20 text-[#E8425A] border border-[#C9A84C]/30">
                           {drill.categories[0]}
                         </Badge>
                       )}
@@ -652,10 +652,10 @@ export default function AthletePortal() {
         )}
 
         {/* AI Hitting Coach */}
-        <div className="mx-4 mb-4 rounded-xl overflow-hidden border border-[#e4002b]/30 bg-gradient-to-r from-[#0A1628] to-[#1a0a0a]">
+        <div className="mx-4 mb-4 rounded-xl overflow-hidden border border-[#C9A84C]/30 bg-gradient-to-r from-[#0A1628] to-[#1a0a0a]">
           <div className="p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#e4002b] flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-[#e4002b]/30 flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-[#C9A84C] flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-[#C9A84C]/30 flex-shrink-0">
                 CS
               </div>
               <div>
@@ -664,7 +664,7 @@ export default function AthletePortal() {
               </div>
             </div>
             <Link href="/hitting-coach">
-              <button className="bg-[#e4002b] hover:bg-[#c0001f] text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors flex-shrink-0">
+              <button className="bg-[#C9A84C] hover:bg-[#A8893A] text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors flex-shrink-0">
                 Ask Coach
               </button>
             </Link>
@@ -718,7 +718,7 @@ export default function AthletePortal() {
 // ─── Shared Practice Plans Component ─────────────────────────────────────────
 
 const BLOCK_TYPE_CONFIG: Record<string, { icon: any; label: string; color: string; bg: string }> = {
-  drill: { icon: Target, label: "Drill", color: "text-[#E8425A]", bg: "bg-[#DC143C]/10 border-[#DC143C]/20" },
+  drill: { icon: Target, label: "Drill", color: "text-[#E8425A]", bg: "bg-[#C9A84C]/10 border-[#C9A84C]/20" },
   warmup: { icon: Zap, label: "Warm-Up", color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20" },
   cooldown: { icon: Coffee, label: "Cool-Down", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
   break: { icon: Coffee, label: "Break", color: "text-gray-400", bg: "bg-gray-500/10 border-gray-500/20" },
@@ -739,7 +739,7 @@ function SharedPracticePlans() {
           <FileText className="w-5 h-5 text-[#E8425A]" />
           Practice Plans
         </h3>
-        <Badge className="bg-[#DC143C]/20 text-[#E8425A] border border-[#DC143C]/30">
+        <Badge className="bg-[#C9A84C]/20 text-[#E8425A] border border-[#C9A84C]/30">
           {sharedPlans.length}
         </Badge>
       </div>
@@ -757,7 +757,7 @@ function SharedPracticePlans() {
                 onClick={() => setExpandedPlan(isExpanded ? null : plan.id)}
                 className="w-full text-left p-4 flex items-center gap-3"
               >
-                <div className="h-10 w-10 rounded-lg bg-[#DC143C]/10 border border-[#DC143C]/20 flex items-center justify-center flex-shrink-0">
+                <div className="h-10 w-10 rounded-lg bg-[#C9A84C]/10 border border-[#C9A84C]/20 flex items-center justify-center flex-shrink-0">
                   <FileText className="h-5 w-5 text-[#E8425A]" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -777,7 +777,7 @@ function SharedPracticePlans() {
                   {focusAreas.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
                       {focusAreas.map((area) => (
-                        <span key={area} className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-[#DC143C]/10 text-[#E8425A]">{area}</span>
+                        <span key={area} className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-[#C9A84C]/10 text-[#E8425A]">{area}</span>
                       ))}
                     </div>
                   )}

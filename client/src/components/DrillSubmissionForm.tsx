@@ -127,9 +127,9 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
 
   // Phase-specific colors and icons
   const phaseConfig: Record<UploadPhase, { color: string; bgColor: string; glowColor: string }> = {
-    idle: { color: "text-[#E8425A]", bgColor: "bg-[#DC143C]", glowColor: "shadow-[#DC143C]/30" },
+    idle: { color: "text-[#E8425A]", bgColor: "bg-[#C9A84C]", glowColor: "shadow-[#C9A84C]/30" },
     compressing: { color: "text-amber-400", bgColor: "bg-amber-500", glowColor: "shadow-amber-500/30" },
-    uploading: { color: "text-[#E8425A]", bgColor: "bg-[#DC143C]", glowColor: "shadow-[#DC143C]/30" },
+    uploading: { color: "text-[#E8425A]", bgColor: "bg-[#C9A84C]", glowColor: "shadow-[#C9A84C]/30" },
     done: { color: "text-emerald-400", bgColor: "bg-emerald-500", glowColor: "shadow-emerald-500/30" },
     error: { color: "text-red-400", bgColor: "bg-red-500", glowColor: "shadow-red-500/30" },
   };
@@ -245,9 +245,9 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
             {!videoFile ? (
               <label
                 htmlFor={`video-input-${assignmentId}`}
-                className="flex flex-col items-center justify-center gap-2 w-full px-4 py-6 border-2 border-dashed border-white/[0.12] rounded-xl cursor-pointer hover:bg-white/[0.04] hover:border-[#DC143C]/40 transition-all duration-200 active:scale-[0.98]"
+                className="flex flex-col items-center justify-center gap-2 w-full px-4 py-6 border-2 border-dashed border-white/[0.12] rounded-xl cursor-pointer hover:bg-white/[0.04] hover:border-[#C9A84C]/40 transition-all duration-200 active:scale-[0.98]"
               >
-                <div className="w-12 h-12 bg-[#DC143C]/20 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-[#C9A84C]/20 rounded-full flex items-center justify-center">
                   <Upload className="h-5 w-5 text-[#E8425A]" />
                 </div>
                 <span className="text-sm font-medium text-foreground">
@@ -319,7 +319,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="How did it feel? Any questions for Coach?"
-              className="w-full h-16 bg-white/[0.04] border border-white/[0.08] rounded-lg p-3 text-sm text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-[#DC143C]/50 focus:border-[#DC143C]/30"
+              className="w-full h-16 bg-white/[0.04] border border-white/[0.08] rounded-lg p-3 text-sm text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/50 focus:border-[#C9A84C]/30"
               disabled={isSubmitting}
               maxLength={500}
             />
@@ -330,7 +330,7 @@ export function DrillSubmissionForm({ assignmentId, drillId, onSubmitSuccess }: 
         <Button
           type="submit"
           disabled={isSubmitting || (!notes.trim() && !videoFile)}
-          className="w-full h-12 gap-2 bg-[#DC143C] hover:bg-[#B91030] active:bg-[#B91030] text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-[#DC143C]/20 hover:shadow-[#DC143C]/30 active:scale-[0.98] disabled:opacity-40 disabled:shadow-none"
+          className="w-full h-12 gap-2 bg-[#C9A84C] hover:bg-[#B91030] active:bg-[#B91030] text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 active:scale-[0.98] disabled:opacity-40 disabled:shadow-none"
         >
           {isSubmitting ? (
             <>

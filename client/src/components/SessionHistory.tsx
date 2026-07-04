@@ -25,16 +25,16 @@ import { InlineEdit } from "@/components/InlineEdit";
 
 // Skill category colors (matching SessionNotesForm)
 const SKILL_COLORS: Record<string, string> = {
-  "Swing Mechanics": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
+  "Swing Mechanics": "bg-[#C9A84C]/20 text-[#E8425A] border-[#C9A84C]/30",
   "Pitch Recognition": "bg-purple-500/20 text-purple-300 border-purple-500/30",
-  "Plate Approach": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
+  "Plate Approach": "bg-[#C9A84C]/20 text-[#E8425A] border-[#C9A84C]/30",
   "Fielding Fundamentals": "bg-green-500/20 text-green-300 border-green-500/30",
   "Throwing Mechanics": "bg-orange-500/20 text-orange-300 border-orange-500/30",
   "Base Running": "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
   "Bunting": "bg-lime-500/20 text-lime-300 border-lime-500/30",
   "Game IQ / Situational Awareness": "bg-rose-500/20 text-rose-300 border-rose-500/30",
   "Confidence / Mindset": "bg-pink-500/20 text-pink-300 border-pink-500/30",
-  "Arm Care / Body Mechanics": "bg-teal-500/20 text-teal-300 border-teal-500/30",
+  "Arm Care / Body Mechanics": "bg-amber-500/20 text-amber-300 border-amber-500/30",
 };
 
 interface SessionHistoryProps {
@@ -133,7 +133,7 @@ export function SessionHistory({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-6 w-6 animate-spin text-[#DC143C]" />
+        <Loader2 className="h-6 w-6 animate-spin text-[#C9A84C]" />
         <span className="ml-2 text-muted-foreground">Loading sessions...</span>
       </div>
     );
@@ -152,7 +152,7 @@ export function SessionHistory({
         {onNewNote && (
           <Button
             onClick={onNewNote}
-            className="bg-[#DC143C] hover:bg-[#DC143C]/90"
+            className="bg-[#C9A84C] hover:bg-[#C9A84C]/90"
           >
             <Plus className="h-4 w-4 mr-2" />
             Log First Session
@@ -206,7 +206,7 @@ export function SessionHistory({
             <Button
               onClick={onNewNote}
               size="sm"
-              className="bg-[#DC143C] hover:bg-[#DC143C]/90"
+              className="bg-[#C9A84C] hover:bg-[#C9A84C]/90"
             >
               <Plus className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline"><InlineEdit contentKey="sessionHistory.btn.newNote" defaultValue="New Note" /></span>
@@ -233,7 +233,7 @@ export function SessionHistory({
               <div
                 className={`absolute left-2.5 top-3 h-3 w-3 rounded-full border-2 transition-colors ${
                   isExpanded
-                    ? "bg-[#DC143C] border-[#DC143C]"
+                    ? "bg-[#C9A84C] border-[#C9A84C]"
                     : "bg-background border-white/20"
                 }`}
               />
@@ -241,7 +241,7 @@ export function SessionHistory({
               {/* Card */}
               <div
                 className={`glass-card rounded-xl overflow-hidden transition-all duration-200 ${
-                  isExpanded ? "ring-1 ring-[#DC143C]/30" : ""
+                  isExpanded ? "ring-1 ring-[#C9A84C]/30" : ""
                 }`}
               >
                 {/* Collapsed header — always visible */}
@@ -324,7 +324,7 @@ export function SessionHistory({
                     {/* Blast notes show metrics only; regular notes show improved/needs work */}
                     {note.blastSessionId ? (
                       <div>
-                        <h4 className="text-xs font-semibold text-[#DC143C] uppercase tracking-wider mb-1">
+                        <h4 className="text-xs font-semibold text-[#C9A84C] uppercase tracking-wider mb-1">
                           <InlineEdit contentKey="sessionHistory.heading.blastMetrics" defaultValue="Session Blast Metrics" />
                         </h4>
                         <p className="text-sm text-foreground/80 leading-relaxed">
@@ -362,7 +362,7 @@ export function SessionHistory({
                     {/* Homework Drills */}
                     {homeworkDrills.length > 0 && (
                       <div>
-                        <h4 className="text-xs font-semibold text-[#DC143C] uppercase tracking-wider mb-1.5">
+                        <h4 className="text-xs font-semibold text-[#C9A84C] uppercase tracking-wider mb-1.5">
                           <InlineEdit contentKey="sessionHistory.heading.homeworkDrills" defaultValue="Homework Drills" />
                         </h4>
                         <div className="flex flex-wrap gap-1.5">
@@ -370,7 +370,7 @@ export function SessionHistory({
                             <Badge
                               key={d.drillId}
                               variant="secondary"
-                              className="bg-[#DC143C]/10 text-[#DC143C] border-[#DC143C]/20 text-xs"
+                              className="bg-[#C9A84C]/10 text-[#C9A84C] border-[#C9A84C]/20 text-xs"
                             >
                               <Dumbbell className="h-3 w-3 mr-1" />
                               {d.drillName}
@@ -431,7 +431,7 @@ export function SessionHistory({
                         <Button
                           size="sm"
                           onClick={() => onGenerateReport(note.id)}
-                          className="bg-[#DC143C] hover:bg-[#DC143C]/90 text-xs"
+                          className="bg-[#C9A84C] hover:bg-[#C9A84C]/90 text-xs"
                         >
                           <FileText className="h-3.5 w-3.5 mr-1.5" />
                           <InlineEdit contentKey="sessionHistory.btn.generateReport" defaultValue="Generate Report" />

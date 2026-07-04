@@ -14,7 +14,7 @@ export function ToastContainer() {
         return <AlertTriangle className="w-5 h-5 text-yellow-500" />;
       case 'info':
       default:
-        return <Info className="w-5 h-5 text-[#DC143C]" />;
+        return <Info className="w-5 h-5 text-[#C9A84C]" />;
     }
   };
 

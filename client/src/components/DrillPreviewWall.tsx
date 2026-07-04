@@ -27,11 +27,11 @@ export function DrillPreviewWall({
         {/* Main Card */}
         <Card className="border-2 border-electric/30 overflow-hidden">
           {/* Gradient top bar */}
-          <div className="h-1.5 bg-gradient-to-r from-[#DC143C] via-[#FF4444] to-[#DC143C]" />
+          <div className="h-1.5 bg-gradient-to-r from-[#C9A84C] via-[#FF4444] to-[#C9A84C]" />
 
           <CardHeader className="text-center pb-2 pt-8">
-            <div className="mx-auto h-20 w-20 rounded-full bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/5 border border-[#DC143C]/20 flex items-center justify-center mb-4">
-              <Lock className="h-9 w-9 text-[#DC143C]" />
+            <div className="mx-auto h-20 w-20 rounded-full bg-gradient-to-br from-[#C9A84C]/20 to-[#C9A84C]/5 border border-[#C9A84C]/20 flex items-center justify-center mb-4">
+              <Lock className="h-9 w-9 text-[#C9A84C]" />
             </div>
             <CardTitle className="text-2xl font-heading">
               You've Used Your Free Previews
@@ -49,24 +49,24 @@ export function DrillPreviewWall({
             {/* What you get */}
             <div className="bg-muted/50 rounded-xl p-5 text-left space-y-3">
               <p className="text-sm font-semibold text-foreground flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-[#DC143C]" />
+                <Sparkles className="h-4 w-4 text-[#C9A84C]" />
                 Full access includes:
               </p>
               <ul className="text-sm text-muted-foreground space-y-2">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#DC143C] mt-0.5">•</span>
+                  <span className="text-[#C9A84C] mt-0.5">•</span>
                   Complete drill library with video demonstrations
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#DC143C] mt-0.5">•</span>
+                  <span className="text-[#C9A84C] mt-0.5">•</span>
                   Step-by-step instructions and coaching tips
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#DC143C] mt-0.5">•</span>
+                  <span className="text-[#C9A84C] mt-0.5">•</span>
                   Personalized practice plans and drill assignments
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#DC143C] mt-0.5">•</span>
+                  <span className="text-[#C9A84C] mt-0.5">•</span>
                   Progress tracking and performance metrics
                 </li>
               </ul>
@@ -77,7 +77,7 @@ export function DrillPreviewWall({
               <a href={getLoginUrl()} className="block">
                 <Button
                   size="lg"
-                  className="w-full gap-2 bg-[#DC143C] hover:bg-[#B01030] text-white font-semibold text-base py-6"
+                  className="w-full gap-2 bg-[#C9A84C] hover:bg-[#B01030] text-white font-semibold text-base py-6"
                 >
                   <LogIn className="h-5 w-5" />
                   Sign Up for Full Access
@@ -98,7 +98,7 @@ export function DrillPreviewWall({
             {/* Subtle note */}
             <p className="text-xs text-muted-foreground/60">
               Already have an account?{" "}
-              <a href={getLoginUrl()} className="text-[#DC143C]/80 hover:text-[#DC143C] underline">
+              <a href={getLoginUrl()} className="text-[#C9A84C]/80 hover:text-[#C9A84C] underline">
                 Log in here
               </a>
             </p>

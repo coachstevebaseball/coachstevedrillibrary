@@ -31,12 +31,12 @@ const SESSION_TYPES = [
 // Metric field definitions — all Blast Motion metrics
 const METRIC_FIELDS = [
   { key: "batSpeedMph", label: "Bat Speed", unit: "mph", placeholder: "65.0", icon: Zap, color: "text-[#E8425A]" },
-  { key: "onPlaneEfficiencyPercent", label: "On-Plane Efficiency", unit: "%", placeholder: "85.0", icon: Target, color: "text-teal-400" },
+  { key: "onPlaneEfficiencyPercent", label: "On-Plane Efficiency", unit: "%", placeholder: "85.0", icon: Target, color: "text-amber-400" },
   { key: "attackAngleDeg", label: "Attack Angle", unit: "deg", placeholder: "10.5", icon: Crosshair, color: "text-lime-400" },
   { key: "exitVelocityMph", label: "Exit Velocity", unit: "mph", placeholder: "80.0", icon: Gauge, color: "text-violet-400" },
   { key: "peakHandSpeedMph", label: "Peak Hand Speed", unit: "mph", placeholder: "28.0", icon: Zap, color: "text-orange-400" },
   { key: "rotationalAccelerationG", label: "Rotational Accel.", unit: "g", placeholder: "14.0", icon: Gauge, color: "text-pink-400" },
-  { key: "connectionAtImpactDeg", label: "Connection @ Impact", unit: "deg", placeholder: "96.0", icon: Target, color: "text-cyan-400" },
+  { key: "connectionAtImpactDeg", label: "Connection @ Impact", unit: "deg", placeholder: "96.0", icon: Target, color: "text-amber-400" },
   { key: "earlyConnectionDeg", label: "Early Connection", unit: "deg", placeholder: "90.0", icon: Crosshair, color: "text-lime-300" },
   { key: "powerKpi", label: "Power KPI", unit: "", placeholder: "1.2", icon: Gauge, color: "text-amber-400" },
   { key: "timeToContactSec", label: "Time to Contact", unit: "sec", placeholder: "0.145", icon: Target, color: "text-slate-400" },
@@ -172,14 +172,14 @@ export function AddBlastSession({ open, onOpenChange, playerId, playerName, isLi
               onClick={() => setCreateNote(!createNote)}
               className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all duration-200 text-left ${
                 createNote
-                  ? "bg-[#DC143C]/10 border-[#DC143C]/30 text-white"
+                  ? "bg-[#C9A84C]/10 border-[#C9A84C]/30 text-white"
                   : "bg-white/[0.02] border-white/[0.08] text-white/50"
               }`}
             >
               <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 ${
-                createNote ? "bg-[#DC143C]/20" : "bg-white/[0.06]"
+                createNote ? "bg-[#C9A84C]/20" : "bg-white/[0.06]"
               }`}>
-                <Link2 className={`h-4 w-4 ${createNote ? "text-[#DC143C]" : "text-white/30"}`} />
+                <Link2 className={`h-4 w-4 ${createNote ? "text-[#C9A84C]" : "text-white/30"}`} />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium">
@@ -192,7 +192,7 @@ export function AddBlastSession({ open, onOpenChange, playerId, playerName, isLi
                 </p>
               </div>
               <div className={`h-5 w-9 rounded-full transition-colors shrink-0 relative ${
-                createNote ? "bg-[#DC143C]" : "bg-white/20"
+                createNote ? "bg-[#C9A84C]" : "bg-white/20"
               }`}>
                 <div className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${
                   createNote ? "translate-x-4" : "translate-x-0.5"

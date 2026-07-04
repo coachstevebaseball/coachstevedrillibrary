@@ -56,7 +56,7 @@ const typeConfig: Record<
   feedback_received: {
     icon: "💬",
     label: "Feedback",
-    color: "bg-cyan-500/20 text-cyan-400",
+    color: "bg-amber-500/20 text-amber-400",
   },
   submission_received: {
     icon: "📥",
@@ -71,7 +71,7 @@ const typeConfig: Record<
   practice_plan_shared: {
     icon: "📋",
     label: "Practice Plan",
-    color: "bg-teal-500/20 text-teal-400",
+    color: "bg-amber-500/20 text-amber-400",
   },
   welcome: {
     icon: "👋",

@@ -62,16 +62,16 @@ const SKILL_SHORT_LABELS: Record<string, string> = {
 
 // Skill category colors for visual distinction
 const SKILL_COLORS: Record<string, string> = {
-  "Swing Mechanics": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
+  "Swing Mechanics": "bg-[#C9A84C]/20 text-[#E8425A] border-[#C9A84C]/30",
   "Pitch Recognition": "bg-purple-500/20 text-purple-300 border-purple-500/30",
-  "Plate Approach": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
+  "Plate Approach": "bg-[#C9A84C]/20 text-[#E8425A] border-[#C9A84C]/30",
   "Fielding Fundamentals": "bg-green-500/20 text-green-300 border-green-500/30",
   "Throwing Mechanics": "bg-orange-500/20 text-orange-300 border-orange-500/30",
   "Base Running": "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
   "Bunting": "bg-lime-500/20 text-lime-300 border-lime-500/30",
   "Game IQ / Situational Awareness": "bg-rose-500/20 text-rose-300 border-rose-500/30",
   "Confidence / Mindset": "bg-pink-500/20 text-pink-300 border-pink-500/30",
-  "Arm Care / Body Mechanics": "bg-teal-500/20 text-teal-300 border-teal-500/30",
+  "Arm Care / Body Mechanics": "bg-amber-500/20 text-amber-300 border-amber-500/30",
 };
 
 // ============================================================
@@ -250,7 +250,7 @@ function TemplatePicker({
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(!isOpen)}
-        className="h-7 px-2 text-xs text-[#DC143C] hover:text-[#DC143C]/80 hover:bg-[#DC143C]/10 gap-1"
+        className="h-7 px-2 text-xs text-[#C9A84C] hover:text-[#C9A84C]/80 hover:bg-[#C9A84C]/10 gap-1"
       >
         <Sparkles className="h-3 w-3" />
         <InlineEdit contentKey={`sessionNote.quickFill.${label}.btnLabel`} defaultValue="Quick Fill" />
@@ -269,7 +269,7 @@ function TemplatePicker({
               onClick={() => setFilter("relevant")}
               className={`px-2 py-0.5 rounded text-xs font-medium transition-colors ${
                 filter === "relevant"
-                  ? "bg-[#DC143C]/20 text-[#DC143C]"
+                  ? "bg-[#C9A84C]/20 text-[#C9A84C]"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -280,7 +280,7 @@ function TemplatePicker({
               onClick={() => setFilter("all")}
               className={`px-2 py-0.5 rounded text-xs font-medium transition-colors ${
                 filter === "all"
-                  ? "bg-[#DC143C]/20 text-[#DC143C]"
+                  ? "bg-[#C9A84C]/20 text-[#C9A84C]"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -296,7 +296,7 @@ function TemplatePicker({
                 <button
                   type="button"
                   onClick={() => setFilter("all")}
-                  className="text-[#DC143C] hover:underline mt-1 text-xs"
+                  className="text-[#C9A84C] hover:underline mt-1 text-xs"
                 >
                   Show all templates
                 </button>
@@ -310,7 +310,7 @@ function TemplatePicker({
                   className="w-full text-left px-3 py-2.5 hover:bg-white/[0.06] transition-colors border-b border-white/[0.04] last:border-0 group"
                 >
                   <div className="flex items-start gap-2">
-                    <Zap className="h-3.5 w-3.5 text-[#DC143C]/60 mt-0.5 shrink-0 group-hover:text-[#DC143C] transition-colors" />
+                    <Zap className="h-3.5 w-3.5 text-[#C9A84C]/60 mt-0.5 shrink-0 group-hover:text-[#C9A84C] transition-colors" />
                     <div className="min-w-0">
                       <span className="text-sm font-medium text-foreground block">
                         <InlineEdit contentKey={`sessionNote.template.${label}.${idx}`} defaultValue={template.label} />
@@ -339,7 +339,7 @@ function TemplatePicker({
                   value={newTemplateLabel}
                   onChange={(e) => setNewTemplateLabel(e.target.value)}
                   placeholder="Template title..."
-                  className="w-full text-sm bg-white/[0.06] border border-white/[0.15] rounded px-2 py-1.5 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-[#DC143C]/40"
+                  className="w-full text-sm bg-white/[0.06] border border-white/[0.15] rounded px-2 py-1.5 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-[#C9A84C]/40"
                   autoFocus
                   onKeyDown={(e) => {
                     if (e.key === "Escape") { setIsAddingTemplate(false); setNewTemplateLabel(""); setNewTemplateText(""); }
@@ -350,7 +350,7 @@ function TemplatePicker({
                   onChange={(e) => setNewTemplateText(e.target.value)}
                   placeholder="Template text to insert..."
                   rows={2}
-                  className="w-full text-sm bg-white/[0.06] border border-white/[0.15] rounded px-2 py-1.5 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-[#DC143C]/40 resize-none"
+                  className="w-full text-sm bg-white/[0.06] border border-white/[0.15] rounded px-2 py-1.5 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-[#C9A84C]/40 resize-none"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); addCustomTemplate(); }
                     if (e.key === "Escape") { setIsAddingTemplate(false); setNewTemplateLabel(""); setNewTemplateText(""); }
@@ -361,7 +361,7 @@ function TemplatePicker({
                     type="button"
                     onClick={addCustomTemplate}
                     disabled={!newTemplateLabel.trim() || !newTemplateText.trim()}
-                    className="flex-1 text-xs font-medium py-1.5 rounded bg-[#DC143C]/20 text-[#DC143C] hover:bg-[#DC143C]/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    className="flex-1 text-xs font-medium py-1.5 rounded bg-[#C9A84C]/20 text-[#C9A84C] hover:bg-[#C9A84C]/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   >
                     Add Template
                   </button>
@@ -670,14 +670,14 @@ export function SessionNotesForm({
                       }
                     }}
                     placeholder={displayLabel}
-                    className="h-6 w-40 text-sm bg-[#DC143C]/10 border-[#DC143C]/30 text-[#DC143C] px-2 py-0"
+                    className="h-6 w-40 text-sm bg-[#C9A84C]/10 border-[#C9A84C]/30 text-[#C9A84C] px-2 py-0"
                   />
                 </div>
               ) : (
                 <button
                   type="button"
                   onClick={handleLabelEdit}
-                  className="flex items-center gap-1 text-sm text-[#DC143C] font-medium hover:text-[#DC143C]/80 transition-colors group"
+                  className="flex items-center gap-1 text-sm text-[#C9A84C] font-medium hover:text-[#C9A84C]/80 transition-colors group"
                 >
                   {displayLabel}
                   <Pencil className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -719,7 +719,7 @@ export function SessionNotesForm({
       <div>
         <label className="text-xs font-semibold text-muted-foreground mb-2 block uppercase tracking-wider">
           <InlineEdit contentKey="sessionNote.label.skillsWorkedOn" defaultValue="Skills Worked On" />
-          <span className="text-[#DC143C] ml-1">*</span>
+          <span className="text-[#C9A84C] ml-1">*</span>
         </label>
         <div className="flex flex-wrap gap-2">
           {allSkillCategories.map((skill) => {
@@ -795,7 +795,7 @@ export function SessionNotesForm({
         <div className="flex items-center justify-between mb-1.5">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             <InlineEdit contentKey="sessionNote.label.whatImproved" defaultValue="What Improved This Session" />
-            <span className="text-[#DC143C] ml-1">*</span>
+            <span className="text-[#C9A84C] ml-1">*</span>
           </label>
           <TemplatePicker
             templates={IMPROVED_TEMPLATES}
@@ -819,7 +819,7 @@ export function SessionNotesForm({
         <div className="flex items-center justify-between mb-1.5">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             <InlineEdit contentKey="sessionNote.label.whatNeedsWork" defaultValue="What Still Needs Work" />
-            <span className="text-[#DC143C] ml-1">*</span>
+            <span className="text-[#C9A84C] ml-1">*</span>
           </label>
           <TemplatePicker
             templates={NEEDS_WORK_TEMPLATES}
@@ -851,7 +851,7 @@ export function SessionNotesForm({
               <Badge
                 key={d.drillId}
                 variant="secondary"
-                className="bg-[#DC143C]/15 text-[#DC143C] border-[#DC143C]/30 pr-1.5 gap-1"
+                className="bg-[#C9A84C]/15 text-[#C9A84C] border-[#C9A84C]/30 pr-1.5 gap-1"
               >
                 <Dumbbell className="h-3 w-3" />
                 {d.drillName}
@@ -1005,7 +1005,7 @@ export function SessionNotesForm({
         <Button
           onClick={handleSubmit}
           disabled={isSaving || selectedSkills.length === 0 || !whatImproved.trim() || !whatNeedsWork.trim()}
-          className="flex-1 h-12 text-base bg-[#DC143C] hover:bg-[#DC143C]/90 font-semibold"
+          className="flex-1 h-12 text-base bg-[#C9A84C] hover:bg-[#C9A84C]/90 font-semibold"
         >
           {isSaving ? (
             <>

@@ -352,16 +352,16 @@ export function ImportBlastCSV({ open, onOpenChange, playerId, playerName, isLin
                 onClick={() => setCreateNotes(!createNotes)}
                 className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all duration-200 text-left ${
                   createNotes
-                    ? "bg-[#DC143C]/10 border-[#DC143C]/30 text-white"
+                    ? "bg-[#C9A84C]/10 border-[#C9A84C]/30 text-white"
                     : "bg-white/[0.02] border-white/[0.08] text-white/50"
                 }`}
               >
-                <Link2 className={`h-4 w-4 shrink-0 ${createNotes ? "text-[#DC143C]" : "text-white/30"}`} />
+                <Link2 className={`h-4 w-4 shrink-0 ${createNotes ? "text-[#C9A84C]" : "text-white/30"}`} />
                 <span className="text-sm">
                   {createNotes ? "Session Notes will be auto-created for each imported session" : "No Session Notes will be created"}
                 </span>
                 <div className={`ml-auto h-5 w-9 rounded-full transition-colors shrink-0 relative ${
-                  createNotes ? "bg-[#DC143C]" : "bg-white/20"
+                  createNotes ? "bg-[#C9A84C]" : "bg-white/20"
                 }`}>
                   <div className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${
                     createNotes ? "translate-x-4" : "translate-x-0.5"
@@ -436,7 +436,7 @@ export function ImportBlastCSV({ open, onOpenChange, playerId, playerName, isLin
                 <p className="text-2xl font-bold text-green-400">{importResult.imported}</p>
                 <p className="text-xs text-white/50">Sessions Imported</p>
               </div>
-              <div className="bg-[#DC143C]/10 border border-[#DC143C]/20 rounded-lg p-3 text-center">
+              <div className="bg-[#C9A84C]/10 border border-[#C9A84C]/20 rounded-lg p-3 text-center">
                 <p className="text-2xl font-bold text-[#E8425A]">{importResult.notesCreated}</p>
                 <p className="text-xs text-white/50">Notes Created</p>
               </div>

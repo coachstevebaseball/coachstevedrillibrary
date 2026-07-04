@@ -26,7 +26,7 @@ function TagChip({ label, selected, onClick }: { label: string; selected: boolea
     <button type="button" onClick={onClick}
       className={`text-xs px-2 py-1 rounded-md border transition-colors ${
         selected
-          ? "bg-[#e4002b]/20 border-[#e4002b]/40 text-[#e4002b]"
+          ? "bg-[#C9A84C]/20 border-[#C9A84C]/40 text-[#C9A84C]"
           : "border-white/10 text-white/40 hover:border-white/30 hover:text-white/60"
       }`}>
       {selected && <CheckCircle2 className="inline h-2.5 w-2.5 mr-1" />}
@@ -84,14 +84,14 @@ export function AddNewDrill() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="gap-1.5 bg-[#e4002b] hover:bg-[#c0001f] text-white">
+        <Button size="sm" className="gap-1.5 bg-[#C9A84C] hover:bg-[#A8893A] text-white">
           <Plus className="h-4 w-4" /> Add New Drill
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-[#0f1419] border-white/10 text-white">
         <DialogHeader>
           <DialogTitle className="text-white flex items-center gap-2">
-            <Plus className="h-5 w-5 text-[#e4002b]" /> Create New Drill
+            <Plus className="h-5 w-5 text-[#C9A84C]" /> Create New Drill
           </DialogTitle>
         </DialogHeader>
 
@@ -215,7 +215,7 @@ export function AddNewDrill() {
         <div className="flex gap-3 pt-2 border-t border-white/[0.08]">
           <Button variant="ghost" onClick={() => setOpen(false)} className="text-white/50 hover:text-white">Cancel</Button>
           <Button onClick={handleSave} disabled={mutation.isPending}
-            className="flex-1 bg-[#e4002b] hover:bg-[#c0001f] text-white">
+            className="flex-1 bg-[#C9A84C] hover:bg-[#A8893A] text-white">
             {mutation.isPending ? "Creating..." : "Create Drill"}
           </Button>
         </div>

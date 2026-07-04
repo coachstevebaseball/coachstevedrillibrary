@@ -11,10 +11,10 @@ const typeConfig: Record<string, { icon: string; color: string }> = {
   recap_posted: { icon: "📊", color: "bg-purple-500/20 text-purple-400" },
   swing_analysis_ready: { icon: "🎬", color: "bg-green-500/20 text-green-400" },
   new_feature_available: { icon: "✨", color: "bg-amber-500/20 text-amber-400" },
-  feedback_received: { icon: "💬", color: "bg-cyan-500/20 text-cyan-400" },
+  feedback_received: { icon: "💬", color: "bg-amber-500/20 text-amber-400" },
   submission_received: { icon: "📥", color: "bg-indigo-500/20 text-indigo-400" },
   badge_earned: { icon: "🏆", color: "bg-orange-500/20 text-orange-400" },
-  practice_plan_shared: { icon: "📋", color: "bg-teal-500/20 text-teal-400" },
+  practice_plan_shared: { icon: "📋", color: "bg-amber-500/20 text-amber-400" },
   welcome: { icon: "👋", color: "bg-pink-500/20 text-pink-400" },
   system: { icon: "🔔", color: "bg-gray-500/20 text-gray-400" },
 };

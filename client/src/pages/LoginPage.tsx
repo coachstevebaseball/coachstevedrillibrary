@@ -18,7 +18,7 @@ export default function LoginPage() {
         <div className="max-w-md w-full text-center space-y-8">
           {/* Logo */}
           <div className="flex justify-center">
-            <div className="h-20 w-20 bg-gradient-to-br from-primary to-[#e4002b] rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20">
+            <div className="h-20 w-20 bg-gradient-to-br from-primary to-[#C9A84C] rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20">
               <span className="text-3xl font-heading font-bold text-white">CS</span>
             </div>
           </div>
@@ -36,7 +36,7 @@ export default function LoginPage() {
           {/* Access Info */}
           <div className="space-y-4 text-left bg-card/50 border border-border/50 rounded-xl p-6">
             <div className="flex items-start gap-3">
-              <Shield className="h-5 w-5 text-[#e4002b] mt-0.5 flex-shrink-0" />
+              <Shield className="h-5 w-5 text-[#C9A84C] mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-sm font-semibold text-foreground">Invite-Only Access</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -45,7 +45,7 @@ export default function LoginPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <Lock className="h-5 w-5 text-[#e4002b] mt-0.5 flex-shrink-0" />
+              <Lock className="h-5 w-5 text-[#C9A84C] mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-sm font-semibold text-foreground">Already Have an Account?</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -54,7 +54,7 @@ export default function LoginPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <Mail className="h-5 w-5 text-[#e4002b] mt-0.5 flex-shrink-0" />
+              <Mail className="h-5 w-5 text-[#C9A84C] mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-sm font-semibold text-foreground">Need Access?</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -69,7 +69,7 @@ export default function LoginPage() {
             onClick={() => {
               window.location.href = getLoginUrl(redirectTo);
             }}
-            className="w-full py-6 text-lg font-semibold bg-[#e4002b] hover:bg-[#c50025] text-white rounded-xl shadow-lg shadow-[#e4002b]/20 transition-all duration-300 hover:shadow-xl hover:shadow-[#e4002b]/30"
+            className="w-full py-6 text-lg font-semibold bg-[#C9A84C] hover:bg-[#c50025] text-white rounded-xl shadow-lg shadow-[#C9A84C]/20 transition-all duration-300 hover:shadow-xl hover:shadow-[#C9A84C]/30"
             size="lg"
           >
             Sign In

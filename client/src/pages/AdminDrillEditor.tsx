@@ -353,7 +353,7 @@ function EditDrillModal({
 
           {/* Problems (canonical) */}
           <div className="col-span-2">
-            <label className="text-xs text-[#e4002b] uppercase tracking-wider mb-1 block">
+            <label className="text-xs text-[#C9A84C] uppercase tracking-wider mb-1 block">
               Problems[] <span className="text-gray-600 normal-case">(display labels, comma-separated)</span>
             </label>
             <Input
@@ -374,8 +374,8 @@ function EditDrillModal({
                   }}
                   className={`text-xs px-2 py-0.5 rounded border transition-colors ${
                     parseJsonArr(form.problems).includes(p)
-                      ? "bg-[#e4002b] border-[#e4002b] text-white"
-                      : "bg-transparent border-[#1e2a3a] text-gray-400 hover:border-[#e4002b]"
+                      ? "bg-[#C9A84C] border-[#C9A84C] text-white"
+                      : "bg-transparent border-[#1e2a3a] text-gray-400 hover:border-[#C9A84C]"
                   }`}
                 >
                   {p}
@@ -386,7 +386,7 @@ function EditDrillModal({
 
           {/* Outcomes (canonical) */}
           <div className="col-span-2">
-            <label className="text-xs text-[#e4002b] uppercase tracking-wider mb-1 block">
+            <label className="text-xs text-[#C9A84C] uppercase tracking-wider mb-1 block">
               Outcomes[] <span className="text-gray-600 normal-case">(display labels, comma-separated)</span>
             </label>
             <Input
@@ -407,8 +407,8 @@ function EditDrillModal({
                   }}
                   className={`text-xs px-2 py-0.5 rounded border transition-colors ${
                     parseJsonArr(form.outcomes).includes(o)
-                      ? "bg-[#e4002b] border-[#e4002b] text-white"
-                      : "bg-transparent border-[#1e2a3a] text-gray-400 hover:border-[#e4002b]"
+                      ? "bg-[#C9A84C] border-[#C9A84C] text-white"
+                      : "bg-transparent border-[#1e2a3a] text-gray-400 hover:border-[#C9A84C]"
                   }`}
                 >
                   {o}
@@ -544,7 +544,7 @@ function EditDrillModal({
           <Button
             onClick={handleSave}
             disabled={upsert.isPending}
-            className="bg-[#e4002b] hover:bg-[#c0001f] text-white"
+            className="bg-[#C9A84C] hover:bg-[#A8893A] text-white"
           >
             {upsert.isPending ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
             Save
@@ -708,7 +708,7 @@ function BulkImportModal({ onClose, onDone }: { onClose: () => void; onDone: () 
               onClick={() => { setFormat(f); setParsed(false); }}
               className={`px-3 py-1 rounded text-sm font-mono border transition-colors ${
                 format === f
-                  ? "bg-[#e4002b] border-[#e4002b] text-white"
+                  ? "bg-[#C9A84C] border-[#C9A84C] text-white"
                   : "bg-transparent border-[#1e2a3a] text-gray-400"
               }`}
             >
@@ -724,7 +724,7 @@ function BulkImportModal({ onClose, onDone }: { onClose: () => void; onDone: () 
             </button>
             <button
               onClick={() => downloadTemplate(format)}
-              className="text-xs text-[#e4002b] hover:text-[#ff3355] underline"
+              className="text-xs text-[#C9A84C] hover:text-[#ff3355] underline"
             >
               ↓ Download template
             </button>
@@ -734,7 +734,7 @@ function BulkImportModal({ onClose, onDone }: { onClose: () => void; onDone: () 
         {/* Field reference */}
         <div className="bg-[#0A1628] border border-[#1e2a3a] rounded p-3 text-xs text-gray-400 space-y-1.5">
           <p className="font-semibold text-gray-300">Accepted fields:</p>
-          <p><span className="text-[#e4002b] font-mono">drillId</span> (required) · <span className="text-yellow-400 font-mono">name</span> (required for new) · difficulty · duration · categories · url · ageLevel · drillType · problems · outcomes · tags · <span className="text-emerald-400">goalOfDrill · shortDescription · coachStevesCue · watchFor · whatToFeel · problemItSolves · howToDoIt · commonMistakes · visible</span></p>
+          <p><span className="text-[#C9A84C] font-mono">drillId</span> (required) · <span className="text-yellow-400 font-mono">name</span> (required for new) · difficulty · duration · categories · url · ageLevel · drillType · problems · outcomes · tags · <span className="text-emerald-400">goalOfDrill · shortDescription · coachStevesCue · watchFor · whatToFeel · problemItSolves · howToDoIt · commonMistakes · visible</span></p>
           <p className="text-gray-500"><strong className="text-gray-400">Arrays:</strong> JSON <code>["A","B"]</code>, pipe <code>A|B</code>, newline (in quoted CSV cell), or comma <code>A, B</code> in CSV.</p>
           <p className="text-gray-500"><strong className="text-gray-400">Updates:</strong> existing fields are preserved if omitted from the payload.</p>
         </div>
@@ -744,7 +744,7 @@ function BulkImportModal({ onClose, onDone }: { onClose: () => void; onDone: () 
           onChange={(e) => { setRaw(e.target.value); setParsed(false); setImportResult(null); }}
           rows={8}
           placeholder={format === "csv" ? "Paste CSV here…" : "Paste JSON array here…"}
-          className="w-full bg-[#0A1628] border border-[#1e2a3a] rounded p-3 text-sm font-mono text-gray-200 resize-y focus:outline-none focus:border-[#e4002b]"
+          className="w-full bg-[#0A1628] border border-[#1e2a3a] rounded p-3 text-sm font-mono text-gray-200 resize-y focus:outline-none focus:border-[#C9A84C]"
         />
 
         {/* Preview */}
@@ -825,7 +825,7 @@ function BulkImportModal({ onClose, onDone }: { onClose: () => void; onDone: () 
               <Button
                 onClick={handleImport}
                 disabled={preview.length === 0 || bulkUpsert.isPending}
-                className="bg-[#e4002b] hover:bg-[#c0001f] text-white"
+                className="bg-[#C9A84C] hover:bg-[#A8893A] text-white"
               >
                 {bulkUpsert.isPending
                   ? <><RefreshCw className="h-4 w-4 animate-spin mr-2" />Importing…</>
@@ -928,11 +928,11 @@ function NewDrillModal({ onClose, onSaved }: { onClose: () => void; onSaved: () 
             <Input value={form.url} onChange={(e) => set("url", e.target.value)} placeholder="https://..." className="bg-[#0A1628] border-[#1e2a3a] text-white" />
           </div>
           <div>
-            <label className="text-xs text-[#e4002b] uppercase tracking-wider mb-1 block">Problems (comma-separated)</label>
+            <label className="text-xs text-[#C9A84C] uppercase tracking-wider mb-1 block">Problems (comma-separated)</label>
             <Input value={form.problems} onChange={(e) => set("problems", e.target.value)} placeholder="Timing Issues, Bat Path Issues" className="bg-[#0A1628] border-[#1e2a3a] text-white" />
           </div>
           <div>
-            <label className="text-xs text-[#e4002b] uppercase tracking-wider mb-1 block">Outcomes (comma-separated)</label>
+            <label className="text-xs text-[#C9A84C] uppercase tracking-wider mb-1 block">Outcomes (comma-separated)</label>
             <Input value={form.outcomes} onChange={(e) => set("outcomes", e.target.value)} placeholder="Improve Barrel Path" className="bg-[#0A1628] border-[#1e2a3a] text-white" />
           </div>
           <div>
@@ -942,7 +942,7 @@ function NewDrillModal({ onClose, onSaved }: { onClose: () => void; onSaved: () 
         </div>
         <DialogFooter className="mt-4 gap-2">
           <Button variant="outline" onClick={onClose} className="border-[#1e2a3a] text-gray-400">Cancel</Button>
-          <Button onClick={handleCreate} disabled={!form.name || upsert.isPending} className="bg-[#e4002b] hover:bg-[#c0001f] text-white">
+          <Button onClick={handleCreate} disabled={!form.name || upsert.isPending} className="bg-[#C9A84C] hover:bg-[#A8893A] text-white">
             {upsert.isPending ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : <Plus className="h-4 w-4 mr-2" />}
             Create
           </Button>
@@ -1020,7 +1020,7 @@ export default function AdminDrillEditor({ embedded = false }: { embedded?: bool
 
   function SortIcon({ field }: { field: typeof sortField }) {
     if (sortField !== field) return <ChevronDown className="h-3 w-3 opacity-30" />;
-    return sortDir === "asc" ? <ChevronUp className="h-3 w-3 text-[#e4002b]" /> : <ChevronDown className="h-3 w-3 text-[#e4002b]" />;
+    return sortDir === "asc" ? <ChevronUp className="h-3 w-3 text-[#C9A84C]" /> : <ChevronDown className="h-3 w-3 text-[#C9A84C]" />;
   }
 
   // Export current view as JSON
@@ -1092,7 +1092,7 @@ export default function AdminDrillEditor({ embedded = false }: { embedded?: bool
             <Button
               size="sm"
               onClick={() => setShowNewDrill(true)}
-              className="bg-[#e4002b] hover:bg-[#c0001f] text-white"
+              className="bg-[#C9A84C] hover:bg-[#A8893A] text-white"
             >
               <Plus className="h-4 w-4 mr-1.5" /> New Drill
             </Button>

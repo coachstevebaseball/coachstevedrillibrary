@@ -70,9 +70,9 @@ interface AnalysisRecord {
 
 const STATUS_CONFIG: Record<AnalysisStatus, { label: string; color: string; icon: typeof Clock }> = {
   pending: { label: "Pending", color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30", icon: Clock },
-  analyzing: { label: "Analyzing", color: "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30", icon: Loader2 },
+  analyzing: { label: "Analyzing", color: "bg-[#C9A84C]/20 text-[#E8425A] border-[#C9A84C]/30", icon: Loader2 },
   analyzed: { label: "AI Ready", color: "bg-purple-500/20 text-purple-400 border-purple-500/30", icon: Sparkles },
-  reviewed: { label: "Reviewed", color: "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30", icon: Edit3 },
+  reviewed: { label: "Reviewed", color: "bg-[#C9A84C]/20 text-[#E8425A] border-[#C9A84C]/30", icon: Edit3 },
   approved: { label: "Approved", color: "bg-green-500/20 text-green-400 border-green-500/30", icon: CheckCircle },
   sent: { label: "Sent", color: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30", icon: Send },
   failed: { label: "Failed", color: "bg-red-500/20 text-red-400 border-red-500/30", icon: AlertCircle },
@@ -289,7 +289,7 @@ export function VideoAnalysisTab() {
                 setRecipientEmail("");
                 setEmailDialogOpen(true);
               }}
-              className="bg-[#DC143C] hover:bg-[#B91030]"
+              className="bg-[#C9A84C] hover:bg-[#B91030]"
             >
               <Send className="h-4 w-4 mr-2" />
               Send to Athlete
@@ -403,7 +403,7 @@ export function VideoAnalysisTab() {
                   <h4 className="font-semibold text-[#E8425A] mb-2">Recommended Drills</h4>
                   <div className="flex flex-wrap gap-2">
                     {selectedAnalysis.aiFeedback.drillRecommendations.map((d, i) => (
-                      <Badge key={i} variant="secondary" className="bg-[#DC143C]/10 text-[#E8425A] border-[#DC143C]/20">
+                      <Badge key={i} variant="secondary" className="bg-[#C9A84C]/10 text-[#E8425A] border-[#C9A84C]/20">
                         {d}
                       </Badge>
                     ))}
@@ -514,7 +514,7 @@ export function VideoAnalysisTab() {
               <Button
                 onClick={handleSend}
                 disabled={sendMutation.isPending}
-                className="bg-[#DC143C] hover:bg-[#B91030]"
+                className="bg-[#C9A84C] hover:bg-[#B91030]"
               >
                 {sendMutation.isPending ? (
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />

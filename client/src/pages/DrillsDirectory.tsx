@@ -25,7 +25,7 @@ const getDrillTypeColor = (drillType: string) => {
   if (drillType.includes("Tee")) return "bg-blue-600";
   if (drillType.includes("Front Toss") || drillType.includes("Soft Toss")) return "bg-purple-600";
   if (drillType.includes("Flaw")) return "bg-red-700";
-  if (drillType.includes("Balance") || drillType.includes("Load")) return "bg-teal-600";
+  if (drillType.includes("Balance") || drillType.includes("Load")) return "bg-amber-600";
   if (drillType.includes("Recognition") || drillType.includes("Decision") || drillType.includes("Tracking")) return "bg-indigo-600";
   if (drillType.includes("Machine") || drillType.includes("Velocity") || drillType.includes("Live BP")) return "bg-orange-600";
   return "bg-slate-600";

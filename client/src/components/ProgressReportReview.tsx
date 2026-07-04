@@ -217,8 +217,8 @@ export function ProgressReportReview({
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
         <div className="relative">
-          <div className="h-16 w-16 rounded-full bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center animate-pulse">
-            <Sparkles className="h-8 w-8 text-[#DC143C] animate-spin" />
+          <div className="h-16 w-16 rounded-full bg-gradient-to-br from-[#C9A84C]/20 to-[#C9A84C]/20 flex items-center justify-center animate-pulse">
+            <Sparkles className="h-8 w-8 text-[#C9A84C] animate-spin" />
           </div>
         </div>
         <div className="text-center">
@@ -265,7 +265,7 @@ export function ProgressReportReview({
                   status === "sent"
                     ? "bg-green-500/10 text-green-400 border-green-500/30"
                     : status === "reviewed"
-                      ? "bg-[#DC143C]/10 text-[#E8425A] border-[#DC143C]/30"
+                      ? "bg-[#C9A84C]/10 text-[#E8425A] border-[#C9A84C]/30"
                       : "bg-yellow-500/10 text-yellow-400 border-yellow-500/30"
                 }
               >
@@ -297,7 +297,7 @@ export function ProgressReportReview({
               size="sm"
               onClick={handleSave}
               disabled={updateMutation.isPending}
-              className="h-8 bg-[#DC143C] hover:bg-[#DC143C]/90"
+              className="h-8 bg-[#C9A84C] hover:bg-[#C9A84C]/90"
             >
               {updateMutation.isPending ? (
                 <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
@@ -503,7 +503,7 @@ export function ProgressReportReview({
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Mail className="h-5 w-5 text-[#DC143C]" />
+              <Mail className="h-5 w-5 text-[#C9A84C]" />
               Send Report to Parent
             </DialogTitle>
             <DialogDescription>

@@ -146,8 +146,8 @@ export function AssignDrillsPanel({ initialAthleteId = null }: Props) {
         <div className="glass-card rounded-xl overflow-hidden">
           <div className="p-4 md:p-5 border-b border-white/[0.06]">
             <h3 className="font-heading font-bold text-lg flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center">
-                <Plus className="h-4 w-4 text-[#DC143C]" />
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#C9A84C]/20 to-[#C9A84C]/20 flex items-center justify-center">
+                <Plus className="h-4 w-4 text-[#C9A84C]" />
               </div>
               Assign Drill
             </h3>
@@ -208,7 +208,7 @@ export function AssignDrillsPanel({ initialAthleteId = null }: Props) {
                         onClick={() => setSelectedDrill(drill)}
                         className={`w-full text-left px-3 py-2.5 hover:bg-white/[0.06] transition-colors border-b border-white/[0.04] last:border-0 ${
                           selectedDrill?.id === drill.id
-                            ? "bg-[#DC143C]/10 border-l-2 border-l-[#DC143C]"
+                            ? "bg-[#C9A84C]/10 border-l-2 border-l-[#C9A84C]"
                             : ""
                         }`}
                       >
@@ -224,10 +224,10 @@ export function AssignDrillsPanel({ initialAthleteId = null }: Props) {
             )}
 
             {selectedDrill && (
-              <div className="bg-gradient-to-br from-[#DC143C]/10 to-purple-500/10 border border-[#DC143C]/20 p-4 rounded-xl">
+              <div className="bg-gradient-to-br from-[#C9A84C]/10 to-purple-500/10 border border-[#C9A84C]/20 p-4 rounded-xl">
                 <div className="font-semibold text-sm mb-2">{selectedDrill.name}</div>
                 <div className="flex gap-1.5 flex-wrap mb-3">
-                  <Badge variant="outline" className="text-[10px] border-[#DC143C]/30 text-[#DC143C]">
+                  <Badge variant="outline" className="text-[10px] border-[#C9A84C]/30 text-[#C9A84C]">
                     {selectedDrill.difficulty}
                   </Badge>
                   {selectedDrill.categories.map((cat) => (
@@ -239,7 +239,7 @@ export function AssignDrillsPanel({ initialAthleteId = null }: Props) {
                 <Button
                   onClick={handleAssignDrill}
                   disabled={assignDrillMutation.isPending}
-                  className="w-full bg-[#DC143C] hover:bg-[#DC143C]/90 text-white text-sm"
+                  className="w-full bg-[#C9A84C] hover:bg-[#C9A84C]/90 text-white text-sm"
                   size="sm"
                 >
                   {assignDrillMutation.isPending ? "Assigning..." : "Assign Drill"}
@@ -290,7 +290,7 @@ export function AssignDrillsPanel({ initialAthleteId = null }: Props) {
                   >
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 min-w-0">
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-sm sm:text-base mb-2 truncate group-hover:text-[#DC143C] transition-colors">
+                        <h4 className="font-semibold text-sm sm:text-base mb-2 truncate group-hover:text-[#C9A84C] transition-colors">
                           {assignment.drillName}
                         </h4>
                         <div className="flex items-center gap-2 flex-wrap">

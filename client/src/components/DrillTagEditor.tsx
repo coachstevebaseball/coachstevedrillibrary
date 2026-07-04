@@ -24,7 +24,7 @@ function TagChip({ label, selected, onClick }: { label: string; selected: boolea
       onClick={onClick}
       className={`text-xs px-2 py-1 rounded-md border transition-colors ${
         selected
-          ? "bg-[#e4002b]/20 border-[#e4002b]/40 text-[#e4002b]"
+          ? "bg-[#C9A84C]/20 border-[#C9A84C]/40 text-[#C9A84C]"
           : "border-white/10 text-white/40 hover:border-white/30 hover:text-white/60"
       }`}
     >
@@ -112,7 +112,7 @@ function DrillTagRow({ drillId, drillName }: { drillId: string; drillName: strin
         <div className="flex items-center gap-3 min-w-0">
           <span className="text-sm font-medium text-white/80 truncate">{drillName}</span>
           {tagCount > 0 && (
-            <Badge variant="outline" className="border-[#e4002b]/30 text-[#e4002b] text-[10px] flex-shrink-0">
+            <Badge variant="outline" className="border-[#C9A84C]/30 text-[#C9A84C] text-[10px] flex-shrink-0">
               {tagCount} tag{tagCount !== 1 ? "s" : ""}
             </Badge>
           )}
@@ -197,7 +197,7 @@ function DrillTagRow({ drillId, drillName }: { drillId: string; drillName: strin
               size="sm"
               onClick={handleSave}
               disabled={saveMutation.isPending}
-              className="bg-[#e4002b] hover:bg-[#c0001f] text-white gap-1.5"
+              className="bg-[#C9A84C] hover:bg-[#A8893A] text-white gap-1.5"
             >
               <Save className="h-3.5 w-3.5" />
               {saveMutation.isPending ? "Saving..." : "Save Tags"}
@@ -240,7 +240,7 @@ export function DrillTagEditor() {
               onClick={() => setFilterTagged(f)}
               className={`text-xs px-3 py-1.5 rounded-lg transition-colors capitalize ${
                 filterTagged === f
-                  ? "bg-[#e4002b] text-white"
+                  ? "bg-[#C9A84C] text-white"
                   : "bg-white/[0.06] text-white/50 hover:text-white"
               }`}
             >

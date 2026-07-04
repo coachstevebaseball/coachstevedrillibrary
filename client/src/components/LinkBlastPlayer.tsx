@@ -100,7 +100,7 @@ export function LinkBlastPlayer({
       <DialogContent className="sm:max-w-md bg-[#1a1a1a] border-white/10 text-white">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-white flex items-center gap-2">
-            <Link2 className="h-5 w-5 text-[#DC143C]" />
+            <Link2 className="h-5 w-5 text-[#C9A84C]" />
             Link Player Account
           </DialogTitle>
           <DialogDescription className="text-white/50">
@@ -167,7 +167,7 @@ export function LinkBlastPlayer({
           <Button
             onClick={handleLink}
             disabled={saving || !selectedUserId || selectedUserId === "none"}
-            className="bg-[#DC143C] hover:bg-[#DC143C]/90 text-white"
+            className="bg-[#C9A84C] hover:bg-[#C9A84C]/90 text-white"
           >
             {saving ? (
               <>

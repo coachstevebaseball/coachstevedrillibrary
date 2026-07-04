@@ -79,7 +79,7 @@ export function RetroactiveBlastNotes({ open, onOpenChange, playerId, playerName
 
         {!result && !processing && (
           <div className="py-4 space-y-4">
-            <div className="bg-[#DC143C]/5 border border-[#DC143C]/15 rounded-lg p-4 text-sm text-white/60">
+            <div className="bg-[#C9A84C]/5 border border-[#C9A84C]/15 rounded-lg p-4 text-sm text-white/60">
               <p>This will scan all of {playerName}'s Blast sessions and create a Session Note for each one that doesn't already have one.</p>
               <p className="mt-2 text-white/40">Each note will include the Blast metrics summary and be visible in the Session Notes timeline.</p>
             </div>
@@ -137,7 +137,7 @@ export function RetroactiveBlastNotes({ open, onOpenChange, playerId, playerName
               </Button>
               <Button
                 onClick={handleCreate}
-                className="bg-[#DC143C] hover:bg-[#B91030] text-white"
+                className="bg-[#C9A84C] hover:bg-[#B91030] text-white"
               >
                 <FileText className="h-4 w-4 mr-2" />
                 Create Notes

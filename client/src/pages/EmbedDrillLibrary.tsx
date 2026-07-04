@@ -38,10 +38,10 @@ function AccordionFilterCard({
         className="w-full flex items-center justify-between px-4 py-3.5 text-left group min-h-[44px]"
       >
         <div>
-          <span className="block text-[11px] font-bold uppercase tracking-widest text-[#e4002b]">
+          <span className="block text-[11px] font-bold uppercase tracking-widest text-[#C9A84C]">
             {label}
             {selected.length > 0 && (
-              <span className="ml-2 inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#e4002b] text-white text-[9px] font-bold">
+              <span className="ml-2 inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#C9A84C] text-white text-[9px] font-bold">
                 {selected.length}
               </span>
             )}
@@ -65,8 +65,8 @@ function AccordionFilterCard({
                   <span
                     className={`flex-shrink-0 w-5 h-5 rounded border transition-all duration-150 flex items-center justify-center ${
                       checked
-                        ? "bg-[#e4002b] border-[#e4002b]"
-                        : "border-white/20 bg-white/5 group-hover/cb:border-[#e4002b]/50"
+                        ? "bg-[#C9A84C] border-[#C9A84C]"
+                        : "border-white/20 bg-white/5 group-hover/cb:border-[#C9A84C]/50"
                     }`}
                     onClick={() => onToggle(opt.value)}
                   >
@@ -224,7 +224,7 @@ export default function EmbedDrillLibrary() {
             onClick={pill.onRemove}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium min-h-[44px] ${
               pill.variant === "crimson"
-                ? "bg-[#e4002b]/15 text-[#e4002b] border border-[#e4002b]/30 hover:bg-[#e4002b]/25"
+                ? "bg-[#C9A84C]/15 text-[#C9A84C] border border-[#C9A84C]/30 hover:bg-[#C9A84C]/25"
                 : "bg-electric/10 text-electric border border-electric/20 hover:bg-electric/20"
             } transition-all duration-300 group`}
           >

@@ -8,7 +8,7 @@ export default function TagsPage() {
       <div className="space-y-4">
         <div>
           <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Tag className="h-6 w-6 text-[#e4002b]" />
+            <Tag className="h-6 w-6 text-[#C9A84C]" />
             Drill Tag Editor
           </h2>
           <p className="text-white/50 mt-1 text-sm">

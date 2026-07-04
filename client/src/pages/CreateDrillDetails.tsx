@@ -30,7 +30,7 @@ function TagSelector({ label, options, selected, onChange }: {
           <button key={o.value} type="button" onClick={() => toggle(o.value)}
             className={`text-xs px-2 py-1 rounded-md border transition-colors ${
               selected.includes(o.value)
-                ? "bg-[#e4002b]/20 border-[#e4002b]/40 text-[#e4002b]"
+                ? "bg-[#C9A84C]/20 border-[#C9A84C]/40 text-[#C9A84C]"
                 : "border-white/10 text-white/50 hover:border-white/30 hover:text-white/70"
             }`}>
             {selected.includes(o.value) && <CheckCircle2 className="inline h-2.5 w-2.5 mr-1" />}
@@ -75,7 +75,7 @@ function StepListEditor({ label, steps, onChange, placeholder }: {
               onChange={e => update(i, e.target.value)}
               onKeyDown={e => handleKeyDown(e, i)}
               placeholder={placeholder || `Step ${i + 1}...`}
-              className="flex-1 bg-white/[0.04] border border-white/10 rounded-md text-white text-sm px-3 py-2 focus:outline-none focus:border-[#e4002b]/40 placeholder:text-white/20" />
+              className="flex-1 bg-white/[0.04] border border-white/10 rounded-md text-white text-sm px-3 py-2 focus:outline-none focus:border-[#C9A84C]/40 placeholder:text-white/20" />
             <button type="button" onClick={() => remove(i)}
               className="opacity-0 group-hover:opacity-100 p-1 rounded text-white/30 hover:text-red-400 transition-all">
               <X className="h-3.5 w-3.5" />
@@ -221,7 +221,7 @@ export default function CreateDrillDetails() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><Tag className="h-5 w-5 text-[#e4002b]" />Drill Metadata & Tags</CardTitle>
+                  <CardTitle className="flex items-center gap-2"><Tag className="h-5 w-5 text-[#C9A84C]" />Drill Metadata & Tags</CardTitle>
                   <p className="text-sm text-muted-foreground">Tag for filtering and athlete matching</p>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -240,7 +240,7 @@ export default function CreateDrillDetails() {
               </Card>
 
               <div className="flex gap-3">
-                <Button onClick={handleSave} disabled={saveMutation.isPending} className="flex-1 bg-[#e4002b] hover:bg-[#c0001f]">
+                <Button onClick={handleSave} disabled={saveMutation.isPending} className="flex-1 bg-[#C9A84C] hover:bg-[#A8893A]">
                   {saveMutation.isPending ? "Saving..." : "Save Drill Details"}
                 </Button>
                 <Link href="/coach-dashboard"><Button variant="outline">Cancel</Button></Link>

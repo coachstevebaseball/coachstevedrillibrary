@@ -139,7 +139,7 @@ export function DrillModalRedesigned({
                 {drill.difficulty}
               </Badge>
               {drill.categories[0] && (
-                <Badge className="bg-[#DC143C]/20 text-[#E8425A] border border-[#DC143C]/30 text-xs px-2.5 py-1">
+                <Badge className="bg-[#C9A84C]/20 text-[#E8425A] border border-[#C9A84C]/30 text-xs px-2.5 py-1">
                   {drill.categories[0]}
                 </Badge>
               )}
@@ -179,7 +179,7 @@ export function DrillModalRedesigned({
               <div className="space-y-2">
                 {drillDetail.description.map((step: string, idx: number) => (
                   <div key={idx} className="flex gap-3 items-start">
-                    <div className="w-6 h-6 bg-[#DC143C]/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 bg-[#C9A84C]/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                       <span className="text-xs font-bold text-[#E8425A]">{idx + 1}</span>
                     </div>
                     <p className="text-sm text-foreground/80 leading-relaxed">{step}</p>
@@ -276,7 +276,7 @@ export function DrillModalRedesigned({
               <div className="space-y-2">
                 {richDrill.howToRunTheDrill.map((step: string, idx: number) => (
                   <div key={idx} className="flex gap-3 items-start">
-                    <div className="w-6 h-6 bg-[#DC143C]/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 bg-[#C9A84C]/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                       <span className="text-xs font-bold text-[#E8425A]">{idx + 1}</span>
                     </div>
                     <p className="text-sm text-foreground/80 leading-relaxed">{step}</p>
@@ -289,13 +289,13 @@ export function DrillModalRedesigned({
           {richDrill?.coachingNotes && richDrill.coachingNotes.length > 0 && (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <MessageCircle className="w-4 h-4 text-cyan-400" />
+                <MessageCircle className="w-4 h-4 text-amber-400" />
                 <h3 className="font-semibold text-foreground text-sm">Coaching Notes</h3>
               </div>
               <div className="space-y-1.5">
                 {richDrill.coachingNotes.map((note: string, idx: number) => (
-                  <div key={idx} className="flex gap-2 items-start bg-cyan-500/5 border border-cyan-500/10 rounded-lg px-3 py-2">
-                    <span className="text-cyan-400 text-xs mt-0.5">•</span>
+                  <div key={idx} className="flex gap-2 items-start bg-amber-500/5 border border-amber-500/10 rounded-lg px-3 py-2">
+                    <span className="text-amber-400 text-xs mt-0.5">•</span>
                     <p className="text-xs text-foreground/70">{note}</p>
                   </div>
                 ))}

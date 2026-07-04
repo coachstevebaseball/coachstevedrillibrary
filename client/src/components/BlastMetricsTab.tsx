@@ -23,7 +23,7 @@ import { InlineEdit } from "./InlineEdit";
 
 // Metric display config — all Blast Motion metrics
 const METRIC_CONFIGS = {
-  batSpeed: { label: "Bat Speed", unit: "mph", key: "batSpeedMph", color: "#DC143C", icon: Zap },
+  batSpeed: { label: "Bat Speed", unit: "mph", key: "batSpeedMph", color: "#C9A84C", icon: Zap },
   onPlaneEff: { label: "On-Plane Eff.", unit: "%", key: "onPlaneEfficiencyPercent", color: "#14b8a6", icon: Target },
   attackAngle: { label: "Attack Angle", unit: "deg", key: "attackAngleDeg", color: "#84cc16", icon: Crosshair },
   exitVelocity: { label: "Exit Velocity", unit: "mph", key: "exitVelocityMph", color: "#8b5cf6", icon: Gauge },
@@ -171,7 +171,7 @@ export function BlastMetricsTab() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-heading font-bold text-white flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#DC143C]/20 to-fuchsia-500/20 flex items-center justify-center border border-violet-500/20">
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#C9A84C]/20 to-fuchsia-500/20 flex items-center justify-center border border-violet-500/20">
                 <Zap className="h-5 w-5 text-violet-400" />
               </div>
               <InlineEdit contentKey="coach.blast.title" defaultValue="Blast Motion Metrics" as="span" />
@@ -226,7 +226,7 @@ export function BlastMetricsTab() {
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center border border-white/10 text-white font-bold text-sm">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#C9A84C]/20 to-[#C9A84C]/20 flex items-center justify-center border border-white/10 text-white font-bold text-sm">
                       {p.fullName.split(" ").map((n: string) => n[0]).join("").slice(0, 2)}
                     </div>
                     <div>
@@ -315,7 +315,7 @@ export function BlastMetricsTab() {
               onClick={() => setRetroNotesOpen(true)}
               size="sm"
               variant="outline"
-              className="h-8 text-xs text-[#E8425A] border-[#DC143C]/30 hover:bg-[#B91030]/10"
+              className="h-8 text-xs text-[#E8425A] border-[#C9A84C]/30 hover:bg-[#B91030]/10"
             >
               <FileText className="h-3.5 w-3.5 mr-1" />
               Sync Notes
@@ -345,8 +345,8 @@ export function BlastMetricsTab() {
       {overallAvgs && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
-            { key: "batSpeed", label: "Bat Speed", value: `${overallAvgs.batSpeed.toFixed(1)}`, unit: "mph", color: "from-[#DC143C]/20 to-[#B91030]/20", borderColor: "border-[#DC143C]/20" },
-            { key: "onPlaneEff", label: "On-Plane Eff.", value: `${overallAvgs.onPlaneEff.toFixed(1)}`, unit: "%", color: "from-teal-500/20 to-teal-600/20", borderColor: "border-teal-500/20" },
+            { key: "batSpeed", label: "Bat Speed", value: `${overallAvgs.batSpeed.toFixed(1)}`, unit: "mph", color: "from-[#C9A84C]/20 to-[#B91030]/20", borderColor: "border-[#C9A84C]/20" },
+            { key: "onPlaneEff", label: "On-Plane Eff.", value: `${overallAvgs.onPlaneEff.toFixed(1)}`, unit: "%", color: "from-amber-500/20 to-amber-600/20", borderColor: "border-amber-500/20" },
             { key: "attackAngle", label: "Attack Angle", value: `${overallAvgs.attackAngle.toFixed(1)}`, unit: "deg", color: "from-lime-500/20 to-lime-600/20", borderColor: "border-lime-500/20" },
             { key: "exitVelo", label: "Exit Velo", value: `${overallAvgs.exitVelocity.toFixed(1)}`, unit: "mph", color: "from-violet-500/20 to-violet-600/20", borderColor: "border-violet-500/20" },
           ].map((card) => (
@@ -453,7 +453,7 @@ export function BlastMetricsTab() {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               {[
-                { label: "Bat Speed", value: highestMetrics.maxBatSpeed, unit: "mph", color: "#DC143C" },
+                { label: "Bat Speed", value: highestMetrics.maxBatSpeed, unit: "mph", color: "#C9A84C" },
                 { label: "On-Plane Eff.", value: highestMetrics.maxOnPlane, unit: "%", color: "#14b8a6" },
                 { label: "Attack Angle", value: highestMetrics.maxAttackAngle, unit: "°", color: "#84cc16" },
                 { label: "Exit Velocity", value: highestMetrics.maxExitVelo, unit: "mph", color: "#8b5cf6" },
@@ -552,7 +552,7 @@ export function BlastMetricsTab() {
                       <td className="text-center py-3 px-2 text-[#E8425A] font-medium">
                         {s.batSpeedMph ? `${parseFloat(s.batSpeedMph).toFixed(1)}` : "—"}
                       </td>
-                      <td className="text-center py-3 px-2 text-teal-400 font-medium">
+                      <td className="text-center py-3 px-2 text-amber-400 font-medium">
                         {s.onPlaneEfficiencyPercent ? `${parseFloat(s.onPlaneEfficiencyPercent).toFixed(1)}%` : "—"}
                       </td>
                       <td className="text-center py-3 px-2 text-lime-400 font-medium">

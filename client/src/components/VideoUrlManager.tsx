@@ -47,10 +47,10 @@ export function VideoUrlManager({ drillId, drillName, currentVideoUrl, onSave }:
   };
 
   return (
-    <Card className="border-l-4 border-l-[#DC143C]">
+    <Card className="border-l-4 border-l-[#C9A84C]">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
-          <Video className="h-5 w-5 text-[#DC143C]" />
+          <Video className="h-5 w-5 text-[#C9A84C]" />
           Add Video to {drillName}
         </CardTitle>
       </CardHeader>

@@ -16,12 +16,12 @@ interface BadgeDisplayProps {
 }
 
 const badgeConfigs: Record<string, { icon: string; color: string; bgColor: string }> = {
-  first_drill: { icon: "🎯", color: "text-[#DC143C]", bgColor: "bg-red-50 dark:bg-red-950" },
+  first_drill: { icon: "🎯", color: "text-[#C9A84C]", bgColor: "bg-red-50 dark:bg-red-950" },
   five_day_streak: { icon: "🔥", color: "text-red-600", bgColor: "bg-red-50 dark:bg-red-950" },
   ten_day_streak: { icon: "🚀", color: "text-purple-600", bgColor: "bg-purple-50 dark:bg-purple-950" },
   master_hitting: { icon: "⚾", color: "text-orange-600", bgColor: "bg-orange-50 dark:bg-orange-950" },
   master_infield: { icon: "🧤", color: "text-green-600", bgColor: "bg-green-50 dark:bg-green-950" },
-  master_pitching: { icon: "🎪", color: "text-[#DC143C]", bgColor: "bg-red-50 dark:bg-red-950" },
+  master_pitching: { icon: "🎪", color: "text-[#C9A84C]", bgColor: "bg-red-50 dark:bg-red-950" },
 };
 
 export function BadgeDisplay({ badges, maxDisplay = 6 }: BadgeDisplayProps) {

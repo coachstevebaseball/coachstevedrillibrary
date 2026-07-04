@@ -81,8 +81,8 @@ function getStatusConfig(status: string) {
         description: "Our AI is reviewing your swing mechanics right now.",
         icon: Loader2,
         color: "text-[#E8425A]",
-        bg: "bg-[#DC143C]/20 border-[#DC143C]/30",
-        dotColor: "bg-[#DC143C]",
+        bg: "bg-[#C9A84C]/20 border-[#C9A84C]/30",
+        dotColor: "bg-[#C9A84C]",
         spin: true,
       };
     case "analyzed":
@@ -238,7 +238,7 @@ export function AthleteVideoFeedback() {
                         Standalone
                       </Badge>
                     ) : analysis.drillId ? (
-                      <Badge className="bg-[#DC143C]/10 text-[#E8425A] border border-[#DC143C]/20 text-[10px] px-1.5 py-0">
+                      <Badge className="bg-[#C9A84C]/10 text-[#E8425A] border border-[#C9A84C]/20 text-[10px] px-1.5 py-0">
                         Drill
                       </Badge>
                     ) : null}
@@ -302,7 +302,7 @@ export function AthleteVideoFeedback() {
                     Standalone Swing
                   </Badge>
                 ) : (
-                  <Badge className="bg-[#DC143C]/10 text-[#E8425A] border border-[#DC143C]/20 text-[10px]">
+                  <Badge className="bg-[#C9A84C]/10 text-[#E8425A] border border-[#C9A84C]/20 text-[10px]">
                     Drill Submission
                   </Badge>
                 )}
@@ -432,7 +432,7 @@ export function AthleteVideoFeedback() {
 
                     {/* Drill Recommendations */}
                     {(selectedAnalysis.aiFeedback as any).drillRecommendations?.length > 0 && (
-                      <div className="bg-[#DC143C]/5 rounded-xl p-4 border border-[#DC143C]/15">
+                      <div className="bg-[#C9A84C]/5 rounded-xl p-4 border border-[#C9A84C]/15">
                         <div className="flex items-center gap-2 mb-3">
                           <Dumbbell className="w-4 h-4 text-[#E8425A]" />
                           <h4 className="font-bold text-[#E8425A] text-sm">Recommended Drills</h4>
@@ -440,7 +440,7 @@ export function AthleteVideoFeedback() {
                         <ul className="space-y-2">
                           {(selectedAnalysis.aiFeedback as any).drillRecommendations.map((d: string, i: number) => (
                             <li key={i} className="flex items-start gap-2.5 text-sm text-foreground/75">
-                              <div className="w-1.5 h-1.5 rounded-full bg-[#DC143C] mt-2 flex-shrink-0" />
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#C9A84C] mt-2 flex-shrink-0" />
                               {d}
                             </li>
                           ))}

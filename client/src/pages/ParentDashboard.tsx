@@ -233,8 +233,8 @@ export default function ParentDashboard() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-[#DC143C]/10 rounded-lg">
-                      <AlertCircle className="h-5 w-5 text-[#DC143C]" />
+                    <div className="p-2 bg-[#C9A84C]/10 rounded-lg">
+                      <AlertCircle className="h-5 w-5 text-[#C9A84C]" />
                     </div>
                     <div>
                       <p className="text-2xl font-bold">{progressData.coreMetrics.completionRate}%</p>

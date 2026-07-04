@@ -22,7 +22,7 @@ function ToolBtn({
       title={title}
       className={`p-1.5 rounded text-sm transition-colors ${
         active
-          ? "bg-[#e4002b]/20 text-[#e4002b]"
+          ? "bg-[#C9A84C]/20 text-[#C9A84C]"
           : "text-white/50 hover:text-white hover:bg-white/10"
       }`}
     >
@@ -210,7 +210,7 @@ export function PlayerReportTab() {
       <title>${reportTitle} — ${athleteName}</title>
       <style>
         body { font-family: Georgia, serif; max-width: 800px; margin: 40px auto; padding: 0 20px; color: #1a1a1a; line-height: 1.7; }
-        h1 { font-size: 2em; color: #0A1628; border-bottom: 3px solid #e4002b; padding-bottom: 8px; }
+        h1 { font-size: 2em; color: #0A1628; border-bottom: 3px solid #C9A84C; padding-bottom: 8px; }
         h2 { font-size: 1.5em; color: #0A1628; margin-top: 1.5em; }
         h3 { font-size: 1.2em; color: #333; }
         .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2em; }
@@ -247,7 +247,7 @@ export function PlayerReportTab() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-              <FileText className="h-6 w-6 text-[#e4002b]" />
+              <FileText className="h-6 w-6 text-[#C9A84C]" />
               Player Reports
             </h2>
             <p className="text-white/50 mt-1 text-sm">
@@ -256,7 +256,7 @@ export function PlayerReportTab() {
           </div>
           <Button
             onClick={startNewReport}
-            className="bg-[#e4002b] hover:bg-[#c0001f] text-white gap-1.5"
+            className="bg-[#C9A84C] hover:bg-[#A8893A] text-white gap-1.5"
           >
             <Plus className="h-4 w-4" />
             New Report
@@ -386,7 +386,7 @@ export function PlayerReportTab() {
         </button>
         <div>
           <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <FileText className="h-6 w-6 text-[#e4002b]" />
+            <FileText className="h-6 w-6 text-[#C9A84C]" />
             {editingReportId ? "Edit Report" : "New Report"}
           </h2>
           <p className="text-white/50 mt-0.5 text-xs">
@@ -417,7 +417,7 @@ export function PlayerReportTab() {
           <input
             value={reportTitle}
             onChange={e => setReportTitle(e.target.value)}
-            className="w-full bg-white/[0.06] border border-white/10 rounded-md text-white text-sm px-3 py-2 focus:outline-none focus:border-[#e4002b]/50"
+            className="w-full bg-white/[0.06] border border-white/10 rounded-md text-white text-sm px-3 py-2 focus:outline-none focus:border-[#C9A84C]/50"
           />
         </div>
         <div className="flex gap-2">
@@ -444,7 +444,7 @@ export function PlayerReportTab() {
             size="sm"
             onClick={handlePublish}
             disabled={isPublishing}
-            className="gap-1.5 bg-[#e4002b] hover:bg-[#c0001f] text-white"
+            className="gap-1.5 bg-[#C9A84C] hover:bg-[#A8893A] text-white"
           >
             <Globe className="h-4 w-4" />
             {isPublishing ? "Publishing…" : "Save & Publish"}
@@ -512,7 +512,7 @@ export function PlayerReportTab() {
         {/* Athlete header in editor */}
         {selectedAthlete && (
           <div className="mx-4 mt-4 flex items-center gap-3 p-3 bg-white/[0.04] rounded-lg border border-white/[0.06]">
-            <div className="h-9 w-9 rounded-full bg-[#e4002b]/20 flex items-center justify-center text-[#e4002b] font-bold text-sm flex-shrink-0">
+            <div className="h-9 w-9 rounded-full bg-[#C9A84C]/20 flex items-center justify-center text-[#C9A84C] font-bold text-sm flex-shrink-0">
               {(selectedAthlete.name && !selectedAthlete.name.includes("@")
                 ? selectedAthlete.name
                 : selectedAthlete.email || "A"
@@ -544,7 +544,7 @@ export function PlayerReportTab() {
             spellCheck
             className={`
               min-h-[500px] outline-none text-white/90 text-sm leading-relaxed
-              [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:text-white [&_h1]:mb-3 [&_h1]:mt-4 [&_h1]:pb-2 [&_h1]:border-b [&_h1]:border-[#e4002b]/30
+              [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:text-white [&_h1]:mb-3 [&_h1]:mt-4 [&_h1]:pb-2 [&_h1]:border-b [&_h1]:border-[#C9A84C]/30
               [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-white [&_h2]:mb-2 [&_h2]:mt-4
               [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-white/90 [&_h3]:mb-2 [&_h3]:mt-3
               [&_p]:mb-2 [&_p]:text-white/80
@@ -553,13 +553,13 @@ export function PlayerReportTab() {
               [&_li]:mb-1
               [&_strong]:text-white [&_b]:text-white
               [&_em]:text-white/70
-              [&_a]:text-[#e4002b] [&_a]:underline
+              [&_a]:text-[#C9A84C] [&_a]:underline
               [&_img]:max-w-full [&_img]:rounded-lg [&_img]:my-3
-              [&_blockquote]:border-l-4 [&_blockquote]:border-[#e4002b]/40 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-white/60 [&_blockquote]:my-3
+              [&_blockquote]:border-l-4 [&_blockquote]:border-[#C9A84C]/40 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-white/60 [&_blockquote]:my-3
               focus:ring-0
             `}
             data-placeholder="Start typing your player report here, or paste content from Notion, Google Docs, or Word..."
-            style={{ caretColor: "#e4002b" }}
+            style={{ caretColor: "#C9A84C" }}
           />
         </CardContent>
 
@@ -583,7 +583,7 @@ export function PlayerReportTab() {
               size="sm"
               onClick={handlePublish}
               disabled={isPublishing}
-              className="gap-1.5 bg-[#e4002b] hover:bg-[#c0001f] text-white"
+              className="gap-1.5 bg-[#C9A84C] hover:bg-[#A8893A] text-white"
             >
               <Globe className="h-4 w-4" />
               {isPublishing ? "Publishing…" : "Save & Publish"}

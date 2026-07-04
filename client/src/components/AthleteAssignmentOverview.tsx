@@ -155,11 +155,11 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-[#DC143C]/10 to-[#DC143C]/5 border-[#DC143C]/20">
+        <Card className="bg-gradient-to-br from-[#C9A84C]/10 to-[#C9A84C]/5 border-[#C9A84C]/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-[#DC143C]/20 rounded-lg">
-                <TrendingUp className="h-5 w-5 text-[#DC143C]" />
+              <div className="p-2 bg-[#C9A84C]/20 rounded-lg">
+                <TrendingUp className="h-5 w-5 text-[#C9A84C]" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{summary.completionRate}%</p>
@@ -264,14 +264,14 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
                           ? 'bg-amber-500/20' 
                           : athlete.completedDrills === athlete.totalDrills && athlete.totalDrills > 0
                             ? 'bg-green-500/20'
-                            : 'bg-[#DC143C]/20'
+                            : 'bg-[#C9A84C]/20'
                       }`}>
                         {!athlete.hasDrills ? (
                           <AlertTriangle className="h-5 w-5 text-amber-500" />
                         ) : athlete.completedDrills === athlete.totalDrills && athlete.totalDrills > 0 ? (
                           <CheckCircle className="h-5 w-5 text-green-500" />
                         ) : (
-                          <Clock className="h-5 w-5 text-[#DC143C]" />
+                          <Clock className="h-5 w-5 text-[#C9A84C]" />
                         )}
                       </div>
 
@@ -317,7 +317,7 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-8 w-8 p-0 text-muted-foreground hover:text-[#DC143C]"
+                          className="h-8 w-8 p-0 text-muted-foreground hover:text-[#C9A84C]"
                           onClick={(e) => {
                             e.stopPropagation();
                             setViewingProfileId(numericId);

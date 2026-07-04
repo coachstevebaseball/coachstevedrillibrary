@@ -17,16 +17,16 @@ import {
 } from "lucide-react";
 
 const SKILL_COLORS: Record<string, string> = {
-  "Swing Mechanics": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
+  "Swing Mechanics": "bg-[#C9A84C]/20 text-[#E8425A] border-[#C9A84C]/30",
   "Pitch Recognition": "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  "Plate Approach": "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
+  "Plate Approach": "bg-[#C9A84C]/20 text-[#E8425A] border-[#C9A84C]/30",
   "Fielding Fundamentals": "bg-green-500/20 text-green-400 border-green-500/30",
   "Throwing Mechanics": "bg-orange-500/20 text-orange-400 border-orange-500/30",
   "Base Running": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
   "Bunting": "bg-lime-500/20 text-lime-400 border-lime-500/30",
   "Game IQ / Situational Awareness": "bg-rose-500/20 text-rose-400 border-rose-500/30",
   "Confidence / Mindset": "bg-pink-500/20 text-pink-400 border-pink-500/30",
-  "Arm Care / Body Mechanics": "bg-teal-500/20 text-teal-400 border-teal-500/30",
+  "Arm Care / Body Mechanics": "bg-amber-500/20 text-amber-400 border-amber-500/30",
 };
 
 export function AthleteSessionNotes() {
@@ -63,7 +63,7 @@ export function AthleteSessionNotes() {
           <FileText className="w-5 h-5 text-[#E8425A]" />
           Session Notes
         </h3>
-        <Badge className="bg-[#DC143C]/20 text-[#E8425A] border border-[#DC143C]/30">
+        <Badge className="bg-[#C9A84C]/20 text-[#E8425A] border border-[#C9A84C]/30">
           {notes.length}
         </Badge>
       </div>
@@ -84,7 +84,7 @@ export function AthleteSessionNotes() {
                 onClick={() => setExpandedId(isExpanded ? null : note.id)}
                 className="w-full text-left p-4 flex items-center gap-3"
               >
-                <div className="h-10 w-10 rounded-lg bg-[#DC143C]/10 border border-[#DC143C]/20 flex items-center justify-center flex-shrink-0">
+                <div className="h-10 w-10 rounded-lg bg-[#C9A84C]/10 border border-[#C9A84C]/20 flex items-center justify-center flex-shrink-0">
                   <span className="text-sm font-bold text-[#E8425A]">#{note.sessionNumber}</span>
                 </div>
                 <div className="flex-1 min-w-0">
@@ -143,10 +143,10 @@ export function AthleteSessionNotes() {
 
                   {/* Blast notes show metrics only; regular notes show improved/needs work */}
                   {note.blastSessionId ? (
-                    <div className="bg-[#DC143C]/5 border border-[#DC143C]/15 rounded-lg p-3">
+                    <div className="bg-[#C9A84C]/5 border border-[#C9A84C]/15 rounded-lg p-3">
                       <div className="flex items-center gap-1.5 mb-1.5">
-                        <Zap className="h-3.5 w-3.5 text-[#DC143C]" />
-                        <span className="text-xs font-semibold text-[#DC143C]"><InlineEdit contentKey="sessionHistory.heading.blastMetrics" defaultValue="Session Blast Metrics" /></span>
+                        <Zap className="h-3.5 w-3.5 text-[#C9A84C]" />
+                        <span className="text-xs font-semibold text-[#C9A84C]"><InlineEdit contentKey="sessionHistory.heading.blastMetrics" defaultValue="Session Blast Metrics" /></span>
                       </div>
                       <p className="text-xs text-white/70 leading-relaxed">{note.whatImproved}</p>
                     </div>

@@ -71,7 +71,7 @@ const FOCUS_AREAS = [
 ];
 
 const BLOCK_TYPE_CONFIG = {
-  drill: { icon: Target, label: "Drill", color: "text-[#E8425A]", bg: "bg-[#DC143C]/10", border: "border-[#DC143C]/30", accent: "#DC143C", gradient: "from-[#DC143C]/20 to-[#B91030]/5" },
+  drill: { icon: Target, label: "Drill", color: "text-[#E8425A]", bg: "bg-[#C9A84C]/10", border: "border-[#C9A84C]/30", accent: "#C9A84C", gradient: "from-[#C9A84C]/20 to-[#B91030]/5" },
   warmup: { icon: Flame, label: "Warm-Up", color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/30", accent: "#f59e0b", gradient: "from-amber-500/20 to-amber-600/5" },
   cooldown: { icon: Snowflake, label: "Cool-Down", color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30", accent: "#10b981", gradient: "from-emerald-500/20 to-emerald-600/5" },
   break: { icon: Coffee, label: "Break", color: "text-gray-400", bg: "bg-gray-500/10", border: "border-gray-500/30", accent: "#6b7280", gradient: "from-gray-500/20 to-gray-600/5" },
@@ -194,7 +194,7 @@ export default function PracticePlanner() {
               <CalendarDays className="h-4 w-4" />
             </button>
           </div>
-          <Button onClick={() => setView("create")} className="bg-[#DC143C] hover:bg-[#B91030] text-white gap-2 shadow-lg shadow-[#DC143C]/20">
+          <Button onClick={() => setView("create")} className="bg-[#C9A84C] hover:bg-[#B91030] text-white gap-2 shadow-lg shadow-[#C9A84C]/20">
             <Plus className="h-4 w-4" /> <InlineEdit contentKey="coach.planner.newPlan" defaultValue="New Plan" as="span" />
           </Button>
         </div>
@@ -218,7 +218,7 @@ export default function PracticePlanner() {
               onClick={() => setStatusFilter(s)}
               className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
                 statusFilter === s
-                  ? "bg-[#DC143C] text-white shadow-lg shadow-[#DC143C]/20"
+                  ? "bg-[#C9A84C] text-white shadow-lg shadow-[#C9A84C]/20"
                   : "bg-white/[0.04] text-white/50 hover:text-white/80 hover:bg-white/[0.08]"
               }`}
             >
@@ -247,7 +247,7 @@ export default function PracticePlanner() {
               : "Try adjusting your search or filter criteria."}
           </p>
           {plans?.length === 0 && (
-            <Button onClick={() => setView("create")} className="bg-[#DC143C] hover:bg-[#B91030] text-white gap-2">
+            <Button onClick={() => setView("create")} className="bg-[#C9A84C] hover:bg-[#B91030] text-white gap-2">
               <Plus className="h-4 w-4" /> Create First Plan
             </Button>
           )}
@@ -287,7 +287,7 @@ function PlanCard({ plan, onView, onEdit, onStartSession, onDuplicate, onDelete,
   const focusAreas = (plan.focusAreas as string[] | null) || [];
   const statusColors: Record<string, string> = {
     draft: "bg-gray-500/20 text-gray-400 border-gray-500/30",
-    scheduled: "bg-[#DC143C]/20 text-[#E8425A] border-[#DC143C]/30",
+    scheduled: "bg-[#C9A84C]/20 text-[#E8425A] border-[#C9A84C]/30",
     completed: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
     cancelled: "bg-red-500/20 text-red-400 border-red-500/30",
   };
@@ -299,7 +299,7 @@ function PlanCard({ plan, onView, onEdit, onStartSession, onDuplicate, onDelete,
     >
       <CardContent className="p-0">
         {/* Top accent bar */}
-        <div className="h-1 bg-gradient-to-r from-[#DC143C] via-[#DC143C] to-[#B91030] opacity-60 group-hover:opacity-100 transition-opacity" />
+        <div className="h-1 bg-gradient-to-r from-[#C9A84C] via-[#C9A84C] to-[#B91030] opacity-60 group-hover:opacity-100 transition-opacity" />
 
         <div className="p-4 sm:p-5">
           {/* Header row */}
@@ -444,7 +444,7 @@ function PlanDetail({ planId, onBack, onEdit, onStartSession, onShare }: {
       </div>
 
       {/* Session Overview Card */}
-      <Card className="bg-gradient-to-br from-[#DC143C]/10 via-white/[0.03] to-[#DC143C]/5 border-white/[0.08] overflow-hidden">
+      <Card className="bg-gradient-to-br from-[#C9A84C]/10 via-white/[0.03] to-[#C9A84C]/5 border-white/[0.08] overflow-hidden">
         <CardContent className="p-5">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
             <div>
@@ -457,7 +457,7 @@ function PlanDetail({ planId, onBack, onEdit, onStartSession, onShare }: {
             </div>
             <div>
               <p className="text-[10px] font-medium text-white/30 uppercase tracking-wider mb-1">Status</p>
-              <Badge className="bg-[#DC143C]/20 text-[#E8425A] border border-[#DC143C]/30 text-xs">{plan.status}</Badge>
+              <Badge className="bg-[#C9A84C]/20 text-[#E8425A] border border-[#C9A84C]/30 text-xs">{plan.status}</Badge>
             </div>
             <div>
               <p className="text-[10px] font-medium text-white/30 uppercase tracking-wider mb-1">Date</p>
@@ -613,7 +613,7 @@ function DetailBlock({ block, index, startTime, config, intensityConf }: {
           )}
 
           {block.keyPoints && (
-            <div className="bg-[#DC143C]/5 border border-[#DC143C]/15 rounded-lg p-3">
+            <div className="bg-[#C9A84C]/5 border border-[#C9A84C]/15 rounded-lg p-3">
               <p className="text-[10px] font-medium text-[#E8425A]/70 uppercase tracking-wider mb-1.5 flex items-center gap-1">
                 <AlertCircle className="h-3 w-3" /> Key Points / What to Watch
               </p>
@@ -709,7 +709,7 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
         </div>
 
         <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-          <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/10 flex items-center justify-center mb-6 border border-[#DC143C]/20">
+          <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#C9A84C]/20 to-[#C9A84C]/10 flex items-center justify-center mb-6 border border-[#C9A84C]/20">
             <Play className="h-10 w-10 text-[#E8425A]" />
           </div>
           <h2 className="text-3xl font-heading font-bold text-white mb-2">{plan.title}</h2>
@@ -764,7 +764,7 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
           <div
             key={i}
             className={`h-1 flex-1 rounded-full transition-all cursor-pointer ${
-              i < currentBlockIdx ? "bg-green-500" : i === currentBlockIdx ? "bg-[#DC143C]" : "bg-white/[0.08]"
+              i < currentBlockIdx ? "bg-green-500" : i === currentBlockIdx ? "bg-[#C9A84C]" : "bg-white/[0.08]"
             }`}
             onClick={() => goToBlock(i)}
           />
@@ -856,7 +856,7 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
 
           {/* Goal */}
           {currentBlock.goal && (
-            <div className="bg-[#DC143C]/8 border border-[#DC143C]/15 rounded-xl p-4 mb-4 max-w-lg mx-auto">
+            <div className="bg-[#C9A84C]/8 border border-[#C9A84C]/15 rounded-xl p-4 mb-4 max-w-lg mx-auto">
               <p className="text-[10px] font-medium text-[#E8425A]/60 uppercase tracking-wider mb-1.5 flex items-center gap-1 justify-center">
                 <Target className="h-3 w-3" /> Block Goal
               </p>
@@ -876,7 +876,7 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
 
           {/* Key Points */}
           {currentBlock.keyPoints && (
-            <div className="bg-[#DC143C]/8 border border-[#DC143C]/15 rounded-xl p-4 mb-4 max-w-lg mx-auto">
+            <div className="bg-[#C9A84C]/8 border border-[#C9A84C]/15 rounded-xl p-4 mb-4 max-w-lg mx-auto">
               <p className="text-[10px] font-medium text-[#E8425A]/60 uppercase tracking-wider mb-1.5 flex items-center gap-1 justify-center">
                 <AlertCircle className="h-3 w-3" /> What to Watch
               </p>
@@ -914,7 +914,7 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
               key={i}
               onClick={() => goToBlock(i)}
               className={`h-2.5 w-2.5 rounded-full transition-all flex-shrink-0 ${
-                i === currentBlockIdx ? "bg-[#DC143C] scale-125" : i < currentBlockIdx ? "bg-green-500/60" : "bg-white/[0.15]"
+                i === currentBlockIdx ? "bg-[#C9A84C] scale-125" : i < currentBlockIdx ? "bg-green-500/60" : "bg-white/[0.15]"
               }`}
             />
           ))}
@@ -923,7 +923,7 @@ function SessionMode({ planId, onExit }: { planId: number; onExit: () => void; }
         {currentBlockIdx < totalBlocks - 1 ? (
           <button
             onClick={() => { goToBlock(currentBlockIdx + 1); setElapsedSeconds(0); }}
-            className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium bg-[#DC143C] text-white hover:bg-[#B91030] transition-all shadow-lg shadow-[#DC143C]/20"
+            className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium bg-[#C9A84C] text-white hover:bg-[#B91030] transition-all shadow-lg shadow-[#C9A84C]/20"
           >
             Next <SkipForward className="h-4 w-4" />
           </button>
@@ -1129,7 +1129,7 @@ function PlanForm({ planId, onCancel, onSaved }: { planId: number | null; onCanc
             <div className="flex flex-wrap gap-2">
               {(["draft", "scheduled", "completed", "cancelled"] as const).map((s) => (
                 <button key={s} onClick={() => setStatus(s)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${status === s ? "bg-[#DC143C] text-white" : "bg-white/[0.06] text-white/50 hover:text-white/80"}`}>
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${status === s ? "bg-[#C9A84C] text-white" : "bg-white/[0.06] text-white/50 hover:text-white/80"}`}>
                   {s.charAt(0).toUpperCase() + s.slice(1)}
                 </button>
               ))}
@@ -1141,7 +1141,7 @@ function PlanForm({ planId, onCancel, onSaved }: { planId: number | null; onCanc
             <div className="flex flex-wrap gap-2">
               {FOCUS_AREAS.map((area) => (
                 <button key={area} onClick={() => toggleFocusArea(area)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${focusAreas.includes(area) ? "bg-[#DC143C] text-white" : "bg-white/[0.06] text-white/50 hover:text-white/80"}`}>
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${focusAreas.includes(area) ? "bg-[#C9A84C] text-white" : "bg-white/[0.06] text-white/50 hover:text-white/80"}`}>
                   {area}
                 </button>
               ))}
@@ -1190,7 +1190,7 @@ function PlanForm({ planId, onCancel, onSaved }: { planId: number | null; onCanc
           <Button variant="outline" onClick={onCancel} className="bg-transparent border-white/[0.1] text-white/60 hover:text-white hover:bg-white/[0.06]">Cancel</Button>
           <div className="flex items-center gap-3">
             <span className="text-sm text-white/40 hidden sm:inline">{blocks.length} blocks · {totalDuration} min</span>
-            <Button onClick={handleSubmit} disabled={!title.trim() || isSaving} className="bg-[#DC143C] hover:bg-[#B91030] text-white gap-2 min-w-[120px]">
+            <Button onClick={handleSubmit} disabled={!title.trim() || isSaving} className="bg-[#C9A84C] hover:bg-[#B91030] text-white gap-2 min-w-[120px]">
               {isSaving ? <span className="animate-pulse">Saving...</span> : <><Check className="h-4 w-4" />{planId ? "Save Changes" : "Create Plan"}</>}
             </Button>
           </div>
@@ -1300,7 +1300,7 @@ function BlockEditor({ block, index, total, onUpdate, onRemove, onMoveUp, onMove
             <label className="text-[10px] font-medium text-[#E8425A]/60 uppercase mb-1 block flex items-center gap-1"><AlertCircle className="h-3 w-3" /> Key Points / What to Watch</label>
             <Textarea value={block.keyPoints || ""} onChange={(e) => onUpdate({ keyPoints: e.target.value || null })}
               placeholder="What to observe and correct (e.g., 'Watch for early hip rotation, head movement off the ball')"
-              rows={2} className="bg-[#DC143C]/5 border-[#DC143C]/10 text-white text-sm resize-none placeholder:text-white/20" />
+              rows={2} className="bg-[#C9A84C]/5 border-[#C9A84C]/10 text-white text-sm resize-none placeholder:text-white/20" />
           </div>
 
           {/* Notes */}
@@ -1348,7 +1348,7 @@ function DrillPickerButton({ currentDrillId, onSelect }: { currentDrillId: strin
           <div className="max-h-[50vh] overflow-y-auto space-y-1">
             {filtered.map((drill) => (
               <button key={drill.id} onClick={() => { onSelect(drill); setOpen(false); setSearch(""); }}
-                className={`w-full text-left px-3 py-2.5 rounded-lg transition-colors flex items-center justify-between gap-2 ${currentDrillId === drill.id ? "bg-[#DC143C]/20 text-[#E8425A]" : "hover:bg-white/[0.06] text-white/70"}`}>
+                className={`w-full text-left px-3 py-2.5 rounded-lg transition-colors flex items-center justify-between gap-2 ${currentDrillId === drill.id ? "bg-[#C9A84C]/20 text-[#E8425A]" : "hover:bg-white/[0.06] text-white/70"}`}>
                 <div className="min-w-0">
                   <span className="text-sm font-medium block truncate">{drill.name}</span>
                   <span className="text-[10px] text-white/30">{drill.difficulty} · {drill.duration} · {drill.categories.join(", ")}</span>
@@ -1451,7 +1451,7 @@ function CalendarView({ plans, onBack, onViewPlan, onCreatePlan, onStartSession 
 
   const statusColors: Record<string, string> = {
     draft: "bg-gray-400",
-    scheduled: "bg-[#DC143C]",
+    scheduled: "bg-[#C9A84C]",
     completed: "bg-emerald-400",
     cancelled: "bg-red-400",
   };
@@ -1508,7 +1508,7 @@ function CalendarView({ plans, onBack, onViewPlan, onCreatePlan, onStartSession 
                 className={`
                   relative min-h-[72px] sm:min-h-[90px] p-1 sm:p-1.5 border-b border-r border-white/[0.04] text-left transition-all
                   ${!day.isCurrentMonth ? "opacity-30" : ""}
-                  ${isSelectedCell ? "bg-[#DC143C]/10 ring-1 ring-inset ring-[#DC143C]/30" : "hover:bg-white/[0.03]"}
+                  ${isSelectedCell ? "bg-[#C9A84C]/10 ring-1 ring-inset ring-[#C9A84C]/30" : "hover:bg-white/[0.03]"}
                   ${isTodayCell ? "bg-white/[0.03]" : ""}
                 `}
                 aria-label={`${day.date.toLocaleDateString()}, ${dayPlans.length} sessions`}
@@ -1516,7 +1516,7 @@ function CalendarView({ plans, onBack, onViewPlan, onCreatePlan, onStartSession 
                 {/* Date number */}
                 <span className={`
                   inline-flex items-center justify-center h-6 w-6 rounded-full text-xs font-medium
-                  ${isTodayCell ? "bg-[#DC143C] text-white font-bold" : day.isCurrentMonth ? "text-white/70" : "text-white/20"}
+                  ${isTodayCell ? "bg-[#C9A84C] text-white font-bold" : day.isCurrentMonth ? "text-white/70" : "text-white/20"}
                 `}>
                   {day.date.getDate()}
                 </span>
@@ -1552,7 +1552,7 @@ function CalendarView({ plans, onBack, onViewPlan, onCreatePlan, onStartSession 
             <Button
               size="sm"
               onClick={() => onCreatePlan(selectedDate)}
-              className="bg-[#DC143C] hover:bg-[#B91030] text-white gap-1.5 text-xs"
+              className="bg-[#C9A84C] hover:bg-[#B91030] text-white gap-1.5 text-xs"
             >
               <Plus className="h-3.5 w-3.5" /> New Session
             </Button>
@@ -1618,7 +1618,7 @@ function CalendarView({ plans, onBack, onViewPlan, onCreatePlan, onStartSession 
       {/* Legend */}
       <div className="flex items-center gap-4 text-[10px] text-white/30 px-1">
         <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-gray-400" /> Draft</span>
-        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#DC143C]" /> Scheduled</span>
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#C9A84C]" /> Scheduled</span>
         <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-400" /> Completed</span>
         <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-red-400" /> Cancelled</span>
       </div>

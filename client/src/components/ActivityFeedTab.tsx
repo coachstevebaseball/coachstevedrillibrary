@@ -37,14 +37,14 @@ const EVENT_CONFIG: Record<string, {
   inactivity_flag:         { icon: AlertTriangle, color: "text-amber-400", bg: "bg-amber-500/10", label: "Inactivity Alert" },
   milestone_reached:       { icon: Trophy,        color: "text-yellow-400", bg: "bg-yellow-500/10", label: "Milestone" },
   assignment_reminder_sent:{ icon: Clock,          color: "text-blue-400",  bg: "bg-blue-500/10",  label: "Reminder Sent" },
-  metrics_updated:         { icon: TrendingUp,    color: "text-[#e4002b]", bg: "bg-[#e4002b]/10", label: "Metrics Updated" },
-  email_sent:              { icon: Mail,          color: "text-teal-400",  bg: "bg-teal-500/10",  label: "Email Sent" },
+  metrics_updated:         { icon: TrendingUp,    color: "text-[#C9A84C]", bg: "bg-[#C9A84C]/10", label: "Metrics Updated" },
+  email_sent:              { icon: Mail,          color: "text-amber-400",  bg: "bg-amber-500/10",  label: "Email Sent" },
   drill_assignment:        { icon: Zap,           color: "text-violet-400",bg: "bg-violet-500/10",label: "Drill Assigned" },
   drill_reminder:          { icon: Bell,          color: "text-orange-400",bg: "bg-orange-500/10",label: "Drill Reminder" },
-  metrics_update:          { icon: TrendingUp,    color: "text-[#e4002b]", bg: "bg-[#e4002b]/10", label: "Blast Update" },
+  metrics_update:          { icon: TrendingUp,    color: "text-[#C9A84C]", bg: "bg-[#C9A84C]/10", label: "Blast Update" },
   milestone:               { icon: Trophy,        color: "text-yellow-400",bg: "bg-yellow-500/10",label: "Milestone" },
   milestone_10_drills:     { icon: Trophy,        color: "text-yellow-400",bg: "bg-yellow-500/10",label: "10 Drills 🎉" },
-  custom_note:             { icon: Mail,          color: "text-teal-400",  bg: "bg-teal-500/10",  label: "Custom Note" },
+  custom_note:             { icon: Mail,          color: "text-amber-400",  bg: "bg-amber-500/10",  label: "Custom Note" },
   welcome:                 { icon: CheckCircle,   color: "text-green-400", bg: "bg-green-500/10", label: "Welcome" },
 };
 
@@ -98,7 +98,7 @@ function FeedCard({ event, onMarkRead }: { event: FeedEvent; onMarkRead: (id: nu
     >
       {/* Unread indicator */}
       {isUnread && (
-        <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#e4002b] rounded-r" />
+        <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#C9A84C] rounded-r" />
       )}
 
       {/* Icon */}
@@ -256,10 +256,10 @@ export function ActivityFeedTab() {
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Bell className="h-6 w-6 text-[#e4002b]" />
+            <Bell className="h-6 w-6 text-[#C9A84C]" />
             Activity Feed
             {unreadCount > 0 && (
-              <span className="h-5 min-w-5 px-1.5 rounded-full bg-[#e4002b] text-white text-xs font-bold flex items-center justify-center">
+              <span className="h-5 min-w-5 px-1.5 rounded-full bg-[#C9A84C] text-white text-xs font-bold flex items-center justify-center">
                 {unreadCount}
               </span>
             )}
@@ -296,9 +296,9 @@ export function ActivityFeedTab() {
       {/* Stats strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Unread Alerts", value: unreadCount, color: "text-[#e4002b]", icon: Bell },
+          { label: "Unread Alerts", value: unreadCount, color: "text-[#C9A84C]", icon: Bell },
           { label: "Inactivity Flags", value: alertCount, color: "text-amber-400", icon: AlertTriangle },
-          { label: "Emails Sent", value: emailCount, color: "text-teal-400", icon: Mail },
+          { label: "Emails Sent", value: emailCount, color: "text-amber-400", icon: Mail },
           { label: "Milestones", value: milestoneCount, color: "text-yellow-400", icon: Trophy },
         ].map(stat => {
           const Icon = stat.icon;
@@ -322,7 +322,7 @@ export function ActivityFeedTab() {
             onClick={() => setFilter(f.key)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
               filter === f.key
-                ? "bg-[#e4002b] text-white"
+                ? "bg-[#C9A84C] text-white"
                 : "bg-white/[0.06] text-white/50 hover:text-white hover:bg-white/[0.10]"
             }`}
           >

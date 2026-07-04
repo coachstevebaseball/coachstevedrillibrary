@@ -54,7 +54,7 @@ function DrillSelector({
 
   if (selectedDrill && !isOpen) {
     return (
-      <div className="glass-card rounded-xl border-2 border-[#DC143C]/30">
+      <div className="glass-card rounded-xl border-2 border-[#C9A84C]/30">
         <div className="p-4 pb-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</span>
@@ -333,7 +333,7 @@ export default function DrillComparison() {
             <div className="glass-card rounded-xl overflow-hidden">
               <div className="p-4 md:p-6 pb-3">
                 <h3 className="text-lg font-heading font-bold flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#DC143C]/20 to-[#DC143C]/20 flex items-center justify-center">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#C9A84C]/20 to-[#C9A84C]/20 flex items-center justify-center">
                     <BarChart3 className="h-4 w-4 text-[#E8425A]" />
                   </div>
                   Quick Comparison
@@ -469,7 +469,7 @@ export default function DrillComparison() {
         {/* Empty State */}
         {!bothSelected && (
           <div className="text-center py-16">
-            <div className="h-20 w-20 rounded-full bg-gradient-to-br from-[#DC143C]/10 to-purple-500/10 border border-white/[0.06] flex items-center justify-center mx-auto mb-4">
+            <div className="h-20 w-20 rounded-full bg-gradient-to-br from-[#C9A84C]/10 to-purple-500/10 border border-white/[0.06] flex items-center justify-center mx-auto mb-4">
               <ArrowLeftRight className="h-10 w-10 text-[#E8425A]/60" />
             </div>
             <h3 className="text-xl font-heading font-bold mb-2">Select Two Drills to Compare</h3>
