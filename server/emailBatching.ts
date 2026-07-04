@@ -123,7 +123,7 @@ export async function processPendingBatches(): Promise<number> {
       if (alerts.length === 1) {
         // Single activity - send regular email
         const alert = alerts[0];
-        const baseUrl = process.env.VITE_APP_URL || "https://coachstevemobilecoach.com";
+        const baseUrl = ENV.appUrl;
         
         await sendActivityAlertEmail({
           coachEmail,
@@ -201,7 +201,7 @@ async function sendBatchedActivityEmail(
       `;
     }).join('');
 
-    const baseUrl = process.env.VITE_APP_URL || "https://coachstevemobilecoach.com";
+    const baseUrl = ENV.appUrl;
     
     const emailHtml = `
 <!DOCTYPE html>

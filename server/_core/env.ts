@@ -14,7 +14,7 @@ export const ENV = {
     .replace(/\\u003c/gi, "<")
     .replace(/\\u003e/gi, ">"),
   resendReplyTo: process.env.RESEND_REPLY_TO ?? "",
-  appUrl: process.env.VITE_APP_URL ?? process.env.APP_URL ?? "https://coachstevemobilecoach.manus.space",
+  appUrl: process.env.VITE_APP_URL ?? process.env.APP_URL ?? "https://coachsteve.manus.space",
   geminiApiKey: process.env.GEMINI_API_KEY ?? "",
   openaiApiKey: process.env.OPENAI_API_KEY ?? "",
   embedAllowedOrigins: process.env.EMBED_ALLOWED_ORIGINS ?? "",

@@ -113,7 +113,7 @@ function generateNotificationEmailHtml(input: {
   const icon = typeIcons[type] || "🔔";
   const greeting = recipientName ? `Hi ${recipientName},` : "Hi,";
   const ctaText = linkUrl ? getCTAText(type) : null;
-  const appUrl = ENV.appUrl || "https://coachstevemobilecoach.manus.space";
+  const appUrl = ENV.appUrl || "https://coachsteve.manus.space";
 
   return `<!DOCTYPE html>
 <html>

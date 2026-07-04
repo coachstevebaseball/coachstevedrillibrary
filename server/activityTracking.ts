@@ -4,6 +4,7 @@ import { getDb } from "./db";
 import { sendActivityAlertEmail } from "./email";
 import { queueActivityAlert } from "./emailBatching";
 import { sendNotification } from "./notificationEngine";
+import { ENV } from "./_core/env";
 
 // Activity types that can be tracked
 export type ActivityType = 
@@ -109,7 +110,7 @@ export async function logActivity(
       
       // Queue email alert for batched sending (prevents inbox overload)
       if (shouldNotifyEmail && coach.email) {
-        const baseUrl = process.env.VITE_APP_URL || "https://coachstevemobilecoach.com";
+        const baseUrl = ENV.appUrl;
         await queueActivityAlert(
           coach.id,
           athleteId,
