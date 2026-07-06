@@ -33,7 +33,11 @@ import {
   ExternalLink,
   Check,
   X,
+  AlertTriangle,
+  FileText,
+  Dumbbell,
 } from "lucide-react";
+import { useLocation } from "wouter";
 import { InlineEdit } from "./InlineEdit";
 
 type SortField = "id" | "name" | "email" | "status" | "role" | "totalDrills" | "completedDrills" | "lastActivity" | "createdAt" | "lastSignedIn";
@@ -59,6 +63,7 @@ interface AthleteRow {
 }
 
 export function AthleteTable() {
+  const [, navigate] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortField, setSortField] = useState<SortField>("name");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
@@ -498,22 +503,42 @@ export function AthleteTable() {
 
                       {/* Status */}
                       <td className="px-3 py-3">
-                        {athlete.type === "invite" ? (
-                          <Badge variant="outline" className="text-[10px] bg-amber-500/10 text-amber-400 border-amber-500/20">
-                            <UserPlus className="h-2.5 w-2.5 mr-1" />
-                            Pending
-                          </Badge>
-                        ) : athlete.isActiveClient ? (
-                          <Badge variant="outline" className="text-[10px] bg-green-500/10 text-green-400 border-green-500/20">
-                            <CheckCircle className="h-2.5 w-2.5 mr-1" />
-                            Active
-                          </Badge>
-                        ) : (
-                          <Badge variant="outline" className="text-[10px] bg-white/[0.06] text-muted-foreground border-white/[0.1]">
-                            <AlertCircle className="h-2.5 w-2.5 mr-1" />
-                            Inactive
-                          </Badge>
-                        )}
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          {athlete.type === "invite" ? (
+                            <Badge variant="outline" className="text-[10px] bg-amber-500/10 text-amber-400 border-amber-500/20">
+                              <UserPlus className="h-2.5 w-2.5 mr-1" />
+                              Pending
+                            </Badge>
+                          ) : athlete.isActiveClient ? (
+                            <Badge variant="outline" className="text-[10px] bg-green-500/10 text-green-400 border-green-500/20">
+                              <CheckCircle className="h-2.5 w-2.5 mr-1" />
+                              Active
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="text-[10px] bg-white/[0.06] text-muted-foreground border-white/[0.1]">
+                              <AlertCircle className="h-2.5 w-2.5 mr-1" />
+                              Inactive
+                            </Badge>
+                          )}
+                          {/* Warning badges */}
+                          {athlete.type === "user" && !athlete.hasDrills && (
+                            <Badge variant="outline" className="text-[9px] bg-amber-500/10 text-amber-400 border-amber-500/20">
+                              <AlertTriangle className="h-2 w-2 mr-0.5" />
+                              No drills
+                            </Badge>
+                          )}
+                          {athlete.type === "user" && !athlete.isActiveClient && athlete.totalDrills > 0 && (
+                            <Badge variant="outline" className="text-[9px] bg-red-500/10 text-red-400 border-red-500/20">
+                              <AlertTriangle className="h-2 w-2 mr-0.5" />
+                              Access blocked
+                            </Badge>
+                          )}
+                          {athlete.type === "user" && athlete.lastSignedIn === null && athlete.isActiveClient && (
+                            <Badge variant="outline" className="text-[9px] bg-blue-500/10 text-blue-400 border-blue-500/20">
+                              Never signed in
+                            </Badge>
+                          )}
+                        </div>
                       </td>
 
                       {/* Total Drills */}
@@ -621,6 +646,31 @@ export function AthleteTable() {
                           </div>
                           {/* Action buttons */}
                           <div className="mt-3 flex flex-wrap items-center gap-2">
+                            {/* Quick actions */}
+                            <Button
+                              variant="outline" size="sm"
+                              className="gap-1.5 text-xs border-[#C9A84C]/30 text-[#C9A84C] hover:bg-[#C9A84C]/10"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/coach-dashboard/assign?athlete=${encodeURIComponent(athlete.id)}`);
+                              }}
+                            >
+                              <Dumbbell className="h-3.5 w-3.5" />
+                              Assign Drill
+                            </Button>
+                            {athlete.type === "user" && (
+                              <Button
+                                variant="outline" size="sm"
+                                className="gap-1.5 text-xs border-purple-500/30 text-purple-400 hover:bg-purple-500/10"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/coach-dashboard/session-notes?athlete=${athlete.numericId}`);
+                                }}
+                              >
+                                <FileText className="h-3.5 w-3.5" />
+                                Notes
+                              </Button>
+                            )}
                             {athlete.type === "user" && (
                               <Button
                                 variant="outline" size="sm"

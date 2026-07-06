@@ -63,11 +63,11 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
 
   if (!data) return null;
 
-  const { summary, athletes } = data;
+  const { summary, athletes, needsAttention: alerts = [], recentCompletions = [], recentSignIns = [] } = data as any;
 
   // If viewing a specific athlete's profile
   if (viewingProfileId !== null) {
-    const athlete = athletes.find((a) => {
+    const athlete = athletes.find((a: any) => {
       const numId = parseInt(a.id.replace(/^(user-|invite-)/, ""));
       return a.type === "user" && numId === viewingProfileId;
     });
@@ -88,12 +88,12 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
 
   // Filter and search athletes
   const filteredAthletes = athletes
-    .filter(athlete => {
+    .filter((athlete: any) => {
       if (filter === "with-drills" && !athlete.hasDrills) return false;
       if (filter === "without-drills" && athlete.hasDrills) return false;
       return true;
     })
-    .filter(athlete => {
+    .filter((athlete: any) => {
       if (!searchQuery) return true;
       const query = searchQuery.toLowerCase();
       return (
@@ -101,13 +101,13 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
         athlete.email.toLowerCase().includes(query)
       );
     })
-    .sort((a, b) => {
+    .sort((a: any, b: any) => {
       // Sort: without drills first, then by name
       if (a.hasDrills !== b.hasDrills) return a.hasDrills ? 1 : -1;
       return a.name.localeCompare(b.name);
     });
 
-  const needsAttention = athletes.filter(a => !a.hasDrills).length;
+  const needsAttention = athletes.filter((a: any) => !a.hasDrills).length;
 
   return (
     <div className="space-y-4">
@@ -169,6 +169,104 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
           </CardContent>
         </Card>
       </div>
+
+      {/* Needs Attention Section */}
+      {alerts.length > 0 && (
+        <Card className="border-amber-500/30 bg-amber-500/5">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2 text-amber-700 dark:text-amber-400">
+              <AlertTriangle className="h-4 w-4" />
+              Needs Attention ({alerts.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {alerts.slice(0, 5).map((alert: any, i: number) => (
+                <div key={i} className={`flex items-center justify-between p-2.5 rounded-md border text-sm ${
+                  alert.severity === 'error' ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' :
+                  alert.severity === 'warning' ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' :
+                  'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+                }`}>
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className={`h-3.5 w-3.5 flex-shrink-0 ${
+                      alert.severity === 'error' ? 'text-red-500' :
+                      alert.severity === 'warning' ? 'text-amber-500' :
+                      'text-blue-500'
+                    }`} />
+                    <span className="text-foreground/80">{alert.message}</span>
+                  </div>
+                  {alert.athleteId && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 text-xs"
+                      onClick={() => onSelectAthlete?.(alert.athleteId)}
+                    >
+                      View
+                    </Button>
+                  )}
+                </div>
+              ))}
+              {alerts.length > 5 && (
+                <p className="text-xs text-muted-foreground text-center pt-1">+ {alerts.length - 5} more</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Recent Activity Section */}
+      {(recentCompletions.length > 0 || recentSignIns.length > 0) && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {recentCompletions.length > 0 && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  Recent Completions
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-1.5">
+                  {recentCompletions.slice(0, 5).map((c: any, i: number) => (
+                    <div key={i} className="flex items-center justify-between text-sm py-1 border-b border-border/50 last:border-0">
+                      <div className="min-w-0">
+                        <span className="font-medium truncate block">{c.athleteName}</span>
+                        <span className="text-xs text-muted-foreground truncate block">{c.drillName}</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
+                        {c.completedAt ? new Date(c.completedAt).toLocaleDateString() : ''}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {recentSignIns.length > 0 && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Users className="h-4 w-4 text-primary" />
+                  Recent Sign-Ins
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-1.5">
+                  {recentSignIns.slice(0, 5).map((s: any, i: number) => (
+                    <div key={i} className="flex items-center justify-between text-sm py-1 border-b border-border/50 last:border-0">
+                      <span className="font-medium truncate">{s.name}</span>
+                      <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
+                        {s.lastSignedIn ? new Date(s.lastSignedIn).toLocaleDateString() : ''}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      )}
 
       {/* Athlete List */}
       <Card>
@@ -240,7 +338,7 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
             </div>
           ) : (
             <div className="space-y-2">
-              {filteredAthletes.map((athlete) => {
+              {filteredAthletes.map((athlete: any) => {
                 const numericId = parseInt(athlete.id.replace(/^(user-|invite-)/, ""));
                 const isUser = athlete.type === "user";
 

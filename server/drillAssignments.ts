@@ -343,6 +343,63 @@ export async function getAthleteAssignmentOverview() {
   const totalDrillsAssigned = allAssignments.length;
   const totalCompleted = allAssignments.filter(a => a.status === 'completed').length;
 
+  // Build "Needs Attention" alerts
+  const needsAttention: Array<{ type: string; message: string; athleteId?: string; severity: 'warning' | 'error' | 'info' }> = [];
+
+  // 1. Athletes with no drills assigned
+  athletesWithStatus.filter(a => !a.hasDrills && a.type === 'user').forEach(a => {
+    needsAttention.push({ type: 'no_drills', message: `${a.name} has no drills assigned`, athleteId: a.id, severity: 'warning' });
+  });
+
+  // 2. Duplicate invites (same email, multiple pending/expired invites)
+  const allInvitesList = await db.select().from(invites);
+  const emailInviteCount: Record<string, number> = {};
+  allInvitesList.forEach(inv => {
+    const email = inv.email?.toLowerCase();
+    if (email) emailInviteCount[email] = (emailInviteCount[email] || 0) + 1;
+  });
+  Object.entries(emailInviteCount).filter(([_, count]) => count > 1).forEach(([email, count]) => {
+    needsAttention.push({ type: 'duplicate_invites', message: `${email} has ${count} invite records (possible duplicate)`, severity: 'warning' });
+  });
+
+  // 3. Expired invites attached to active users
+  const expiredInvites = allInvitesList.filter(i => i.status === 'expired');
+  for (const inv of expiredInvites) {
+    const matchingUser = allAthletes.find(u => u.email?.toLowerCase() === inv.email?.toLowerCase() && u.isActiveClient === 1);
+    if (matchingUser) {
+      needsAttention.push({ type: 'expired_on_active', message: `Active athlete "${matchingUser.name || matchingUser.email}" has an expired invite record`, athleteId: `user-${matchingUser.id}`, severity: 'info' });
+    }
+  }
+
+  // 4. Assignments with no userId (orphaned)
+  const orphanedAssignments = allAssignments.filter(a => !a.userId && a.inviteId);
+  if (orphanedAssignments.length > 0) {
+    needsAttention.push({ type: 'orphaned_assignments', message: `${orphanedAssignments.length} assignment(s) linked to invites without a user account`, severity: 'error' });
+  }
+
+  // 5. Recent completions (last 7 days)
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const recentCompletions = allAssignments
+    .filter(a => a.status === 'completed' && a.completedAt && new Date(a.completedAt) > sevenDaysAgo)
+    .map(a => {
+      const athlete = allAthletes.find(u => u.id === a.userId);
+      return {
+        drillName: a.drillName,
+        athleteName: athlete?.name || athlete?.email || 'Unknown',
+        completedAt: a.completedAt,
+      };
+    })
+    .sort((a, b) => new Date(b.completedAt!).getTime() - new Date(a.completedAt!).getTime())
+    .slice(0, 10);
+
+  // 6. Recent sign-ins (from users table lastSignedIn)
+  const recentSignIns = allAthletes
+    .filter(u => u.lastSignedIn && new Date(u.lastSignedIn) > sevenDaysAgo)
+    .map(u => ({ name: u.name || u.email || `User ${u.id}`, lastSignedIn: u.lastSignedIn }))
+    .sort((a, b) => new Date(b.lastSignedIn!).getTime() - new Date(a.lastSignedIn!).getTime())
+    .slice(0, 10);
+
   return {
     summary: {
       totalAthletes,
@@ -353,6 +410,9 @@ export async function getAthleteAssignmentOverview() {
       completionRate: totalDrillsAssigned > 0 ? Math.round((totalCompleted / totalDrillsAssigned) * 100) : 0,
     },
     athletes: athletesWithStatus,
+    needsAttention,
+    recentCompletions,
+    recentSignIns,
   };
 }
 

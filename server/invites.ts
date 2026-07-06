@@ -25,12 +25,15 @@ export async function createInvite(
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
+  // Normalize email to lowercase + trim
+  const normalizedEmail = email.toLowerCase().trim();
+
   const inviteToken = generateInviteToken();
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + expirationDays);
 
   await db.insert(invites).values({
-    email,
+    email: normalizedEmail,
     inviteToken,
     role,
     status: "pending",
@@ -44,7 +47,7 @@ export async function createInvite(
   if (sendEmail) {
     const inviteType = "athlete";
     await sendInviteEmail({
-      toEmail: email,
+      toEmail: normalizedEmail,
       inviteLink: inviteUrl,
       inviteType,
       expiresAt,
@@ -52,7 +55,7 @@ export async function createInvite(
   }
 
   return {
-    email,
+    email: normalizedEmail,
     inviteToken,
     expiresAt,
     inviteUrl,
@@ -98,7 +101,30 @@ export async function acceptInvite(
   const invite = await getInviteByToken(token);
   console.log('[Invites] acceptInvite called with token:', token, 'userId:', userId);
 
-  if (!invite || !isInviteValid(invite)) {
+  if (!invite) {
+    throw new Error("Invalid or expired invite");
+  }
+
+  // If invite is already accepted by this user, treat as idempotent success
+  if (invite.status === 'accepted' && invite.acceptedByUserId === userId) {
+    console.log('[Invites] Invite already accepted by this user — idempotent, re-linking assignments');
+    const { linkInviteAssignmentsToUser } = await import('./drillAssignments');
+    await linkInviteAssignmentsToUser(invite.id, userId);
+    return invite;
+  }
+
+  // If invite is expired but the user's email matches, allow acceptance
+  // (handles the case where the invite expired before the user clicked the link)
+  if (invite.status === 'expired') {
+    const { users: usersTable } = await import('../drizzle/schema');
+    const userRows = await db.select().from(usersTable).where(eq(usersTable.id, userId)).limit(1);
+    const user = userRows[0];
+    if (!user || user.email?.toLowerCase() !== invite.email?.toLowerCase()) {
+      throw new Error('Invalid or expired invite');
+    }
+    console.log('[Invites] Expired invite accepted by email-matched user — proceeding with activation');
+    // Fall through to the normal acceptance flow below
+  } else if (!isInviteValid(invite)) {
     throw new Error("Invalid or expired invite");
   }
 

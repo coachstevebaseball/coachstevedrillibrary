@@ -162,7 +162,18 @@ export default function AthletePortal() {
       utils.drillAssignments.getUserAssignments.invalidate();
     },
     onError: (err) => {
-      toast.error(`Couldn't update drill status: ${err.message}`);
+      // Provide user-friendly error messages instead of raw server errors
+      let friendlyMsg = "Couldn't update drill status. Please try again.";
+      if (err.message.includes("not found") || err.message.includes("No assignment")) {
+        friendlyMsg = "This drill assignment was not found. It may have been removed by your coach.";
+      } else if (err.message.includes("permission") || err.message.includes("FORBIDDEN") || err.message.includes("not authorized")) {
+        friendlyMsg = "You don't have permission to update this drill. Please contact your coach if this seems wrong.";
+      } else if (err.message.includes("already completed")) {
+        friendlyMsg = "This drill is already marked as completed!";
+      } else if (err.message.includes("network") || err.message.includes("fetch")) {
+        friendlyMsg = "Network error — check your connection and try again.";
+      }
+      toast.error(friendlyMsg);
       // Resync server state so UI reflects the actual saved status
       utils.drillAssignments.getUserAssignments.invalidate();
     },
@@ -325,13 +336,20 @@ export default function AthletePortal() {
     <div className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       {/* Admin "View as Athlete" banner */}
       {isViewingAs && (
-        <div className="bg-amber-500 text-black text-xs font-bold text-center py-2 px-4 flex items-center justify-center gap-2 sticky top-0 z-50">
-          <span>👁 ADMIN PREVIEW — Viewing as athlete #{viewAsId}</span>
+        <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-black text-xs font-bold text-center py-2.5 px-4 flex items-center justify-center gap-3 sticky top-0 z-50 shadow-lg">
+          <span className="flex items-center gap-1.5">
+            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+            COACH PREVIEW MODE — Viewing athlete #{viewAsId}'s portal
+          </span>
+          <span className="text-[10px] font-normal opacity-70">(read-only)</span>
           <button
-            onClick={() => window.close()}
-            className="ml-3 bg-black/20 hover:bg-black/30 text-black px-2 py-0.5 rounded text-xs"
+            onClick={() => {
+              if (window.opener) window.close();
+              else window.location.href = '/coach-dashboard/athletes';
+            }}
+            className="ml-2 bg-black/20 hover:bg-black/30 text-black px-3 py-1 rounded-full text-xs font-semibold transition-colors"
           >
-            Close
+            Exit Preview
           </button>
         </div>
       )}

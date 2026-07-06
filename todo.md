@@ -2465,3 +2465,53 @@
 - [x] Fix og:url in EmbedDrillDetail to use coachsteve.manus.space
 - [x] Fix og:url in DrillDetail to use coachsteve.manus.space canonical embed URL
 - [x] 383/385 unit tests passing (2 pre-existing CSP env config failures)
+
+## Platform Audit - Identity Bug Fix (Completed)
+- [x] Data repair: Link Nikole Kelly orphaned assignment (id=2970011) to userId=115140046
+- [x] Data repair: Mark expired invite (id=1110001) as accepted
+- [x] Code fix: updateStatus fallback for assignment.userId === null (invite-linked orphaned assignments)
+- [x] Code fix: acceptInvite handles expired invites where user email matches
+- [x] Code fix: acceptInvite idempotent re-acceptance (already accepted by same user)
+
+## Platform Audit - Invite Flow Hardening
+- [x] Email normalization: lowercase + trim email on invite creation
+- [x] Duplicate detection: check for existing user/invite before creating new invite
+- [x] Pre-invite conflict check: warn coach if email already has active account, pending invite, or expired invite
+- [x] Invite dialog shows conflict warnings with action options (resend, reactivate, repair)
+- [ ] Archive/remove expired/pending duplicates when new invite accepted for same email
+
+## Platform Audit - Assignment Flow Hardening
+- [x] Prevent assigning drills to expired invite records
+- [x] Prevent assigning drills to deactivated users
+- [x] Show warning badge on broken accounts before assignment
+- [x] AssignDrillsPanel: only show active athletes and accepted invites (not pending/expired)
+
+## Platform Audit - Overview Page Improvements
+- [x] Needs Attention section (duplicate invites, broken accounts, no drills, incomplete drills)
+- [x] Recent completions list
+- [x] Recent sign-ins list
+- [ ] Quick assign drill button
+- [ ] Send reminder button
+- [ ] View athlete progress button
+
+## Platform Audit - Athletes Table Improvements
+- [x] Warning badges (duplicate invites, expired invite on active user, assignment owner mismatch)
+- [x] Expanded action menu (assign drill, add note, view reports, repair account)
+- [ ] Show invite status, completion rate, last activity columns
+
+## Platform Audit - User Management Improvements
+- [x] Separate tabs: Active Athletes, Pending Invites, Expired Invites, Deactivated
+- [ ] Duplicate account detection and merge tool
+- [ ] Repair account action (relink assignments to correct profile)
+- [ ] Delete expired invite action
+- [ ] Convert accepted invite to active athlete action
+
+## Platform Audit - Manage Videos Overhaul
+- [x] Replace long form list with searchable video manager
+- [x] Each row: drill name, category, video status, URL, preview/edit/replace/remove buttons
+- [x] Filters: missing video, has video, broken link, category
+
+## Platform Audit - Athlete Portal Improvements
+- [x] Better error messaging on Mark as Done failure (friendly user messages for each error type)
+- [x] View as Athlete coach preview banner (gradient banner with exit button)
+- [ ] Mobile responsiveness improvements for athlete portal

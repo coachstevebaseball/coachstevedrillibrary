@@ -557,8 +557,30 @@ export const appRouter = router({
         if (!assignment) {
           throw new TRPCError({ code: 'NOT_FOUND', message: 'Assignment not found' });
         }
+        
+        // Ownership check: direct userId match OR invite-linked (userId may be null if invite expired before acceptance)
         if (assignment.userId !== ctx.user.id) {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'You can only update your own assignments' });
+          if (assignment.userId !== null) {
+            // Assignment belongs to a different user
+            throw new TRPCError({ code: 'FORBIDDEN', message: 'You can only update your own assignments' });
+          }
+          // assignment.userId is null — check if the inviteId belongs to this user via email
+          if (!assignment.inviteId) {
+            throw new TRPCError({ code: 'FORBIDDEN', message: 'You can only update your own assignments' });
+          }
+          const inviteDatabase = await db.getDb();
+          if (!inviteDatabase) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database unavailable' });
+          const { invites: invitesTable } = await import('../drizzle/schema');
+          const { eq: eqOp } = await import('drizzle-orm');
+          const inviteRows = await inviteDatabase.select().from(invitesTable).where(eqOp(invitesTable.id, assignment.inviteId)).limit(1);
+          const invite = inviteRows[0];
+          const isOwner = invite?.acceptedByUserId === ctx.user.id
+            || (invite?.email?.toLowerCase() === ctx.user.email?.toLowerCase());
+          if (!isOwner) {
+            throw new TRPCError({ code: 'FORBIDDEN', message: 'You can only update your own assignments' });
+          }
+          // Backfill userId so future checks pass directly
+          await drillAssignmentDb.linkInviteAssignmentsToUser(assignment.inviteId, ctx.user.id);
         }
         
         await drillAssignmentDb.updateAssignmentStatus(input.assignmentId, input.status, input.notes);
@@ -1019,13 +1041,77 @@ export const appRouter = router({
 
   // Invite management router
   invites: router({
-    createInvite: protectedProcedure
+    // Pre-invite conflict check — returns warnings without creating anything
+    checkInviteConflicts: protectedProcedure
       .input(z.object({ email: z.string().email() }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        }
+        const normalizedEmail = input.email.toLowerCase().trim();
+        const database = await db.getDb();
+        if (!database) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database unavailable' });
+        const { users: usersTable, invites: invitesTable } = await import('../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+        
+        // Check for existing user with this email
+        const existingUsers = await database.select().from(usersTable).where(eq(usersTable.email, normalizedEmail));
+        const existingInvites = await database.select().from(invitesTable).where(eq(invitesTable.email, normalizedEmail));
+        
+        const conflicts: { type: string; message: string; id?: number; status?: string }[] = [];
+        
+        for (const u of existingUsers) {
+          if (u.role === 'athlete' && u.isActiveClient === 1) {
+            conflicts.push({ type: 'active_athlete', message: `This email already belongs to active athlete "${u.name || u.email}"`, id: u.id });
+          } else if (u.role === 'athlete' && u.isActiveClient === 0) {
+            conflicts.push({ type: 'inactive_athlete', message: `This email belongs to deactivated athlete "${u.name || u.email}". Consider reactivating instead.`, id: u.id });
+          } else {
+            conflicts.push({ type: 'existing_user', message: `This email already has an account (role: ${u.role})`, id: u.id });
+          }
+        }
+        
+        for (const inv of existingInvites) {
+          if (inv.status === 'pending') {
+            conflicts.push({ type: 'pending_invite', message: `A pending invite already exists (sent ${new Date(inv.createdAt).toLocaleDateString()})`, id: inv.id, status: 'pending' });
+          } else if (inv.status === 'accepted') {
+            conflicts.push({ type: 'accepted_invite', message: `An invite was already accepted for this email`, id: inv.id, status: 'accepted' });
+          } else if (inv.status === 'expired') {
+            conflicts.push({ type: 'expired_invite', message: `An expired invite exists for this email`, id: inv.id, status: 'expired' });
+          }
+        }
+        
+        return { email: normalizedEmail, conflicts, hasConflicts: conflicts.length > 0 };
+      }),
+
+    createInvite: protectedProcedure
+      .input(z.object({ email: z.string().email(), force: z.boolean().optional() }))
       .mutation(async ({ ctx, input }) => {
         if (ctx.user.role !== 'admin') {
           throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
         }
-        return await inviteDb.createInvite(input.email, ctx.user.id);
+        const normalizedEmail = input.email.toLowerCase().trim();
+        
+        // Unless force=true, check for conflicts and block
+        if (!input.force) {
+          const database = await db.getDb();
+          if (!database) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database unavailable' });
+          const { users: usersTable, invites: invitesTable } = await import('../drizzle/schema');
+          const { eq } = await import('drizzle-orm');
+          
+          const existingUsers = await database.select().from(usersTable).where(eq(usersTable.email, normalizedEmail));
+          const activeAthlete = existingUsers.find(u => u.role === 'athlete' && u.isActiveClient === 1);
+          if (activeAthlete) {
+            throw new TRPCError({ code: 'CONFLICT', message: `This email already belongs to active athlete "${activeAthlete.name || activeAthlete.email}". Use force=true to send anyway.` });
+          }
+          
+          const pendingInvites = await database.select().from(invitesTable).where(eq(invitesTable.email, normalizedEmail));
+          const activePending = pendingInvites.find(i => i.status === 'pending');
+          if (activePending) {
+            throw new TRPCError({ code: 'CONFLICT', message: `A pending invite already exists for this email (sent ${new Date(activePending.createdAt).toLocaleDateString()}). Use Resend instead, or force=true to create a new one.` });
+          }
+        }
+        
+        return await inviteDb.createInvite(normalizedEmail, ctx.user.id);
       }),
     
     getAllInvites: protectedProcedure.query(async ({ ctx }) => {

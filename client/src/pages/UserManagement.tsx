@@ -68,15 +68,19 @@ interface Invite {
 
 export default function UserManagement({ embedded = false }: { embedded?: boolean } = {}) {
   const { user } = useAuth();
+  const utils = trpc.useUtils();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [selectedRole, setSelectedRole] = useState<string>("");
+  const [userTab, setUserTab] = useState<"all" | "active" | "inactive" | "pending" | "expired">("all");
 
   // Invite dialog state
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteSuccess, setInviteSuccess] = useState<{ email: string; inviteUrl: string } | null>(null);
   const [showOldInvites, setShowOldInvites] = useState(false);
+  const [inviteConflicts, setInviteConflicts] = useState<{ type: string; message: string; id?: number; status?: string }[]>([]);
+  const [conflictChecked, setConflictChecked] = useState(false);
 
   // Fetch all users
   const { data: users = [], isLoading, refetch } = trpc.admin.getAllUsers.useQuery();
@@ -157,17 +161,51 @@ export default function UserManagement({ embedded = false }: { embedded?: boolea
     },
   });
 
-  // Filter users based on search query
+  // Filter users based on search query AND tab
   const filteredUsers = useMemo(() => {
     if (!users) return [];
     return users.filter((u: User) => {
+      // Tab filter
+      if (userTab === "active" && u.isActiveClient !== 1) return false;
+      if (userTab === "inactive" && (u.isActiveClient === 1 || u.role === "admin")) return false;
+      if (userTab === "pending") return false; // pending invites shown separately
+      if (userTab === "expired") return false; // expired invites shown separately
+      
+      // Search filter
       const searchLower = searchQuery.toLowerCase();
+      if (!searchLower) return true;
       return (
         (u.name?.toLowerCase().includes(searchLower) || false) ||
         (u.email?.toLowerCase().includes(searchLower) || false)
       );
     });
-  }, [users, searchQuery]);
+  }, [users, searchQuery, userTab]);
+
+  // Filtered invites for tabs
+  const filteredPendingInvites = useMemo(() => {
+    if (userTab !== "pending") return [];
+    return (allInvites as Invite[]).filter(i => i.status === "pending").filter(i => {
+      if (!searchQuery) return true;
+      return i.email.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+  }, [allInvites, userTab, searchQuery]);
+
+  const filteredExpiredInvites = useMemo(() => {
+    if (userTab !== "expired") return [];
+    return (allInvites as Invite[]).filter(i => i.status === "expired" || i.status === "revoked").filter(i => {
+      if (!searchQuery) return true;
+      return i.email.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+  }, [allInvites, userTab, searchQuery]);
+
+  // Tab counts
+  const tabCounts = useMemo(() => {
+    const activeCount = (users || []).filter((u: User) => u.isActiveClient === 1).length;
+    const inactiveCount = (users || []).filter((u: User) => u.isActiveClient !== 1 && u.role !== "admin").length;
+    const pendingCount = (allInvites as Invite[]).filter(i => i.status === "pending").length;
+    const expiredCount = (allInvites as Invite[]).filter(i => i.status === "expired" || i.status === "revoked").length;
+    return { all: (users || []).length, active: activeCount, inactive: inactiveCount, pending: pendingCount, expired: expiredCount };
+  }, [users, allInvites]);
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
@@ -218,15 +256,32 @@ export default function UserManagement({ embedded = false }: { embedded?: boolea
     return `Expires in ${diffDays} days`;
   };
 
-  const handleSendInvite = () => {
+  const handleSendInvite = (force?: boolean) => {
     if (!inviteEmail.trim()) return;
-    createInviteMutation.mutate({ email: inviteEmail.trim() });
+    createInviteMutation.mutate({ email: inviteEmail.trim(), force: force || false });
+  };
+
+  const handleCheckConflicts = async () => {
+    if (!inviteEmail.trim()) return;
+    try {
+      const result = await utils.invites.checkInviteConflicts.fetch({ email: inviteEmail.trim() });
+      setInviteConflicts(result.conflicts);
+      setConflictChecked(true);
+      if (!result.hasConflicts) {
+        // No conflicts, send immediately
+        handleSendInvite();
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to check for conflicts");
+    }
   };
 
   const handleCloseInviteDialog = () => {
     setInviteDialogOpen(false);
     setInviteEmail("");
     setInviteSuccess(null);
+    setInviteConflicts([]);
+    setConflictChecked(false);
   };
 
   if (!user || user.role !== "admin") {
@@ -356,9 +411,29 @@ export default function UserManagement({ embedded = false }: { embedded?: boolea
           </Card>
         )}
 
-        {/* Search Bar */}
+        {/* Status Tabs + Search */}
         <Card className="mb-6">
-          <CardContent className="pt-6">
+          <CardContent className="pt-6 space-y-4">
+            <div className="flex flex-wrap gap-2">
+              {([
+                { key: "all" as const, label: "All Users", count: tabCounts.all },
+                { key: "active" as const, label: "Active", count: tabCounts.active },
+                { key: "inactive" as const, label: "Inactive", count: tabCounts.inactive },
+                { key: "pending" as const, label: "Pending Invites", count: tabCounts.pending },
+                { key: "expired" as const, label: "Expired/Revoked", count: tabCounts.expired },
+              ]).map(tab => (
+                <Button
+                  key={tab.key}
+                  variant={userTab === tab.key ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setUserTab(tab.key)}
+                  className="text-xs"
+                >
+                  {tab.label}
+                  <Badge variant="secondary" className="ml-1.5 text-[10px] px-1.5">{tab.count}</Badge>
+                </Button>
+              ))}
+            </div>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
@@ -371,10 +446,141 @@ export default function UserManagement({ embedded = false }: { embedded?: boolea
           </CardContent>
         </Card>
 
-        {/* Users Table */}
+        {/* Tab Content */}
+        {(userTab === "pending") && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Pending Invitations</CardTitle>
+              <CardDescription>
+                {filteredPendingInvites.length} pending invite{filteredPendingInvites.length !== 1 ? "s" : ""}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {filteredPendingInvites.length === 0 ? (
+                <div className="text-center py-12">
+                  <Clock className="h-8 w-8 mx-auto mb-3 text-muted-foreground opacity-40" />
+                  <p className="text-muted-foreground">No pending invitations</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Expiry</TableHead>
+                        <TableHead>Sent</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredPendingInvites.map((invite) => (
+                        <TableRow key={invite.id}>
+                          <TableCell className="font-medium">
+                            <div className="flex items-center gap-2">
+                              <Mail className="h-4 w-4 text-muted-foreground" />
+                              {invite.email}
+                            </div>
+                          </TableCell>
+                          <TableCell>{getInviteStatusBadge(invite.status)}</TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {formatExpiry(invite.expiresAt)}
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {new Date(invite.createdAt).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => resendInviteMutation.mutate({ inviteId: invite.id })}
+                                disabled={resendInviteMutation.isPending}
+                              >
+                                <RefreshCw className="h-3.5 w-3.5 mr-1" />
+                                Resend
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-destructive hover:text-destructive"
+                                onClick={() => revokeInviteMutation.mutate({ inviteId: invite.id })}
+                                disabled={revokeInviteMutation.isPending}
+                              >
+                                <XCircle className="h-3.5 w-3.5 mr-1" />
+                                Revoke
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {(userTab === "expired") && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Expired & Revoked Invitations</CardTitle>
+              <CardDescription>
+                {filteredExpiredInvites.length} expired/revoked invite{filteredExpiredInvites.length !== 1 ? "s" : ""}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {filteredExpiredInvites.length === 0 ? (
+                <div className="text-center py-12">
+                  <XCircle className="h-8 w-8 mx-auto mb-3 text-muted-foreground opacity-40" />
+                  <p className="text-muted-foreground">No expired or revoked invitations</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Sent</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredExpiredInvites.map((invite) => (
+                        <TableRow key={invite.id} className="opacity-70">
+                          <TableCell className="font-medium">{invite.email}</TableCell>
+                          <TableCell>{getInviteStatusBadge(invite.status)}</TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {new Date(invite.createdAt).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => resendInviteMutation.mutate({ inviteId: invite.id })}
+                              disabled={resendInviteMutation.isPending}
+                            >
+                              <RefreshCw className="h-3.5 w-3.5 mr-1" />
+                              Re-invite
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Users Table (shown for all/active/inactive tabs) */}
+        {(userTab === "all" || userTab === "active" || userTab === "inactive") && (
         <Card>
           <CardHeader>
-            <CardTitle>All Users</CardTitle>
+            <CardTitle>{userTab === "all" ? "All Users" : userTab === "active" ? "Active Users" : "Inactive Users"}</CardTitle>
             <CardDescription>
               Total: {filteredUsers.length} user{filteredUsers.length !== 1 ? "s" : ""}
             </CardDescription>
@@ -492,6 +698,7 @@ export default function UserManagement({ embedded = false }: { embedded?: boolea
             )}
           </CardContent>
         </Card>
+        )}
 
         {/* Historical Invites (collapsed) */}
         {oldInvites.length > 0 && (
@@ -605,20 +812,57 @@ export default function UserManagement({ embedded = false }: { embedded?: boolea
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" && inviteEmail.trim()) handleSendInvite();
+                    if (e.key === "Enter" && inviteEmail.trim()) handleCheckConflicts();
                   }}
                   autoFocus
                 />
               </div>
-              <p className="text-xs text-muted-foreground">
-                The athlete will receive an email with a link to create their account. Once they sign up, they'll automatically be assigned the <strong>Athlete</strong> role and granted access to their drills.
-              </p>
+              {/* Conflict warnings */}
+              {conflictChecked && inviteConflicts.length > 0 && (
+                <div className="space-y-2 p-3 rounded-md bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
+                  <div className="flex items-center gap-2 text-yellow-800 dark:text-yellow-300 font-medium text-sm">
+                    <AlertCircle className="h-4 w-4" />
+                    Conflicts Detected
+                  </div>
+                  <ul className="text-xs text-yellow-700 dark:text-yellow-400 space-y-1">
+                    {inviteConflicts.map((c, i) => (
+                      <li key={i} className="flex items-start gap-1">
+                        <span className="mt-0.5">•</span>
+                        <span>{c.message}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="flex gap-2 pt-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => { setInviteConflicts([]); setConflictChecked(false); }}
+                      className="text-xs"
+                    >
+                      Edit Email
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => handleSendInvite(true)}
+                      disabled={createInviteMutation.isPending}
+                      className="text-xs bg-yellow-600 hover:bg-yellow-700 text-white"
+                    >
+                      Send Anyway
+                    </Button>
+                  </div>
+                </div>
+              )}
+              {!conflictChecked && (
+                <p className="text-xs text-muted-foreground">
+                  The athlete will receive an email with a link to create their account. Once they sign up, they'll automatically be assigned the <strong>Athlete</strong> role and granted access to their drills.
+                </p>
+              )}
               <DialogFooter>
                 <Button variant="outline" onClick={handleCloseInviteDialog}>
                   Cancel
                 </Button>
                 <Button
-                  onClick={handleSendInvite}
+                  onClick={() => handleCheckConflicts()}
                   disabled={!inviteEmail.trim() || createInviteMutation.isPending}
                   className="flex items-center gap-2"
                 >

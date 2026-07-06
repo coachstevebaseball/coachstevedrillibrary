@@ -53,15 +53,18 @@ export function AssignDrillsPanel({ initialAthleteId = null }: Props) {
   const allDrills = useAllDrills();
 
   const athleteOptions = useMemo(() => {
-    const options: { id: string; name: string; email: string; type: "user" | "invite"; status?: string }[] = [];
+    const options: { id: string; name: string; email: string; type: "user" | "invite"; status?: string; warning?: string }[] = [];
     allUsers.forEach((u: any) => {
       if (u.role !== "admin") {
-        options.push({ id: `user-${u.id}`, name: u.name || `User ${u.id}`, email: u.email || "", type: "user" });
+        const warning = u.isActiveClient === 0 ? "Deactivated" : undefined;
+        options.push({ id: `user-${u.id}`, name: u.name || `User ${u.id}`, email: u.email || "", type: "user", warning });
       }
     });
+    // Only show accepted invites that don't have a matching user account yet
+    // Do NOT show pending or expired invites as assignable targets
     allInvites.forEach((inv: any) => {
-      const existingUser = allUsers.find((u: any) => u.email === inv.email);
-      if (!existingUser && (inv.status === "pending" || inv.status === "accepted")) {
+      const existingUser = allUsers.find((u: any) => u.email?.toLowerCase() === inv.email?.toLowerCase());
+      if (!existingUser && inv.status === "accepted") {
         options.push({
           id: `invite-${inv.id}`,
           name: inv.email.split("@")[0],
@@ -94,6 +97,16 @@ export function AssignDrillsPanel({ initialAthleteId = null }: Props) {
 
   async function handleAssignDrill() {
     if (!selectedUser || !selectedDrill) return;
+    
+    // Guard: warn if assigning to deactivated user
+    const selectedAthlete = athleteOptions.find(a => a.id === selectedUser);
+    if (selectedAthlete?.warning === "Deactivated") {
+      const confirmed = window.confirm(
+        `Warning: ${selectedAthlete.name} is deactivated. They won't be able to access this drill until reactivated. Continue?`
+      );
+      if (!confirmed) return;
+    }
+    
     try {
       const base = {
         drillId: selectedDrill.id,
@@ -174,7 +187,12 @@ export function AssignDrillsPanel({ initialAthleteId = null }: Props) {
                           <span>{athlete.name}</span>
                           {athlete.type === "invite" && (
                             <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                              Pending
+                              Invite
+                            </Badge>
+                          )}
+                          {athlete.warning && (
+                            <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-red-300 text-red-600 dark:text-red-400">
+                              {athlete.warning}
                             </Badge>
                           )}
                         </div>
