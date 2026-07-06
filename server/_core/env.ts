@@ -19,4 +19,6 @@ export const ENV = {
   openaiApiKey: process.env.OPENAI_API_KEY ?? "",
   embedAllowedOrigins: process.env.EMBED_ALLOWED_ORIGINS ?? "",
   resendWebhookSecret: process.env.RESEND_WEBHOOK_SECRET ?? "",
+  // Override email for coach activity alerts — if set, ALL coach alerts go to this address regardless of DB email
+  coachAlertEmail: process.env.COACH_ALERT_EMAIL ?? "",
 };

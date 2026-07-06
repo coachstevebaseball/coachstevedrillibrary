@@ -17,6 +17,7 @@ import { notificationsRouter } from "./routers-notifications";
 import { qaRouter } from "./routers-qa";
 import { imageUploadRouter } from "./routers-image-upload";
 import { activityRouter } from "./routers-activity";
+import * as activityTracking from "./activityTracking";
 import { favoritesRouter } from "./routers-favorites";
 import { practicePlansRouter } from "./routers-practice-plans";
 import { sessionNotesRouter } from "./routers-session-notes";
@@ -585,9 +586,22 @@ export const appRouter = router({
         
         await drillAssignmentDb.updateAssignmentStatus(input.assignmentId, input.status, input.notes);
         // Check milestone on drill completion (Use Case E)
-        if (input.status === "completed" && assignment.userId) {
-          checkAndSendMilestoneEmail(assignment.userId).catch(console.error);
-          // Notify admin of drill completion
+        if (input.status === "completed") {
+          const userId = assignment.userId || ctx.user.id;
+          if (userId) {
+            checkAndSendMilestoneEmail(userId).catch(console.error);
+          }
+          // Log drill_complete activity → triggers coach alert email
+          activityTracking.logActivity(
+            ctx.user.id,
+            "drill_complete",
+            {
+              relatedId: String(input.assignmentId),
+              relatedType: "assignment",
+              metadata: { drillName: (assignment as any).drillName || 'Unknown Drill' },
+            }
+          ).catch(console.error);
+          // Notify admin of drill completion (legacy path)
           notifyAdminDrillComplete(
             ctx.user.name || 'Athlete',
             ctx.user.email || '',

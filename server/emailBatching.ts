@@ -117,8 +117,12 @@ export async function processPendingBatches(): Promise<number> {
         continue;
       }
 
-      const coachEmail = coach[0].email;
+      // Use COACH_ALERT_EMAIL override if set (ensures alerts go to the correct inbox)
+      const coachEmail = ENV.coachAlertEmail || coach[0].email;
       const coachName = coach[0].name || "Coach";
+      if (ENV.coachAlertEmail && ENV.coachAlertEmail !== coach[0].email) {
+        console.log(`[EmailBatch] Routing alert to override address: ${ENV.coachAlertEmail} (DB had: ${coach[0].email})`);
+      }
 
       if (alerts.length === 1) {
         // Single activity - send regular email

@@ -2532,3 +2532,12 @@
 - [x] Allow coach to delete pending invite records directly from Athletes Table mobile view
 - [x] Mobile expanded card with action buttons (Assign Drill, View Portal, Remind, Delete)
 - [x] Confirmation dialog differentiates between user deletion and invite deletion
+
+## Fix Coach Activity Alert Emails
+- [x] Set TO address on all coach activity alerts to coachstevengoldstein@gmail.com via COACH_ALERT_EMAIL env var
+- [x] Keep FROM as CoachSteve <coach@longislandhittingcoach.com>
+- [x] Verify trigger: athlete logs into portal → sends "Athlete Activity Alert" (AthletePortal.tsx logActivity call)
+- [x] Verify trigger: athlete views a drill → sends "Athlete Activity Alert" with drill name (DrillDetail.tsx)
+- [x] Fix trigger: athlete marks drill complete → now logs drill_complete in server-side updateStatus procedure
+- [x] Send live test of each alert type (Resend IDs: a284a60b, 7446b450, d1a0caa8)
+- [x] Confirmed delivery: all 3 sent to coachstevengoldstein@gmail.com
