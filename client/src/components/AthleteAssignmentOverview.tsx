@@ -170,6 +170,34 @@ export function AthleteAssignmentOverview({ onSelectAthlete }: AthleteAssignment
         </Card>
       </div>
 
+      {/* Quick Actions */}
+      <div className="flex flex-wrap gap-2">
+        <Link href="/coach-dashboard/assign">
+          <Button variant="outline" size="sm" className="text-xs gap-1.5">
+            <Target className="h-3.5 w-3.5" />
+            Assign Drill
+          </Button>
+        </Link>
+        <Link href="/coach-dashboard/notifications">
+          <Button variant="outline" size="sm" className="text-xs gap-1.5">
+            <Clock className="h-3.5 w-3.5" />
+            Send Reminder
+          </Button>
+        </Link>
+        <Link href="/coach-dashboard/athletes">
+          <Button variant="outline" size="sm" className="text-xs gap-1.5">
+            <TrendingUp className="h-3.5 w-3.5" />
+            View Progress
+          </Button>
+        </Link>
+        <Link href="/coach-dashboard/users">
+          <Button variant="outline" size="sm" className="text-xs gap-1.5">
+            <UserPlus className="h-3.5 w-3.5" />
+            Invite Athlete
+          </Button>
+        </Link>
+      </div>
+
       {/* Needs Attention Section */}
       {alerts.length > 0 && (
         <Card className="border-amber-500/30 bg-amber-500/5">

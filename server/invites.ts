@@ -1,7 +1,7 @@
 import { ENV } from "./_core/env";
 import { getDb } from "./db";
 import { invites } from "../drizzle/schema";
-import { eq, and, lt, gt } from "drizzle-orm";
+import { eq, and, lt, gt, ne } from "drizzle-orm";
 import crypto from "crypto";
 import { sendInviteEmail } from "./email";
 
@@ -172,6 +172,23 @@ export async function acceptInvite(
   const { linkInviteAssignmentsToUser } = await import("./drillAssignments");
   await linkInviteAssignmentsToUser(invite.id, userId);
   console.log('[Invites] Linked drill assignments from invite', invite.id, 'to user', userId);
+
+  // Archive other pending/expired invites for the same email (prevent duplicates)
+  try {
+    await db
+      .update(invites)
+      .set({ status: "expired" })
+      .where(
+        and(
+          eq(invites.email, invite.email.toLowerCase()),
+          eq(invites.status, "pending"),
+          ne(invites.id, invite.id)
+        )
+      );
+    console.log('[Invites] Archived other pending invites for', invite.email);
+  } catch (err) {
+    console.error('[Invites] Failed to archive duplicate invites:', err);
+  }
 
   // Notify admin (Coach Steve) that an athlete accepted their invite
   const { notifyAdminInviteAccepted } = await import("./adminNotifications");

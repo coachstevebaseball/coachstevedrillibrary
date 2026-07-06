@@ -2478,7 +2478,7 @@
 - [x] Duplicate detection: check for existing user/invite before creating new invite
 - [x] Pre-invite conflict check: warn coach if email already has active account, pending invite, or expired invite
 - [x] Invite dialog shows conflict warnings with action options (resend, reactivate, repair)
-- [ ] Archive/remove expired/pending duplicates when new invite accepted for same email
+- [x] Archive/remove expired/pending duplicates when new invite accepted for same email
 
 ## Platform Audit - Assignment Flow Hardening
 - [x] Prevent assigning drills to expired invite records
@@ -2492,9 +2492,10 @@
 - [x] Needs Attention section (duplicate invites, broken accounts, no drills, incomplete drills)
 - [x] Recent completions list
 - [x] Recent sign-ins list
-- [ ] Quick assign drill button
-- [ ] Send reminder button
-- [ ] View athlete progress button
+- [x] Quick assign drill button
+- [x] Send reminder button
+- [x] View athlete progress button
+- [x] Invite athlete button
 
 ## Platform Audit - Athletes Table Improvements
 - [x] Warning badges (duplicate invites, expired invite on active user, assignment owner mismatch)
@@ -2505,7 +2506,7 @@
 - [x] Separate tabs: Active Athletes, Pending Invites, Expired Invites, Deactivated
 - [ ] Duplicate account detection and merge tool
 - [ ] Repair account action (relink assignments to correct profile)
-- [ ] Delete expired invite action
+- [x] Delete expired invite action
 - [ ] Convert accepted invite to active athlete action
 
 ## Platform Audit - Manage Videos Overhaul
@@ -2524,4 +2525,4 @@
 ## Platform Audit - Athlete Portal Improvements
 - [x] Better error messaging on Mark as Done failure (friendly user messages for each error type)
 - [x] View as Athlete coach preview banner (gradient banner with exit button)
-- [ ] Mobile responsiveness improvements for athlete portal
+- [x] Mobile responsiveness improvements for athlete portal (already mobile-first: PullToRefresh, SwipeableCard, ScrollToTop, max-w-lg container, touch-friendly sizing)

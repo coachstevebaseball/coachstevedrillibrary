@@ -42,6 +42,7 @@ import {
   Copy,
   ChevronDown,
   ChevronUp,
+  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -134,6 +135,17 @@ export default function UserManagement({ embedded = false }: { embedded?: boolea
     },
     onError: (error) => {
       toast.error(error.message || "Failed to revoke invite");
+    },
+  });
+
+  // Delete invite permanently
+  const deleteInviteMutation = trpc.invites.deleteInvite.useMutation({
+    onSuccess: () => {
+      refetchInvites();
+      toast.success("Invite permanently deleted");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to delete invite");
     },
   });
 
@@ -556,15 +568,30 @@ export default function UserManagement({ embedded = false }: { embedded?: boolea
                             {new Date(invite.createdAt).toLocaleDateString()}
                           </TableCell>
                           <TableCell>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => resendInviteMutation.mutate({ inviteId: invite.id })}
-                              disabled={resendInviteMutation.isPending}
-                            >
-                              <RefreshCw className="h-3.5 w-3.5 mr-1" />
-                              Re-invite
-                            </Button>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => resendInviteMutation.mutate({ inviteId: invite.id })}
+                                disabled={resendInviteMutation.isPending}
+                              >
+                                <RefreshCw className="h-3.5 w-3.5 mr-1" />
+                                Re-invite
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => {
+                                  if (confirm(`Permanently delete expired invite for ${invite.email}?`)) {
+                                    deleteInviteMutation.mutate({ inviteId: invite.id });
+                                  }
+                                }}
+                                disabled={deleteInviteMutation.isPending}
+                              >
+                                <Trash2 className="h-3.5 w-3.5 mr-1" />
+                                Delete
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
