@@ -24,6 +24,7 @@ export async function assignDrill(
     throw new Error("Database not available");
   }
 
+  // ─── Data Integrity Safeguards ─────────────────────────────────────────
   // Get user or invite email for notification
   let email: string | null = null;
   let name: string | null = null;
@@ -31,13 +32,31 @@ export async function assignDrill(
   if (userId) {
     const userResult = await db.select().from(users).where(eq(users.id, userId)).limit(1);
     const user = userResult.length > 0 ? userResult[0] : null;
-    email = user?.email || null;
-    name = user?.name || null;
+    if (!user) {
+      throw new Error("Cannot assign drill: user account not found");
+    }
+    // Block assignment to deactivated users
+    if (!user.isActiveClient && user.role === 'athlete') {
+      console.warn(`[AssignDrill] Blocked: user ${userId} is deactivated`);
+      throw new Error("Cannot assign drill to a deactivated athlete. Reactivate their account first.");
+    }
+    email = user.email || null;
+    name = user.name || null;
   } else if (inviteId) {
     const inviteResult = await db.select().from(invites).where(eq(invites.id, inviteId)).limit(1);
     const invite = inviteResult.length > 0 ? inviteResult[0] : null;
-    email = invite?.email || null;
-    name = invite?.email?.split('@')[0] || null;
+    if (!invite) {
+      throw new Error("Cannot assign drill: invite record not found");
+    }
+    // Block assignment to expired or revoked invites
+    if (invite.status === 'expired') {
+      console.warn(`[AssignDrill] Blocked: invite ${inviteId} is expired`);
+      throw new Error("Cannot assign drill to an expired invite. Resend the invite first.");
+    }
+    email = invite.email || null;
+    name = invite.email?.split('@')[0] || null;
+  } else {
+    throw new Error("Cannot assign drill: no user or invite specified");
   }
 
   const assignment: InsertDrillAssignment = {

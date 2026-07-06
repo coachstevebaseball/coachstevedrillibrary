@@ -962,6 +962,9 @@ export default function AdminDrillEditor({ embedded = false }: { embedded?: bool
 
   const [search, setSearch] = useState("");
   const [showHidden, setShowHidden] = useState(true);
+  const [difficultyFilter, setDifficultyFilter] = useState<string>("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [videoFilter, setVideoFilter] = useState<string>("all");
   const [sortField, setSortField] = useState<"name" | "difficulty" | "updatedAt">("name");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [editingDrill, setEditingDrill] = useState<DrillRow | null>(null);
@@ -987,9 +990,20 @@ export default function AdminDrillEditor({ embedded = false }: { embedded?: bool
     onError: (e: { message: string }) => toast.error(e.message),
   });
 
+  // Extract unique categories from data
+  const allCategories = useMemo(() => {
+    const cats = new Set<string>();
+    drills.forEach((d) => d.categories.forEach((c) => cats.add(c)));
+    return Array.from(cats).sort();
+  }, [drills]);
+
   const filtered = useMemo(() => {
     let rows = drills;
     if (!showHidden) rows = rows.filter((d) => !d.isHidden);
+    if (difficultyFilter !== "all") rows = rows.filter((d) => d.difficulty === difficultyFilter);
+    if (categoryFilter !== "all") rows = rows.filter((d) => d.categories.includes(categoryFilter));
+    if (videoFilter === "has-video") rows = rows.filter((d) => d.url && d.url.trim() !== "");
+    if (videoFilter === "no-video") rows = rows.filter((d) => !d.url || d.url.trim() === "");
     if (search) {
       const q = search.toLowerCase();
       rows = rows.filter(
@@ -1011,7 +1025,7 @@ export default function AdminDrillEditor({ embedded = false }: { embedded?: bool
       }
       return sortDir === "asc" ? av.localeCompare(bv) : bv.localeCompare(av);
     });
-  }, [drills, search, showHidden, sortField, sortDir]);
+  }, [drills, search, showHidden, difficultyFilter, categoryFilter, videoFilter, sortField, sortDir]);
 
   function toggleSort(field: typeof sortField) {
     if (sortField === field) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
@@ -1101,36 +1115,86 @@ export default function AdminDrillEditor({ embedded = false }: { embedded?: bool
       </div>
 
       {/* Toolbar */}
-      <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name, ID, problem, outcome…"
-            className="pl-9 bg-[#0A1628] border-[#1e2a3a] text-white placeholder:text-gray-600"
-          />
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 space-y-3">
+        {/* Search row */}
+        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+          <div className="relative flex-1 max-w-sm w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by name, ID, problem, outcome…"
+              className="pl-9 bg-[#0A1628] border-[#1e2a3a] text-white placeholder:text-gray-600"
+            />
+          </div>
+          <div className="flex gap-2 items-center">
+            <button
+              onClick={() => setShowHidden((v) => !v)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded border text-sm transition-colors ${
+                showHidden
+                  ? "bg-[#1e2a3a] border-[#2a3a4a] text-gray-300"
+                  : "bg-transparent border-[#1e2a3a] text-gray-500"
+              }`}
+            >
+              {showHidden ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+              {showHidden ? "Showing hidden" : "Hidden hidden"}
+            </button>
+            <button
+              onClick={() => refetch()}
+              className="p-1.5 rounded border border-[#1e2a3a] text-gray-500 hover:text-gray-300 transition-colors"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </button>
+          </div>
+          <p className="text-xs text-gray-500 sm:ml-auto">{filtered.length} drills shown</p>
         </div>
-        <div className="flex gap-2 items-center">
-          <button
-            onClick={() => setShowHidden((v) => !v)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded border text-sm transition-colors ${
-              showHidden
-                ? "bg-[#1e2a3a] border-[#2a3a4a] text-gray-300"
-                : "bg-transparent border-[#1e2a3a] text-gray-500"
-            }`}
-          >
-            {showHidden ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
-            {showHidden ? "Showing hidden" : "Hidden hidden"}
-          </button>
-          <button
-            onClick={() => refetch()}
-            className="p-1.5 rounded border border-[#1e2a3a] text-gray-500 hover:text-gray-300 transition-colors"
-          >
-            <RefreshCw className="h-4 w-4" />
-          </button>
+
+        {/* Filter row */}
+        <div className="flex flex-wrap gap-2">
+          <Select value={difficultyFilter} onValueChange={setDifficultyFilter}>
+            <SelectTrigger className="w-[130px] h-8 text-xs bg-[#0A1628] border-[#1e2a3a] text-gray-300">
+              <SelectValue placeholder="Difficulty" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Difficulties</SelectItem>
+              <SelectItem value="Easy">Easy</SelectItem>
+              <SelectItem value="Medium">Medium</SelectItem>
+              <SelectItem value="Hard">Hard</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <SelectTrigger className="w-[160px] h-8 text-xs bg-[#0A1628] border-[#1e2a3a] text-gray-300">
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {allCategories.map((cat) => (
+                <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={videoFilter} onValueChange={setVideoFilter}>
+            <SelectTrigger className="w-[130px] h-8 text-xs bg-[#0A1628] border-[#1e2a3a] text-gray-300">
+              <SelectValue placeholder="Video" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Videos</SelectItem>
+              <SelectItem value="has-video">Has Video</SelectItem>
+              <SelectItem value="no-video">No Video</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {(difficultyFilter !== "all" || categoryFilter !== "all" || videoFilter !== "all") && (
+            <button
+              onClick={() => { setDifficultyFilter("all"); setCategoryFilter("all"); setVideoFilter("all"); }}
+              className="flex items-center gap-1 px-2.5 py-1 rounded border border-[#1e2a3a] text-xs text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="h-3 w-3" /> Clear filters
+            </button>
+          )}
         </div>
-        <p className="text-xs text-gray-500 sm:ml-auto">{filtered.length} drills shown</p>
       </div>
 
       {/* Mobile card list (< md) — table is too wide for phones */}
@@ -1157,7 +1221,7 @@ export default function AdminDrillEditor({ embedded = false }: { embedded?: bool
                   <h3 className="text-sm font-semibold text-white truncate">{drill.name}</h3>
                 </div>
                 <p className="text-[11px] text-gray-500 font-mono truncate">{drill.drillId}</p>
-                <div className="flex items-center gap-2 mt-1.5">
+                <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                   <span
                     className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
                       drill.difficulty === "Easy"
@@ -1171,10 +1235,14 @@ export default function AdminDrillEditor({ embedded = false }: { embedded?: bool
                   >
                     {drill.difficulty || "—"}
                   </span>
-                  {(drill.problems ?? []).length > 0 && (
+                  {drill.url && drill.url.trim() !== "" ? (
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-400">Video</span>
+                  ) : (
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/5 text-gray-500">No Video</span>
+                  )}
+                  {drill.categories.length > 0 && (
                     <span className="text-[10px] text-gray-500 truncate">
-                      {(drill.problems ?? []).slice(0, 2).join(", ")}
-                      {(drill.problems ?? []).length > 2 ? "…" : ""}
+                      {drill.categories.slice(0, 2).join(", ")}
                     </span>
                   )}
                 </div>
@@ -1275,7 +1343,14 @@ export default function AdminDrillEditor({ embedded = false }: { embedded?: bool
                             <EyeOff className="h-3.5 w-3.5 text-gray-600 flex-shrink-0" />
                           )}
                           <div>
-                            <p className="font-medium text-white leading-tight">{drill.name}</p>
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium text-white leading-tight">{drill.name}</p>
+                              {drill.url && drill.url.trim() !== "" ? (
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-400 flex-shrink-0">VIDEO</span>
+                              ) : (
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-white/5 text-gray-600 flex-shrink-0">NO VID</span>
+                              )}
+                            </div>
                             <p className="text-xs text-gray-500 font-mono mt-0.5">{drill.drillId}</p>
                           </div>
                         </div>

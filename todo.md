@@ -2485,6 +2485,8 @@
 - [x] Prevent assigning drills to deactivated users
 - [x] Show warning badge on broken accounts before assignment
 - [x] AssignDrillsPanel: only show active athletes and accepted invites (not pending/expired)
+- [x] Backend safeguard: assignDrill validates user/invite status before insert
+- [x] Backend safeguard: assignDrill blocks deactivated users and expired invites at DB layer
 
 ## Platform Audit - Overview Page Improvements
 - [x] Needs Attention section (duplicate invites, broken accounts, no drills, incomplete drills)
@@ -2510,6 +2512,14 @@
 - [x] Replace long form list with searchable video manager
 - [x] Each row: drill name, category, video status, URL, preview/edit/replace/remove buttons
 - [x] Filters: missing video, has video, broken link, category
+
+## Platform Audit - Drill Library Enhancements
+- [x] Add difficulty filter to Drill Library toolbar
+- [x] Add category filter to Drill Library toolbar
+- [x] Add video status filter (has video / no video) to Drill Library toolbar
+- [x] Add video badge to mobile drill cards
+- [x] Add video badge to desktop drill table rows
+- [x] Clear filters button when any filter is active
 
 ## Platform Audit - Athlete Portal Improvements
 - [x] Better error messaging on Mark as Done failure (friendly user messages for each error type)
