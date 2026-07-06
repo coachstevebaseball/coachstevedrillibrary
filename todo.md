@@ -2526,3 +2526,9 @@
 - [x] Better error messaging on Mark as Done failure (friendly user messages for each error type)
 - [x] View as Athlete coach preview banner (gradient banner with exit button)
 - [x] Mobile responsiveness improvements for athlete portal (already mobile-first: PullToRefresh, SwipeableCard, ScrollToTop, max-w-lg container, touch-friendly sizing)
+
+## Delete Pending Duplicate Athletes
+- [x] Add delete/remove action to pending athlete cards in Athletes Table
+- [x] Allow coach to delete pending invite records directly from Athletes Table mobile view
+- [x] Mobile expanded card with action buttons (Assign Drill, View Portal, Remind, Delete)
+- [x] Confirmation dialog differentiates between user deletion and invite deletion

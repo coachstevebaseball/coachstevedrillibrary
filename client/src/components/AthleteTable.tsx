@@ -74,7 +74,7 @@ export function AthleteTable() {
   const [editingAthlete, setEditingAthlete] = useState<{ id: number; name: string; email: string } | null>(null);
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
-  const [deletingAthlete, setDeletingAthlete] = useState<{ id: number; name: string } | null>(null);
+  const [deletingAthlete, setDeletingAthlete] = useState<{ id: number; name: string; type: "user" | "invite" } | null>(null);
 
   const utils = trpc.useUtils();
 
@@ -86,6 +86,16 @@ export function AthleteTable() {
       setDeletingAthlete(null);
     },
     onError: (err) => toast.error(`Failed to delete: ${err.message}`),
+  });
+
+  const deleteInviteMutation = trpc.invites.deleteInvite.useMutation({
+    onSuccess: () => {
+      toast.success("Pending invite deleted");
+      utils.drillAssignments.getAthleteAssignmentOverview.invalidate();
+      utils.invites.getAllInvites.invalidate();
+      setDeletingAthlete(null);
+    },
+    onError: (err) => toast.error(`Failed to delete invite: ${err.message}`),
   });
 
   const updateUserMutation = trpc.admin.updateUserInfo.useMutation({
@@ -364,8 +374,8 @@ export function AthleteTable() {
                 ? Math.round((athlete.completedDrills / athlete.totalDrills) * 100)
                 : 0;
             return (
+              <Fragment key={athlete.id}>
               <button
-                key={athlete.id}
                 type="button"
                 onClick={() => setExpandedRow(expandedRow === athlete.id ? null : athlete.id)}
                 className="w-full text-left glass-card rounded-xl p-3 flex items-center gap-3 hover:bg-white/[0.05] transition-colors"
@@ -409,6 +419,70 @@ export function AthleteTable() {
                   </div>
                 </div>
               </button>
+              {/* Mobile expanded actions */}
+              {expandedRow === athlete.id && (
+                <div className="glass-card rounded-xl p-3 -mt-1 border-t border-white/[0.06] space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      variant="outline" size="sm"
+                      className="gap-1.5 text-xs border-[#C9A84C]/30 text-[#C9A84C] hover:bg-[#C9A84C]/10 w-full"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/coach-dashboard/assign?athlete=${encodeURIComponent(athlete.id)}`);
+                      }}
+                    >
+                      <Dumbbell className="h-3.5 w-3.5" />
+                      Assign Drill
+                    </Button>
+                    {athlete.type === "user" && (
+                      <Button
+                        variant="outline" size="sm"
+                        className="gap-1.5 text-xs border-blue-500/30 text-blue-400 hover:bg-blue-500/10 w-full"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(`/athlete-portal?viewAs=${athlete.numericId}`, '_blank');
+                        }}
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                        View Portal
+                      </Button>
+                    )}
+                    {athlete.type === "user" && athlete.totalDrills > athlete.completedDrills && (
+                      <Button
+                        variant="outline" size="sm"
+                        className="gap-1.5 text-xs border-amber-500/30 text-amber-400 hover:bg-amber-500/10 w-full"
+                        disabled={sendReminderMutation.isPending}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          sendReminderMutation.mutate({ userId: athlete.numericId });
+                        }}
+                      >
+                        <Bell className="h-3.5 w-3.5" />
+                        Remind
+                      </Button>
+                    )}
+                    <Button
+                      variant="outline" size="sm"
+                      className="gap-1.5 text-xs border-red-500/30 text-red-400 hover:bg-red-500/10 w-full"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeletingAthlete({
+                          id: athlete.numericId,
+                          name: athlete.name || athlete.email || 'Athlete',
+                          type: athlete.type as "user" | "invite"
+                        });
+                      }}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                      {athlete.type === "invite" ? "Delete Invite" : "Delete"}
+                    </Button>
+                  </div>
+                  <div className="text-[10px] text-muted-foreground/60 text-center">
+                    ID: {athlete.numericId} · {athlete.type === "invite" ? "Pending Invite" : athlete.role}
+                  </div>
+                </div>
+              )}
+              </Fragment>
             );
           })
         )}
@@ -719,11 +793,25 @@ export function AthleteTable() {
                                 className="gap-1.5 text-xs border-red-500/30 text-red-400 hover:bg-red-500/10"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  setDeletingAthlete({ id: athlete.numericId, name: athlete.name || athlete.email || 'Athlete' });
+                                  setDeletingAthlete({ id: athlete.numericId, name: athlete.name || athlete.email || 'Athlete', type: 'user' });
                                 }}
                               >
                                 <Trash2 className="h-3.5 w-3.5" />
                                 Delete
+                              </Button>
+                            )}
+                            {athlete.type === "invite" && (
+                              <Button
+                                variant="outline" size="sm"
+                                className="gap-1.5 text-xs border-red-500/30 text-red-400 hover:bg-red-500/10"
+                                disabled={deleteInviteMutation.isPending}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDeletingAthlete({ id: athlete.numericId, name: athlete.name || athlete.email || 'Athlete', type: 'invite' });
+                                }}
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                                Delete Invite
                               </Button>
                             )}
                           </div>
@@ -801,7 +889,9 @@ export function AthleteTable() {
             </div>
             <p className="text-white/70 text-sm mb-6">
               Are you sure you want to delete <span className="text-white font-semibold">{deletingAthlete.name}</span>?
-              All their drill assignments and data will be permanently removed.
+              {deletingAthlete.type === 'invite'
+                ? 'This will permanently remove the pending invite.'
+                : 'All their drill assignments and data will be permanently removed.'}
             </p>
             <div className="flex gap-3">
               <Button variant="ghost" className="flex-1 text-white/60 hover:text-white" onClick={() => setDeletingAthlete(null)}>
@@ -809,10 +899,18 @@ export function AthleteTable() {
               </Button>
               <Button
                 className="flex-1 bg-red-600 hover:bg-red-700 text-white"
-                disabled={deleteUserMutation.isPending}
-                onClick={() => deleteUserMutation.mutate({ userId: deletingAthlete.id })}
+                disabled={deletingAthlete.type === 'invite' ? deleteInviteMutation.isPending : deleteUserMutation.isPending}
+                onClick={() => {
+                  if (deletingAthlete.type === 'invite') {
+                    deleteInviteMutation.mutate({ inviteId: deletingAthlete.id });
+                  } else {
+                    deleteUserMutation.mutate({ userId: deletingAthlete.id });
+                  }
+                }}
               >
-                {deleteUserMutation.isPending ? 'Deleting...' : 'Delete Athlete'}
+                {(deletingAthlete.type === 'invite' ? deleteInviteMutation.isPending : deleteUserMutation.isPending)
+                  ? 'Deleting...'
+                  : deletingAthlete.type === 'invite' ? 'Delete Invite' : 'Delete Athlete'}
               </Button>
             </div>
           </div>
