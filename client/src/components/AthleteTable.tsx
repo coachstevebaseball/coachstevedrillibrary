@@ -825,98 +825,6 @@ export function AthleteTable() {
           </table>
         </div>
 
-      {/* Edit Athlete Modal */}
-      {editingAthlete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-[#1a1f2e] border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl">
-            <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
-              <Pencil className="h-5 w-5 text-blue-400" />
-              Edit Athlete Info
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <Label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Full Name</Label>
-                <Input
-                  value={editName}
-                  onChange={e => setEditName(e.target.value)}
-                  placeholder="Athlete full name"
-                  className="bg-white/[0.06] border-white/10 text-white"
-                />
-              </div>
-              <div>
-                <Label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Email</Label>
-                <Input
-                  value={editEmail}
-                  onChange={e => setEditEmail(e.target.value)}
-                  placeholder="athlete@email.com"
-                  type="email"
-                  className="bg-white/[0.06] border-white/10 text-white"
-                />
-              </div>
-            </div>
-            <div className="flex gap-3 mt-6">
-              <Button variant="ghost" className="flex-1 text-white/60 hover:text-white" onClick={() => setEditingAthlete(null)}>
-                Cancel
-              </Button>
-              <Button
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-                disabled={updateUserMutation.isPending}
-                onClick={() => updateUserMutation.mutate({
-                  userId: editingAthlete.id,
-                  name: editName || undefined,
-                  email: editEmail || undefined,
-                })}
-              >
-                {updateUserMutation.isPending ? 'Saving...' : 'Save Changes'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Athlete Confirmation */}
-      {deletingAthlete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-[#1a1f2e] border border-red-500/20 rounded-2xl p-6 w-full max-w-md shadow-2xl">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-10 w-10 rounded-full bg-red-500/20 flex items-center justify-center">
-                <Trash2 className="h-5 w-5 text-red-400" />
-              </div>
-              <div>
-                <h3 className="text-white font-bold">Delete Athlete</h3>
-                <p className="text-white/50 text-sm">This cannot be undone</p>
-              </div>
-            </div>
-            <p className="text-white/70 text-sm mb-6">
-              Are you sure you want to delete <span className="text-white font-semibold">{deletingAthlete.name}</span>?
-              {deletingAthlete.type === 'invite'
-                ? 'This will permanently remove the pending invite.'
-                : 'All their drill assignments and data will be permanently removed.'}
-            </p>
-            <div className="flex gap-3">
-              <Button variant="ghost" className="flex-1 text-white/60 hover:text-white" onClick={() => setDeletingAthlete(null)}>
-                Cancel
-              </Button>
-              <Button
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
-                disabled={deletingAthlete.type === 'invite' ? deleteInviteMutation.isPending : deleteUserMutation.isPending}
-                onClick={() => {
-                  if (deletingAthlete.type === 'invite') {
-                    deleteInviteMutation.mutate({ inviteId: deletingAthlete.id });
-                  } else {
-                    deleteUserMutation.mutate({ userId: deletingAthlete.id });
-                  }
-                }}
-              >
-                {(deletingAthlete.type === 'invite' ? deleteInviteMutation.isPending : deleteUserMutation.isPending)
-                  ? 'Deleting...'
-                  : deletingAthlete.type === 'invite' ? 'Delete Invite' : 'Delete Athlete'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-white/[0.06]">
@@ -967,6 +875,98 @@ export function AthleteTable() {
           </div>
         )}
       </div>
+
+      {/* Edit Athlete Modal - rendered outside hidden md:block so it works on mobile too */}
+      {editingAthlete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-[#1a1f2e] border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl mx-4">
+            <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+              <Pencil className="h-5 w-5 text-blue-400" />
+              Edit Athlete Info
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <Label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Full Name</Label>
+                <Input
+                  value={editName}
+                  onChange={e => setEditName(e.target.value)}
+                  placeholder="Athlete full name"
+                  className="bg-white/[0.06] border-white/10 text-white"
+                />
+              </div>
+              <div>
+                <Label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Email</Label>
+                <Input
+                  value={editEmail}
+                  onChange={e => setEditEmail(e.target.value)}
+                  placeholder="athlete@email.com"
+                  type="email"
+                  className="bg-white/[0.06] border-white/10 text-white"
+                />
+              </div>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <Button variant="ghost" className="flex-1 text-white/60 hover:text-white" onClick={() => setEditingAthlete(null)}>
+                Cancel
+              </Button>
+              <Button
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                disabled={updateUserMutation.isPending}
+                onClick={() => updateUserMutation.mutate({
+                  userId: editingAthlete.id,
+                  name: editName || undefined,
+                  email: editEmail || undefined,
+                })}
+              >
+                {updateUserMutation.isPending ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Athlete Confirmation - rendered outside hidden md:block so it works on mobile too */}
+      {deletingAthlete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-[#1a1f2e] border border-red-500/20 rounded-2xl p-6 w-full max-w-md shadow-2xl mx-4">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-10 w-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                <Trash2 className="h-5 w-5 text-red-400" />
+              </div>
+              <div>
+                <h3 className="text-white font-bold">Delete Athlete</h3>
+                <p className="text-white/50 text-sm">This cannot be undone</p>
+              </div>
+            </div>
+            <p className="text-white/70 text-sm mb-6">
+              Are you sure you want to delete <span className="text-white font-semibold">{deletingAthlete.name}</span>?
+              {deletingAthlete.type === 'invite'
+                ? ' This will permanently remove the pending invite.'
+                : ' All their drill assignments and data will be permanently removed.'}
+            </p>
+            <div className="flex gap-3">
+              <Button variant="ghost" className="flex-1 text-white/60 hover:text-white" onClick={() => setDeletingAthlete(null)}>
+                Cancel
+              </Button>
+              <Button
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                disabled={deletingAthlete.type === 'invite' ? deleteInviteMutation.isPending : deleteUserMutation.isPending}
+                onClick={() => {
+                  if (deletingAthlete.type === 'invite') {
+                    deleteInviteMutation.mutate({ inviteId: deletingAthlete.id });
+                  } else {
+                    deleteUserMutation.mutate({ userId: deletingAthlete.id });
+                  }
+                }}
+              >
+                {(deletingAthlete.type === 'invite' ? deleteInviteMutation.isPending : deleteUserMutation.isPending)
+                  ? 'Deleting...'
+                  : deletingAthlete.type === 'invite' ? 'Delete Invite' : 'Delete Athlete'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
